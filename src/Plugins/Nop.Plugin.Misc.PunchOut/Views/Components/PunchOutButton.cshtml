@@ -1,0 +1,28 @@
+﻿@{
+    var returnUrl = Url.Action("ReturnToProcurement", "PunchOut");
+}
+
+<script asp-location="Footer">
+
+    $(function () {
+        const checkoutButton = $('#checkout');
+        if (!checkoutButton.length)
+            return;
+
+        checkoutButton.hide();
+
+        const button = $('<button/>', {
+            id: 'punchout-submit',
+            type: 'button',
+            class: checkoutButton.attr('class'),
+            text: '@T("Plugins.Misc.PunchOut.Button.SubmitForApproval")'
+        });
+
+        button.on('click', function () {
+            window.location = '@Html.Raw(returnUrl)';
+        });
+
+        checkoutButton.after(button);
+    });
+
+</script>
