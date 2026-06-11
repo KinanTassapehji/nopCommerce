@@ -2037,7 +2037,9 @@ public partial class WorkflowMessageService : IWorkflowMessageService
         //tokens
         var commonTokens = new List<Token>();
         await _messageTokenProvider.AddProductReviewTokensAsync(commonTokens, productReview);
-        await _messageTokenProvider.AddCustomerTokensAsync(commonTokens, productReview.CustomerId);
+
+        if (productReview.CustomerId > 0)
+            await _messageTokenProvider.AddCustomerTokensAsync(commonTokens, productReview.CustomerId.Value);
 
         return await messageTemplates.SelectAwait(async messageTemplate =>
         {
@@ -2050,7 +2052,7 @@ public partial class WorkflowMessageService : IWorkflowMessageService
             //event notification
             await _eventPublisher.MessageTokensAddedAsync(messageTemplate, tokens);
 
-            var customer = await _customerService.GetCustomerByIdAsync(productReview.CustomerId);
+            var customer = await _customerService.GetCustomerByIdAsync(productReview.CustomerId ?? 0);
             var (replyToEmail, replyToName) = await GetCustomerReplyToNameAndEmailAsync(messageTemplate, customer);
 
             var (toEmail, toName) = await GetStoreOwnerNameAndEmailAsync(emailAccount);
@@ -2080,10 +2082,10 @@ public partial class WorkflowMessageService : IWorkflowMessageService
         if (!messageTemplates.Any())
             return new List<int>();
 
-        var customer = await _customerService.GetCustomerByIdAsync(productReview.CustomerId);
+        var customer = await _customerService.GetCustomerByIdAsync(productReview.CustomerId ?? 0);
 
         //We should not send notifications to guests
-        if (await _customerService.IsGuestAsync(customer))
+        if (customer is null || await _customerService.IsGuestAsync(customer))
             return new List<int>();
 
         //tokens
@@ -2348,12 +2350,14 @@ public partial class WorkflowMessageService : IWorkflowMessageService
         if (!messageTemplates.Any())
             return new List<int>();
 
-        var customer = await _customerService.GetCustomerByIdAsync(blogComment.CustomerId);
+        var customer = await _customerService.GetCustomerByIdAsync(blogComment.CustomerId ?? 0);
 
         //tokens
         var commonTokens = new List<Token>();
         await _messageTokenProvider.AddBlogCommentTokensAsync(commonTokens, blogComment);
-        await _messageTokenProvider.AddCustomerTokensAsync(commonTokens, blogComment.CustomerId);
+
+        if (blogComment.CustomerId > 0)
+            await _messageTokenProvider.AddCustomerTokensAsync(commonTokens, blogComment.CustomerId.Value);
 
         return await messageTemplates.SelectAwait(async messageTemplate =>
         {
@@ -2698,7 +2702,7 @@ public partial class WorkflowMessageService : IWorkflowMessageService
         if (!messageTemplate.AllowDirectReply)
             return (null, null);
 
-        var replyToEmail = await _customerService.IsGuestAsync(customer)
+        var replyToEmail = customer is null || await _customerService.IsGuestAsync(customer)
             ? string.Empty
             : customer.Email;
 

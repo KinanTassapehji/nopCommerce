@@ -1,11 +1,12 @@
-﻿using FluentMigrator;
+﻿using System.Data;
+using FluentMigrator;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Customers;
 using Nop.Data.Extensions;
 
 namespace Nop.Data.Migrations.UpgradeTo500;
 
-[NopSchemaMigration("2026-03-01 00:00:01", "SearchTerm migration")]
+[NopSchemaMigration("2026-03-01 00:00:06", "SearchTerm migration")]
 public class SearchTermMigration : ForwardOnlyMigration
 {
     private readonly INopDataProvider _dataProvider;
@@ -22,12 +23,12 @@ public class SearchTermMigration : ForwardOnlyMigration
     {
         _dataProvider.TruncateAsync<SearchTerm>();
 
-        this.DeleteColumnsIfExists<SearchTerm>(["Count"]);
+        this.DeleteColumnsIfExists<SearchTerm>(["Count", nameof(SearchTerm.CustomerId)]);
 
         this.AddOrAlterColumnFor<SearchTerm>(t => t.CreatedOnUtc)
             .AsDateTime2();
 
-        this.AddOrAlterForeignKeyColumnFor<SearchTerm, Customer>(t => t.CustomerId);
+        this.AddOrAlterForeignKeyColumnFor<SearchTerm, Customer>(t => t.CustomerId, Rule.SetNull).Nullable();
 
         this.AddOrAlterColumnFor<SearchTerm>(t => t.Deleted)
             .AsBoolean();

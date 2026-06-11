@@ -21,7 +21,7 @@ public partial class BlogCommentBuilder : NopEntityBuilder<BlogComment>
     {
         table
             .WithColumn(nameof(BlogComment.StoreId)).AsInt32().ForeignKey<Store>()
-            .WithColumn(nameof(BlogComment.CustomerId)).AsInt32().ForeignKey<Customer>()
+            .WithColumn(nameof(BlogComment.CustomerId)).AsInt32().Nullable().ForeignKey<Customer>()
             .WithColumn(nameof(BlogComment.BlogPostId)).AsInt32().ForeignKey<BlogPost>();
     }
 

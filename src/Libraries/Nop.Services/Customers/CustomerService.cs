@@ -1,8 +1,6 @@
 ﻿using System.Xml;
 using Nop.Core;
 using Nop.Core.Caching;
-using Nop.Core.Domain.Blogs;
-using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Orders;
@@ -30,7 +28,6 @@ public partial class CustomerService : ICustomerService
     protected readonly IHtmlFormatter _htmlFormatter;
     protected readonly INopDataProvider _dataProvider;
     protected readonly IRepository<Address> _customerAddressRepository;
-    protected readonly IRepository<BlogComment> _blogCommentRepository;
     protected readonly IRepository<Customer> _customerRepository;
     protected readonly IRepository<CustomerAddressMapping> _customerAddressMappingRepository;
     protected readonly IRepository<CustomerCustomerRoleMapping> _customerCustomerRoleMappingRepository;
@@ -39,8 +36,6 @@ public partial class CustomerService : ICustomerService
     protected readonly IRepository<GenericAttribute> _gaRepository;
     protected readonly IRepository<Order> _orderRepository;
     protected readonly IRepository<PrivateMessage> _privateMessageRepository;
-    protected readonly IRepository<ProductReview> _productReviewRepository;
-    protected readonly IRepository<ProductReviewHelpfulness> _productReviewHelpfulnessRepository;
     protected readonly IRepository<ShoppingCartItem> _shoppingCartRepository;
     protected readonly IShortTermCacheManager _shortTermCacheManager;
     protected readonly IStaticCacheManager _staticCacheManager;
@@ -58,7 +53,6 @@ public partial class CustomerService : ICustomerService
         IHtmlFormatter htmlFormatter,
         INopDataProvider dataProvider,
         IRepository<Address> customerAddressRepository,
-        IRepository<BlogComment> blogCommentRepository,
         IRepository<Customer> customerRepository,
         IRepository<CustomerAddressMapping> customerAddressMappingRepository,
         IRepository<CustomerCustomerRoleMapping> customerCustomerRoleMappingRepository,
@@ -67,8 +61,6 @@ public partial class CustomerService : ICustomerService
         IRepository<GenericAttribute> gaRepository,
         IRepository<Order> orderRepository,
         IRepository<PrivateMessage> privateMessageRepository,
-        IRepository<ProductReview> productReviewRepository,
-        IRepository<ProductReviewHelpfulness> productReviewHelpfulnessRepository,
         IRepository<ShoppingCartItem> shoppingCartRepository,
         IShortTermCacheManager shortTermCacheManager,
         IStaticCacheManager staticCacheManager,
@@ -82,7 +74,6 @@ public partial class CustomerService : ICustomerService
         _htmlFormatter = htmlFormatter;
         _dataProvider = dataProvider;
         _customerAddressRepository = customerAddressRepository;
-        _blogCommentRepository = blogCommentRepository;
         _customerRepository = customerRepository;
         _customerAddressMappingRepository = customerAddressMappingRepository;
         _customerCustomerRoleMappingRepository = customerCustomerRoleMappingRepository;
@@ -91,8 +82,6 @@ public partial class CustomerService : ICustomerService
         _gaRepository = gaRepository;
         _orderRepository = orderRepository;
         _privateMessageRepository = privateMessageRepository;
-        _productReviewRepository = productReviewRepository;
-        _productReviewHelpfulnessRepository = productReviewHelpfulnessRepository;
         _shoppingCartRepository = shoppingCartRepository;
         _shortTermCacheManager = shortTermCacheManager;
         _staticCacheManager = staticCacheManager;
@@ -365,6 +354,9 @@ public partial class CustomerService : ICustomerService
     /// </returns>
     public virtual async Task<Customer> GetCustomerByIdAsync(int customerId)
     {
+        if (customerId <= 0)
+            return null;
+
         return await _customerRepository.GetByIdAsync(customerId, cache => default, useShortTermCache: true);
     }
 
@@ -731,12 +723,8 @@ public partial class CustomerService : ICustomerService
             join g in allGuestCustomers on guest.Id equals g.Id
             from sCart in _shoppingCartRepository.Table.Where(sci => sci.CustomerId == guest.Id).DefaultIfEmpty()
             from order in _orderRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
-            from blogComment in _blogCommentRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
-            from productReview in _productReviewRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
-            from productReviewHelpfulness in _productReviewHelpfulnessRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
-            where (!onlyWithoutShoppingCart || sCart == null) &&
-                order == null && blogComment == null && productReview == null && productReviewHelpfulness == null &&
-                !guest.IsSystemAccount &&
+            where !guest.IsSystemAccount && order == null &&
+                (!onlyWithoutShoppingCart || sCart == null) &&
                 (createdFromUtc == null || guest.CreatedOnUtc > createdFromUtc) &&
                 (createdToUtc == null || guest.CreatedOnUtc < createdToUtc)
             select new { CustomerId = guest.Id };

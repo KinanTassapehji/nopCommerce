@@ -1,10 +1,14 @@
 ﻿using FluentMigrator;
+using Nop.Core.Domain.Blogs;
+using Nop.Core.Domain.Catalog;
+using Nop.Core.Domain.Common;
+using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Logging;
 using Nop.Core.Domain.ScheduleTasks;
 
 namespace Nop.Data.Migrations.UpgradeTo500;
 
-[NopUpdateMigration("2026-03-31 00:00:00", "5.00", UpdateMigrationType.Data)]
+[NopUpdateMigration("2026-03-31 00:00:01", "5.00", UpdateMigrationType.Data)]
 public class DataMigration : Migration
 {
     private readonly INopDataProvider _dataProvider;
@@ -48,7 +52,7 @@ public class DataMigration : Migration
                 }
             );
         }
-       
+
         if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "EditContactFormAttribute", StringComparison.InvariantCultureIgnoreCase) == 0))
         {
             _dataProvider.InsertEntity(
@@ -168,6 +172,39 @@ public class DataMigration : Migration
                     Name = "Import price lists"
                 }
             );
+        }
+
+        var comments = from bc in _dataProvider.GetTable<BlogComment>()
+                       join c in _dataProvider.GetTable<Customer>() on bc.CustomerId equals c.Id
+                       where string.IsNullOrEmpty(c.Email)
+                       select bc;
+
+        foreach (var comment in comments.ToList())
+        {
+            comment.CustomerId = null;
+            _dataProvider.UpdateEntity(comment);
+        }
+
+        var productReviews = from pr in _dataProvider.GetTable<ProductReview>()
+                             join c in _dataProvider.GetTable<Customer>() on pr.CustomerId equals c.Id
+                             where string.IsNullOrEmpty(c.Email)
+                             select pr;
+
+        foreach (var pr in productReviews.ToList())
+        {
+            pr.CustomerId = null;
+            _dataProvider.UpdateEntity(pr);
+        }
+
+        var searchTerms = from term in _dataProvider.GetTable<SearchTerm>()
+                          join c in _dataProvider.GetTable<Customer>() on term.CustomerId equals c.Id
+                          where string.IsNullOrEmpty(c.Email)
+                          select term;
+
+        foreach (var term in searchTerms.ToList())
+        {
+            term.CustomerId = null;
+            _dataProvider.UpdateEntity(term);
         }
     }
 

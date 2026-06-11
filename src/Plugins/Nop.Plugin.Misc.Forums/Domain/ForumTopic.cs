@@ -15,7 +15,7 @@ public class ForumTopic : BaseEntity
     /// <summary>
     /// Gets or sets the customer identifier
     /// </summary>
-    public int CustomerId { get; set; }
+    public int? CustomerId { get; set; }
 
     /// <summary>
     /// Gets or sets the topic type identifier
@@ -45,7 +45,7 @@ public class ForumTopic : BaseEntity
     /// <summary>
     /// Gets or sets the last post customer identifier
     /// </summary>
-    public int LastPostCustomerId { get; set; }
+    public int? LastPostCustomerId { get; set; }
 
     /// <summary>
     /// Gets or sets the last post date and time

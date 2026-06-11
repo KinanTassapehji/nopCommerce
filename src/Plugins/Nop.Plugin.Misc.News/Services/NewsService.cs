@@ -419,12 +419,14 @@ public class NewsService
         if (!messageTemplates.Any())
             return [];
 
-        var customer = await _customerService.GetCustomerByIdAsync(newsComment.CustomerId);
+        var customer = await _customerService.GetCustomerByIdAsync(newsComment.CustomerId ?? 0);
 
         //tokens
         var commonTokens = new List<Token>();
         await AddNewsCommentTokensAsync(commonTokens, newsComment);
-        await _messageTokenProvider.AddCustomerTokensAsync(commonTokens, newsComment.CustomerId);
+
+        if (newsComment.CustomerId.HasValue)
+            await _messageTokenProvider.AddCustomerTokensAsync(commonTokens, newsComment.CustomerId.Value);
 
         return await messageTemplates.SelectAwait(async messageTemplate =>
         {
