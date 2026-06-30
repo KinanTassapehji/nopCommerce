@@ -1,2 +1,9 @@
 ﻿@model Int32
-<input asp-for="@Model" type="number" class="form-control" />
+
+@Html.TextBox(string.Empty, Model,
+    new
+    {
+        type = "number",
+        step = "1",
+        @class = "form-control"
+    })

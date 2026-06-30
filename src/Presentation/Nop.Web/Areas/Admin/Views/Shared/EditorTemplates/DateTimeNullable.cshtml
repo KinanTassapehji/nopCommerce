@@ -1,2 +1,9 @@
 @model DateTime?
-<input asp-for="@Model" class="form-control"  type="datetime-local" />
+
+@Html.TextBox(string.Empty, Model?.ToString("s", CultureInfo.InvariantCulture),
+    new
+    {
+        type = "datetime-local",
+        @class = "form-control"
+    })
+<input name="__Invariant" type="hidden" value="@Html.NameForModel()" />
