@@ -10,6 +10,7 @@ using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Stores;
 using Nop.Core.Infrastructure;
 using Nop.Data;
+using Nop.Services.ArtificialIntelligence;
 using Nop.Services.Customers;
 using Nop.Services.Localization;
 using Nop.Services.Messages;
@@ -29,6 +30,7 @@ public partial class ProductService : IProductService
 
     protected readonly CatalogSettings _catalogSettings;
     protected readonly IAclService _aclService;
+    protected readonly IAiPoweredRecommendationPluginManager _aiPoweredRecommendationPluginManager;
     protected readonly ICustomerService _customerService;
     protected readonly IDateRangeService _dateRangeService;
     protected readonly ILanguageService _languageService;
@@ -70,6 +72,7 @@ public partial class ProductService : IProductService
 
     public ProductService(CatalogSettings catalogSettings,
         IAclService aclService,
+        IAiPoweredRecommendationPluginManager aiPoweredRecommendationPluginManager,
         ICustomerService customerService,
         IDateRangeService dateRangeService,
         ILanguageService languageService,
@@ -106,6 +109,7 @@ public partial class ProductService : IProductService
     {
         _catalogSettings = catalogSettings;
         _aclService = aclService;
+        _aiPoweredRecommendationPluginManager = aiPoweredRecommendationPluginManager;
         _customerService = customerService;
         _dateRangeService = dateRangeService;
         _languageService = languageService;
@@ -878,31 +882,56 @@ public partial class ProductService : IProductService
                   (priceMax == null || p.Price <= priceMax)
             select p;
 
-        var activeSearchProvider = await _searchPluginManager.LoadPrimaryPluginAsync(customer, storeId);
         var providerResults = new List<int>();
+        //try to use AI-powered recommendation provider
+        var activeAiPoweredRecommendationProvider = await _aiPoweredRecommendationPluginManager.LoadPrimaryPluginAsync(customer, storeId);
 
         if (!string.IsNullOrEmpty(keywords))
         {
             var langs = await _languageService.GetAllLanguagesAsync(showHidden: true);
 
-            //Set a flag which will to points need to search in localized properties. If showHidden doesn't set to true should be at least two published languages.
+            //set a flag which will to points need to search in localized properties.
+            //if showHidden doesn't set to true should be at least two published languages.
             var searchLocalizedValue = languageId > 0 && langs.Count >= 2 && (showHidden || langs.Count(l => l.Published) >= 2);
             var productsByKeywords = new List<int>().AsQueryable();
-            var runStandardSearch = activeSearchProvider is null || showHidden;
 
-            try
+            //we should not use AI-powered recommendation provider and search provider if showHidden is set to true
+            //because in this case we should return all products (including hidden) and not only products that match the keywords
+            var runStandardSearch = showHidden;
+
+            if (activeAiPoweredRecommendationProvider is not null && !runStandardSearch)
             {
-                if (!runStandardSearch)
+                try
                 {
-                    providerResults = await activeSearchProvider.SearchProductsAsync(keywords, searchLocalizedValue);
-                    productsByKeywords = providerResults.AsQueryable();
+                    var aiPoweredRecommendationResults = await activeAiPoweredRecommendationProvider.SearchProductsAsync(keywords, categoryIds, manufacturerIds, productTagId, filteredSpecOptions);
+
+                    if (!aiPoweredRecommendationResults.Any())
+                        throw new Exception("No products found by the specified keywords.");
+
+                    productsByKeywords = aiPoweredRecommendationResults.AsQueryable();
+
+                    productsQuery =
+                        from p in productsQuery
+                        join pbk in productsByKeywords on p.Id equals pbk
+                        select p;
+
+                    //return await productsQuery.OrderBy(_localizedPropertyRepository, await _workContext.GetWorkingLanguageAsync(), orderBy).ToPagedListAsync(pageIndex, pageSize);
+                    return await productsQuery.ToPagedListAsync(pageIndex, pageSize);
+                }
+                catch
+                {
+                    //if AI-powered recommendation provider fails, we should try to run search provider if active
+                    (productsByKeywords, runStandardSearch) = await useSearchProviderIfActive(searchLocalizedValue, runStandardSearch);
                 }
             }
-            catch
+            else if (!runStandardSearch)
             {
-                runStandardSearch = _catalogSettings.UseStandardSearchWhenSearchProviderThrowsException;
+                //if AI-powered recommendation provider is not active, we should try to run search provider if active
+                (productsByKeywords, runStandardSearch) = await useSearchProviderIfActive(searchLocalizedValue, runStandardSearch);
             }
 
+            //use standard search if AI-powered recommendation provider and search provider are not active or failed
+            //also use standard search if showHidden is set to true (we should not use AI-powered recommendation provider and search provider in this case)
             if (runStandardSearch)
             {
                 productsByKeywords =
@@ -924,7 +953,8 @@ public partial class ProductService : IProductService
                                              lp.LocaleKey == nameof(Product.ShortDescription) &&
                                              lp.LocaleValue.Contains(keywords)
                         where
-                            lp.LocaleKeyGroup == nameof(Product) && lp.LanguageId == languageId && (checkName || checkShortDesc)
+                            lp.LocaleKeyGroup == nameof(Product) && lp.LanguageId == languageId &&
+                            (checkName || checkShortDesc)
 
                         select lp.EntityId);
                 }
@@ -1123,6 +1153,8 @@ public partial class ProductService : IProductService
             }
         }
 
+        IPagedList<Product> result;
+
         if (providerResults.Any() && orderBy == ProductSortingEnum.Position && !showHidden)
         {
             var sortedProducts = from p in productsQuery
@@ -1130,12 +1162,42 @@ public partial class ProductService : IProductService
                                  from os in orderSeq.DefaultIfEmpty()
                                  orderby os == null ? int.MaxValue : os.ind
                                  select p;
-                                 
 
-            return await sortedProducts.ToPagedListAsync(pageIndex, pageSize);
+
+            result = await sortedProducts.ToPagedListAsync(pageIndex, pageSize);
+        }
+        else
+        {
+            result = await productsQuery.OrderBy(_localizedPropertyRepository, await _workContext.GetWorkingLanguageAsync(), orderBy).ToPagedListAsync(pageIndex, pageSize);
         }
 
-        return await productsQuery.OrderBy(_localizedPropertyRepository, await _workContext.GetWorkingLanguageAsync(), orderBy).ToPagedListAsync(pageIndex, pageSize);
+        return result;
+
+        async Task<(IQueryable<int> productsByKeywords, bool runStandardSearch)> useSearchProviderIfActive(bool searchLocalizedValue, bool runStandardSearch)
+        {
+            var productsByKeywords = new List<int>().AsQueryable();
+
+            if (runStandardSearch)
+                return (productsByKeywords, true);
+
+            //try to use search provider for searching products by keywords
+            var activeSearchProvider = await _searchPluginManager.LoadPrimaryPluginAsync(customer, storeId);
+
+            if (activeSearchProvider != null)
+            {
+                try
+                {
+                    providerResults = await activeSearchProvider.SearchProductsAsync(keywords, searchLocalizedValue);
+                    productsByKeywords = providerResults.AsQueryable();
+                }
+                catch
+                {
+                    runStandardSearch = _catalogSettings.UseStandardSearchWhenSearchProviderThrowsException;
+                }
+            }
+
+            return (productsByKeywords, runStandardSearch);
+        }
     }
 
     /// <summary>

@@ -81,4 +81,9 @@ public partial class ArtificialIntelligenceSettings : ISettings
     /// Gets or sets a value indicating whether to log requests
     /// </summary>
     public bool LogRequests { get; set; }
+
+    /// <summary>
+    /// Gets or sets the system name of the active AI-powered recommendation provider
+    /// </summary>
+    public string ActiveAiPoweredRecommendationProviderSystemName { get; set; }
 }
