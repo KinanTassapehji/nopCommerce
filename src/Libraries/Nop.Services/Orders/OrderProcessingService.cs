@@ -1634,7 +1634,7 @@ public partial class OrderProcessingService : IOrderProcessingService
                     await SendNotificationsAndSaveNotesAsync(order);
 
                     //reset checkout data
-                    await _customerService.ResetCheckoutDataAsync(placeOrderContainer.Customer,
+                    await _shoppingCartService.ResetCheckoutDataAsync(placeOrderContainer.Customer,
                         processPaymentRequest.StoreId, clearCouponCodes: true, clearCheckoutAttributes: true);
                     await _customerActivityService.InsertActivityAsync("PublicStore.PlaceOrder",
                         string.Format(await _localizationService.GetResourceAsync("ActivityLog.PublicStore.PlaceOrder"),

@@ -833,6 +833,17 @@ public class LocalizationMigration : MigrationBase
             //#8229
             ["Admin.Configuration.Settings.Order.DownloadableProductsReturnRequestsAllowed"] = "Allow return requests for downloadable products",
             ["Admin.Configuration.Settings.Order.DownloadableProductsReturnRequestsAllowed.Hint"] = "Check this option to allow return requests for downloadable products.",
+
+            //#56
+            ["Admin.Configuration.Settings.ShoppingCart.ShoppingCartVendorEnabled"] = "Vendor filtering",
+            ["Admin.Configuration.Settings.ShoppingCart.ShoppingCartVendorEnabled.Hint"] = "Check to allow customers to filter shopping cart items by a specific vendor in the cart. It could be useful when you have multi-vendor configured in your store.",
+            ["Admin.Configuration.Settings.ShoppingCart.ShoppingCartVendorRequired"] = "Vendor required",
+            ["Admin.Configuration.Settings.ShoppingCart.ShoppingCartVendorRequired.Hint"] = "Check if customers are required to choose a vendor before starting the checkout process.",
+            ["Enums.Nop.Core.Domain.Orders.ShoppingCartType.Postponed"] = "Postponed",
+            ["ShoppingCart.VendorList"] = "Vendor",
+            ["ShoppingCart.VendorList.All"] = "All",
+            ["ShoppingCart.SelectVendorToCheckout"] = "Please select a vendor before proceeding to checkout",
+
         });
 
         #endregion
