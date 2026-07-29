@@ -12,14 +12,17 @@ public class PunchOutButtonComponent : NopViewComponent
     #region Fields
 
     private readonly PunchOutService _punchOutService;
+    private readonly PunchOutSettings _punchOutSettings;
 
     #endregion
 
     #region Ctor
 
-    public PunchOutButtonComponent(PunchOutService punchOutService)
+    public PunchOutButtonComponent(PunchOutService punchOutService,
+        PunchOutSettings punchOutSettings)
     {
         _punchOutService = punchOutService;
+        _punchOutSettings = punchOutSettings;
     }
 
     #endregion
@@ -37,7 +40,7 @@ public class PunchOutButtonComponent : NopViewComponent
     /// </returns>
     public async Task<IViewComponentResult> InvokeAsync(string widgetZone, object additionalData)
     {
-        if (!await _punchOutService.IsPunchoutSessionAsync())
+        if (!_punchOutSettings.IsActive || !await _punchOutService.IsPunchoutSessionAsync())
             return Content(string.Empty);
 
         return await ViewAsync("~/Plugins/Misc.PunchOut/Views/Components/PunchOutButton.cshtml");

@@ -11,5 +11,7 @@ public class PunchOutSetupRequest : BasePunchOutModel
     public string BuyerCookie { get; set; }
     public string BrowserFormPostUrl { get; set; }
 
+    public PunchOutAddress ShipTo { get; set; }
+
     public string Contact { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using Nop.Core.Domain.Customers;
+﻿using Nop.Core.Domain.Cms;
+using Nop.Core.Domain.Customers;
 using Nop.Plugin.Misc.PunchOut.Components;
 using Nop.Services.Cms;
 using Nop.Services.Common;
@@ -22,6 +23,7 @@ public class PunchOutMethod : BasePlugin, IMiscPlugin, IWidgetPlugin
     protected readonly ILocalizationService _localizationService;
     protected readonly INopUrlHelper _nopUrlHelper;
     protected readonly ISettingService _settingService;
+    protected readonly WidgetSettings _widgetSettings;
 
     #endregion
 
@@ -30,12 +32,14 @@ public class PunchOutMethod : BasePlugin, IMiscPlugin, IWidgetPlugin
     public PunchOutMethod(ICustomerService customerService,
         ILocalizationService localizationService,
         INopUrlHelper nopUrlHelper,
-        ISettingService settingService)
+        ISettingService settingService,
+        WidgetSettings widgetSettings)
     {
         _customerService = customerService;
         _localizationService = localizationService;
         _nopUrlHelper = nopUrlHelper;
         _settingService = settingService;
+        _widgetSettings = widgetSettings;
     }
 
     #endregion
@@ -83,29 +87,31 @@ public class PunchOutMethod : BasePlugin, IMiscPlugin, IWidgetPlugin
     {
         await _settingService.SaveSettingAsync(new PunchOutSettings
         {
-            ActivateOrderRequest = true,
             IsActive = false,
             TimeToExpire = PunchOutDefaults.TimeToExpireSession,
-            CustomerRoleIds = [(await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.AdministratorsRoleName)).Id],
+            RestrictedCustomerRoleIds = [(await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.AdministratorsRoleName)).Id],
         });
+
+        if (!_widgetSettings.ActiveWidgetSystemNames.Contains(PunchOutDefaults.SystemName))
+        {
+            _widgetSettings.ActiveWidgetSystemNames.Add(PunchOutDefaults.SystemName);
+            await _settingService.SaveSettingAsync(_widgetSettings);
+        }
 
         await _localizationService.AddOrUpdateLocaleResourceAsync(new Dictionary<string, string>
         {
             ["Plugins.Misc.PunchOut.Configuration"] = "Configuration",
             ["Plugins.Misc.PunchOut.Configuration.Common"] = "Common settings",
 
-            ["Plugins.Misc.PunchOut.Configuration.ActivateOrderRequest"] = "Activate order request",
-            ["Plugins.Misc.PunchOut.Configuration.ActivateOrderRequest.Hint"] = "Enable or disable the order request feature.",
             ["Plugins.Misc.PunchOut.Configuration.IsActive"] = "Is active",
             ["Plugins.Misc.PunchOut.Configuration.IsActive.Hint"] = "Enable or disable the plugin.",
-            ["Plugins.Misc.PunchOut.Configuration.CustomerRoles"] = "Customer roles",
+            ["Plugins.Misc.PunchOut.Configuration.CustomerRoles"] = "Restricted sustomer roles",
             ["Plugins.Misc.PunchOut.Configuration.CustomerRoles.Hint"] = "Select customer roles that will have't access to the PunchOut feature. If no role is selected, all customers will have access.",
             ["Plugins.Misc.PunchOut.Configuration.CustomerRoles.NoRoles"] = "No customer roles found",
             ["Plugins.Misc.PunchOut.Configuration.TimeToExpire"] = "Time to expire",
             ["Plugins.Misc.PunchOut.Configuration.TimeToExpire.Hint"] = "The time in hours after which the PunchOut session will be expired.",
             ["Plugins.Misc.PunchOut.SessionExpired"] = "Your PunchOut session has expired.",
             ["Plugins.Misc.PunchOut.ServiceUnavailable"] = "The PunchOut service is currently unavailable.",
-            ["Plugins.Misc.PunchOut.OrderRequestServiceUnavailable"] = "The PunchOut order request service is currently unavailable.",
 
             ["Plugins.Misc.PunchOut.Log"] = "Log",
             ["Plugins.Misc.PunchOut.Log.Hint"] = "View log entry details.",
@@ -117,6 +123,7 @@ public class PunchOutMethod : BasePlugin, IMiscPlugin, IWidgetPlugin
             ["Plugins.Misc.PunchOut.Log.CreatedDate"] = "Created date",
             ["Plugins.Misc.PunchOut.Log.SessionId"] = "Session ID",
             ["Plugins.Misc.PunchOut.Log.MessageType"] = "Message type",
+            ["Plugins.Misc.PunchOut.Log.Deleted"] = "The log entry has been deleted successfully.",
             ["Plugins.Misc.PunchOut.Log.Direction"] = "Direction",
             ["Plugins.Misc.PunchOut.Log.RawXml"] = "Raw XML",
             ["Plugins.Misc.PunchOut.Log.Url"] = "URL",
@@ -144,6 +151,12 @@ public class PunchOutMethod : BasePlugin, IMiscPlugin, IWidgetPlugin
     /// <returns>A task that represents the asynchronous operation</returns>
     public override async Task UninstallAsync()
     {
+        if (_widgetSettings.ActiveWidgetSystemNames.Contains(PunchOutDefaults.SystemName))
+        {
+            _widgetSettings.ActiveWidgetSystemNames.Remove(PunchOutDefaults.SystemName);
+            await _settingService.SaveSettingAsync(_widgetSettings);
+        }
+
         await _settingService.DeleteSettingAsync<PunchOutSettings>();
         await _localizationService.DeleteLocaleResourcesAsync("Plugins.Misc.PunchOut");
 

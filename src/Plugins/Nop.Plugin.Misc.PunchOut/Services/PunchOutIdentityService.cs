@@ -67,7 +67,7 @@ public class PunchOutIdentityService
             return null;
 
         return await _punchOutIdentityRepository.Table
-            .FirstOrDefaultAsync(item => identity.Equals(item.Identity, StringComparison.InvariantCultureIgnoreCase));
+            .FirstOrDefaultAsync(item => item.Identity == identity);
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ public class PunchOutIdentityService
     /// A task that represents the asynchronous operation
     /// The task result contains the punchOut identity
     /// </returns>
-    public virtual async Task<PunchOutIdentity> GetPunchOutIdentityByIdAsync(int identityId)
+    public async Task<PunchOutIdentity> GetPunchOutIdentityByIdAsync(int identityId)
     {
         return await _punchOutIdentityRepository.GetByIdAsync(identityId, cache => default);
     }

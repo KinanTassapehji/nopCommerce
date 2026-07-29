@@ -87,7 +87,7 @@ public class PunchOutLogService
     /// </summary>
     /// <param name="logItem">Log item</param>
     /// <returns>A task that represents the asynchronous operation</returns>
-    public async Task DeleteTaxTransactionLogAsync(PunchOutLog logItem)
+    public async Task DeleteLogItemAsync(PunchOutLog logItem)
     {
         await _punchOutLogRepository.DeleteAsync(logItem, false);
     }

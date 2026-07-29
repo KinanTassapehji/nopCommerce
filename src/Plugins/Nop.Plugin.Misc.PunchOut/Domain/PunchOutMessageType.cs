@@ -18,15 +18,5 @@ public enum PunchOutMessageType
     /// <summary>
     /// PunchOutOrderMessage
     /// </summary>
-    OrderMessage = 3,
-
-    /// <summary>
-    /// PunchOutOrderRequest
-    /// </summary>
-    OrderRequest = 4,
-
-    /// <summary>
-    /// PunchOutOrderResponse
-    /// </summary>
-    OrderResponse = 5
+    OrderMessage = 3
 }

@@ -6,7 +6,7 @@ namespace Nop.Plugin.Misc.PunchOut.Models.Identity;
 /// <summary>
 /// Represents PunchOutIdentity search model
 /// </summary>
-public record class PunchOutIdentitySearchModel : BaseSearchModel
+public record PunchOutIdentitySearchModel : BaseSearchModel
 {
     #region Ctor
 

@@ -42,15 +42,6 @@
                         <li>
                             The PunchOut session is completed and the user is returned to the procurement system.
                         </li>
-                        <li>
-                            The procurement system may later submit a separate <strong>OrderRequest</strong> to place an actual order.
-                        </li>
-                        <li>
-                            An <strong>OrderRequest</strong> is a different cXML transaction and is not part of the PunchOut session workflow.
-                        </li>
-                        <li>
-                            If OrderRequest support is enabled, nopCommerce can create orders directly from incoming cXML OrderRequest documents.
-                        </li>
                     </ol>
 
                     <hr />
@@ -84,15 +75,6 @@
                 </div>
             </div>
             <nop-nested-setting asp-for="IsActive">
-                <div class="form-group row">                    
-                    <div class="col-md-3">
-                        <nop-label asp-for="ActivateOrderRequest" />
-                    </div>
-                    <div class="col-md-9">
-                        <nop-editor asp-for="ActivateOrderRequest" />
-                        <span asp-validation-for="ActivateOrderRequest"></span>
-                    </div>
-                </div>
                 <div class="form-group row">
                     <div class="col-md-3">
                         <nop-label asp-for="TimeToExpire" />

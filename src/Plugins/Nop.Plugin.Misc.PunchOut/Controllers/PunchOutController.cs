@@ -1,11 +1,9 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Mvc;
-using Nop.Core;
 using Nop.Core.Http;
 using Nop.Plugin.Misc.PunchOut.Domain.CXML;
 using Nop.Plugin.Misc.PunchOut.Services;
 using Nop.Services.Authentication;
-using Nop.Services.Customers;
 using Nop.Services.Localization;
 using Nop.Services.Messages;
 
@@ -17,38 +15,26 @@ public class PunchOutController : Controller
     #region Fields
 
     protected readonly IAuthenticationService _authenticationService;
-    protected readonly ICustomerService _customerService;
     protected readonly ILocalizationService _localizationService;
     protected readonly INotificationService _notificationService;
-    protected readonly PunchOutLogService _punchOutLogService;
     protected readonly PunchOutService _punchOutService;
     protected readonly PunchOutSettings _punchOutSettings;
-    protected readonly PunchOutXmlBuilder _punchOutXmlBuilder;
-    protected readonly IWorkContext _workContext;
 
     #endregion
 
     #region Ctor
 
     public PunchOutController(IAuthenticationService authenticationService,
-        ICustomerService customerService,
         ILocalizationService localizationService,
         INotificationService notificationService,
-        PunchOutLogService punchOutLogService,
         PunchOutService punchOutService,
-        PunchOutSettings punchOutSettings,
-        PunchOutXmlBuilder punchOutXmlBuilder,
-        IWorkContext workContext)
+        PunchOutSettings punchOutSettings)
     {
         _authenticationService = authenticationService;
-        _customerService = customerService;
         _localizationService = localizationService;
         _notificationService = notificationService;
-        _punchOutLogService = punchOutLogService;
         _punchOutService = punchOutService;
         _punchOutSettings = punchOutSettings;
-        _punchOutXmlBuilder = punchOutXmlBuilder;
-        _workContext = workContext;
     }
 
     #endregion
@@ -60,7 +46,7 @@ public class PunchOutController : Controller
     {
         if (!_punchOutSettings.IsActive)
         {
-            var response = _punchOutXmlBuilder.BuildErrorResponse(new PunchOutErrorResponse
+            var response = PunchOutXmlBuilder.BuildErrorResponse(new PunchOutErrorResponse
             {
                 StatusCode = "503",
                 StatusText = "Service Unavailable",
@@ -111,36 +97,7 @@ public class PunchOutController : Controller
 
         await _punchOutService.ClearPunchoutSessionDataAsync();
 
-        return Content(result.Html, "text/html", Encoding.UTF8);
-    }
-
-    [HttpPost("order")]
-    [Consumes("text/xml", "application/xml")]
-    public async Task<IActionResult> Order()
-    {
-        if (!_punchOutSettings.IsActive || !_punchOutSettings.ActivateOrderRequest)
-        {
-            var message = !_punchOutSettings.IsActive 
-                ? await _localizationService.GetResourceAsync("Plugins.Misc.PunchOut.ServiceUnavailable")
-                : await _localizationService.GetResourceAsync("Plugins.Misc.PunchOut.OrderRequestServiceUnavailable");
-            var response = new PunchOutErrorResponse
-            {
-                StatusCode = "503",
-                StatusText = "Service Unavailable",
-                ErrorMessage = message
-            };
-
-            var contentResponse = _punchOutXmlBuilder.BuildErrorResponse(response);
-            return Content(contentResponse, "text/xml", Encoding.UTF8);
-        }
-        
-        string rawXml;
-        using (var reader = new StreamReader(Request.Body))
-            rawXml = await reader.ReadToEndAsync();
-
-        var responseXml = await _punchOutService.HandleOrderRequestAsync(rawXml, HttpContext);
-
-        return Content(responseXml, "text/xml", Encoding.UTF8);
+        return Content(result, "text/html", Encoding.UTF8);
     }
 
     #endregion

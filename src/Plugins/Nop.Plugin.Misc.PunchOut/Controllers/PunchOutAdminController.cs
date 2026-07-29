@@ -84,10 +84,9 @@ public class PunchOutAdminController : BasePluginController
         //prepare model
         var model = new ConfigurationModel
         {
-            ActivateOrderRequest = _punchOutSettings.ActivateOrderRequest,
             IsActive = _punchOutSettings.IsActive,
             TimeToExpire = _punchOutSettings.TimeToExpire,
-            SelectedCustomerRoleIds = _punchOutSettings.CustomerRoleIds
+            SelectedCustomerRoleIds = _punchOutSettings.RestrictedCustomerRoleIds
         };
 
         //prepare unavailable customer roles
@@ -120,10 +119,9 @@ public class PunchOutAdminController : BasePluginController
             return await Configure();
 
         //set new settings values
-        _punchOutSettings.ActivateOrderRequest = model.ActivateOrderRequest;
         _punchOutSettings.IsActive = model.IsActive;
         _punchOutSettings.TimeToExpire = model.TimeToExpire;
-        _punchOutSettings.CustomerRoleIds = model.SelectedCustomerRoleIds.ToList();
+        _punchOutSettings.RestrictedCustomerRoleIds = model.SelectedCustomerRoleIds.ToList();
 
         await _settingService.SaveSettingAsync(_punchOutSettings);
 
@@ -200,8 +198,8 @@ public class PunchOutAdminController : BasePluginController
         var logItem = await _punchOutLogService.GetPunchOutLogByIdAsync(id);
         if (logItem != null)
         {
-            await _punchOutLogService.DeleteTaxTransactionLogAsync(logItem);
-            _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Plugins.Tax.Avalara.Log.Deleted"));
+            await _punchOutLogService.DeleteLogItemAsync(logItem);
+            _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Plugins.Misc.PunchOut.Log.Deleted"));
         }
 
         return RedirectToAction("Configure", "PunchOutAdmin");
@@ -228,9 +226,9 @@ public class PunchOutAdminController : BasePluginController
             pageIndex: searchModel.Page - 1, pageSize: searchModel.PageSize);
 
         //prepare grid model
-        var model = await new PunchOutIdentityListModel().PrepareToGridAsync(searchModel, punchOutIdentities, () =>
+        var model = new PunchOutIdentityListModel().PrepareToGrid(searchModel, punchOutIdentities, () =>
         {
-            return punchOutIdentities.SelectAwait(async identityItem => new PunchOutIdentityModel
+            return punchOutIdentities.Select(identityItem => new PunchOutIdentityModel
             {
                 Id = identityItem.Id,
                 Identity = identityItem.Identity,
@@ -243,7 +241,7 @@ public class PunchOutAdminController : BasePluginController
 
     [HttpPost]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
-    public virtual async Task<IActionResult> IdentityAdd(PunchOutIdentityModel model)
+    public async Task<IActionResult> IdentityAdd(PunchOutIdentityModel model)
     {
         if (!ModelState.IsValid)
             return ErrorJson(ModelState.SerializeErrors());
@@ -255,7 +253,7 @@ public class PunchOutAdminController : BasePluginController
 
     [HttpPost]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
-    public virtual async Task<IActionResult> IdentityUpdate(PunchOutIdentityModel model)
+    public async Task<IActionResult> IdentityUpdate(PunchOutIdentityModel model)
     {
         if (!ModelState.IsValid)
             return ErrorJson(ModelState.SerializeErrors());
@@ -274,7 +272,7 @@ public class PunchOutAdminController : BasePluginController
 
     [HttpPost]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
-    public virtual async Task<IActionResult> IdentityDelete(int id)
+    public async Task<IActionResult> IdentityDelete(int id)
     {
         //try to get a punchout identity with the specified id
         var identity = await _punchOutIdentityService.GetPunchOutIdentityByIdAsync(id)

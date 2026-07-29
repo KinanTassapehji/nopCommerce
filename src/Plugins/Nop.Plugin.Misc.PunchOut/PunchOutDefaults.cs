@@ -71,13 +71,5 @@ public class PunchOutDefaults
     /// </summary>
     public static string PunchOutSessionTokenAttribute => "PunchOutSessionToken";
 
-    public static string PunchOutReturnUrlAttribute => "PunchOutReturnUrl";
-
-    public static string PunchOutBuyerCookieAttribute => "PunchOutBuyerCookie";
-
-    public static string PunchOutStartDateAttribute => "PunchOutStartDate";
-
-    public static string PunchOutIsActiveAttribute => "PunchOutIsActive";
-
     #endregion
 }

@@ -1,4 +1,10 @@
-﻿@{
+﻿<style>
+    #checkout {
+        display: none;
+    }
+</style>
+
+@{
     var returnUrl = Url.Action("ReturnToProcurement", "PunchOut");
 }
 
@@ -8,8 +14,6 @@
         const checkoutButton = $('#checkout');
         if (!checkoutButton.length)
             return;
-
-        checkoutButton.hide();
 
         const button = $('<button/>', {
             id: 'punchout-submit',

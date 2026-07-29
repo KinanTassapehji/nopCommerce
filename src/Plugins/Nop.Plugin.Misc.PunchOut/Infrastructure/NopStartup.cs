@@ -18,7 +18,6 @@ public class NopStartup : INopStartup
     {
         //register custom services
         services.AddScoped<PunchOutService>();
-        services.AddScoped<PunchOutXmlBuilder>();
         services.AddScoped<PunchOutLogService>();
         services.AddScoped<PunchOutIdentityService>();
 

@@ -5,7 +5,7 @@ using Nop.Plugin.Misc.PunchOut.Domain;
 
 namespace Nop.Plugin.Misc.PunchOut.Data;
 
-[NopMigration("2026/04/23 09:09:17:6455442", "Misc.PunchOut.Data base schema", MigrationProcessType.Installation)]
+[NopMigration("2026-04-23 00:00:00", "Misc.PunchOut base schema", MigrationProcessType.Installation)]
 public class SchemaMigration : Migration
 {
     #region Methods

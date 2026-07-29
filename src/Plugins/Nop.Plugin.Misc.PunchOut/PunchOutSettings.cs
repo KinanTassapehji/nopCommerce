@@ -13,18 +13,13 @@ public class PunchOutSettings : ISettings
     public bool IsActive { get; set; }
 
     /// <summary>
-    /// Gets or sets activate order request
-    /// </summary>
-    public bool ActivateOrderRequest { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating the time in hours after which the PunchOut session will be expired
     /// </summary>
     public int TimeToExpire { get; set; }
 
     /// <summary>
-    /// Gets or sets a list of customer role identifiers  
+    /// Gets or sets a list of restricted customer role identifiers
     /// </summary>
-    public List<int> CustomerRoleIds { get; set; } = new();
+    public List<int> RestrictedCustomerRoleIds { get; set; } = new();
 
 }

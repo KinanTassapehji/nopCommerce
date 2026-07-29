@@ -7,7 +7,7 @@ namespace Nop.Plugin.Misc.PunchOut.Models.Log;
 /// <summary>
 /// Represents PunchOutLog search model
 /// </summary>
-public record class PunchOutLogSearchModel : BaseSearchModel
+public record PunchOutLogSearchModel : BaseSearchModel
 {
     [NopResourceDisplayName("Plugins.Misc.PunchOut.Log.Search.CreatedFrom")]
     [UIHint("DateNullable")]

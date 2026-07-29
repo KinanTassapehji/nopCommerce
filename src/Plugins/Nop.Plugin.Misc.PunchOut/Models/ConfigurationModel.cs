@@ -25,9 +25,6 @@ public record ConfigurationModel : BaseNopModel
 
     #region Properties
 
-    [NopResourceDisplayName("Plugins.Misc.PunchOut.Configuration.ActivateOrderRequest")]
-    public bool ActivateOrderRequest { get; set; }
-
     [NopResourceDisplayName("Plugins.Misc.PunchOut.Configuration.IsActive")]
     public bool IsActive { get; set; }
 
