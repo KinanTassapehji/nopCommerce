@@ -4,6 +4,111 @@
     Layout = "";
 }
 
+<form asp-controller="FixedOrByCountryStateZip" asp-action="Configure" method="post">
+    <script>
+       
+    </script>
+
+    <div class="cards-group advanced-setting">
+        <div class="card card-default">
+            <div class="card-body">
+                
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="RenameRate1"/>
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="RenameRate1"/>
+                        <span asp-validation-for="RenameRate1"></span>
+                    </div>
+                </div>
+                <nop-nested-setting asp-for="RenameRate1">
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <nop-label asp-for="RateName1"/>
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="RateName1"/>
+                            <span asp-validation-for="RateName1"></span>
+                        </div>
+                    </div>
+                </nop-nested-setting>
+
+
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="UsePercentage2"/>
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="UsePercentage2"/>
+                        <span asp-validation-for="UsePercentage2"></span>
+                    </div>
+                </div>
+                <nop-nested-setting asp-for="UsePercentage2">
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <nop-label asp-for="RenameRate2"/>
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="RenameRate2"/>
+                            <span asp-validation-for="RenameRate2"></span>
+                        </div>
+                    </div>
+                    <nop-nested-setting asp-for="RenameRate2">
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <nop-label asp-for="RateName2"/>
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="RateName2"/>
+                                <span asp-validation-for="RateName2"></span>
+                            </div>
+                        </div>
+                    </nop-nested-setting>
+                </nop-nested-setting>
+
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="UsePercentage3"/>
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="UsePercentage3"/>
+                        <span asp-validation-for="UsePercentage3"></span>
+                    </div>
+                </div>
+                <nop-nested-setting asp-for="UsePercentage3">
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <nop-label asp-for="RenameRate3"/>
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="RenameRate3"/>
+                            <span asp-validation-for="RenameRate3"></span>
+                        </div>
+                    </div>
+                    <nop-nested-setting asp-for="RenameRate3">
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <nop-label asp-for="RateName3"/>
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="RateName3"/>
+                                <span asp-validation-for="RateName3"></span>
+                            </div>
+                        </div>
+                    </nop-nested-setting>
+                </nop-nested-setting>
+
+                <div class="form-group row">
+                    <div class="col-md-9 offset-md-3">
+                        <button type="submit" name="save" class="btn btn-primary">@T("Admin.Common.Save")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <div class="cards-group advanced-setting">
     <div class="card card-default">
         <div class="card-body">
@@ -50,6 +155,22 @@
                        Width = "100",
                        Editable = true,
                        EditType = EditType.Number
+                   },
+                   new ColumnProperty(nameof(CountryStateZipModel.Percentage2))
+                   {
+                       Title = T("Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage2").Text,
+                       Width = "100",
+                       Editable = true,
+                       EditType = EditType.Number,
+                       Visible = Model.UsePercentage2
+                   },
+                   new ColumnProperty(nameof(CountryStateZipModel.Percentage3))
+                   {
+                       Title = T("Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage3").Text,
+                       Width = "100",
+                       Editable = true,
+                       EditType = EditType.Number,
+                       Visible = Model.UsePercentage3
                    },
                    new ColumnProperty(nameof(CountryStateZipModel.Id))
                    {
@@ -155,13 +276,37 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-md-3">
-                        <nop-label asp-for="AddPercentage" />
+                        <nop-label asp-for="Percentage" />
                     </div>
                     <div class="col-md-9">
-                        <nop-editor asp-for="AddPercentage" />
-                        <span asp-validation-for="AddPercentage"></span>
+                        <nop-editor asp-for="Percentage" />
+                        <span asp-validation-for="Percentage"></span>
                     </div>
                 </div>
+                @if (Model.UsePercentage2)
+                {
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <nop-label asp-for="Percentage2"/>
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="Percentage2"/>
+                            <span asp-validation-for="Percentage2"></span>
+                        </div>
+                    </div>
+                }
+                @if (Model.UsePercentage3)
+                {
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <nop-label asp-for="Percentage3"/>
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="Percentage3"/>
+                            <span asp-validation-for="Percentage3"></span>
+                        </div>
+                    </div>
+                }
                 <div class="form-group row">
                     <div class="col-md-3">
                         &nbsp;

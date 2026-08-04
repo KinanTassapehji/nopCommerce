@@ -89,7 +89,9 @@ public class FixedOrByCountryStateZipTaxProvider : BasePlugin, ITaxProvider
         //the tax rate calculation by fixed rate
         if (!_countryStateZipSettings.CountryStateZipEnabled)
         {
-            result.TaxRate = await _settingService.GetSettingByKeyAsync<decimal>(string.Format(FixedOrByCountryStateZipDefaults.FIXED_RATE_SETTINGS_KEY, taxRateRequest.TaxCategoryId));
+            result.AddTaxRate(await _settingService.GetSettingByKeyAsync<decimal>(
+                string.Format(FixedOrByCountryStateZipDefaults.FIXED_RATE_SETTINGS_KEY, taxRateRequest.TaxCategoryId)));
+            
             return result;
         }
 
@@ -110,7 +112,9 @@ public class FixedOrByCountryStateZipTaxProvider : BasePlugin, ITaxProvider
             CountryId = taxRate.CountryId,
             StateProvinceId = taxRate.StateProvinceId,
             Zip = taxRate.Zip,
-            Percentage = taxRate.Percentage
+            Percentage = taxRate.Percentage,
+            Percentage2 = taxRate.Percentage2,
+            Percentage3 = taxRate.Percentage3
         }).ToList());
 
         var storeId = taxRateRequest.CurrentStoreId;
@@ -135,8 +139,23 @@ public class FixedOrByCountryStateZipTaxProvider : BasePlugin, ITaxProvider
 
         var foundRecord = foundRecords.FirstOrDefault();
 
-        if (foundRecord != null)
-            result.TaxRate = foundRecord.Percentage;
+        if (foundRecord == null)
+            return result;
+
+        var code = _countryStateZipSettings.RenameRate1 ? _countryStateZipSettings.RateName1 : string.Empty;
+        result.AddTaxRate(foundRecord.Percentage, code);
+
+        if (_countryStateZipSettings.UsePercentage2)
+        {
+            code = _countryStateZipSettings.RenameRate2 ? _countryStateZipSettings.RateName2 : string.Empty;
+            result.AddTaxRate(foundRecord.Percentage2 ?? decimal.Zero, code);
+        }
+
+        if (_countryStateZipSettings.UsePercentage3)
+        {
+            code = _countryStateZipSettings.RenameRate3 ? _countryStateZipSettings.RateName3 : string.Empty;
+            result.AddTaxRate(foundRecord.Percentage3 ?? decimal.Zero, code);
+        }
 
         return result;
     }
@@ -156,36 +175,31 @@ public class FixedOrByCountryStateZipTaxProvider : BasePlugin, ITaxProvider
         {
             //short-circuit to avoid circular reference when calculating payment method additional fee during the checkout process
             if (!taxTotalRequest.UsePaymentMethodAdditionalFee)
-                return new TaxTotalResult { TaxTotal = taxTotalResult.TaxTotal - paymentTax };
+            {
+                var resultTotal = taxTotalResult.Copy();
+
+                resultTotal.ChangeTaxTotal(taxTotalResult.TaxRates.TotalTaxAmount - paymentTax);
+
+                return resultTotal;
+            }
 
             return taxTotalResult;
         }
 
-        var taxRates = new SortedDictionary<decimal, decimal>();
-        var taxTotal = decimal.Zero;
+        var taxRates = new TaxRateResult();
 
         //order sub total (items + checkout attributes)
         var (_, _, _, _, orderSubTotalTaxRates) = await _orderTotalCalculationService
             .GetShoppingCartSubTotalAsync(taxTotalRequest.ShoppingCart, false);
-        var subTotalTaxTotal = decimal.Zero;
-        foreach (var kvp in orderSubTotalTaxRates)
-        {
-            var taxRate = kvp.Key;
-            var taxValue = kvp.Value;
-            subTotalTaxTotal += taxValue;
 
-            if (taxRate > decimal.Zero && taxValue > decimal.Zero)
-            {
-                if (!taxRates.TryGetValue(taxRate, out var value))
-                    taxRates.Add(taxRate, taxValue);
-                else
-                    taxRates[taxRate] = value + taxValue;
-            }
+        foreach (var taxDefinition in orderSubTotalTaxRates.TaxDefinitions)
+        {
+            var taxValue = taxDefinition.TaxAmount;
+
+            taxRates.AddTaxAmount(taxDefinition, taxValue);
         }
-        taxTotal += subTotalTaxTotal;
 
         //shipping
-        var shippingTax = decimal.Zero;
         if (_taxSettings.ShippingIsTaxable)
         {
             var (shippingExclTax, _, _) = await _orderTotalCalculationService
@@ -194,24 +208,13 @@ public class FixedOrByCountryStateZipTaxProvider : BasePlugin, ITaxProvider
                 .GetShoppingCartShippingTotalAsync(taxTotalRequest.ShoppingCart, true);
             if (shippingExclTax.HasValue && shippingInclTax.HasValue)
             {
-                shippingTax = shippingInclTax.Value - shippingExclTax.Value;
-                if (shippingTax < decimal.Zero)
-                    shippingTax = decimal.Zero;
-
-                if (taxRate > decimal.Zero && shippingTax > decimal.Zero)
-                {
-                    if (!taxRates.TryGetValue(taxRate, out var value))
-                        taxRates.Add(taxRate, shippingTax);
-                    else
-                        taxRates[taxRate] = value + shippingTax;
-                }
+                taxRates.AddTaxAmount(shippingInclTax.Value - shippingExclTax.Value);
             }
         }
-        taxTotal += shippingTax;
 
         //short-circuit to avoid circular reference when calculating payment method additional fee during the checkout process
         if (!taxTotalRequest.UsePaymentMethodAdditionalFee)
-            return new TaxTotalResult { TaxTotal = taxTotal };
+            return new TaxTotalResult { TaxRates = taxRates };
 
         //payment method additional fee
         var paymentMethodAdditionalFeeTax = decimal.Zero;
@@ -233,24 +236,14 @@ public class FixedOrByCountryStateZipTaxProvider : BasePlugin, ITaxProvider
             if (paymentMethodAdditionalFeeTax < decimal.Zero)
                 paymentMethodAdditionalFeeTax = decimal.Zero;
 
-            if (taxRate > decimal.Zero && paymentMethodAdditionalFeeTax > decimal.Zero)
+            if (paymentMethodAdditionalFeeTax > decimal.Zero)
             {
-                if (!taxRates.TryGetValue(taxRate, out var value))
-                    taxRates.Add(taxRate, paymentMethodAdditionalFeeTax);
-                else
-                    taxRates[taxRate] = value + paymentMethodAdditionalFeeTax;
+                taxRate.AddTaxAmount(paymentMethodAdditionalFeeTax);
+                taxRates.AppendTaxResults(taxRate);
             }
         }
-        taxTotal += paymentMethodAdditionalFeeTax;
-
-        //add at least one tax rate (0%)
-        if (!taxRates.Any())
-            taxRates.Add(decimal.Zero, decimal.Zero);
-
-        if (taxTotal < decimal.Zero)
-            taxTotal = decimal.Zero;
-
-        taxTotalResult = new TaxTotalResult { TaxTotal = taxTotal, TaxRates = taxRates, };
+        
+        taxTotalResult = new TaxTotalResult { TaxRates = taxRates };
 
         //store values within the scope of the request to avoid duplicate calculations
         _httpContextAccessor.HttpContext.Items.TryAdd("nop.TaxTotal", (taxTotalResult, paymentMethodAdditionalFeeTax));
@@ -273,7 +266,18 @@ public class FixedOrByCountryStateZipTaxProvider : BasePlugin, ITaxProvider
     public override async Task InstallAsync()
     {
         //settings
-        await _settingService.SaveSettingAsync(new FixedOrByCountryStateZipTaxSettings());
+        await _settingService.SaveSettingAsync(new FixedOrByCountryStateZipTaxSettings
+        {
+            CountryStateZipEnabled = false,
+            UsePercentage2 = false,
+            UsePercentage3 = false,
+            RenameRate1 = false,
+            RenameRate2 = false,
+            RenameRate3 = false,
+            RateName1 = "GST",
+            RateName2 = "PST",
+            RateName3 = "HST"
+        });
 
         //locales
         await _localizationService.AddOrUpdateLocaleResourceAsync(new Dictionary<string, string>
@@ -284,6 +288,8 @@ public class FixedOrByCountryStateZipTaxProvider : BasePlugin, ITaxProvider
             ["Plugins.Tax.FixedOrByCountryStateZip.TaxByCountryStateZip"] = "By Country",
             ["Plugins.Tax.FixedOrByCountryStateZip.Fields.TaxCategoryName"] = "Tax category",
             ["Plugins.Tax.FixedOrByCountryStateZip.Fields.Rate"] = "Rate",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.Rate2"] = "Rate 2",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.Rate3"] = "Rate 3",
             ["Plugins.Tax.FixedOrByCountryStateZip.Fields.Store"] = "Store",
             ["Plugins.Tax.FixedOrByCountryStateZip.Fields.Store.Hint"] = "If an asterisk is selected, then this shipping rate will apply to all stores.",
             ["Plugins.Tax.FixedOrByCountryStateZip.Fields.Country"] = "Country",
@@ -296,6 +302,10 @@ public class FixedOrByCountryStateZipTaxProvider : BasePlugin, ITaxProvider
             ["Plugins.Tax.FixedOrByCountryStateZip.Fields.TaxCategory.Hint"] = "The tax category.",
             ["Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage"] = "Percentage",
             ["Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage.Hint"] = "The tax rate.",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage2"] = "Percentage 2",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage2.Hint"] = "The second tax rate.",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage3"] = "Percentage 3",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage3.Hint"] = "The third tax rate.",
             ["Plugins.Tax.FixedOrByCountryStateZip.AddRecord"] = "Add tax rate",
             ["Plugins.Tax.FixedOrByCountryStateZip.AddRecordTitle"] = "New tax rate",
             ["Plugins.Tax.FixedOrByCountryStateZip.SwitchRate"] = @"
@@ -305,6 +315,22 @@ public class FixedOrByCountryStateZipTaxProvider : BasePlugin, ITaxProvider
                     <p>
                         Any current tax rate settings will be saved, but will not be active until you return to this tax calculation method.
                     </p>",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.UsePercentage2"] = "Use percentage 2",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.UsePercentage2.Hint"] = "Check this box if you want to use the second tax rate.",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.UsePercentage3"] = "Use percentage 3",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.UsePercentage3.Hint"] = "Check this box if you want to use the third tax rate.",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.RenameRate1"] = "Rename rate 1",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.RenameRate1.Hint"] = "If chacked, you may change the name of the first tax rate.",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.RenameRate2"] = "Rename rate 2",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.RenameRate2.Hint"] = "If chacked, you may change the name of the second tax rate.",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.RenameRate3"] = "Rename rate 3",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.RenameRate3.Hint"] = "If chacked, you may change the name of the third tax rate.",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.RateName1"] = "Rate name 1",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.RateName1.Hint"] = "The name of the first tax rate.",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.RateName2"] = "Rate name 2",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.RateName2.Hint"] = "The name of the second tax rate.",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.RateName3"] = "Rate name 3",
+            ["Plugins.Tax.FixedOrByCountryStateZip.Fields.RateName3.Hint"] = "The name of the third tax rate."
         });
 
         await base.InstallAsync();

@@ -79,7 +79,18 @@ public class AvalaraTaxProvider : BasePlugin, ITaxProvider, IWidgetPlugin
         if (!string.IsNullOrEmpty(error))
             return new TaxRateResult { Errors = new List<string> { error } };
 
-        return new TaxRateResult { TaxRate = taxRate };
+        var result = new TaxRateResult
+        {
+            TaxDefinitions =
+            [
+                new TaxDefinition
+                {
+                    TaxRate = taxRate
+                }
+            ]
+        };
+
+        return result;
     }
 
     /// <summary>
@@ -104,19 +115,13 @@ public class AvalaraTaxProvider : BasePlugin, ITaxProvider, IWidgetPlugin
         if (string.IsNullOrEmpty(error))
         {
             //and get tax details
-            taxTotalResult.TaxTotal = transaction.totalTax.Value;
             var taxRates = transaction.summary?
                 .Where(summary => summary.rate.HasValue && summary.tax.HasValue)
                 .Select(summary => new { Rate = summary.rate.Value * 100, Value = summary.tax.Value })
                 .ToList();
 
-            foreach (var taxRate in taxRates ?? new())
-            {
-                if (taxTotalResult.TaxRates.ContainsKey(taxRate.Rate))
-                    taxTotalResult.TaxRates[taxRate.Rate] += taxRate.Value;
-                else
-                    taxTotalResult.TaxRates.Add(taxRate.Rate, taxRate.Value);
-            }
+            foreach (var taxRate in taxRates ?? new()) 
+                taxTotalResult.TaxRates.AddTaxAmount(taxRate.Rate, taxRate.Value);
         }
         else
         {

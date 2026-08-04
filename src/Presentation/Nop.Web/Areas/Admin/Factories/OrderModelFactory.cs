@@ -462,16 +462,16 @@ public partial class OrderModelFactory : IOrderModelFactory
         model.Tax = await _priceFormatter
             .FormatOrderPriceAsync(order.OrderTax, order.CurrencyRate, order.CustomerCurrencyCode,
                 _orderSettings.DisplayCustomerCurrencyOnOrders, primaryStoreCurrency, languageId, null, false);
-        var taxRates = _orderService.ParseTaxRates(order, order.TaxRates);
+        var taxRates = TaxRateResult.ParseTaxRates(order.TaxRates);
         var displayTaxRates = _taxSettings.DisplayTaxRates && taxRates.Any();
         var displayTax = !displayTaxRates;
-        foreach (var tr in taxRates)
+        foreach (var tr in taxRates.Where(item => item.Value.HasValue))
         {
             model.TaxRates.Add(new OrderModel.TaxRate
             {
-                Rate = _priceFormatter.FormatTaxRate(tr.Key),
+                Rate = tr.Key,
                 Value = await _priceFormatter
-                    .FormatOrderPriceAsync(tr.Value, order.CurrencyRate, order.CustomerCurrencyCode,
+                    .FormatOrderPriceAsync(tr.Value!.Value, order.CurrencyRate, order.CustomerCurrencyCode,
                         _orderSettings.DisplayCustomerCurrencyOnOrders, primaryStoreCurrency, languageId, null, false)
             });
         }

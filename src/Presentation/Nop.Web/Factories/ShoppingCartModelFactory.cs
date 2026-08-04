@@ -289,77 +289,77 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
                 case AttributeControlType.Checkboxes:
                 case AttributeControlType.ColorSquares:
                 case AttributeControlType.ImageSquares:
-                {
-                    if (!string.IsNullOrEmpty(selectedCheckoutAttributes))
                     {
-                        //clear default selection
-                        foreach (var item in attributeModel.Values)
-                            item.IsPreSelected = false;
-
-                        //select new values
-                        var selectedValues =
-                            _checkoutAttributeParser.ParseAttributeValues(selectedCheckoutAttributes);
-                        foreach (var attributeValue in await selectedValues.SelectMany(x => x.values).ToListAsync())
-                        foreach (var item in attributeModel.Values)
+                        if (!string.IsNullOrEmpty(selectedCheckoutAttributes))
                         {
-                            if (attributeValue.Id == item.Id)
-                                item.IsPreSelected = true;
+                            //clear default selection
+                            foreach (var item in attributeModel.Values)
+                                item.IsPreSelected = false;
+
+                            //select new values
+                            var selectedValues =
+                                _checkoutAttributeParser.ParseAttributeValues(selectedCheckoutAttributes);
+                            foreach (var attributeValue in await selectedValues.SelectMany(x => x.values).ToListAsync())
+                                foreach (var item in attributeModel.Values)
+                                {
+                                    if (attributeValue.Id == item.Id)
+                                        item.IsPreSelected = true;
+                                }
                         }
                     }
-                }
 
                     break;
                 case AttributeControlType.ReadonlyCheckboxes:
-                {
-                    //do nothing
-                    //values are already pre-set
-                }
+                    {
+                        //do nothing
+                        //values are already pre-set
+                    }
 
                     break;
                 case AttributeControlType.TextBox:
                 case AttributeControlType.MultilineTextbox:
-                {
-                    if (!string.IsNullOrEmpty(selectedCheckoutAttributes))
                     {
-                        var enteredText =
-                            _checkoutAttributeParser.ParseValues(selectedCheckoutAttributes, attribute.Id);
-                        if (enteredText.Any())
-                            attributeModel.DefaultValue = enteredText[0];
+                        if (!string.IsNullOrEmpty(selectedCheckoutAttributes))
+                        {
+                            var enteredText =
+                                _checkoutAttributeParser.ParseValues(selectedCheckoutAttributes, attribute.Id);
+                            if (enteredText.Any())
+                                attributeModel.DefaultValue = enteredText[0];
+                        }
                     }
-                }
 
                     break;
                 case AttributeControlType.Datepicker:
-                {
-                    //keep in mind my that the code below works only in the current culture
-                    var selectedDateStr =
-                        _checkoutAttributeParser.ParseValues(selectedCheckoutAttributes, attribute.Id);
-                    if (selectedDateStr.Any())
                     {
-                        if (DateTime.TryParseExact(selectedDateStr[0], "D", CultureInfo.CurrentCulture,
-                                DateTimeStyles.None, out var selectedDate))
+                        //keep in mind my that the code below works only in the current culture
+                        var selectedDateStr =
+                            _checkoutAttributeParser.ParseValues(selectedCheckoutAttributes, attribute.Id);
+                        if (selectedDateStr.Any())
                         {
-                            //successfully parsed
-                            attributeModel.SelectedDay = selectedDate.Day;
-                            attributeModel.SelectedMonth = selectedDate.Month;
-                            attributeModel.SelectedYear = selectedDate.Year;
+                            if (DateTime.TryParseExact(selectedDateStr[0], "D", CultureInfo.CurrentCulture,
+                                    DateTimeStyles.None, out var selectedDate))
+                            {
+                                //successfully parsed
+                                attributeModel.SelectedDay = selectedDate.Day;
+                                attributeModel.SelectedMonth = selectedDate.Month;
+                                attributeModel.SelectedYear = selectedDate.Year;
+                            }
                         }
                     }
-                }
 
                     break;
                 case AttributeControlType.FileUpload:
-                {
-                    if (!string.IsNullOrEmpty(selectedCheckoutAttributes))
                     {
-                        var downloadGuidStr = _checkoutAttributeParser
-                            .ParseValues(selectedCheckoutAttributes, attribute.Id).FirstOrDefault();
-                        _ = Guid.TryParse(downloadGuidStr, out var downloadGuid);
-                        var download = await _downloadService.GetDownloadByGuidAsync(downloadGuid);
-                        if (download != null)
-                            attributeModel.DefaultValue = download.DownloadGuid.ToString();
+                        if (!string.IsNullOrEmpty(selectedCheckoutAttributes))
+                        {
+                            var downloadGuidStr = _checkoutAttributeParser
+                                .ParseValues(selectedCheckoutAttributes, attribute.Id).FirstOrDefault();
+                            _ = Guid.TryParse(downloadGuidStr, out var downloadGuid);
+                            var download = await _downloadService.GetDownloadByGuidAsync(downloadGuid);
+                            if (download != null)
+                                attributeModel.DefaultValue = download.DownloadGuid.ToString();
+                        }
                     }
-                }
 
                     break;
                 default:
@@ -1264,16 +1264,16 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
                 }
                 else
                 {
-                    displayTaxRates = _taxSettings.DisplayTaxRates && taxRates.Any();
+                    displayTaxRates = _taxSettings.DisplayTaxRates && taxRates.TotalTaxAmount > decimal.Zero;
                     displayTax = !displayTaxRates;
 
                     model.Tax = await _priceFormatter.FormatPriceAsync(shoppingCartTax, true, false);
-                    foreach (var tr in taxRates)
+                    foreach (var tr in taxRates.TaxDefinitions)
                     {
                         model.TaxRates.Add(new OrderTotalsModel.TaxRate
                         {
-                            Rate = _priceFormatter.FormatTaxRate(tr.Key),
-                            Value = await _priceFormatter.FormatPriceAsync(await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(tr.Value, currentCurrency), true, false),
+                            Rate = $"{tr.Code} {tr.TaxRate}",
+                            Value = await _priceFormatter.FormatPriceAsync(await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(tr.TaxAmount, currentCurrency), true, false),
                         });
                     }
                 }

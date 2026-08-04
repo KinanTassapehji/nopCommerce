@@ -1,6 +1,7 @@
 ﻿using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Discounts;
 using Nop.Core.Domain.Orders;
+using Nop.Services.Tax;
 
 namespace Nop.Services.Orders;
 
@@ -18,7 +19,7 @@ public partial interface IOrderTotalCalculationService
     /// A task that represents the asynchronous operation
     /// The task result contains the applied discount amount. Applied discounts. Sub total (without discount). Sub total (with discount). Tax rates (of order sub total)
     /// </returns>
-    Task<(decimal discountAmount, List<Discount> appliedDiscounts, decimal subTotalWithoutDiscount, decimal subTotalWithDiscount, SortedDictionary<decimal, decimal> taxRates)> GetShoppingCartSubTotalAsync(IList<ShoppingCartItem> cart,
+    Task<(decimal discountAmount, List<Discount> appliedDiscounts, decimal subTotalWithoutDiscount, decimal subTotalWithDiscount, TaxRateResult taxRates)> GetShoppingCartSubTotalAsync(IList<ShoppingCartItem> cart,
         bool includingTax);
 
     /// <summary>
@@ -29,7 +30,7 @@ public partial interface IOrderTotalCalculationService
     /// A task that represents the asynchronous operation
     /// The task result contains the applied discount amount. Applied discounts. Sub total (without discount). Sub total (with discount). Tax rates (of order sub total)
     /// </returns>
-    Task<(decimal discountAmountInclTax, decimal discountAmountExclTax, List<Discount> appliedDiscounts, decimal subTotalWithoutDiscountInclTax, decimal subTotalWithoutDiscountExclTax, decimal subTotalWithDiscountInclTax, decimal subTotalWithDiscountExclTax, SortedDictionary<decimal, decimal> taxRates)> GetShoppingCartSubTotalsAsync(IList<ShoppingCartItem> cart);
+    Task<(decimal discountAmountInclTax, decimal discountAmountExclTax, List<Discount> appliedDiscounts, decimal subTotalWithoutDiscountInclTax, decimal subTotalWithoutDiscountExclTax, decimal subTotalWithDiscountInclTax, decimal subTotalWithDiscountExclTax, TaxRateResult taxRates)> GetShoppingCartSubTotalsAsync(IList<ShoppingCartItem> cart);
 
     /// <summary>
     /// Adjust shipping rate (free shipping, additional charges, discounts)
@@ -95,9 +96,9 @@ public partial interface IOrderTotalCalculationService
     /// <param name="usePaymentMethodAdditionalFee">A value indicating whether we should use payment method additional fee when calculating tax</param>
     /// <returns>
     /// A task that represents the asynchronous operation
-    /// The task result contains the ax total, Tax rates
+    /// The task result contains the tax total, Tax rates
     /// </returns>
-    Task<(decimal taxTotal, SortedDictionary<decimal, decimal> taxRates)> GetTaxTotalAsync(IList<ShoppingCartItem> cart, bool usePaymentMethodAdditionalFee = true);
+    Task<(decimal taxTotal, TaxRateResult taxRates)> GetTaxTotalAsync(IList<ShoppingCartItem> cart, bool usePaymentMethodAdditionalFee = true);
 
     /// <summary>
     /// Gets shopping cart total

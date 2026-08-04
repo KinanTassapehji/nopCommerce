@@ -176,14 +176,16 @@ public class OrderTotalCalculationServiceTests : ServiceTest
     public async Task CanGetShoppingCartSubTotalExcludingTax()
     {
         //10% - default tax rate
-        var (discountAmount, appliedDiscounts, subTotalWithoutDiscount, subTotalWithDiscount, taxRates) = await _orderTotalCalcService.GetShoppingCartSubTotalAsync(await GetShoppingCartAsync(), false);
+        var (discountAmount, appliedDiscounts, subTotalWithoutDiscount, subTotalWithDiscount, taxRates) =
+            await _orderTotalCalcService.GetShoppingCartSubTotalAsync(await GetShoppingCartAsync(), false);
         discountAmount.Should().Be(0);
         appliedDiscounts.Count.Should().Be(0);
         subTotalWithoutDiscount.Should().Be(207M);
         subTotalWithDiscount.Should().Be(207M);
-        taxRates.Count.Should().Be(1);
-        taxRates.ContainsKey(10).Should().BeTrue();
-        taxRates[10].Should().Be(20.7M);
+        taxRates.TaxDefinitions.Count.Should().Be(1);
+        var definition = taxRates.TaxDefinitions.FirstOrDefault(d => d.TaxRate == 10);
+        definition.Should().NotBeNull();
+        definition?.TaxAmount.Should().Be(20.7M);
     }
 
     [Test]
@@ -194,9 +196,10 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         appliedDiscounts.Count.Should().Be(0);
         subTotalWithoutDiscount.Should().Be(227.7M);
         subTotalWithDiscount.Should().Be(227.7M);
-        taxRates.Count.Should().Be(1);
-        taxRates.ContainsKey(10).Should().BeTrue();
-        taxRates[10].Should().Be(20.7M);
+        taxRates.TaxDefinitions.Count.Should().Be(1);
+        var definition = taxRates.TaxDefinitions.FirstOrDefault(d => d.TaxRate == 10);
+        definition.Should().NotBeNull();
+        definition?.TaxAmount.Should().Be(20.7M);
     }
 
     [Test]
@@ -213,9 +216,10 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         subTotalWithDiscountInclTax.Should().Be(227.7M);
 
         appliedDiscounts.Count.Should().Be(0);
-        taxRates.Count.Should().Be(1);
-        taxRates.ContainsKey(10).Should().BeTrue();
-        taxRates[10].Should().Be(20.7M);
+        taxRates.TaxDefinitions.Count.Should().Be(1);
+        var definition = taxRates.TaxDefinitions.FirstOrDefault(d => d.TaxRate == 10);
+        definition.Should().NotBeNull();
+        definition?.TaxAmount.Should().Be(20.7M);
     }
 
     [Test]
@@ -232,13 +236,14 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         subTotalWithDiscountInclTax.Should().Be(227.7M);
 
         appliedDiscounts.Count.Should().Be(0);
-        taxRates.Count.Should().Be(1);
-        taxRates.ContainsKey(10).Should().BeTrue();
-        taxRates[10].Should().Be(20.7M);
+        taxRates.TaxDefinitions.Count.Should().Be(1);
+        var definition = taxRates.TaxDefinitions.FirstOrDefault(d => d.TaxRate == 10);
+        definition.Should().NotBeNull();
+        definition?.TaxAmount.Should().Be(20.7M);
 
         await _genericAttributeService.SaveAttributeAsync(_customer, NopCustomerDefaults.CheckoutAttributes, _checkoutAttrXml, _store.Id);
 
-        (_, _, _, subTotalWithoutDiscountInclTax, subTotalWithoutDiscountExclTax, subTotalWithDiscountInclTax, subTotalWithDiscountExclTax, taxRates) = await _orderTotalCalcService.GetShoppingCartSubTotalsAsync(await GetShoppingCartAsync());
+        (_, _, _, subTotalWithoutDiscountInclTax, subTotalWithoutDiscountExclTax, subTotalWithDiscountInclTax, subTotalWithDiscountExclTax, _) = await _orderTotalCalcService.GetShoppingCartSubTotalsAsync(await GetShoppingCartAsync());
 
         subTotalWithoutDiscountExclTax.Should().Be(217M);
         subTotalWithDiscountExclTax.Should().Be(217M);
@@ -264,9 +269,10 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         appliedDiscounts.First().Name.Should().Be("Discount 1");
         subTotalWithoutDiscount.Should().Be(207M);
         subTotalWithDiscount.Should().Be(204M);
-        taxRates.Count.Should().Be(1);
-        taxRates.ContainsKey(10).Should().BeTrue();
-        taxRates[10].Should().Be(20.4M);
+        taxRates.TaxDefinitions.Count.Should().Be(1);
+        var definition = taxRates.TaxDefinitions.FirstOrDefault(d => d.TaxRate == 10);
+        definition.Should().NotBeNull();
+        definition?.TaxAmount.Should().Be(20.4M);
     }
 
     [Test]
@@ -285,9 +291,10 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         appliedDiscounts.First().Name.Should().Be("Discount 1");
         subTotalWithoutDiscount.Should().Be(227.7M);
         subTotalWithDiscount.Should().Be(224.4M);
-        taxRates.Count.Should().Be(1);
-        taxRates.ContainsKey(10).Should().BeTrue();
-        taxRates[10].Should().Be(20.4M);
+        taxRates.TaxDefinitions.Count.Should().Be(1);
+        var definition = taxRates.TaxDefinitions.FirstOrDefault(d => d.TaxRate == 10);
+        definition.Should().NotBeNull();
+        definition?.TaxAmount.Should().Be(20.4M);
     }
 
     [Test]
@@ -310,9 +317,10 @@ public class OrderTotalCalculationServiceTests : ServiceTest
 
         appliedDiscounts.Count.Should().Be(1);
         appliedDiscounts.First().Name.Should().Be("Discount 1");
-        taxRates.Count.Should().Be(1);
-        taxRates.ContainsKey(10).Should().BeTrue();
-        taxRates[10].Should().Be(20.4M);
+        taxRates.TaxDefinitions.Count.Should().Be(1);
+        var definition = taxRates.TaxDefinitions.FirstOrDefault(d => d.TaxRate == 10);
+        definition.Should().NotBeNull();
+        definition?.TaxAmount.Should().Be(20.4M);
     }
 
     [Test]
@@ -512,9 +520,10 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         var (taxTotal, taxRates) = await GetService<IOrderTotalCalculationService>().GetTaxTotalAsync(await GetShoppingCartAsync());
         taxTotal.Should().Be(23.7M);
         taxRates.Should().NotBeNull();
-        taxRates.Count.Should().Be(1);
-        taxRates.ContainsKey(10).Should().BeTrue();
-        taxRates[10].Should().Be(23.7M);
+        taxRates.TaxDefinitions.Count.Should().Be(1);
+        var definition = taxRates.TaxDefinitions.FirstOrDefault(d => d.TaxRate == 10);
+        definition.Should().NotBeNull();
+        definition?.TaxAmount.Should().Be(23.7M);
 
         //2. shipping is taxable, payment fee is not taxable
         _taxSettings.PaymentMethodAdditionalFeeIsTaxable = false;
@@ -523,9 +532,10 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         (taxTotal, taxRates) = await GetService<IOrderTotalCalculationService>().GetTaxTotalAsync(await GetShoppingCartAsync());
         taxTotal.Should().Be(21.7M);
         taxRates.Should().NotBeNull();
-        taxRates.Count.Should().Be(1);
-        taxRates.ContainsKey(10).Should().BeTrue();
-        taxRates[10].Should().Be(21.7M);
+        taxRates.TaxDefinitions.Count.Should().Be(1);
+        definition = taxRates.TaxDefinitions.FirstOrDefault(d => d.TaxRate == 10);
+        definition.Should().NotBeNull();
+        definition?.TaxAmount.Should().Be(21.7M);
 
         //3. shipping is not taxable, payment fee is taxable
         _taxSettings.ShippingIsTaxable = false;
@@ -535,9 +545,10 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         (taxTotal, taxRates) = await GetService<IOrderTotalCalculationService>().GetTaxTotalAsync(await GetShoppingCartAsync());
         taxTotal.Should().Be(22.7M);
         taxRates.Should().NotBeNull();
-        taxRates.Count.Should().Be(1);
-        taxRates.ContainsKey(10).Should().BeTrue();
-        taxRates[10].Should().Be(22.7M);
+        taxRates.TaxDefinitions.Count.Should().Be(1);
+        definition = taxRates.TaxDefinitions.FirstOrDefault(d => d.TaxRate == 10);
+        definition.Should().NotBeNull();
+        definition?.TaxAmount.Should().Be(22.7M);
 
         //4. shipping is not taxable, payment fee is not taxable
         _taxSettings.ShippingIsTaxable = false;
@@ -547,9 +558,10 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         (taxTotal, taxRates) = await GetService<IOrderTotalCalculationService>().GetTaxTotalAsync(await GetShoppingCartAsync());
         taxTotal.Should().Be(20.7M);
         taxRates.Should().NotBeNull();
-        taxRates.Count.Should().Be(1);
-        taxRates.ContainsKey(10).Should().BeTrue();
-        taxRates[10].Should().Be(20.7M);
+        taxRates.TaxDefinitions.Count.Should().Be(1);
+        definition = taxRates.TaxDefinitions.FirstOrDefault(d => d.TaxRate == 10);
+        definition.Should().NotBeNull();
+        definition?.TaxAmount.Should().Be(20.7M);
 
         TestPaymentMethod.AdditionalHandlingFee = 0M;
         product = await _productService.GetProductBySkuAsync("FR_451_RB");

@@ -126,7 +126,7 @@ public static class ServiceCollectionExtensions
                     factory: partition => new FixedWindowRateLimiterOptions
                     {
                         AutoReplenishment = true,
-                        PermitLimit = settings.PermitLimit,
+                        PermitLimit = settings. PermitLimit,
                         QueueLimit = settings.QueueCount,
                         Window = TimeSpan.FromMinutes(1)
                     }));

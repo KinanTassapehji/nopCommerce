@@ -234,16 +234,14 @@ public partial class TaxService : ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the calculated tax rate. A value indicating whether a request is taxable
     /// </returns>
-    protected virtual async Task<(decimal taxRate, bool isTaxable)> GetTaxRateAsync(Product product, int taxCategoryId,
+    protected virtual async Task<(TaxRateResult taxRateResult, bool isTaxable)> GetTaxRateAsync(Product product, int taxCategoryId,
         Customer customer, decimal price)
     {
-        var taxRate = decimal.Zero;
-
         //active tax provider
         var store = await _storeContext.GetCurrentStoreAsync();
         var activeTaxProvider = await _taxPluginManager.LoadPrimaryPluginAsync(customer, store.Id);
         if (activeTaxProvider == null)
-            return (taxRate, true);
+            return (DefaultTaxRateResult, true);
 
         //tax request
         var taxRateRequest = await PrepareTaxRateRequestAsync(product, taxCategoryId, customer, price);
@@ -265,21 +263,13 @@ public partial class TaxService : ITaxService
         //tax rate is calculated, now consumers can adjust it
         await _eventPublisher.PublishAsync(new TaxRateCalculatedEvent(taxRateResult));
 
-        if (taxRateResult.Success)
-        {
-            //ensure that tax is equal or greater than zero
-            if (taxRateResult.TaxRate < decimal.Zero)
-                taxRateResult.TaxRate = decimal.Zero;
-
-            taxRate = taxRateResult.TaxRate;
-        }
-        else if (_taxSettings.LogErrors)
+        if (!taxRateResult.Success && _taxSettings.LogErrors)
         {
             foreach (var error in taxRateResult.Errors)
                 await _logger.ErrorAsync($"{activeTaxProvider.PluginDescriptor.FriendlyName} - {error}", null, customer);
         }
 
-        return (taxRate, isTaxable);
+        return (taxRateResult, isTaxable);
     }
 
     /// <summary>
@@ -389,7 +379,7 @@ public partial class TaxService : ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    public virtual async Task<(decimal price, decimal taxRate)> GetProductPriceAsync(Product product, decimal price)
+    public virtual async Task<(decimal price, TaxRateResult taxRateResult)> GetProductPriceAsync(Product product, decimal price)
     {
         var customer = await _workContext.GetCurrentCustomerAsync();
 
@@ -406,10 +396,11 @@ public partial class TaxService : ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    public virtual async Task<(decimal price, decimal taxRate)> GetProductPriceAsync(Product product, decimal price,
+    public virtual async Task<(decimal price, TaxRateResult taxRateResult)> GetProductPriceAsync(Product product, decimal price,
         Customer customer)
     {
         var includingTax = await _workContext.GetTaxDisplayTypeAsync() == TaxDisplayType.IncludingTax;
+
         return await GetProductPriceAsync(product, price, includingTax, customer);
     }
 
@@ -424,11 +415,12 @@ public partial class TaxService : ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    public virtual async Task<(decimal price, decimal taxRate)> GetProductPriceAsync(Product product, decimal price,
+    public virtual async Task<(decimal price, TaxRateResult taxRateResult)> GetProductPriceAsync(Product product, decimal price,
         bool includingTax, Customer customer)
     {
         var priceIncludesTax = _taxSettings.PricesIncludeTax;
         var taxCategoryId = 0;
+
         return await GetProductPriceAsync(product, taxCategoryId, price, includingTax, customer, priceIncludesTax);
     }
 
@@ -445,19 +437,17 @@ public partial class TaxService : ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    public virtual async Task<(decimal price, decimal taxRate)> GetProductPriceAsync(Product product, int taxCategoryId,
+    public virtual async Task<(decimal price, TaxRateResult taxRateResult)> GetProductPriceAsync(Product product, int taxCategoryId,
         decimal price, bool includingTax, Customer customer,
         bool priceIncludesTax)
     {
-        var taxRate = decimal.Zero;
-
         //no need to calculate tax rate if passed "price" is 0
         if (price == decimal.Zero)
-            return (price, taxRate);
+            return (price, DefaultTaxRateResult);
 
-        bool isTaxable;
+        var (taxRateResult, isTaxable) = await GetTaxRateAsync(product, taxCategoryId, customer, price);
 
-        (taxRate, isTaxable) = await GetTaxRateAsync(product, taxCategoryId, customer, price);
+        var taxRate = taxRateResult.TaxDefinitions.Sum(d => d.TaxRate);
 
         if (priceIncludesTax)
         {
@@ -493,14 +483,10 @@ public partial class TaxService : ITaxService
         if (!isTaxable)
         {
             //we return 0% tax rate in case a request is not taxable
-            taxRate = decimal.Zero;
+            taxRateResult = DefaultTaxRateResult;
         }
 
-        //allowed to support negative price adjustments
-        //if (price < decimal.Zero)
-        //    price = decimal.Zero;
-
-        return (price, taxRate);
+        return (price, taxRateResult);
     }
 
     /// <summary>
@@ -545,7 +531,7 @@ public partial class TaxService : ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    public virtual async Task<(decimal price, decimal taxRate)> GetShippingPriceAsync(decimal price, Customer customer)
+    public virtual async Task<(decimal price, TaxRateResult taxRateResult)> GetShippingPriceAsync(decimal price, Customer customer)
     {
         var includingTax = await _workContext.GetTaxDisplayTypeAsync() == TaxDisplayType.IncludingTax;
 
@@ -562,12 +548,10 @@ public partial class TaxService : ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    public virtual async Task<(decimal price, decimal taxRate)> GetShippingPriceAsync(decimal price, bool includingTax, Customer customer)
+    public virtual async Task<(decimal price, TaxRateResult taxRateResult)> GetShippingPriceAsync(decimal price, bool includingTax, Customer customer)
     {
-        var taxRate = decimal.Zero;
-
         if (!_taxSettings.ShippingIsTaxable)
-            return (price, taxRate);
+            return (price, DefaultTaxRateResult);
 
         var taxClassId = _taxSettings.ShippingTaxClassId;
         var priceIncludesTax = _taxSettings.ShippingPriceIncludesTax;
@@ -588,7 +572,7 @@ public partial class TaxService : ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    public virtual async Task<(decimal price, decimal taxRate)> GetPaymentMethodAdditionalFeeAsync(decimal price, Customer customer)
+    public virtual async Task<(decimal price, TaxRateResult taxRateResult)> GetPaymentMethodAdditionalFeeAsync(decimal price, Customer customer)
     {
         var includingTax = await _workContext.GetTaxDisplayTypeAsync() == TaxDisplayType.IncludingTax;
 
@@ -605,15 +589,14 @@ public partial class TaxService : ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    public virtual async Task<(decimal price, decimal taxRate)> GetPaymentMethodAdditionalFeeAsync(decimal price, bool includingTax, Customer customer)
+    public virtual async Task<(decimal price, TaxRateResult taxRateResult)> GetPaymentMethodAdditionalFeeAsync(decimal price, bool includingTax, Customer customer)
     {
-        var taxRate = decimal.Zero;
-
         if (!_taxSettings.PaymentMethodAdditionalFeeIsTaxable)
-            return (price, taxRate);
+            return (price, DefaultTaxRateResult);
 
         var taxClassId = _taxSettings.PaymentMethodAdditionalFeeTaxClassId;
         var priceIncludesTax = _taxSettings.PaymentMethodAdditionalFeeIncludesTax;
+
         return await GetProductPriceAsync(null, taxClassId, price, includingTax, customer, priceIncludesTax);
     }
 
@@ -630,7 +613,7 @@ public partial class TaxService : ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    public virtual async Task<(decimal price, decimal taxRate)> GetCheckoutAttributePriceAsync(CheckoutAttribute ca, CheckoutAttributeValue cav)
+    public virtual async Task<(decimal price, TaxRateResult taxRateResult)> GetCheckoutAttributePriceAsync(CheckoutAttribute ca, CheckoutAttributeValue cav)
     {
         var customer = await _workContext.GetCurrentCustomerAsync();
 
@@ -647,7 +630,7 @@ public partial class TaxService : ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    public virtual async Task<(decimal price, decimal taxRate)> GetCheckoutAttributePriceAsync(CheckoutAttribute ca, CheckoutAttributeValue cav, Customer customer)
+    public virtual async Task<(decimal price, TaxRateResult taxRateResult)> GetCheckoutAttributePriceAsync(CheckoutAttribute ca, CheckoutAttributeValue cav, Customer customer)
     {
         var includingTax = await _workContext.GetTaxDisplayTypeAsync() == TaxDisplayType.IncludingTax;
 
@@ -665,16 +648,14 @@ public partial class TaxService : ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    public virtual async Task<(decimal price, decimal taxRate)> GetCheckoutAttributePriceAsync(CheckoutAttribute ca, CheckoutAttributeValue cav,
+    public virtual async Task<(decimal price, TaxRateResult taxRateResult)> GetCheckoutAttributePriceAsync(CheckoutAttribute ca, CheckoutAttributeValue cav,
         bool includingTax, Customer customer)
     {
         ArgumentNullException.ThrowIfNull(cav);
 
-        var taxRate = decimal.Zero;
-
         var price = cav.PriceAdjustment;
         if (ca.IsTaxExempt)
-            return (price, taxRate);
+            return (price, DefaultTaxRateResult);
 
         var priceIncludesTax = _taxSettings.PricesIncludeTax;
         var taxClassId = ca.TaxCategoryId;
@@ -758,6 +739,23 @@ public partial class TaxService : ITaxService
 
         return taxTotalResult;
     }
+
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Gets the default tax rate result
+    /// </summary>
+    protected virtual TaxRateResult DefaultTaxRateResult => new TaxRateResult
+    {
+        TaxDefinitions = new()
+        {
+            new() {
+                TaxRate = decimal.Zero
+            }
+        }
+    };
 
     #endregion
 

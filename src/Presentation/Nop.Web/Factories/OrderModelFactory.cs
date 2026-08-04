@@ -23,6 +23,7 @@ using Nop.Services.Orders;
 using Nop.Services.Payments;
 using Nop.Services.Seo;
 using Nop.Services.Shipping;
+using Nop.Services.Tax;
 using Nop.Services.Vendors;
 using Nop.Web.Infrastructure;
 using Nop.Web.Infrastructure.Cache;
@@ -503,19 +504,19 @@ public partial class OrderModelFactory : IOrderModelFactory
             }
             else
             {
-                var taxRates = _orderService.ParseTaxRates(order, order.TaxRates);
+                var taxRates = TaxRateResult.ParseTaxRates(order.TaxRates);
                 displayTaxRates = _taxSettings.DisplayTaxRates && taxRates.Any();
                 displayTax = !displayTaxRates;
 
                 var orderTaxInCustomerCurrency = _currencyService.ConvertCurrency(order.OrderTax, order.CurrencyRate);
                 model.Tax = await _priceFormatter.FormatPriceAsync(orderTaxInCustomerCurrency, true, order.CustomerCurrencyCode, false, languageId);
 
-                foreach (var tr in taxRates)
+                foreach (var tr in taxRates.Where(item => item.Value.HasValue))
                 {
                     model.TaxRates.Add(new OrderDetailsModel.TaxRate
                     {
-                        Rate = _priceFormatter.FormatTaxRate(tr.Key),
-                        Value = await _priceFormatter.FormatPriceAsync(_currencyService.ConvertCurrency(tr.Value, order.CurrencyRate), true, order.CustomerCurrencyCode, false, languageId),
+                        Rate = tr.Key,
+                        Value = await _priceFormatter.FormatPriceAsync(_currencyService.ConvertCurrency(tr.Value!.Value, order.CurrencyRate), true, order.CustomerCurrencyCode, false, languageId),
                     });
                 }
             }

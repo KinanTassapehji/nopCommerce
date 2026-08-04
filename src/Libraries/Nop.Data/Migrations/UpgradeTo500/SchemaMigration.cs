@@ -7,7 +7,7 @@ using Nop.Data.Extensions;
 
 namespace Nop.Data.Migrations.UpgradeTo500;
 
-[NopSchemaMigration("2026-01-13 00:00:05", "SchemaMigration for 5.00.0")]
+[NopSchemaMigration("2026-08-17 00:00:00", "SchemaMigration for 5.00.0")]
 public class SchemaMigration : ForwardOnlyMigration
 {
     /// <summary>
@@ -102,5 +102,11 @@ public class SchemaMigration : ForwardOnlyMigration
 
         //#4279
         this.CreateTableIfNotExists<Product3dObject>();
+
+        //#329
+        this.AddOrAlterColumnFor<OrderItem>(oi => oi.TaxRates)
+            .AsString()
+            .Nullable()
+            .SetExistingRowsTo(null);
     }
 }

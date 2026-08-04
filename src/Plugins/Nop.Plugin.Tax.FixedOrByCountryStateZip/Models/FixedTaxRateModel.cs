@@ -12,4 +12,10 @@ public record FixedTaxRateModel : BaseNopModel
 
     [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.Rate")]
     public decimal Rate { get; set; }
+
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.Rate2")]
+    public decimal? Rate2 { get; set; }
+
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.Rate3")]
+    public decimal? Rate3 { get; set; }
 }

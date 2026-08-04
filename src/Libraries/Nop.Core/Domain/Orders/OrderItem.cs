@@ -46,6 +46,11 @@ public partial class OrderItem : BaseEntity
     public decimal PriceExclTax { get; set; }
 
     /// <summary>
+    /// Gets or sets the tax rates
+    /// </summary>
+    public string TaxRates { get; set; }
+
+    /// <summary>
     /// Gets or sets the discount amount (include tax)
     /// </summary>
     public decimal DiscountAmountInclTax { get; set; }

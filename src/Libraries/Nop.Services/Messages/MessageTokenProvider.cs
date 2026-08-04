@@ -594,6 +594,30 @@ public partial class MessageTokenProvider : IMessageTokenProvider
             {
                 sb.AppendLine("<br />");
                 sb.AppendLine(orderItem.AttributeDescription);
+                
+                //tax
+                if (!(_taxSettings.HideTaxInOrderSummary && order.CustomerTaxDisplayType == TaxDisplayType.IncludingTax) ||
+                    !(order.OrderTax == 0 && _taxSettings.HideZeroTax))
+                {
+                    var taxRates = TaxRateResult.ParseTaxRates(orderItem.TaxRates);
+
+                    if (_taxSettings.DisplayTaxRates && taxRates.Any())
+                    {
+                        foreach (var item in taxRates)
+                        {
+                            if (!item.Value.HasValue)
+                                sb.AppendLine(item.Key);
+                            else
+                            {
+                                var taxValue = await _priceFormatter.FormatPriceAsync(
+                                    _currencyService.ConvertCurrency(item.Value!.Value, order.CurrencyRate), true,
+                                    order.CustomerCurrencyCode, false, language.Id);
+
+                                sb.AppendLine($"{item.Key}: {taxValue}");
+                            }
+                        }
+                    }
+                }
             }
             //rental info
             if (product.IsRental)
@@ -725,7 +749,7 @@ public partial class MessageTokenProvider : IMessageTokenProvider
         //shipping, payment method fee
         string cusShipTotal;
         string cusPaymentMethodAdditionalFee;
-        var taxRates = new SortedDictionary<decimal, decimal>();
+        var taxRates = new SortedDictionary<string, decimal>();
         var cusTaxTotal = string.Empty;
         var cusDiscount = string.Empty;
         if (order.CustomerTaxDisplayType == TaxDisplayType.IncludingTax)
@@ -774,9 +798,12 @@ public partial class MessageTokenProvider : IMessageTokenProvider
             }
             else
             {
-                taxRates = new SortedDictionary<decimal, decimal>();
-                foreach (var tr in _orderService.ParseTaxRates(order, order.TaxRates))
-                    taxRates.Add(tr.Key, _currencyService.ConvertCurrency(tr.Value, order.CurrencyRate));
+                taxRates = new SortedDictionary<string, decimal>();
+                foreach (var tr in TaxRateResult.ParseTaxRates(order.TaxRates).Where(item => item.Value.HasValue))
+                {
+                    var taxValue = _currencyService.ConvertCurrency(tr.Value!.Value, order.CurrencyRate);
+                    taxRates.Add(tr.Key, taxValue);
+                }
 
                 displayTaxRates = _taxSettings.DisplayTaxRates && taxRates.Any();
                 displayTax = !displayTaxRates;
@@ -827,8 +854,7 @@ public partial class MessageTokenProvider : IMessageTokenProvider
         {
             foreach (var item in taxRates)
             {
-                var taxRate = string.Format(await _localizationService.GetResourceAsync("Messages.Order.TaxRateLine"),
-                    _priceFormatter.FormatTaxRate(item.Key));
+                var taxRate = string.Format(await _localizationService.GetResourceAsync("Messages.Order.TaxRateLine"), item.Key);
                 var taxValue = await _priceFormatter.FormatPriceAsync(item.Value, true, order.CustomerCurrencyCode, false, languageId);
                 sb.AppendLine($"<tr style=\"text-align:right;\"><td>&nbsp;</td><td colspan=\"2\" style=\"background-color: {_templatesSettings.Color3};padding:0.6em 0.4em;\"><strong>{taxRate}</strong></td> <td style=\"background-color: {_templatesSettings.Color3};padding:0.6em 0.4em;\"><strong>{taxValue}</strong></td></tr>");
             }

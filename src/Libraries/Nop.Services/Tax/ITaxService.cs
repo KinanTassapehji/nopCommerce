@@ -21,7 +21,7 @@ public partial interface ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    Task<(decimal price, decimal taxRate)> GetProductPriceAsync(Product product, decimal price);
+    Task<(decimal price, TaxRateResult taxRateResult)> GetProductPriceAsync(Product product, decimal price);
 
     /// <summary>
     /// Gets price
@@ -33,7 +33,7 @@ public partial interface ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    Task<(decimal price, decimal taxRate)> GetProductPriceAsync(Product product, decimal price, Customer customer);
+    Task<(decimal price, TaxRateResult taxRateResult)> GetProductPriceAsync(Product product, decimal price, Customer customer);
 
     /// <summary>
     /// Gets price
@@ -46,7 +46,7 @@ public partial interface ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    Task<(decimal price, decimal taxRate)> GetProductPriceAsync(Product product, decimal price,
+    Task<(decimal price, TaxRateResult taxRateResult)> GetProductPriceAsync(Product product, decimal price,
         bool includingTax, Customer customer);
 
     /// <summary>
@@ -62,7 +62,7 @@ public partial interface ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    Task<(decimal price, decimal taxRate)> GetProductPriceAsync(Product product, int taxCategoryId, decimal price,
+    Task<(decimal price, TaxRateResult taxRateResult)> GetProductPriceAsync(Product product, int taxCategoryId, decimal price,
         bool includingTax, Customer customer,
         bool priceIncludesTax);
 
@@ -90,7 +90,7 @@ public partial interface ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    Task<(decimal price, decimal taxRate)> GetShippingPriceAsync(decimal price, Customer customer);
+    Task<(decimal price, TaxRateResult taxRateResult)> GetShippingPriceAsync(decimal price, Customer customer);
 
     /// <summary>
     /// Gets shipping price
@@ -102,7 +102,7 @@ public partial interface ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    Task<(decimal price, decimal taxRate)> GetShippingPriceAsync(decimal price, bool includingTax, Customer customer);
+    Task<(decimal price, TaxRateResult taxRateResult)> GetShippingPriceAsync(decimal price, bool includingTax, Customer customer);
 
     #endregion
 
@@ -117,7 +117,7 @@ public partial interface ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    Task<(decimal price, decimal taxRate)> GetPaymentMethodAdditionalFeeAsync(decimal price, Customer customer);
+    Task<(decimal price, TaxRateResult taxRateResult)> GetPaymentMethodAdditionalFeeAsync(decimal price, Customer customer);
 
     /// <summary>
     /// Gets payment method additional handling fee
@@ -129,7 +129,7 @@ public partial interface ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    Task<(decimal price, decimal taxRate)> GetPaymentMethodAdditionalFeeAsync(decimal price, bool includingTax, Customer customer);
+    Task<(decimal price, TaxRateResult taxRateResult)> GetPaymentMethodAdditionalFeeAsync(decimal price, bool includingTax, Customer customer);
 
     #endregion
 
@@ -144,7 +144,7 @@ public partial interface ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    Task<(decimal price, decimal taxRate)> GetCheckoutAttributePriceAsync(CheckoutAttribute ca, CheckoutAttributeValue cav);
+    Task<(decimal price, TaxRateResult taxRateResult)> GetCheckoutAttributePriceAsync(CheckoutAttribute ca, CheckoutAttributeValue cav);
 
     /// <summary>
     /// Gets checkout attribute value price
@@ -156,7 +156,7 @@ public partial interface ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    Task<(decimal price, decimal taxRate)> GetCheckoutAttributePriceAsync(CheckoutAttribute ca, CheckoutAttributeValue cav, Customer customer);
+    Task<(decimal price, TaxRateResult taxRateResult)> GetCheckoutAttributePriceAsync(CheckoutAttribute ca, CheckoutAttributeValue cav, Customer customer);
 
     /// <summary>
     /// Gets checkout attribute value price
@@ -169,7 +169,7 @@ public partial interface ITaxService
     /// A task that represents the asynchronous operation
     /// The task result contains the price. Tax rate
     /// </returns>
-    Task<(decimal price, decimal taxRate)> GetCheckoutAttributePriceAsync(CheckoutAttribute ca, CheckoutAttributeValue cav,
+    Task<(decimal price, TaxRateResult taxRateResult)> GetCheckoutAttributePriceAsync(CheckoutAttribute ca, CheckoutAttributeValue cav,
         bool includingTax, Customer customer);
 
     #endregion

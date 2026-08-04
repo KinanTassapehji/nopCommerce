@@ -1,4 +1,4 @@
-using Nop.Core;
+﻿using Nop.Core;
 
 namespace Nop.Plugin.Tax.FixedOrByCountryStateZip.Domain;
 
@@ -36,4 +36,14 @@ public class TaxRate : BaseEntity
     /// Gets or sets the percentage
     /// </summary>
     public decimal Percentage { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the percentage2
+    /// </summary>
+    public decimal? Percentage2 { get; set; }
+
+    /// <summary>
+    /// Gets or sets the percentage3
+    /// </summary>
+    public decimal? Percentage3 { get; set; }
 }

@@ -37,7 +37,18 @@ public class FixedRateTestTaxProvider : BasePlugin, ITaxProvider
     /// <returns>Tax</returns>
     public Task<TaxRateResult> GetTaxRateAsync(TaxRateRequest taxRateRequest)
     {
-        return Task.FromResult(new TaxRateResult { TaxRate = 10 });
+        var result = new TaxRateResult
+        {
+          TaxDefinitions =
+          [
+              new TaxDefinition
+              {
+                  TaxRate = 10
+              }
+          ]
+        };
+
+        return Task.FromResult(result);
     }
 
     /// <summary>
@@ -47,7 +58,7 @@ public class FixedRateTestTaxProvider : BasePlugin, ITaxProvider
     /// <returns>Tax total</returns>
     public async Task<TaxTotalResult> GetTaxTotalAsync(TaxTotalRequest taxTotalRequest)
     {
-        var taxRates = new SortedDictionary<decimal, decimal>();
+        var taxRates = new TaxRateResult();
         var cart = taxTotalRequest.ShoppingCart;
         var customer = taxTotalRequest.Customer;
         var storeId = taxTotalRequest.StoreId;
@@ -63,19 +74,11 @@ public class FixedRateTestTaxProvider : BasePlugin, ITaxProvider
         //order sub total (items + checkout attributes)
         var subTotalTaxTotal = decimal.Zero;
         var (_, _, _, _, orderSubTotalTaxRates) = await _orderTotalCalculationService.GetShoppingCartSubTotalAsync(cart, false);
-        foreach (var kvp in orderSubTotalTaxRates)
+        foreach (var taxDefinition in orderSubTotalTaxRates.TaxDefinitions)
         {
-            var taxRate = kvp.Key;
-            var taxValue = kvp.Value;
-            subTotalTaxTotal += taxValue;
+            var taxValue = taxDefinition.TaxAmount;
 
-            if (taxRate <= decimal.Zero || taxValue <= decimal.Zero)
-                continue;
-
-            if (!taxRates.TryGetValue(taxRate, out var value))
-                taxRates.Add(taxRate, taxValue);
-            else
-                taxRates[taxRate] = value + taxValue;
+            taxRates.AddTaxAmount(taxDefinition, taxValue);
         }
 
         //shipping
@@ -86,19 +89,8 @@ public class FixedRateTestTaxProvider : BasePlugin, ITaxProvider
             var (shippingInclTax, taxRate, _) = await _orderTotalCalculationService.GetShoppingCartShippingTotalAsync(cart, true);
             if (shippingExclTax.HasValue && shippingInclTax.HasValue)
             {
-                shippingTax = shippingInclTax.Value - shippingExclTax.Value;
-                //ensure that tax is equal or greater than zero
-                if (shippingTax < decimal.Zero)
-                    shippingTax = decimal.Zero;
-
                 //tax rates
-                if (taxRate > decimal.Zero && shippingTax > decimal.Zero)
-                {
-                    if (!taxRates.TryGetValue(taxRate, out var value))
-                        taxRates.Add(taxRate, shippingTax);
-                    else
-                        taxRates[taxRate] = value + shippingTax;
-                }
+                taxRates.AddTaxAmount(taxRate, shippingInclTax.Value - shippingExclTax.Value);
             }
         }
 
@@ -116,25 +108,15 @@ public class FixedRateTestTaxProvider : BasePlugin, ITaxProvider
                 paymentMethodAdditionalFeeTax = decimal.Zero;
 
             //tax rates
-            if (taxRate > decimal.Zero && paymentMethodAdditionalFeeTax > decimal.Zero)
+            if (paymentMethodAdditionalFeeTax > decimal.Zero)
             {
-                if (!taxRates.TryGetValue(taxRate, out var value))
-                    taxRates.Add(taxRate, paymentMethodAdditionalFeeTax);
-                else
-                    taxRates[taxRate] = value + paymentMethodAdditionalFeeTax;
+                taxRate.AddTaxAmount(paymentMethodAdditionalFeeTax);
+                taxRates.AppendTaxResults(taxRate);
             }
         }
 
-        //add at least one tax rate (0%)
-        if (!taxRates.Any())
-            taxRates.Add(decimal.Zero, decimal.Zero);
+        var taxTotalResult = new TaxTotalResult { TaxRates = taxRates };
 
-        //summarize taxes
-        var taxTotal = subTotalTaxTotal + shippingTax + paymentMethodAdditionalFeeTax;
-        //ensure that tax is equal or greater than zero
-        if (taxTotal < decimal.Zero)
-            taxTotal = decimal.Zero;
-
-        return new TaxTotalResult { TaxTotal = taxTotal, TaxRates = taxRates };
+        return taxTotalResult;
     }
 }

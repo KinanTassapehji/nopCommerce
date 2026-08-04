@@ -407,7 +407,7 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
     {
         var shippingTotalExclTax = decimal.Zero;
         var shippingTotalInclTax = decimal.Zero;
-        var shippingTaxRate = decimal.Zero;
+        TaxRateResult shippingTaxRateResult = null;
 
         var updatedOrder = updateOrderParameters.UpdatedOrder;
         var customer = await _customerService.GetCustomerByIdAsync(updatedOrder.CustomerId);
@@ -532,7 +532,7 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
                     shippingTotal = decimal.Zero;
 
                 shippingTotalExclTax = (await _taxService.GetShippingPriceAsync(shippingTotal, false, customer)).price;
-                (shippingTotalInclTax, shippingTaxRate) = await _taxService.GetShippingPriceAsync(shippingTotal, true, customer);
+                (shippingTotalInclTax, shippingTaxRateResult) = await _taxService.GetShippingPriceAsync(shippingTotal, true, customer);
 
                 //rounding
                 if (_shoppingCartSettings.RoundPricesDuringCalculation)
@@ -561,7 +561,7 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
         updatedOrder.OrderShippingExclTax = shippingTotalExclTax;
         updatedOrder.OrderShippingInclTax = shippingTotalInclTax;
 
-        return (shippingTotalExclTax, shippingTotalInclTax, shippingTaxRate);
+        return (shippingTotalExclTax, shippingTotalInclTax, shippingTaxRateResult.TotalTaxRate);
     }
 
     /// <summary>
@@ -784,7 +784,7 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
         var totalAdditionalShippingCharge = decimal.Zero;
         foreach (var shoppingCartItem in cart)
             totalAdditionalShippingCharge += await _shippingService.GetAdditionalShippingChargeAsync(shoppingCartItem);
-        
+
         return totalAdditionalShippingCharge;
     }
 
@@ -817,7 +817,7 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
     /// A task that represents the asynchronous operation
     /// The task result contains the applied discount amount. Applied discounts. Sub total (without discount). Sub total (with discount). Tax rates (of order sub total)
     /// </returns>
-    public virtual async Task<(decimal discountAmount, List<Discount> appliedDiscounts, decimal subTotalWithoutDiscount, decimal subTotalWithDiscount, SortedDictionary<decimal, decimal> taxRates)> GetShoppingCartSubTotalAsync(IList<ShoppingCartItem> cart,
+    public virtual async Task<(decimal discountAmount, List<Discount> appliedDiscounts, decimal subTotalWithoutDiscount, decimal subTotalWithDiscount, TaxRateResult taxRates)> GetShoppingCartSubTotalAsync(IList<ShoppingCartItem> cart,
         bool includingTax)
     {
         var (discountAmountInclTax, discountAmountExclTax, appliedDiscounts, subTotalWithoutDiscountInclTax, subTotalWithoutDiscountExclTax, subTotalWithDiscountInclTax, subTotalWithDiscountExclTax, taxRates) = await GetShoppingCartSubTotalsAsync(cart);
@@ -837,7 +837,7 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
     /// </returns>
     public virtual async Task<(decimal discountAmountInclTax, decimal discountAmountExclTax, List<Discount>
         appliedDiscounts, decimal subTotalWithoutDiscountInclTax, decimal subTotalWithoutDiscountExclTax, decimal
-        subTotalWithDiscountInclTax, decimal subTotalWithDiscountExclTax, SortedDictionary<decimal, decimal>
+        subTotalWithDiscountInclTax, decimal subTotalWithDiscountExclTax, TaxRateResult
         taxRates)> GetShoppingCartSubTotalsAsync(IList<ShoppingCartItem> cart)
     {
         var discountAmountExclTax = decimal.Zero;
@@ -849,7 +849,7 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
         var subTotalWithDiscountExclTax = decimal.Zero;
         var subTotalWithDiscountInclTax = decimal.Zero;
 
-        var taxRates = new SortedDictionary<decimal, decimal>();
+        var taxRates = new TaxRateResult();
 
         if (!cart.Any())
             return (discountAmountInclTax, discountAmountExclTax, appliedDiscounts, subTotalWithoutDiscountInclTax, subTotalWithoutDiscountExclTax, subTotalWithDiscountInclTax, subTotalWithDiscountExclTax, taxRates);
@@ -871,13 +871,7 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
 
             //tax rates
             var sciTax = sciInclTax - sciExclTax;
-            if (taxRate <= decimal.Zero || sciTax <= decimal.Zero)
-                continue;
-
-            if (!taxRates.ContainsKey(taxRate))
-                taxRates.Add(taxRate, sciTax);
-            else
-                taxRates[taxRate] += sciTax;
+            taxRates.AddTaxWithAmount(taxRate, sciTax);
         }
 
         //checkout attributes
@@ -900,13 +894,7 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
 
                         //tax rates
                         var caTax = caInclTax - caExclTax;
-                        if (taxRate <= decimal.Zero || caTax <= decimal.Zero)
-                            continue;
-
-                        if (!taxRates.ContainsKey(taxRate))
-                            taxRates.Add(taxRate, caTax);
-                        else
-                            taxRates[taxRate] += caTax;
+                        taxRates.AddTaxWithAmount(taxRate, caTax);
                     }
                 }
             }
@@ -935,29 +923,25 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
         subTotalWithDiscountExclTax = subTotalWithoutDiscountExclTax - discountAmountExclTax;
         subTotalWithDiscountInclTax = subTotalWithDiscountExclTax;
 
-        //add tax for shopping items & checkout attributes
-        var tempTaxRates = new Dictionary<decimal, decimal>(taxRates);
-        foreach (var kvp in tempTaxRates)
+        //add tax for shopping items & checkout attributes        
+        foreach (var definition in taxRates.TaxDefinitions)
         {
-            var taxRate = kvp.Key;
-            var taxValue = kvp.Value;
-
-            if (taxValue == decimal.Zero)
+            if (definition.TaxAmount == decimal.Zero)
                 continue;
 
             //discount the tax amount that applies to subtotal items
             if (subTotalWithoutDiscountExclTax > decimal.Zero)
             {
-                var discountTax = taxRates[taxRate] * (discountAmountExclTax / subTotalWithoutDiscountExclTax);
+                var discountTax = definition.TaxAmount * (discountAmountExclTax / subTotalWithoutDiscountExclTax);
                 discountAmountInclTax += discountTax;
-                taxValue = taxRates[taxRate] - discountTax;
+                var taxValue = definition.TaxAmount - discountTax;
                 if (_shoppingCartSettings.RoundPricesDuringCalculation)
                     taxValue = await _priceCalculationService.RoundPriceAsync(taxValue);
-                taxRates[taxRate] = taxValue;
+                definition.TaxAmount = taxValue;
             }
 
             //subtotal with discount (incl tax)
-            subTotalWithDiscountInclTax += taxValue;
+            subTotalWithDiscountInclTax += definition.TaxAmount;
         }
 
         if (_shoppingCartSettings.RoundPricesDuringCalculation)
@@ -1179,9 +1163,11 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
 
         decimal? shippingTotalTaxed;
 
-        (shippingTotalTaxed, taxRate) = await _taxService.GetShippingPriceAsync(shippingTotal.Value,
+        (shippingTotalTaxed, var taxRateResult) = await _taxService.GetShippingPriceAsync(shippingTotal.Value,
             includingTax,
             customer);
+
+        taxRate = taxRateResult.TotalTaxRate;
 
         //round
         if (_shoppingCartSettings.RoundPricesDuringCalculation)
@@ -1273,9 +1259,11 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
 
         decimal? shippingTotalTaxedInclTaxt, shippingTotalTaxedExclTaxt;
 
-        (shippingTotalTaxedInclTaxt, taxRate) = await _taxService.GetShippingPriceAsync(shippingTotal.Value,
+        (shippingTotalTaxedInclTaxt, var taxRateResult) = await _taxService.GetShippingPriceAsync(shippingTotal.Value,
             true,
             customer);
+
+        taxRate = taxRateResult.TotalTaxRate;
 
         (shippingTotalTaxedExclTaxt, _) = await _taxService.GetShippingPriceAsync(shippingTotal.Value,
             false,
@@ -1298,15 +1286,15 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
     /// <param name="usePaymentMethodAdditionalFee">A value indicating whether we should use payment method additional fee when calculating tax</param>
     /// <returns>
     /// A task that represents the asynchronous operation
-    /// The task result contains the ax total, Tax rates
+    /// The task result contains the tax total, Tax rates
     /// </returns>
-    public virtual async Task<(decimal taxTotal, SortedDictionary<decimal, decimal> taxRates)> GetTaxTotalAsync(IList<ShoppingCartItem> cart, bool usePaymentMethodAdditionalFee = true)
+    public virtual async Task<(decimal taxTotal, TaxRateResult taxRates)> GetTaxTotalAsync(IList<ShoppingCartItem> cart, bool usePaymentMethodAdditionalFee = true)
     {
         ArgumentNullException.ThrowIfNull(cart);
 
         var taxTotalResult = await _taxService.GetTaxTotalAsync(cart, usePaymentMethodAdditionalFee);
-        var taxRates = taxTotalResult?.TaxRates ?? new SortedDictionary<decimal, decimal>();
-        var taxTotal = taxTotalResult?.TaxTotal ?? decimal.Zero;
+        var taxRates = taxTotalResult?.TaxRates;
+        var taxTotal = taxTotalResult?.TaxRates.TotalTaxAmount ?? decimal.Zero;
 
         if (_shoppingCartSettings.RoundPricesDuringCalculation)
             taxTotal = await _priceCalculationService.RoundPriceAsync(taxTotal);

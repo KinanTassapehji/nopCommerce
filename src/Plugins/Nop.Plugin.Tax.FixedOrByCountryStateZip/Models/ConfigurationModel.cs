@@ -25,7 +25,33 @@ public record ConfigurationModel : BaseSearchModel
     [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.TaxCategory")]
     public int AddTaxCategoryId { get; set; }
     [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage")]
-    public decimal AddPercentage { get; set; }
+    public decimal Percentage { get; set; }
+
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.UsePercentage2")]
+    public bool UsePercentage2 { get; set; }
+
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.UsePercentage3")]
+    public bool UsePercentage3 { get; set; }
+
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.RenameRate1")]
+    public bool RenameRate1 { get; set; }
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.RenameRate2")]
+    public bool RenameRate2 { get; set; }
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.RenameRate3")]
+    public bool RenameRate3 { get; set; }
+
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.RateName1")]
+    public string RateName1 { get; set; }
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.RateName2")]
+    public string RateName2 { get; set; }
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.RateName3")]
+    public string RateName3 { get; set; }
+
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage2")]
+    public decimal? Percentage2 { get; set; }
+
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage3")]
+    public decimal? Percentage3 { get; set; }
 
     public bool CountryStateZipEnabled { get; set; }
 

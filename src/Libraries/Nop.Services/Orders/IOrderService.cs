@@ -127,15 +127,7 @@ public partial interface IOrderService
     /// <param name="order">The order</param>
     /// <returns>A task that represents the asynchronous operation</returns>
     Task UpdateOrderAsync(Order order);
-
-    /// <summary>
-    /// Parse tax rates
-    /// </summary>
-    /// <param name="order">Order</param>
-    /// <param name="taxRatesStr"></param>
-    /// <returns>Rates</returns>
-    SortedDictionary<decimal, decimal> ParseTaxRates(Order order, string taxRatesStr);
-
+    
     /// <summary>
     /// Gets a value indicating whether an order has items to be added to a shipment
     /// </summary>

@@ -30,4 +30,9 @@ public record CountryStateZipModel : BaseNopEntityModel
 
     [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage")]
     public decimal Percentage { get; set; }
+
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage2")]
+    public decimal? Percentage2 { get; set; }
+    [NopResourceDisplayName("Plugins.Tax.FixedOrByCountryStateZip.Fields.Percentage3")]
+    public decimal? Percentage3 { get; set; }
 }

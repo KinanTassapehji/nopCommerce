@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Core.Domain.Catalog;
@@ -90,6 +89,7 @@ public partial class OrderProcessingService : IOrderProcessingService
     protected readonly ReturnRequestSettings _returnRequestSettings;
     protected readonly RewardPointsSettings _rewardPointsSettings;
     protected readonly ShippingSettings _shippingSettings;
+    protected readonly ShoppingCartSettings _shoppingCartSettings;
     protected readonly TaxSettings _taxSettings;
 
     #endregion
@@ -145,6 +145,7 @@ public partial class OrderProcessingService : IOrderProcessingService
         ReturnRequestSettings returnRequestSettings,
         RewardPointsSettings rewardPointsSettings,
         ShippingSettings shippingSettings,
+        ShoppingCartSettings shoppingCartSettings,
         TaxSettings taxSettings)
     {
         _currencySettings = currencySettings;
@@ -196,6 +197,7 @@ public partial class OrderProcessingService : IOrderProcessingService
         _returnRequestSettings = returnRequestSettings;
         _rewardPointsSettings = rewardPointsSettings;
         _shippingSettings = shippingSettings;
+        _shoppingCartSettings = shoppingCartSettings;
         _taxSettings = taxSettings;
     }
 
@@ -384,16 +386,14 @@ public partial class OrderProcessingService : IOrderProcessingService
         details.PaymentAdditionalFeeExclTax = (await _taxService.GetPaymentMethodAdditionalFeeAsync(paymentAdditionalFee, false, details.Customer)).price;
 
         //tax amount
-        SortedDictionary<decimal, decimal> taxRatesDictionary;
-        (details.OrderTaxTotal, taxRatesDictionary) = await _orderTotalCalculationService.GetTaxTotalAsync(details.Cart);
+        (details.OrderTaxTotal, var taxRates) = await _orderTotalCalculationService.GetTaxTotalAsync(details.Cart);
 
         //VAT number
         if (_taxSettings.EuVatEnabled && details.Customer.VatNumberStatus == VatNumberStatus.Valid)
             details.VatNumber = details.Customer.VatNumber;
 
         //tax rates
-        details.TaxRates = taxRatesDictionary.Aggregate(string.Empty, (current, next) =>
-            $"{current}{next.Key.ToString(CultureInfo.InvariantCulture)}:{next.Value.ToString(CultureInfo.InvariantCulture)};   ");
+        details.TaxRates = taxRates.FormatTaxResult();
 
         //order total (and applied discounts, gift cards, reward points)
         var (orderTotal, orderDiscountAmount, orderAppliedDiscounts, appliedGiftCards, redeemedRewardPoints, redeemedRewardPointsAmount) = await _orderTotalCalculationService.GetShoppingCartTotalAsync(details.Cart);
@@ -1307,6 +1307,21 @@ public partial class OrderProcessingService : IOrderProcessingService
 
             var itemWeight = await _shippingService.GetShoppingCartItemWeightAsync(sc);
 
+            var taxRates = new TaxRateResult();
+            var taxAmount = scSubTotalInclTax.price - scSubTotalExclTax.price;
+
+            var amountPart = taxAmount / scSubTotalExclTax.taxRateResult.TotalTaxRate;
+
+            foreach (var taxResult in scSubTotalExclTax.taxRateResult.TaxDefinitions)
+            {
+                var taxValue = taxResult.TaxRate * amountPart;
+
+                if (_shoppingCartSettings.RoundPricesDuringCalculation)
+                    taxValue = await _priceCalculationService.RoundPriceAsync(taxValue);
+                
+                taxRates.AddTaxAmount(taxResult, taxValue);
+            }
+
             //save order item
             var orderItem = new OrderItem
             {
@@ -1328,7 +1343,8 @@ public partial class OrderProcessingService : IOrderProcessingService
                 LicenseDownloadId = 0,
                 ItemWeight = itemWeight,
                 RentalStartDateUtc = sc.RentalStartDateUtc,
-                RentalEndDateUtc = sc.RentalEndDateUtc
+                RentalEndDateUtc = sc.RentalEndDateUtc,
+                TaxRates = taxRates.FormatTaxResult(true)
             };
 
             await _orderService.InsertOrderItemAsync(orderItem);
@@ -1504,7 +1520,7 @@ public partial class OrderProcessingService : IOrderProcessingService
                 //shipping is not required
                 completed = true;
             else
-                //shipping is required
+            //shipping is required
             {
                 completed = _orderSettings.CompleteOrderWhenDelivered
                     ? order.ShippingStatus == ShippingStatus.Delivered

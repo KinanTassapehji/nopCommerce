@@ -25,6 +25,7 @@ using Nop.Services.Orders;
 using Nop.Services.Payments;
 using Nop.Services.Shipping;
 using Nop.Services.Stores;
+using Nop.Services.Tax;
 using Nop.Services.Vendors;
 using PdfRpt.Core.Contracts;
 
@@ -468,6 +469,30 @@ public partial class PdfService : IPdfService
 
             productItem.Total = subTotal;
 
+            //tax
+            if (!(_taxSettings.HideTaxInOrderSummary && order.CustomerTaxDisplayType == TaxDisplayType.IncludingTax) ||
+                !(order.OrderTax == 0 && _taxSettings.HideZeroTax))
+            {
+                var taxRates = TaxRateResult.ParseTaxRates(oi.TaxRates);
+
+                if (_taxSettings.DisplayTaxRates && taxRates.Any())
+                {
+                    foreach (var item in taxRates)
+                    {
+                        if (!item.Value.HasValue)
+                            productItem.ProductAttributes.Add(item.Key);
+                        else
+                        {
+                            var taxValue = await _priceFormatter.FormatPriceAsync(
+                                _currencyService.ConvertCurrency(item.Value!.Value, order.CurrencyRate), true,
+                                order.CustomerCurrencyCode, false, language.Id);
+
+                            productItem.ProductAttributes.Add($"{item.Key}: {taxValue}");
+                        }
+                    }
+                }
+            }
+
             result.Add(productItem);
         }
 
@@ -571,7 +596,7 @@ public partial class PdfService : IPdfService
 
         //tax
         var taxStr = string.Empty;
-        var taxRates = new SortedDictionary<decimal, decimal>();
+        var taxRates = new SortedDictionary<string, decimal?>();
         bool displayTax;
         var displayTaxRates = true;
         if (_taxSettings.HideTaxInOrderSummary && order.CustomerTaxDisplayType == TaxDisplayType.IncludingTax)
@@ -587,7 +612,7 @@ public partial class PdfService : IPdfService
             }
             else
             {
-                taxRates = _orderService.ParseTaxRates(order, order.TaxRates);
+                taxRates = TaxRateResult.ParseTaxRates(order.TaxRates);
 
                 displayTaxRates = _taxSettings.DisplayTaxRates && taxRates.Any();
                 displayTax = !displayTaxRates;
@@ -603,15 +628,13 @@ public partial class PdfService : IPdfService
 
         if (displayTaxRates)
         {
-            foreach (var item in taxRates)
+            foreach (var item in taxRates.Where(item => item.Value.HasValue))
             {
                 var taxRate = string.Format(await _localizationService.GetResourceAsync("Pdf.TaxRate", languageId),
-                    _priceFormatter.FormatTaxRate(item.Key));
-                var taxValue = await _priceFormatter.FormatPriceAsync(
-                    _currencyService.ConvertCurrency(item.Value, order.CurrencyRate), true, order.CustomerCurrencyCode,
-                    false, languageId);
+                    item.Key);
+                var taxValue = await _priceFormatter.FormatPriceAsync(_currencyService.ConvertCurrency(item.Value!.Value, order.CurrencyRate), true, order.CustomerCurrencyCode, false, languageId);
 
-                result.TaxRates.Add($"{taxRate} {taxValue}");
+                result.TaxRates.Add($"{taxRate}: {taxValue}");
             }
         }
 

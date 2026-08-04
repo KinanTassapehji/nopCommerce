@@ -83,7 +83,18 @@ public class FixedOrByCountryStateZipController : BasePluginController
             return View("~/Plugins/Tax.FixedOrByCountryStateZip/Views/Configure.cshtml", errorModel);
         }
 
-        var model = new ConfigurationModel { CountryStateZipEnabled = _countryStateZipSettings.CountryStateZipEnabled };
+        var model = new ConfigurationModel
+        {
+            CountryStateZipEnabled = _countryStateZipSettings.CountryStateZipEnabled,
+            UsePercentage2 = _countryStateZipSettings.UsePercentage2,
+            UsePercentage3 = _countryStateZipSettings.UsePercentage3,
+            RenameRate1 = _countryStateZipSettings.RenameRate1,
+            RenameRate2 = _countryStateZipSettings.RenameRate2,
+            RenameRate3 = _countryStateZipSettings.RenameRate3,
+            RateName1 = _countryStateZipSettings.RateName1,
+            RateName2 = _countryStateZipSettings.RateName2,
+            RateName3 = _countryStateZipSettings.RateName3
+        };
 
         //stores
         model.AvailableStores.Add(new SelectListItem { Text = "*", Value = "0" });
@@ -112,10 +123,32 @@ public class FixedOrByCountryStateZipController : BasePluginController
 
     [HttpPost]
     [CheckPermission(StandardPermission.Configuration.MANAGE_TAX_SETTINGS)]
+    public async Task<IActionResult> Configure(ConfigurationModel model)
+    {
+        if (!ModelState.IsValid)
+            return await Configure();
+
+        _countryStateZipSettings.UsePercentage2 = model.UsePercentage2;
+        _countryStateZipSettings.UsePercentage3 = model.UsePercentage3;
+        _countryStateZipSettings.RenameRate1 = model.RenameRate1;
+        _countryStateZipSettings.RenameRate2 = model.RenameRate2;
+        _countryStateZipSettings.RenameRate3 = model.RenameRate3;
+        _countryStateZipSettings.RateName1 = model.RateName1;
+        _countryStateZipSettings.RateName2 = model.RateName2;
+        _countryStateZipSettings.RateName3 = model.RateName3;
+
+        await _settingService.SaveSettingAsync(_countryStateZipSettings);
+
+        return await Configure();
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_TAX_SETTINGS)]
     public async Task<IActionResult> SaveMode(bool value)
     {
         //save settings
         _countryStateZipSettings.CountryStateZipEnabled = value;
+
         await _settingService.SaveSettingAsync(_countryStateZipSettings);
 
         return Json(new { Result = true });
@@ -178,7 +211,9 @@ public class FixedOrByCountryStateZipController : BasePluginController
                 StateProvinceName = (await _stateProvinceService.GetStateProvinceByIdAsync(record.StateProvinceId))?.Name ?? "*",
 
                 Zip = !string.IsNullOrEmpty(record.Zip) ? record.Zip : "*",
-                Percentage = record.Percentage
+                Percentage = record.Percentage,
+                Percentage2 = record.Percentage2,
+                Percentage3 = record.Percentage3
             });
         });
 
@@ -196,7 +231,9 @@ public class FixedOrByCountryStateZipController : BasePluginController
             CountryId = model.AddCountryId,
             StateProvinceId = model.AddStateProvinceId,
             Zip = model.AddZip,
-            Percentage = model.AddPercentage
+            Percentage = model.Percentage,
+            Percentage2 = model.Percentage2,
+            Percentage3 = model.Percentage3
         });
 
         return Json(new { Result = true });
@@ -209,6 +246,8 @@ public class FixedOrByCountryStateZipController : BasePluginController
         var taxRate = await _taxRateService.GetTaxRateByIdAsync(model.Id);
         taxRate.Zip = model.Zip == "*" ? null : model.Zip;
         taxRate.Percentage = model.Percentage;
+        taxRate.Percentage2 = model.Percentage2;
+        taxRate.Percentage3 = model.Percentage3;
         await _taxRateService.UpdateTaxRateAsync(taxRate);
 
         return new NullJsonResult();
