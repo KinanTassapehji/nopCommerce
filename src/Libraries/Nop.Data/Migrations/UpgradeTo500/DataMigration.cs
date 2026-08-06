@@ -11,6 +11,7 @@ namespace Nop.Data.Migrations.UpgradeTo500;
 [NopUpdateMigration("2026-03-31 00:00:01", "5.00", UpdateMigrationType.Data)]
 public class DataMigration : Migration
 {
+    private const int PAGE_SIZE = 500;
     private readonly INopDataProvider _dataProvider;
 
     public DataMigration(INopDataProvider dataProvider)
@@ -174,37 +175,58 @@ public class DataMigration : Migration
             );
         }
 
-        var comments = from bc in _dataProvider.GetTable<BlogComment>()
-                       join c in _dataProvider.GetTable<Customer>() on bc.CustomerId equals c.Id
-                       where string.IsNullOrEmpty(c.Email)
-                       select bc;
-
-        foreach (var comment in comments.ToList())
+        var bcPageIndex = 0;
+        while (true)
         {
-            comment.CustomerId = null;
-            _dataProvider.UpdateEntity(comment);
+            var comments = (from bc in _dataProvider.GetTable<BlogComment>()
+                            join c in _dataProvider.GetTable<Customer>() on bc.CustomerId equals c.Id
+                            where string.IsNullOrEmpty(c.Email)
+                            select bc).Skip(bcPageIndex++ * PAGE_SIZE).Take(PAGE_SIZE).ToList();
+
+            if (!comments.Any())
+                break;
+
+            foreach (var comment in comments)
+            {
+                comment.CustomerId = null;
+                _dataProvider.UpdateEntity(comment);
+            }
         }
 
-        var productReviews = from pr in _dataProvider.GetTable<ProductReview>()
-                             join c in _dataProvider.GetTable<Customer>() on pr.CustomerId equals c.Id
-                             where string.IsNullOrEmpty(c.Email)
-                             select pr;
-
-        foreach (var pr in productReviews.ToList())
+        var prPageIndex = 0;
+        while (true)
         {
-            pr.CustomerId = null;
-            _dataProvider.UpdateEntity(pr);
+            var productReviews = (from pr in _dataProvider.GetTable<ProductReview>()
+                                  join c in _dataProvider.GetTable<Customer>() on pr.CustomerId equals c.Id
+                                  where string.IsNullOrEmpty(c.Email)
+                                  select pr).Skip(prPageIndex++ * PAGE_SIZE).Take(PAGE_SIZE).ToList();
+
+            if (!productReviews.Any())
+                break;
+
+            foreach (var pr in productReviews.ToList())
+            {
+                pr.CustomerId = null;
+                _dataProvider.UpdateEntity(pr);
+            }
         }
 
-        var searchTerms = from term in _dataProvider.GetTable<SearchTerm>()
-                          join c in _dataProvider.GetTable<Customer>() on term.CustomerId equals c.Id
-                          where string.IsNullOrEmpty(c.Email)
-                          select term;
-
-        foreach (var term in searchTerms.ToList())
+        var stPageIndex = 0;
+        while (true)
         {
-            term.CustomerId = null;
-            _dataProvider.UpdateEntity(term);
+            var searchTerms = (from term in _dataProvider.GetTable<SearchTerm>()
+                               join c in _dataProvider.GetTable<Customer>() on term.CustomerId equals c.Id
+                               where string.IsNullOrEmpty(c.Email)
+                               select term).Skip(stPageIndex++ * PAGE_SIZE).Take(PAGE_SIZE).ToList();
+
+            if (!searchTerms.Any())
+                break;
+
+            foreach (var term in searchTerms.ToList())
+            {
+                term.CustomerId = null;
+                _dataProvider.UpdateEntity(term);
+            }
         }
     }
 

@@ -10,8 +10,8 @@ using Nop.Plugin.Misc.News.Domain;
 
 namespace Nop.Plugin.Misc.News.Data.Migrations;
 
-[NopMigration("2025-03-06 00:00:00", "Misc.News schema", MigrationProcessType.Installation)]
-public class SchemaMigration : Migration
+[NopMigration("2025-03-06 00:00:00", "Misc.News: Delete constraints migration", MigrationProcessType.Installation)]
+public class DeleteConstraintsMigration : Migration
 {
     #region Fields
 
@@ -21,7 +21,7 @@ public class SchemaMigration : Migration
 
     #region Ctor
 
-    public SchemaMigration(INopDataProvider dataProvider)
+    public DeleteConstraintsMigration(INopDataProvider dataProvider)
     {
         _dataProvider = dataProvider;
     }
@@ -38,8 +38,6 @@ public class SchemaMigration : Migration
         var newsCommentTableName = NameCompatibilityManager.GetTableName(typeof(NewsComment));
         var newsCommentCustomerIdColumnName = NameCompatibilityManager.GetColumnName(typeof(NewsComment), nameof(NewsComment.CustomerId));
 
-        this.CreateTableIfNotExists<NewsItem>();
-
         if (Schema.Table(newsCommentTableName).Column(newsCommentCustomerIdColumnName).Exists())
         {
             var customerTableName = NameCompatibilityManager.GetTableName(typeof(Customer));
@@ -55,17 +53,6 @@ public class SchemaMigration : Migration
             constraintName = "NewsComment_Customer";
             if (Schema.Table(newsCommentTableName).Constraint(constraintName).Exists())
                 Delete.UniqueConstraint(constraintName).FromTable(newsCommentTableName);
-
-            Alter.Table(newsCommentTableName)
-                .AlterColumn(newsCommentCustomerIdColumnName)
-                .AsInt32()
-                .Nullable()
-                .ForeignKey(customerTableName, customerIdColumnName)
-                .OnDelete(Rule.SetNull);
-        }
-        else
-        {
-            this.CreateTableIfNotExists<NewsComment>();
         }
     }
 

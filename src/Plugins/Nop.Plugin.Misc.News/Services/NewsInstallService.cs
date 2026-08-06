@@ -22,11 +22,13 @@ public class NewsInstallService
 {
     #region Fields
 
+    private const int PAGE_SIZE = 500;
     private readonly EmailAccountSettings _emailAccountSettings;
     private readonly ICustomerService _customerService;
     private readonly IEmailAccountService _emailAccountService;
     private readonly ILocalizationService _localizationService;
     private readonly IMessageTemplateService _messageTemplateService;
+    private readonly INopDataProvider _dataProvider;
     private readonly IRepository<ActivityLogType> _activityLogTypeRepository;
     private readonly IRepository<PermissionRecord> _permissionRepository;
     private readonly IRepository<PermissionRecordCustomerRoleMapping> _permissionMappingRepository;
@@ -44,6 +46,7 @@ public class NewsInstallService
         IEmailAccountService emailAccountService,
         ILocalizationService localizationService,
         IMessageTemplateService messageTemplateService,
+        INopDataProvider dataProvider,
         IRepository<ActivityLogType> activityLogTypeRepository,
         IRepository<PermissionRecord> permissionRepository,
         IRepository<PermissionRecordCustomerRoleMapping> permissionRecordCustomerRoleMappingRepository,
@@ -57,6 +60,7 @@ public class NewsInstallService
         _emailAccountService = emailAccountService;
         _localizationService = localizationService;
         _messageTemplateService = messageTemplateService;
+        _dataProvider = dataProvider;
         _activityLogTypeRepository = activityLogTypeRepository;
         _permissionRepository = permissionRepository;
         _permissionMappingRepository = permissionRecordCustomerRoleMappingRepository;
@@ -444,6 +448,31 @@ public class NewsInstallService
         await InserActivityLogTypesAsync();
 
         await PreparePermissionMappingsAsync();
+    }
+
+
+    /// <summary>
+    /// Updates guest data
+    /// </summary>
+    public async Task UpdateGuestDataAsync()
+    {
+        var commentPageIndex = 0;
+        while (true)
+        {
+            var comments = (from comment in _dataProvider.GetTable<NewsComment>()
+                            join c in _dataProvider.GetTable<Customer>() on comment.CustomerId equals c.Id
+                            where string.IsNullOrEmpty(c.Email)
+                            select comment).Skip(commentPageIndex++ * PAGE_SIZE).Take(PAGE_SIZE).ToList();
+
+            if (!comments.Any())
+                break;
+
+            foreach (var comment in comments)
+            {
+                comment.CustomerId = null;
+                await _dataProvider.UpdateEntityAsync(comment);
+            }
+        }
     }
 
     /// <summary>

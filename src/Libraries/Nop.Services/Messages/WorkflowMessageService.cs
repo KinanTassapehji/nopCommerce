@@ -2038,8 +2038,9 @@ public partial class WorkflowMessageService : IWorkflowMessageService
         var commonTokens = new List<Token>();
         await _messageTokenProvider.AddProductReviewTokensAsync(commonTokens, productReview);
 
-        if (productReview.CustomerId > 0)
-            await _messageTokenProvider.AddCustomerTokensAsync(commonTokens, productReview.CustomerId.Value);
+        var customer = await _customerService.GetCustomerByIdAsync(productReview.CustomerId ?? 0);
+        if (customer is not null)
+            await _messageTokenProvider.AddCustomerTokensAsync(commonTokens, customer);
 
         return await messageTemplates.SelectAwait(async messageTemplate =>
         {
@@ -2052,7 +2053,6 @@ public partial class WorkflowMessageService : IWorkflowMessageService
             //event notification
             await _eventPublisher.MessageTokensAddedAsync(messageTemplate, tokens);
 
-            var customer = await _customerService.GetCustomerByIdAsync(productReview.CustomerId ?? 0);
             var (replyToEmail, replyToName) = await GetCustomerReplyToNameAndEmailAsync(messageTemplate, customer);
 
             var (toEmail, toName) = await GetStoreOwnerNameAndEmailAsync(emailAccount);
@@ -2356,8 +2356,8 @@ public partial class WorkflowMessageService : IWorkflowMessageService
         var commonTokens = new List<Token>();
         await _messageTokenProvider.AddBlogCommentTokensAsync(commonTokens, blogComment);
 
-        if (blogComment.CustomerId > 0)
-            await _messageTokenProvider.AddCustomerTokensAsync(commonTokens, blogComment.CustomerId.Value);
+        if (customer is not null)
+            await _messageTokenProvider.AddCustomerTokensAsync(commonTokens, customer);
 
         return await messageTemplates.SelectAwait(async messageTemplate =>
         {

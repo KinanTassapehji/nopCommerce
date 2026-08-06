@@ -45,7 +45,7 @@ public class ForumTopic : BaseEntity
     /// <summary>
     /// Gets or sets the last post customer identifier
     /// </summary>
-    public int? LastPostCustomerId { get; set; }
+    public int LastPostCustomerId { get; set; }
 
     /// <summary>
     /// Gets or sets the last post date and time

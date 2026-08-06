@@ -176,7 +176,7 @@ public class ForumService
         var customer = await _customerService.GetCustomerByIdAsync(forumPost.CustomerId ?? 0);
 
         tokens.Add(new("Forums.PostAuthor", customer == null ? 
-            await _localizationService.GetResourceAsync("Customer.Guest") :  await _customerService.FormatUsernameAsync(customer)));
+            await _localizationService.GetResourceAsync("Customer.Guest") : await _customerService.FormatUsernameAsync(customer)));
         tokens.Add(new("Forums.PostBody", FormatPostText(forumPost), true));
     }
 

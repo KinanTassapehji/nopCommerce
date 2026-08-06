@@ -112,7 +112,7 @@ public class NewsService
     /// </returns>
     private async Task<(string email, string name)> GetCustomerReplyToNameAndEmailAsync(MessageTemplate messageTemplate, Customer customer)
     {
-        if (!messageTemplate.AllowDirectReply)
+        if (!messageTemplate.AllowDirectReply || customer is null)
             return (null, null);
 
         var replyToEmail = await _customerService.IsGuestAsync(customer)

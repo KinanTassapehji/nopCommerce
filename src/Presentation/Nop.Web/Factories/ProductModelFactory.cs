@@ -1794,7 +1794,9 @@ public partial class ProductModelFactory : IProductModelFactory
 
             if (_customerSettings.AllowCustomersToUploadAvatars)
             {
-                productReviewModel.CustomerAvatarUrl = await _pictureService.GetPictureUrlAsync(
+                productReviewModel.CustomerAvatarUrl = customer is null ?
+                    await _pictureService.GetDefaultPictureUrlAsync(_mediaSettings.AvatarPictureSize, PictureType.Avatar) :
+                    await _pictureService.GetPictureUrlAsync(
                     await _genericAttributeService.GetAttributeAsync<int>(customer, NopCustomerDefaults.AvatarPictureIdAttribute),
                     _mediaSettings.AvatarPictureSize, _customerSettings.DefaultAvatarEnabled, defaultPictureType: PictureType.Avatar);
             }

@@ -354,9 +354,6 @@ public partial class CustomerService : ICustomerService
     /// </returns>
     public virtual async Task<Customer> GetCustomerByIdAsync(int customerId)
     {
-        if (customerId <= 0)
-            return null;
-
         return await _customerRepository.GetByIdAsync(customerId, cache => default, useShortTermCache: true);
     }
 

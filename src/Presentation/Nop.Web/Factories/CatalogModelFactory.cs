@@ -1306,7 +1306,9 @@ public partial class CatalogModelFactory : ICatalogModelFactory
 
                 if (_customerSettings.AllowCustomersToUploadAvatars)
                 {
-                    model.CustomerAvatarUrl = await _pictureService.GetPictureUrlAsync(
+                    model.CustomerAvatarUrl = customer is null ?
+                    await _pictureService.GetDefaultPictureUrlAsync(_mediaSettings.AvatarPictureSize, PictureType.Avatar) :
+                    await _pictureService.GetPictureUrlAsync(
                         await _genericAttributeService.GetAttributeAsync<int>(customer, NopCustomerDefaults.AvatarPictureIdAttribute),
                         _mediaSettings.AvatarPictureSize, _customerSettings.DefaultAvatarEnabled, defaultPictureType: PictureType.Avatar);
                 }
