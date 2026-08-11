@@ -1,7 +1,7 @@
 ﻿using FluentMigrator;
 using Nop.Core.Domain.Catalog;
-using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Common;
+using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Orders;
 using Nop.Data.Extensions;
 
@@ -102,5 +102,9 @@ public class SchemaMigration : ForwardOnlyMigration
 
         //#4279
         this.CreateTableIfNotExists<Product3dObject>();
+
+        //#8270
+        this.DeleteColumnsIfExists<ProductAttributeCombination>(["PictureId"]);
+        this.DeleteColumnsIfExists<ProductAttributeValue>(["PictureId"]);
     }
 }
