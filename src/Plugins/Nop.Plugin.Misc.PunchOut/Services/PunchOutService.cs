@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Nop.Core;
 using Nop.Core.Caching;
@@ -8,12 +9,14 @@ using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Orders;
 using Nop.Plugin.Misc.PunchOut.Domain;
 using Nop.Plugin.Misc.PunchOut.Domain.CXML;
+using Nop.Services.Authentication;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
 using Nop.Services.Helpers;
 using Nop.Services.Orders;
+using Nop.Services.Tax;
 using ILogger = Nop.Services.Logging.ILogger;
 
 namespace Nop.Plugin.Misc.PunchOut.Services;
@@ -26,6 +29,7 @@ public class PunchOutService
     #region Fields
 
     protected readonly IAddressService _addressService;
+    protected readonly IAuthenticationService _authenticationService;
     protected readonly ICurrencyService _currencyService;
     protected readonly ICountryService _countryService;
     protected readonly ICustomerService _customerService;
@@ -37,6 +41,7 @@ public class PunchOutService
     protected readonly IStateProvinceService _stateProvinceService;
     protected readonly IStaticCacheManager _staticCacheManager;
     protected readonly IStoreContext _storeContext;
+    protected readonly ITaxService _taxService;
     protected readonly IWebHelper _webHelper;
     protected readonly IWorkContext _workContext;
     protected readonly PunchOutIdentityService _punchOutIdentityService;
@@ -48,6 +53,7 @@ public class PunchOutService
     #region Ctor
 
     public PunchOutService(IAddressService addressService,
+        IAuthenticationService authenticationService,
         ICurrencyService currencyService,
         ICountryService countryService,
         ICustomerService customerService,
@@ -59,6 +65,7 @@ public class PunchOutService
         IStateProvinceService stateProvinceService,
         IStaticCacheManager staticCacheManager,
         IStoreContext storeContext,
+        ITaxService taxService,
         IWebHelper webHelper,
         IWorkContext workContext,
         PunchOutIdentityService punchOutIdentityService,
@@ -66,6 +73,7 @@ public class PunchOutService
         PunchOutSettings punchOutSettings)
     {
         _addressService = addressService;
+        _authenticationService = authenticationService;
         _currencyService = currencyService;
         _countryService = countryService;
         _customerService = customerService;
@@ -77,6 +85,7 @@ public class PunchOutService
         _stateProvinceService = stateProvinceService;
         _staticCacheManager = staticCacheManager;
         _storeContext = storeContext;
+        _taxService = taxService;
         _webHelper = webHelper;
         _workContext = workContext;
         _punchOutIdentityService = punchOutIdentityService;
@@ -380,9 +389,7 @@ public class PunchOutService
 
             await SavePunchoutSessionAsync(customer, session);
 
-            //TODO: only for testing
-            var storeLocation = "https://penni-cormlike-overscrupulously.ngrok-free.dev/";
-            //_webHelper.GetStoreLocation();
+            var storeLocation = _webHelper.GetStoreLocation();
             var startUrl = $"{storeLocation}punchout/start?sessionId={sessionId}";
             var responseXml = PunchOutXmlBuilder.BuildSetupResponse(
                 new PunchOutSetupResponse
@@ -495,11 +502,11 @@ public class PunchOutService
         foreach (var item in cart)
         {
             var product = await _productService.GetProductByIdAsync(item.ProductId);
-            var currency = await _currencyService.GetCurrencyByIdAsync(customer.CurrencyId ?? 0)
-                ?? await _workContext.GetWorkingCurrencyAsync();
+            var currency = await _workContext.GetWorkingCurrencyAsync();
 
             var (_, finalPrice, _, _) = await _priceCalculationService.GetFinalPriceAsync(product, customer, store, quantity: item.Quantity);
-            var priceValue = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(finalPrice, currency);
+            var (shoppingCartItemSubTotalWithDiscountBase, _) = await _taxService.GetProductPriceAsync(product, finalPrice);
+            var priceValue = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(shoppingCartItemSubTotalWithDiscountBase, currency);
             total += priceValue * item.Quantity;
 
             model.Items.Add(new PunchOutOrderItem
@@ -565,14 +572,8 @@ public class PunchOutService
             var session = JsonConvert.DeserializeObject<PunchOutSession>(jsonSession);
             if (session != null)
             {
-                return new PunchOutSession
-                {
-                    SessionId = session.SessionId ?? string.Empty,
-                    ReturnUrl = session.ReturnUrl ?? string.Empty,
-                    BuyerCookie = session.BuyerCookie ?? string.Empty,
-                    CreatedOnUtc = session.CreatedOnUtc,
-                    IsActive = session.IsActive && !string.IsNullOrEmpty(session.SessionId)
-                };
+                session.IsActive = session.IsActive && !string.IsNullOrEmpty(session.SessionId);
+                return session;
             }
         }
         catch (Exception ex)
@@ -601,9 +602,15 @@ public class PunchOutService
 
             await _genericAttributeService.SaveAttributeAsync(customer, PunchOutDefaults.PunchOutSessionTokenAttribute, (string)null, store.Id);
 
-            //clear cache
-            var key = _staticCacheManager.PrepareKeyForDefaultCache(PunchOutDefaults.SessionTokenCacheKey, session.SessionId);
-            await _staticCacheManager.RemoveAsync(key);
+            if (session != null && !string.IsNullOrEmpty(session.SessionId))
+            {
+                //clear cache
+                var key = _staticCacheManager.PrepareKeyForDefaultCache(PunchOutDefaults.SessionTokenCacheKey, session.SessionId);
+                await _staticCacheManager.RemoveAsync(key);
+
+                //standard logout 
+                await _authenticationService.SignOutAsync();
+            }
         }
         catch (Exception ex)
         {

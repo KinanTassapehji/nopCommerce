@@ -1,26 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Routing;
 using Nop.Core;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Http;
 using Nop.Plugin.Misc.PunchOut.Services;
+using Nop.Services.Helpers;
 using Nop.Services.Localization;
 using Nop.Services.Messages;
+using Nop.Web.Framework;
 
 namespace Nop.Plugin.Misc.PunchOut.Infrastructure;
 
 /// <summary>
-/// Represents filter attribute to check if PunchOut session is expired
+/// Represents filter attribute to check if PunchOut session is expired and restrict access to certain controllers and actions during active PunchOut session
 /// </summary>
-public class PunchOutSessionExpiredFilterAttribute : TypeFilterAttribute
+public class PunchOutSessionGuardAttribute : TypeFilterAttribute
 {
     #region Ctor
 
     /// <summary>
     /// Create instance of the filter attribute
     /// </summary>
-    public PunchOutSessionExpiredFilterAttribute() : base(typeof(PunchOutSessionExpiredFilter))
+    public PunchOutSessionGuardAttribute() : base(typeof(PunchOutSessionGuardFilter))
     {
     }
 
@@ -29,14 +33,15 @@ public class PunchOutSessionExpiredFilterAttribute : TypeFilterAttribute
     #region Nested filter
 
     /// <summary>
-    /// Represents filter to check if PunchOut session is expired
+    /// Represents filter to check if PunchOut session is expired and restrict access to certain controllers and actions during active PunchOut session
     /// </summary>
-    private class PunchOutSessionExpiredFilter : IAsyncActionFilter
+    private class PunchOutSessionGuardFilter : IAsyncActionFilter, IAsyncResultFilter
     {
         #region Fields
 
         private readonly ILocalizationService _localizationService;
         private readonly INotificationService _notificationService;
+        private readonly IWebHelper _webHelper;
         private readonly IWorkContext _workContext;
         private readonly PunchOutService _punchOutService;
         private readonly PunchOutSettings _punchOutSettings;
@@ -68,6 +73,20 @@ public class PunchOutSessionExpiredFilterAttribute : TypeFilterAttribute
                     "StartCheckout",
                     "Checkout"
                 }
+            },
+            {
+                "Common",
+                new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    "ContactUs"
+                }
+            },
+            {
+                "Product",
+                new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    "ProductReviews"
+                }
             }
         };
 
@@ -75,14 +94,16 @@ public class PunchOutSessionExpiredFilterAttribute : TypeFilterAttribute
 
         #region Ctor
 
-        public PunchOutSessionExpiredFilter(ILocalizationService localizationService,
+        public PunchOutSessionGuardFilter(ILocalizationService localizationService,
             INotificationService notificationService,
+            IWebHelper webHelper,
             IWorkContext workContext,
             PunchOutService punchOutService,
             PunchOutSettings punchOutSettings)
         {
             _localizationService = localizationService;
             _notificationService = notificationService;
+            _webHelper = webHelper;
             _workContext = workContext;
             _punchOutService = punchOutService;
             _punchOutSettings = punchOutSettings;
@@ -92,7 +113,12 @@ public class PunchOutSessionExpiredFilterAttribute : TypeFilterAttribute
 
         #region Utilities
 
-        private async Task IsActivePunchoutSession(ActionExecutingContext context)
+        /// <summary>
+        /// Checks if there is an active PunchOut session and restricts access to certain controllers and actions if the session is active
+        /// </summary>
+        /// <param name="context">The action executing context</param>
+        /// <returns>A task that represents the asynchronous operation</returns>
+        private async Task IsActivePunchoutSessionAsync(ActionExecutingContext context)
         {
             ArgumentNullException.ThrowIfNull(context);
 
@@ -109,6 +135,16 @@ public class PunchOutSessionExpiredFilterAttribute : TypeFilterAttribute
 
             //ignore search engines and background tasks
             if (customer.IsSearchEngineAccount() || customer.IsBackgroundTaskAccount())
+                return;
+
+            //ignore AJAX requests
+            if (_webHelper.IsAjaxRequest(context.HttpContext.Request))
+                return;
+
+            //ignore admin area requests
+            if (context.RouteData.Values.TryGetValue("area", out var area) &&
+                area is string areaStr &&
+                areaStr.Equals(AreaNames.ADMIN, StringComparison.OrdinalIgnoreCase))
                 return;
 
             var session = await _punchOutService.GetPunchOutSessionAsync();
@@ -141,10 +177,52 @@ public class PunchOutSessionExpiredFilterAttribute : TypeFilterAttribute
         /// <param name="controllerName">The name of the controller</param>
         /// <param name="actionName">The name of the action</param>
         /// <returns>True if the action is forbidden; otherwise false</returns>
-        private bool IsForbiddenAction(string controllerName, string actionName)
+        private static bool IsForbiddenAction(string controllerName, string actionName)
         {
             return _forbiddenActions.TryGetValue(controllerName, out var forbiddenActions) &&
                    forbiddenActions.Contains(actionName);
+        }
+
+        /// <summary>
+        /// Replaces the view for the Cart action with a custom PunchOut view if PunchOut session is active
+        /// </summary>
+        /// <param name="context">The result executing context</param>
+        /// <returns>A task that represents the asynchronous operation</returns>
+        private async Task ReplaceCartViewIfPunchOutActiveAsync(ResultExecutingContext context)
+        {
+            ArgumentNullException.ThrowIfNull(context);
+
+            if (!_punchOutSettings.IsActive)
+                return;
+
+            var customer = await _workContext.GetCurrentCustomerAsync();
+
+            //ignore search engines and background tasks
+            if (customer.IsSearchEngineAccount() || customer.IsBackgroundTaskAccount())
+                return;
+
+            //ignore AJAX requests
+            if (_webHelper.IsAjaxRequest(context.HttpContext.Request))
+                return;
+
+            //ignore admin area requests
+            if (context.RouteData.Values.TryGetValue("area", out var area) &&
+                area is string areaStr &&
+                areaStr.Equals(AreaNames.ADMIN, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            var session = await _punchOutService.GetPunchOutSessionAsync();
+            if (session != null && session.IsActive)
+            {
+                var routeName = context.HttpContext.GetEndpoint()?.Metadata.GetMetadata<RouteNameMetadata>()?.RouteName;
+
+                // Only replace view for Cart action when PunchOut is active
+                if (routeName is NopRouteNames.General.CART && context.Result is ViewResult viewResult)
+                {
+                    // Replace the view name while keeping the model
+                    viewResult.ViewName = "~/Plugins/Misc.PunchOut/Views/PunchOutCart.cshtml";
+                }
+            }
         }
 
         #endregion
@@ -159,10 +237,22 @@ public class PunchOutSessionExpiredFilterAttribute : TypeFilterAttribute
         /// <returns>A task that represents the asynchronous operation</returns>
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            await IsActivePunchoutSession(context);
+            await IsActivePunchoutSessionAsync(context);
 
             if (context.Result == null)
                 await next();
+        }
+
+        /// <summary>
+        /// Called asynchronously before the result execution.
+        /// </summary>
+        /// <param name="context">A context for result filters</param>
+        /// <param name="next">A delegate invoked to execute the next result filter or the result</param>
+        /// <returns>A task that represents the asynchronous operation</returns>
+        public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
+        {
+            await ReplaceCartViewIfPunchOutActiveAsync(context);
+            await next();
         }
 
         #endregion

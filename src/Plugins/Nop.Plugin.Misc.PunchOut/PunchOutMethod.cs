@@ -1,13 +1,9 @@
-﻿using Nop.Core.Domain.Cms;
-using Nop.Core.Domain.Customers;
-using Nop.Plugin.Misc.PunchOut.Components;
-using Nop.Services.Cms;
+﻿using Nop.Core.Domain.Customers;
 using Nop.Services.Common;
 using Nop.Services.Configuration;
 using Nop.Services.Customers;
 using Nop.Services.Localization;
 using Nop.Services.Plugins;
-using Nop.Web.Framework.Infrastructure;
 using Nop.Web.Framework.Mvc.Routing;
 
 namespace Nop.Plugin.Misc.PunchOut;
@@ -15,7 +11,7 @@ namespace Nop.Plugin.Misc.PunchOut;
 /// <summary>
 /// Represents PunchOut plugin
 /// </summary>
-public class PunchOutMethod : BasePlugin, IMiscPlugin, IWidgetPlugin
+public class PunchOutMethod : BasePlugin, IMiscPlugin
 {
     #region Fields
 
@@ -23,7 +19,6 @@ public class PunchOutMethod : BasePlugin, IMiscPlugin, IWidgetPlugin
     protected readonly ILocalizationService _localizationService;
     protected readonly INopUrlHelper _nopUrlHelper;
     protected readonly ISettingService _settingService;
-    protected readonly WidgetSettings _widgetSettings;
 
     #endregion
 
@@ -32,14 +27,12 @@ public class PunchOutMethod : BasePlugin, IMiscPlugin, IWidgetPlugin
     public PunchOutMethod(ICustomerService customerService,
         ILocalizationService localizationService,
         INopUrlHelper nopUrlHelper,
-        ISettingService settingService,
-        WidgetSettings widgetSettings)
+        ISettingService settingService)
     {
         _customerService = customerService;
         _localizationService = localizationService;
         _nopUrlHelper = nopUrlHelper;
         _settingService = settingService;
-        _widgetSettings = widgetSettings;
     }
 
     #endregion
@@ -55,31 +48,6 @@ public class PunchOutMethod : BasePlugin, IMiscPlugin, IWidgetPlugin
     }
 
     /// <summary>
-    /// Gets widget zones where this widget should be rendered
-    /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the widget zones
-    /// </returns>
-    public Task<IList<string>> GetWidgetZonesAsync()
-    {
-        return Task.FromResult<IList<string>>(new List<string>
-        {
-            PublicWidgetZones.OrderSummaryContentAfter
-        });
-    }
-
-    /// <summary>
-    /// Gets a type of a view component for displaying widget
-    /// </summary>
-    /// <param name="widgetZone">Name of the widget zone</param>
-    /// <returns>View component type</returns>
-    public Type GetWidgetViewComponent(string widgetZone)
-    {
-        return typeof(PunchOutButtonComponent);
-    }
-
-    /// <summary>
     /// Install the plugin
     /// </summary>
     /// <returns>A task that represents the asynchronous operation</returns>
@@ -92,12 +60,6 @@ public class PunchOutMethod : BasePlugin, IMiscPlugin, IWidgetPlugin
             RestrictedCustomerRoleIds = [(await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.AdministratorsRoleName)).Id],
         });
 
-        if (!_widgetSettings.ActiveWidgetSystemNames.Contains(PunchOutDefaults.SystemName))
-        {
-            _widgetSettings.ActiveWidgetSystemNames.Add(PunchOutDefaults.SystemName);
-            await _settingService.SaveSettingAsync(_widgetSettings);
-        }
-
         await _localizationService.AddOrUpdateLocaleResourceAsync(new Dictionary<string, string>
         {
             ["Plugins.Misc.PunchOut.Configuration"] = "Configuration",
@@ -105,7 +67,7 @@ public class PunchOutMethod : BasePlugin, IMiscPlugin, IWidgetPlugin
 
             ["Plugins.Misc.PunchOut.Configuration.IsActive"] = "Is active",
             ["Plugins.Misc.PunchOut.Configuration.IsActive.Hint"] = "Enable or disable the plugin.",
-            ["Plugins.Misc.PunchOut.Configuration.CustomerRoles"] = "Restricted sustomer roles",
+            ["Plugins.Misc.PunchOut.Configuration.CustomerRoles"] = "Restricted customer roles",
             ["Plugins.Misc.PunchOut.Configuration.CustomerRoles.Hint"] = "Select customer roles that will have't access to the PunchOut feature. If no role is selected, all customers will have access.",
             ["Plugins.Misc.PunchOut.Configuration.CustomerRoles.NoRoles"] = "No customer roles found",
             ["Plugins.Misc.PunchOut.Configuration.TimeToExpire"] = "Time to expire",
@@ -151,26 +113,11 @@ public class PunchOutMethod : BasePlugin, IMiscPlugin, IWidgetPlugin
     /// <returns>A task that represents the asynchronous operation</returns>
     public override async Task UninstallAsync()
     {
-        if (_widgetSettings.ActiveWidgetSystemNames.Contains(PunchOutDefaults.SystemName))
-        {
-            _widgetSettings.ActiveWidgetSystemNames.Remove(PunchOutDefaults.SystemName);
-            await _settingService.SaveSettingAsync(_widgetSettings);
-        }
-
         await _settingService.DeleteSettingAsync<PunchOutSettings>();
         await _localizationService.DeleteLocaleResourcesAsync("Plugins.Misc.PunchOut");
 
         await base.UninstallAsync();
     }
 
-    #endregion
-
-    #region Properties
-
-    /// <summary>
-    /// Gets a value indicating whether to hide this plugin on the widget list page in the admin area
-    /// </summary>
-    public bool HideInWidgetList => true;
-
-    #endregion
+    #endregion    
 }
