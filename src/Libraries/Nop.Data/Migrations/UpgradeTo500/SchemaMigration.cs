@@ -102,9 +102,5 @@ public class SchemaMigration : ForwardOnlyMigration
 
         //#4279
         this.CreateTableIfNotExists<Product3dObject>();
-
-        //#8270
-        this.DeleteColumnsIfExists<ProductAttributeCombination>(["PictureId"]);
-        this.DeleteColumnsIfExists<ProductAttributeValue>(["PictureId"]);
     }
 }
