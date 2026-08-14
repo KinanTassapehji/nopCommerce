@@ -591,35 +591,10 @@ public class ForumInstallService
         }
     }
 
-    #endregion
-
-    #region Methods
-
-    /// <summary>
-    /// Adds the necessary data for the plugin to work correctly
-    /// </summary>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public async Task InstallRequiredDataAsync()
-    {
-        await ConfigureModeratorRoleAsync();
-
-        await InsertSettingsAsync();
-
-        await InsertLocalesAsync();
-
-        await InsertMessageTemplateAsync();
-
-        await InsertActivityLogTypesAsync();
-
-        await PreparePermissionMappingsAsync();
-
-        await UpdateGuestDataAsync();
-    }
-
     /// <summary>
     /// Updates guest data
     /// </summary>
-    public async Task UpdateGuestDataAsync()
+    private async Task UpdateGuestDataAsync()
     {
         var ftPageIndex = 0;
         while (true)
@@ -656,6 +631,31 @@ public class ForumInstallService
                 await _dataProvider.UpdateEntityAsync(post);
             }
         }
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// <summary>
+    /// Adds the necessary data for the plugin to work correctly
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    public async Task InstallRequiredDataAsync()
+    {
+        await ConfigureModeratorRoleAsync();
+
+        await InsertSettingsAsync();
+
+        await InsertLocalesAsync();
+
+        await InsertMessageTemplateAsync();
+
+        await InsertActivityLogTypesAsync();
+
+        await PreparePermissionMappingsAsync();
+
+        await UpdateGuestDataAsync();
     }
 
     /// <summary>

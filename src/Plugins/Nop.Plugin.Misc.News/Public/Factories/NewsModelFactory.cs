@@ -222,15 +222,15 @@ public class NewsModelFactory
             CommentTitle = newsComment.CommentTitle,
             CommentText = newsComment.CommentText,
             CreatedOn = await _dateTimeHelper.ConvertToUserTimeAsync(newsComment.CreatedOnUtc, DateTimeKind.Utc),
-            AllowViewingProfiles = _customerSettings.AllowViewingProfiles && newsComment.CustomerId != 0 && !await _customerService.IsGuestAsync(customer),
+            AllowViewingProfiles = _customerSettings.AllowViewingProfiles && customer != null && !await _customerService.IsGuestAsync(customer),
         };
 
         if (_customerSettings.AllowCustomersToUploadAvatars)
         {
-            model.CustomerAvatarUrl = newsComment.CustomerId == null ?
+            model.CustomerAvatarUrl = customer is null ?
                 await _pictureService.GetDefaultPictureUrlAsync(_mediaSettings.AvatarPictureSize, PictureType.Avatar) :
                 await _pictureService.GetPictureUrlAsync(
-                    await _genericAttributeService.GetAttributeAsync<Customer, int>(newsComment.CustomerId.Value, NopCustomerDefaults.AvatarPictureIdAttribute),
+                    await _genericAttributeService.GetAttributeAsync<int>(customer, NopCustomerDefaults.AvatarPictureIdAttribute),
                     _mediaSettings.AvatarPictureSize,
                     _customerSettings.DefaultAvatarEnabled,
                     defaultPictureType: PictureType.Avatar);

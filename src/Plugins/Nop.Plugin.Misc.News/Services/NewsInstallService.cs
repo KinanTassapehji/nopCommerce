@@ -429,6 +429,30 @@ public class NewsInstallService
         await UpdatePermissionMappingsAsync("ContentManagement.NewsCommentsCreateEditDelete", NewsDefaults.Permissions.NEWS_COMMENTS_MANAGE);
     }
 
+    /// <summary>
+    /// Updates guest data
+    /// </summary>
+    private async Task UpdateGuestDataAsync()
+    {
+        var commentPageIndex = 0;
+        while (true)
+        {
+            var comments = (from comment in _dataProvider.GetTable<NewsComment>()
+                            join c in _dataProvider.GetTable<Customer>() on comment.CustomerId equals c.Id
+                            where string.IsNullOrEmpty(c.Email)
+                            select comment).Skip(commentPageIndex++ * PAGE_SIZE).Take(PAGE_SIZE).ToList();
+
+            if (!comments.Any())
+                break;
+
+            foreach (var comment in comments)
+            {
+                comment.CustomerId = null;
+                await _dataProvider.UpdateEntityAsync(comment);
+            }
+        }
+    }
+
     #endregion
 
     #region Methods
@@ -448,31 +472,8 @@ public class NewsInstallService
         await InserActivityLogTypesAsync();
 
         await PreparePermissionMappingsAsync();
-    }
 
-
-    /// <summary>
-    /// Updates guest data
-    /// </summary>
-    public async Task UpdateGuestDataAsync()
-    {
-        var commentPageIndex = 0;
-        while (true)
-        {
-            var comments = (from comment in _dataProvider.GetTable<NewsComment>()
-                            join c in _dataProvider.GetTable<Customer>() on comment.CustomerId equals c.Id
-                            where string.IsNullOrEmpty(c.Email)
-                            select comment).Skip(commentPageIndex++ * PAGE_SIZE).Take(PAGE_SIZE).ToList();
-
-            if (!comments.Any())
-                break;
-
-            foreach (var comment in comments)
-            {
-                comment.CustomerId = null;
-                await _dataProvider.UpdateEntityAsync(comment);
-            }
-        }
+        await UpdateGuestDataAsync();
     }
 
     /// <summary>

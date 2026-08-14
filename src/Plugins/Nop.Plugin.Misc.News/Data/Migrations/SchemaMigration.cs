@@ -10,7 +10,7 @@ using Nop.Plugin.Misc.News.Domain;
 
 namespace Nop.Plugin.Misc.News.Data.Migrations;
 
-[NopMigration("2025-03-06 00:00:00", "Misc.News schema", MigrationProcessType.Installation)]
+[NopMigration("2025-03-06 00:00:01", "Misc.News schema", MigrationProcessType.Installation)]
 public class SchemaMigration : Migration
 {
     #region Fields

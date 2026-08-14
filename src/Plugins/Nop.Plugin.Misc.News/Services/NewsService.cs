@@ -425,8 +425,8 @@ public class NewsService
         var commonTokens = new List<Token>();
         await AddNewsCommentTokensAsync(commonTokens, newsComment);
 
-        if (newsComment.CustomerId.HasValue)
-            await _messageTokenProvider.AddCustomerTokensAsync(commonTokens, newsComment.CustomerId.Value);
+        if (customer is not null)
+            await _messageTokenProvider.AddCustomerTokensAsync(commonTokens, customer);
 
         return await messageTemplates.SelectAwait(async messageTemplate =>
         {

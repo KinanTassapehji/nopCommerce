@@ -458,13 +458,13 @@ public class ForumModelFactory
                 CustomerName = await _customerService.FormatUsernameAsync(customer),
                 IsCustomerForumModerator = customerIsModerator,
                 ShowCustomersPostCount = !customerIsGuest && _forumSettings.ShowCustomersPostCount,
-                ForumPostCount = customerIsGuest ? 0 : await _genericAttributeService.GetAttributeAsync<Customer, int>(post.CustomerId ?? 0, ForumDefaults.ForumPostCountAttribute),
+                ForumPostCount = customerIsGuest ? 0 : await _genericAttributeService.GetAttributeAsync<int>(customer, ForumDefaults.ForumPostCountAttribute),
                 ShowCustomersJoinDate = _customerSettings.ShowCustomersJoinDate && !customerIsGuest,
                 CustomerJoinDate = customer?.CreatedOnUtc ?? DateTime.Now,
                 AllowPrivateMessages = _privateMessageSettings.AllowPrivateMessages && !customerIsGuest,
                 SignaturesEnabled = _forumSettings.SignaturesEnabled,
                 FormattedSignature = customerIsGuest ? string.Empty : _forumService
-                    .FormatForumSignatureText(await _genericAttributeService.GetAttributeAsync<Customer, string>(post.CustomerId ?? 0, ForumDefaults.SignatureAttribute)),
+                    .FormatForumSignatureText(await _genericAttributeService.GetAttributeAsync<string>(customer, ForumDefaults.SignatureAttribute)),
                 //created on string
                 PostCreatedOn = await _dateTimeHelper.ConvertToUserTimeAsync(post.CreatedOnUtc, DateTimeKind.Utc)
             };
