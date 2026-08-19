@@ -201,7 +201,7 @@
                     <td class="subtotal">
                         <label class="td-title">@T("ShoppingCart.ItemTotal"):</label>
                         <span class="product-subtotal">@item.SubTotal</span>
-                        @if (!string.IsNullOrEmpty(item.Discount))
+                        @if (Model.ShowItemDiscount && !string.IsNullOrEmpty(item.Discount))
                         {
                             <div class="discount">
                                 @T("ShoppingCart.ItemYouSave", item.Discount)

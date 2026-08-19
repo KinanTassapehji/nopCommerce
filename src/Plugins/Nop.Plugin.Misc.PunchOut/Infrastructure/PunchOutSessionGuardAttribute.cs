@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Routing;
 using Nop.Core;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Http;
@@ -11,6 +9,9 @@ using Nop.Services.Helpers;
 using Nop.Services.Localization;
 using Nop.Services.Messages;
 using Nop.Web.Framework;
+using Nop.Web.Framework.UI;
+using Nop.Web.Models.Catalog;
+using Nop.Web.Models.ShoppingCart;
 
 namespace Nop.Plugin.Misc.PunchOut.Infrastructure;
 
@@ -40,6 +41,7 @@ public class PunchOutSessionGuardAttribute : TypeFilterAttribute
         #region Fields
 
         private readonly ILocalizationService _localizationService;
+        private readonly INopHtmlHelper _nopHtmlHelper;
         private readonly INotificationService _notificationService;
         private readonly IWebHelper _webHelper;
         private readonly IWorkContext _workContext;
@@ -57,7 +59,8 @@ public class PunchOutSessionGuardAttribute : TypeFilterAttribute
             "PunchOut",
             "ShoppingCart",
             "Error",
-            "Common"
+            "Common",
+            "Customer"
         };
 
         /// <summary>
@@ -78,14 +81,25 @@ public class PunchOutSessionGuardAttribute : TypeFilterAttribute
                 "Common",
                 new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                 {
-                    "ContactUs"
+                    "ContactUs",
+                    "ContactVendor"
                 }
             },
             {
                 "Product",
                 new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                 {
-                    "ProductReviews"
+                    "ProductReviews",
+                    "SetProductReviewHelpfulness",
+                    "CustomerProductReviews"
+                }
+            },
+            {
+                "Customer",
+                new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    "Info",
+                    "Register"
                 }
             }
         };
@@ -95,6 +109,7 @@ public class PunchOutSessionGuardAttribute : TypeFilterAttribute
         #region Ctor
 
         public PunchOutSessionGuardFilter(ILocalizationService localizationService,
+            INopHtmlHelper nopHtmlHelper,
             INotificationService notificationService,
             IWebHelper webHelper,
             IWorkContext workContext,
@@ -102,6 +117,7 @@ public class PunchOutSessionGuardAttribute : TypeFilterAttribute
             PunchOutSettings punchOutSettings)
         {
             _localizationService = localizationService;
+            _nopHtmlHelper = nopHtmlHelper;
             _notificationService = notificationService;
             _webHelper = webHelper;
             _workContext = workContext;
@@ -214,13 +230,30 @@ public class PunchOutSessionGuardAttribute : TypeFilterAttribute
             var session = await _punchOutService.GetPunchOutSessionAsync();
             if (session != null && session.IsActive)
             {
-                var routeName = context.HttpContext.GetEndpoint()?.Metadata.GetMetadata<RouteNameMetadata>()?.RouteName;
+                var routeName = _nopHtmlHelper.GetRouteName();
 
                 // Only replace view for Cart action when PunchOut is active
                 if (routeName is NopRouteNames.General.CART && context.Result is ViewResult viewResult)
                 {
+                    if (viewResult.ViewData.Model is ShoppingCartModel model)
+                    {
+                        model.ShowItemDiscount = false;
+                    }
+
                     // Replace the view name while keeping the model
                     viewResult.ViewName = "~/Plugins/Misc.PunchOut/Views/PunchOutCart.cshtml";
+                }
+
+                if (routeName is "ProductDetails" && context.Result is ViewResult productDetailsViewResult)
+                {
+                    if (productDetailsViewResult.ViewData.Model is ProductDetailsModel model)
+                    {
+                        model.ProductReviews.AddProductReview.CanCurrentCustomerLeaveReview = false;
+                        model.ProductReviews.AddProductReview.CanAddNewReview = false;
+
+                        model.ProductReviewOverview.CanAddNewReview = false;
+                        model.ProductReviewOverview.CanCurrentCustomerLeaveReview = false;
+                    }
                 }
             }
         }

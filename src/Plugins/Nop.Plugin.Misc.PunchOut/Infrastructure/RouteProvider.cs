@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Routing;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Mvc.Routing;
-using Nop.Web.Infrastructure;
 
 namespace Nop.Plugin.Misc.PunchOut.Infrastructure;
 
@@ -17,8 +16,9 @@ public class RouteProvider : IRouteProvider
     /// <param name="endpointRouteBuilder">Route builder</param>
     public void RegisterRoutes(IEndpointRouteBuilder endpointRouteBuilder)
     {
-        endpointRouteBuilder.MapControllerRoute(PunchOutDefaults.ConfigurationRouteName, "Plugins/PunchOut/Configure",
-            new { controller = "PunchOutAdmin", action = "Configure", area = AreaNames.ADMIN });
+        endpointRouteBuilder.MapControllerRoute(name: PunchOutDefaults.ConfigurationRouteName,
+            pattern: "Plugins/PunchOut/Configure",
+            defaults: new { controller = "PunchOutAdmin", action = "Configure", area = AreaNames.ADMIN });
     }
 
     /// <summary>

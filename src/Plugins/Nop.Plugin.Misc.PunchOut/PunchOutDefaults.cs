@@ -48,6 +48,11 @@ public class PunchOutDefaults
     public static string HideIdentityBlock => "PunchOut.HideIdentityBlock";
 
     /// <summary>
+    /// Gets the generic attribute name to hide session block on the plugin configuration page
+    /// </summary>
+    public static string HideSessionBlock => "PunchOut.HideSessionBlock";
+
+    /// <summary>
     /// Gets the generic attribute name to hide log block on the plugin configuration page
     /// </summary>
     public static string HideLogBlock => "PunchOut.HideLogBlock";

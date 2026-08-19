@@ -4,6 +4,7 @@ using Nop.Core;
 using Nop.Plugin.Misc.PunchOut.Models;
 using Nop.Plugin.Misc.PunchOut.Models.Identity;
 using Nop.Plugin.Misc.PunchOut.Models.Log;
+using Nop.Plugin.Misc.PunchOut.Models.Session;
 using Nop.Plugin.Misc.PunchOut.Services;
 using Nop.Services.Common;
 using Nop.Services.Configuration;
@@ -39,6 +40,7 @@ public class PunchOutAdminController : BasePluginController
     protected readonly IWorkContext _workContext;
     protected readonly PunchOutIdentityService _punchOutIdentityService;
     protected readonly PunchOutLogService _punchOutLogService;
+    protected readonly PunchOutService _punchOutService;
     protected readonly PunchOutSettings _punchOutSettings;
 
     #endregion
@@ -55,6 +57,7 @@ public class PunchOutAdminController : BasePluginController
         IWorkContext workContext,
         PunchOutIdentityService punchOutIdentityService,
         PunchOutLogService punchOutLogService,
+        PunchOutService punchOutService,
         PunchOutSettings punchOutSettings)
     {
         _customerService = customerService;
@@ -67,6 +70,7 @@ public class PunchOutAdminController : BasePluginController
         _workContext = workContext;
         _punchOutIdentityService = punchOutIdentityService;
         _punchOutLogService = punchOutLogService;
+        _punchOutService = punchOutService;
         _punchOutSettings = punchOutSettings;
     }
 
@@ -106,6 +110,7 @@ public class PunchOutAdminController : BasePluginController
 
         model.HideGeneralBlock = await _genericAttributeService.GetAttributeAsync<bool>(currentCustomer, PunchOutDefaults.HideGeneralBlock);
         model.HideIdentityBlock = await _genericAttributeService.GetAttributeAsync<bool>(currentCustomer, PunchOutDefaults.HideIdentityBlock);
+        model.HideSessionBlock = await _genericAttributeService.GetAttributeAsync<bool>(currentCustomer, PunchOutDefaults.HideSessionBlock);
         model.HideLogBlock = await _genericAttributeService.GetAttributeAsync<bool>(currentCustomer, PunchOutDefaults.HideLogBlock);
 
         return View("~/Plugins/Misc.PunchOut/Views/Configuration/Configure.cshtml", model);
@@ -280,6 +285,56 @@ public class PunchOutAdminController : BasePluginController
 
         await _punchOutIdentityService.DeletePunchOutIdentityAsync(identity.Id);
 
+        return new NullJsonResult();
+    }
+
+    #endregion
+
+    #region Session
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    public async Task<IActionResult> SessionList(PunchOutSessionSearchModel searchModel)
+    {
+        //get punch out sessions
+        var punchOutSessions = await _punchOutService.GetAllPunchOutSessionAsync(
+            pageIndex: searchModel.Page - 1, pageSize: searchModel.PageSize);
+
+        if (punchOutSessions is null)
+            return Json(new PunchOutSessionModel());
+
+        //prepare grid model
+        var model = await new PunchOutSessionListModel().PrepareToGridAsync(searchModel, punchOutSessions, () =>
+        {
+            return punchOutSessions.SelectAwait(async sessionItem =>
+            {
+                var model = new PunchOutSessionModel
+                {
+                    SessionId = sessionItem.SessionId,
+                    IsActive = sessionItem.IsActive,
+                    BuyerCookie = sessionItem.BuyerCookie,
+                    CustomerId = sessionItem.CustomerId,
+                    CustomerEmail = (await _customerService.GetCustomerByIdAsync(sessionItem.CustomerId))?.Email ?? string.Empty,
+                    StoreId = sessionItem.StoreId,
+                    CreatedOnUtc = await _dateTimeHelper.ConvertToUserTimeAsync(sessionItem.CreatedOnUtc, DateTimeKind.Utc)
+                };
+                return model;
+            });
+        });
+
+        return Json(model);
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    public async Task<IActionResult> CloseSession(int customerId, int storeId)
+    {
+        //try to get a punchout session
+        var sessionGenericAttribute = await _punchOutService.GetAttributeForEntityAsync(customerId, storeId)
+            ?? throw new ArgumentException("No session found with the specified entity id");
+
+        await _genericAttributeService.DeleteAttributesAsync([sessionGenericAttribute]);
+        
         return new NullJsonResult();
     }
 

@@ -26,6 +26,7 @@
     <None Remove="Views\Configuration\Configure.cshtml" />
     <None Remove="Views\Configuration\_Configuration.cshtml" />
     <None Remove="Views\Identity\List.cshtml" />
+    <None Remove="Views\Session\List.cshtml" />
     <None Remove="Views\Log\List.cshtml" />
     <None Remove="Views\Log\View.cshtml" />
     <None Remove="Views\_ViewImports.cshtml" />
@@ -46,6 +47,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Identity\List.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Session\List.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Log\List.cshtml">

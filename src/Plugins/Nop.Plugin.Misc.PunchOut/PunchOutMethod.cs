@@ -101,6 +101,16 @@ public class PunchOutMethod : BasePlugin, IMiscPlugin
             ["Plugins.Misc.PunchOut.Identity.Search.Identity"] = "Identity",
             ["Plugins.Misc.PunchOut.Identity.Search.Identity.Hint"] = "The identity for the search.",
 
+            ["Plugins.Misc.PunchOut.Session"] = "Session",
+            ["Plugins.Misc.PunchOut.Session.SessionId"] = "Session ID",
+            ["Plugins.Misc.PunchOut.Session.BuyerCookie"] = "Buyer Cookie",
+            ["Plugins.Misc.PunchOut.Session.IsActive"] = "Is Active",
+            ["Plugins.Misc.PunchOut.Session.CustomerEmail"] = "Customer Email",
+            ["Plugins.Misc.PunchOut.Session.StoreId"] = "Store ID",
+            ["Plugins.Misc.PunchOut.Session.CreatedOnUtc"] = "Created On",
+            ["Plugins.Misc.PunchOut.Session.CloseSession"] = "Close Session",
+            ["Plugins.Misc.PunchOut.Session.CloseSessionError"] = "An error occurred while closing the PunchOut session.",
+
             ["Plugins.Misc.PunchOut.Button.SubmitForApproval"] = "Submit for Approval",
         });
 

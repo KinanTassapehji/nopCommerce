@@ -7,6 +7,7 @@ using Nop.Core.Caching;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Orders;
+using Nop.Data;
 using Nop.Plugin.Misc.PunchOut.Domain;
 using Nop.Plugin.Misc.PunchOut.Domain.CXML;
 using Nop.Services.Authentication;
@@ -37,6 +38,7 @@ public class PunchOutService
     protected readonly ILogger _logger;
     protected readonly IPriceCalculationService _priceCalculationService;
     protected readonly IProductService _productService;
+    protected readonly IRepository<GenericAttribute> _genericAttributeRepository;
     protected readonly IShoppingCartService _shoppingCartService;
     protected readonly IStateProvinceService _stateProvinceService;
     protected readonly IStaticCacheManager _staticCacheManager;
@@ -61,6 +63,7 @@ public class PunchOutService
         ILogger logger,
         IPriceCalculationService priceCalculationService,
         IProductService productService,
+        IRepository<GenericAttribute> genericAttributeRepository,
         IShoppingCartService shoppingCartService,
         IStateProvinceService stateProvinceService,
         IStaticCacheManager staticCacheManager,
@@ -81,6 +84,7 @@ public class PunchOutService
         _logger = logger;
         _priceCalculationService = priceCalculationService;
         _productService = productService;
+        _genericAttributeRepository = genericAttributeRepository;
         _shoppingCartService = shoppingCartService;
         _stateProvinceService = stateProvinceService;
         _staticCacheManager = staticCacheManager;
@@ -572,7 +576,7 @@ public class PunchOutService
             var session = JsonConvert.DeserializeObject<PunchOutSession>(jsonSession);
             if (session != null)
             {
-                session.IsActive = session.IsActive && !string.IsNullOrEmpty(session.SessionId);
+                session.IsActive = session?.IsActive ?? false && !string.IsNullOrEmpty(session.SessionId);
                 return session;
             }
         }
@@ -582,6 +586,76 @@ public class PunchOutService
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Gets all saved punchout session data for the all customers
+    /// </summary>
+    /// <param name="storeId">Store identifier; pass 0 to load all records</param>
+    /// <param name="pageIndex">Page index</param>
+    /// <param name="pageSize">Page size</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the paged list of PunchOut sessions
+    /// </returns>
+    public async Task<IPagedList<PunchOutSession>> GetAllPunchOutSessionAsync(int storeId = 0, int pageIndex = 0, int pageSize = int.MaxValue)
+    {
+        try
+        {
+            var query = from ga in _genericAttributeRepository.Table
+                        where ga.Key == PunchOutDefaults.PunchOutSessionTokenAttribute &&
+                              ga.KeyGroup == nameof(Customer)
+                        select ga;
+
+            //store
+            if (storeId > 0)
+                query = query.Where(ga => ga.StoreId == storeId);
+
+            var jsonSessions = await query.ToListAsync();
+            var sessions = new List<PunchOutSession>();
+
+            foreach (var jsonSession in jsonSessions)
+            {
+                var session = JsonConvert.DeserializeObject<PunchOutSession>(jsonSession.Value);
+                if (session != null)
+                {
+                    sessions.Add(session);
+                }
+            }
+
+            //paging
+            return new PagedList<PunchOutSession>(sessions, pageIndex, pageSize);
+        }
+        catch (Exception ex)
+        {
+            await _logger.ErrorAsync("PunchOut: error retrieving saved punchout sessions", ex);
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Get attribute for the entity
+    /// </summary>
+    /// <param name="entityId">Entity identifier</param>
+    /// <param name="storeId">Store identifier</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the get attribute
+    /// </returns>
+    public virtual async Task<GenericAttribute> GetAttributeForEntityAsync(int entityId, int storeId = 0)
+    {
+        var query = from ga in _genericAttributeRepository.Table
+                    where ga.EntityId == entityId &&
+                          ga.KeyGroup == nameof(Customer) &&
+                          ga.Key == PunchOutDefaults.PunchOutSessionTokenAttribute
+                    select ga;
+
+        //store
+        if (storeId > 0)
+            query = query.Where(ga => ga.StoreId == storeId);
+
+        return await query.FirstOrDefaultAsync();
     }
 
     /// <summary>
