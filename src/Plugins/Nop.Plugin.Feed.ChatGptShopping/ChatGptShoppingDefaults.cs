@@ -16,6 +16,39 @@ public class ChatGptShoppingDefaults
     public static string ConfigurationRouteName => "Plugin.Feed.ChatGptShopping.Configure";
 
     /// <summary>
+    /// Gets the product availability value In Stock
+    /// </summary>
+    public static string ProductAvailabilityInStock => "in_stock";
+    /// <summary>
+    /// Gets the product availability value Out of Stock
+    /// </summary>
+    public static string ProductAvailabilityOutOfStock => "out_of_stock";
+    /// <summary>
+    /// Gets the product availability value Pre-order
+    /// </summary>
+    public static string ProductAvailabilityPreOrder => "pre_order";
+
+    /// <summary>
+    /// Gets a directory path where the feed files will be generated
+    /// </summary>
+    public static string FilePathDirectory => "files/exportimport/";
+
+    /// <summary>
+    /// Gets a maximum number of products per page when generating feed
+    /// </summary>
+    public static int PageSize => 500;
+
+    /// <summary>
+    /// Gets a name of the feed file
+    /// </summary>
+    public static string FeedFileName => "chatgptshopping_products.jsonl.gz";
+
+    /// <summary>
+    /// Gets a country code for which the feed file will be generated
+    /// </summary>
+    public static string GeoTargetingCountryCode => "US";
+
+    /// <summary>
     /// Gets a name, type and period (in seconds) of the auto synchronization task
     /// </summary>
     public static (string Name, string Type, int Period) SynchronizationTask =>

@@ -3,11 +3,11 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Nop.Core;
 using Nop.Core.Domain.Catalog;
+using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Stores;
 using Nop.Core.Infrastructure;
@@ -31,12 +31,10 @@ public class ChatGptShoppingService
     #region Fields
 
     private readonly CurrencySettings _currencySettings;
-    private readonly ChatGptShoppingSettings _chatGptShoppingSettings;
     private readonly ICategoryService _categoryService;
     private readonly ICurrencyService _currencyService;
     private readonly IHtmlFormatter _htmlFormatter;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILanguageService _languageService;
     private readonly ILocalizationService _localizationService;
     private readonly ILogger _logger;
     private readonly IManufacturerService _manufacturerService;
@@ -50,10 +48,8 @@ public class ChatGptShoppingService
     private readonly IUrlRecordService _urlRecordService;
     private readonly IVideoService _videoService;
     private readonly IWebHelper _webHelper;
-    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IWorkContext _workContext;
     private readonly LinkGenerator _linkGenerator;
-
 
     #endregion
 
@@ -61,12 +57,10 @@ public class ChatGptShoppingService
 
     public ChatGptShoppingService(
         CurrencySettings currencySettings,
-        ChatGptShoppingSettings chatGptShoppingSettings,
         ICategoryService categoryService,
         ICurrencyService currencyService,
         IHtmlFormatter htmlFormatter,
         IHttpContextAccessor httpContextAccessor,
-        ILanguageService languageService,
         ILocalizationService localizationService,
         ILogger logger,
         IManufacturerService manufacturerService,
@@ -80,7 +74,6 @@ public class ChatGptShoppingService
         IUrlRecordService urlRecordService,
         IVideoService videoService,
         IWebHelper webHelper,
-        IWebHostEnvironment webHostEnvironment,
         IWorkContext workContext,
         LinkGenerator linkGenerator
         )
@@ -90,8 +83,6 @@ public class ChatGptShoppingService
         _currencySettings = currencySettings;
         _htmlFormatter = htmlFormatter;
         _httpContextAccessor = httpContextAccessor;
-        _chatGptShoppingSettings = chatGptShoppingSettings;
-        _languageService = languageService;
         _localizationService = localizationService;
         _logger = logger;
         _manufacturerService = manufacturerService;
@@ -105,7 +96,6 @@ public class ChatGptShoppingService
         _urlRecordService = urlRecordService;
         _videoService = videoService;
         _webHelper = webHelper;
-        _webHostEnvironment = webHostEnvironment;
         _workContext = workContext;
         _linkGenerator = linkGenerator;
     }
@@ -115,32 +105,78 @@ public class ChatGptShoppingService
     #region Utilities
 
     /// <summary>
-    /// Get used currency
+    /// Generate a feed
     /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the Currency
-    /// </returns>
-    protected async Task<Currency> GetUsedCurrencyAsync()
+    /// <param name="store">Store</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    protected async Task GenerateFeedAsync(Store store)
     {
-        var currency = await _currencyService.GetCurrencyByIdAsync(_chatGptShoppingSettings.CurrencyId);
+        ArgumentNullException.ThrowIfNull(store);
+
+        var pathToFile = $"{ChatGptShoppingDefaults.FilePathDirectory}{store.Id}-{ChatGptShoppingDefaults.FeedFileName}";
+        var localFilePath = _nopFileProvider.GetAbsolutePath(pathToFile);
+
+        await using var fileStream = new FileStream(localFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+        await using var gzip = new GZipStream(fileStream, CompressionLevel.Optimal);
+        await using var writer = new StreamWriter(gzip, new UTF8Encoding(false));
+
+        var jsonOptions = new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = false
+        };
+
+        var languageId = (await _workContext.GetWorkingLanguageAsync())?.Id ?? 0;
+        var currentCustomer = await _workContext.GetCurrentCustomerAsync();
+        var chatGptShoppingSettings = await _settingService.LoadSettingAsync<ChatGptShoppingSettings>(store.Id);
+
+        // currency
+        var currency = await _currencyService.GetCurrencyByIdAsync(chatGptShoppingSettings.CurrencyId);
         if (currency == null || !currency.Published)
             currency = await _currencyService.GetCurrencyByIdAsync(_currencySettings.PrimaryStoreCurrencyId);
-        return currency;
+
+        var productPictureSize = chatGptShoppingSettings.ProductPictureSize;
+
+        var pageIndex = 0;
+        while (true)
+        {
+            var products = await _productService.SearchProductsAsync(pageIndex: pageIndex, pageSize: ChatGptShoppingDefaults.PageSize,
+                storeId: store.Id,
+                showHidden: false);
+
+            if (!products.Any())
+                break;
+
+            foreach (var product in products)
+            {
+                try
+                {
+                    var dto = await BuildProductAsync(product, languageId, store, currentCustomer, currency, productPictureSize);
+
+                    if (dto == null)
+                        continue;
+
+                    await WriteProductAsync(writer, dto, jsonOptions);
+                }
+                catch (Exception ex)
+                {
+                    await _logger.WarningAsync($"{ChatGptShoppingDefaults.SystemName} - Unable to export product {product.Id}.", ex);
+                }
+            }
+
+            pageIndex++;
+        }
     }
 
-    private static Task WriteProductAsync(StreamWriter writer, ChatGPTProductDto dto, JsonSerializerOptions jsonOptions)
+    protected static async Task WriteProductAsync(StreamWriter writer, ChatGptProductDto dto, JsonSerializerOptions jsonOptions)
     {
         var json = JsonSerializer.Serialize(dto, jsonOptions);
-
-        return writer.WriteLineAsync(json);
+        await writer.WriteLineAsync(json);
     }
 
-    private async Task<ChatGPTProductDto> BuildProductAsync(Product product, int languageId, Store store)
+    protected async Task<ChatGptProductDto> BuildProductAsync(Product product, int languageId, Store store, Customer customer, Currency currency, int productPictureSize)
     {
-        var currentCustomer = await _workContext.GetCurrentCustomerAsync();
-        var productDto = new ChatGPTProductDto();
-        var chatGptShoppingSettings = await _settingService.LoadSettingAsync<ChatGptShoppingSettings>(store.Id);
+        var productDto = new ChatGptProductDto();
 
         #region OpenAI Flags
 
@@ -157,6 +193,7 @@ public class ChatGptShoppingService
         productDto.Mpn = product.ManufacturerPartNumber;
 
         var title = await _localizationService.GetLocalizedAsync(product, x => x.Name, languageId);
+
         //title should be not longer than 150 characters
         if (title.Length > 150)
             title = title[..150];
@@ -183,6 +220,7 @@ public class ChatGptShoppingService
         #region Item Information
 
         var defaultManufacturer = (await _manufacturerService.GetProductManufacturersByProductIdAsync(product.Id)).FirstOrDefault();
+
         if (defaultManufacturer != null)
         {
             productDto.Brand = (await _manufacturerService.GetManufacturerByIdAsync(defaultManufacturer.ManufacturerId))?.Name;
@@ -193,12 +231,14 @@ public class ChatGptShoppingService
         var defaultProductCategory = (await _categoryService
                     .GetProductCategoriesByProductIdAsync(product.Id))
                     .FirstOrDefault();
+
         if (defaultProductCategory != null)
         {
             var category = await _categoryService.GetFormattedBreadCrumbAsync(
                 category: await _categoryService.GetCategoryByIdAsync(defaultProductCategory.CategoryId),
                 separator: ">",
                 languageId: languageId);
+
             if (!string.IsNullOrEmpty(category))
             {
                 productDto.ProductCategory = category;
@@ -213,10 +253,11 @@ public class ChatGptShoppingService
         var storeLocation = _webHelper.GetStoreLocation();
         var pictures = await _pictureService.GetPicturesByProductIdAsync(product.Id, maximumPictures);
         var additionalImageUrls = new List<string>();
+
         for (var i = 0; i < pictures.Count; i++)
         {
             var picture = pictures[i];
-            var imageUrl = await _pictureService.GetPictureUrlAsync(picture.Id, chatGptShoppingSettings.ProductPictureSize,
+            var imageUrl = await _pictureService.GetPictureUrlAsync(picture.Id, productPictureSize,
                 storeLocation: storeLocation);
 
             if (i == 0)
@@ -233,18 +274,17 @@ public class ChatGptShoppingService
         if (!pictures.Any())
         {
             //no picture? submit a default one
-            var imageUrl = await _pictureService.GetDefaultPictureUrlAsync(chatGptShoppingSettings.ProductPictureSize, storeLocation: storeLocation);
+            var imageUrl = await _pictureService.GetDefaultPictureUrlAsync(productPictureSize, storeLocation: storeLocation);
             productDto.ImageUrl = imageUrl;
         }
-        productDto.AdditionalImageUrls = string.Join(",", additionalImageUrls);
 
+        productDto.AdditionalImageUrls = string.Join(",", additionalImageUrls);
         productDto.VideoUrl = (await _videoService.GetVideosByProductIdAsync(product.Id)).FirstOrDefault()?.VideoUrl;
 
         #endregion
 
         #region Price & Promotions
 
-        var currency = await GetUsedCurrencyAsync();
         var price = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(product.Price, currency);
         //round price now so it matches the product details page
         price = await _priceCalculationService.RoundPriceAsync(price);
@@ -252,10 +292,10 @@ public class ChatGptShoppingService
         productDto.Price = price.ToString(new CultureInfo("en-US", false).NumberFormat) + " " + currency.CurrencyCode;
 
         //calculate price for the maximum quantity if we have tier prices, and choose minimal
-        var minPossiblePrice = (await _priceCalculationService.GetFinalPriceAsync(product, currentCustomer, store, quantity: int.MaxValue)).finalPrice;
+        var minPossiblePrice = (await _priceCalculationService.GetFinalPriceAsync(product, customer, store, quantity: int.MaxValue)).finalPrice;
         var finalPriceBase = (await _taxService.GetProductPriceAsync(product, minPossiblePrice)).price;
-
         price = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(finalPriceBase, currency);
+
         //round price now so it matches the product details page
         price = await _priceCalculationService.RoundPriceAsync(price);
 
@@ -265,20 +305,22 @@ public class ChatGptShoppingService
 
         #region Availability & Inventory
 
-        var availability = nameof(ProductAvailabilityEnum.in_stock); //in stock by default
+        var availability = ChatGptShoppingDefaults.ProductAvailabilityInStock; //in stock by default
+
         if (product.ManageInventoryMethod == ManageInventoryMethod.ManageStock
             && product.BackorderMode == BackorderMode.NoBackorders
             && await _productService.GetTotalStockQuantityAsync(product) <= 0)
         {
-            availability = nameof(ProductAvailabilityEnum.out_of_stock);
+            availability = ChatGptShoppingDefaults.ProductAvailabilityOutOfStock;
         }
+
         productDto.Availability = availability;
 
         if (product.AvailableForPreOrder &&
             (!product.PreOrderAvailabilityStartDateTimeUtc.HasValue ||
             product.PreOrderAvailabilityStartDateTimeUtc.Value >= DateTime.UtcNow))
         {
-            productDto.Availability = nameof(ProductAvailabilityEnum.pre_order);
+            productDto.Availability = ChatGptShoppingDefaults.ProductAvailabilityPreOrder;
             productDto.AvailabilityDate = product.PreOrderAvailabilityStartDateTimeUtc.HasValue ? product.PreOrderAvailabilityStartDateTimeUtc.Value : null;
         }
 
@@ -293,7 +335,7 @@ public class ChatGptShoppingService
 
         #region Returns
 
-        productDto.ReturnPolicy = "Please refer to our store's return policy for details on returns and exchanges.";
+        productDto.ReturnPolicy = await _localizationService.GetResourceAsync("Plugins.Feed.ChatGptShopping.ReturnPolicy");
 
         #endregion
 
@@ -306,8 +348,8 @@ public class ChatGptShoppingService
 
         #region Geo Tagging
 
-        productDto.TargetCountries = "US";
-        productDto.StoreCountry = "US";
+        productDto.TargetCountries = ChatGptShoppingDefaults.GeoTargetingCountryCode;
+        productDto.StoreCountry = ChatGptShoppingDefaults.GeoTargetingCountryCode;
 
         #endregion
 
@@ -334,93 +376,12 @@ public class ChatGptShoppingService
                 if (isAutoSync && !chatGptShoppingSettings.AutoSyncEnabled)
                     continue;
 
-                await GenerateStaticFileAsync(store);
+                await GenerateFeedAsync(store);
             }
         }
         catch (Exception ex)
         {
             await _logger.ErrorAsync($"{ChatGptShoppingDefaults.SystemName} - Error generating ChatGPT Shopping feed", ex);
-        }
-    }
-
-    /// <summary>
-    /// Generate a static feed file
-    /// </summary>
-    /// <param name="store">Store</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public async Task GenerateStaticFileAsync(Store store)
-    {
-        ArgumentNullException.ThrowIfNull(store);
-
-        var filePath = _nopFileProvider.Combine(_webHostEnvironment.WebRootPath, "files", "exportimport", store.Id + "-" + _chatGptShoppingSettings.StaticFileName);
-
-        using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-        await using var gzip = new GZipStream(fileStream, CompressionLevel.Optimal);
-        await using var writer = new StreamWriter(gzip, new UTF8Encoding(false));
-        await GenerateFeedAsync(writer, store);
-    }
-
-    /// <summary>
-    /// Generate a feed
-    /// </summary>
-    /// <param name="stream">Stream</param>
-    /// <param name="store">Store</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public async Task GenerateFeedAsync(StreamWriter stream, Store store)
-    {
-        ArgumentNullException.ThrowIfNull(stream);
-        ArgumentNullException.ThrowIfNull(store);
-
-        var jsonOptions = new JsonSerializerOptions()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            WriteIndented = false
-        };
-
-        //language
-        var languageId = 0;
-        var languages = await _languageService.GetAllLanguagesAsync(storeId: store.Id);
-
-        //if we have only one language, let's use it
-        if (languages.Count == 1)
-        {
-            //let's use the first one
-            var language = languages.FirstOrDefault();
-            languageId = language != null ? language.Id : 0;
-        }
-
-        //otherwise, use the current one
-        if (languageId == 0)
-            languageId = (await _workContext.GetWorkingLanguageAsync()).Id;
-
-        var pageIndex = 0;
-        while (true)
-        {
-            var products = await _productService.SearchProductsAsync(pageIndex: pageIndex, pageSize: 500,
-                storeId: store.Id,
-                showHidden: false);
-
-            if (!products.Any())
-                break;
-
-            foreach (var product in products)
-            {
-                try
-                {
-                    var dto = await BuildProductAsync(product, languageId, store);
-
-                    if (dto == null)
-                        continue;
-
-                    await WriteProductAsync(stream, dto, jsonOptions);
-                }
-                catch (Exception ex)
-                {
-                    await _logger.WarningAsync($"{ChatGptShoppingDefaults.SystemName} - Unable to export product {product.Id}.", ex);
-                }
-            }
-
-            pageIndex++;
         }
     }
 

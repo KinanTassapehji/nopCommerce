@@ -2,7 +2,7 @@
 
 namespace Nop.Plugin.Feed.ChatGptShopping.Domain;
 
-public class ChatGPTProductDto
+public class ChatGptProductDto
 {
     #region OpenAI Flags
 

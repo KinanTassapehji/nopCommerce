@@ -11,11 +11,6 @@ public class ChatGptShoppingSettings : ISettings
     public int CurrencyId { get; set; }
 
     /// <summary>
-    /// Static file name of the feed
-    /// </summary>
-    public string StaticFileName { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether auto synchronization feed is enabled
     /// </summary>
     public bool AutoSyncEnabled { get; set; }

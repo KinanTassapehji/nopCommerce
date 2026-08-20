@@ -19,7 +19,6 @@ public class NopStartup : INopStartup
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<ChatGptShoppingService>();
-        services.AddScoped<ChatGptShoppingSyncTask>();
     }
 
     /// <summary>

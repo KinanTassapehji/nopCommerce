@@ -27,11 +27,9 @@ public record ConfigurationModel : BaseNopModel
 
     [NopResourceDisplayName("Plugins.Feed.ChatGptShopping.Configuration.AutoSyncEnabled")]
     public bool AutoSyncEnabled { get; set; }
-    public bool AutoSyncEnabled_OverrideForStore { get; set; }
 
     [NopResourceDisplayName("Plugins.Feed.ChatGptShopping.Configuration.AutoSyncPeriod")]
     public int AutoSyncPeriod { get; set; }
-    public bool AutoSyncPeriod_OverrideForStore { get; set; }
 
     [NopResourceDisplayName("Plugins.Feed.ChatGptShopping.Configuration.ProductPictureSize")]
     public int ProductPictureSize { get; set; }

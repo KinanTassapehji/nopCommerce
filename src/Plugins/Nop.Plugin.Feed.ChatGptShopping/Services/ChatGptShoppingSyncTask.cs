@@ -10,17 +10,14 @@ public class ChatGptShoppingSyncTask : IScheduleTask
     #region Fields
 
     protected readonly ChatGptShoppingService _chatGptShoppingService;
-    protected readonly ChatGptShoppingSettings _chatGptShoppingSettings;
 
     #endregion
 
     #region Ctor
 
-    public ChatGptShoppingSyncTask(ChatGptShoppingService chatGptShoppingService,
-        ChatGptShoppingSettings chatGptShoppingSettings)
+    public ChatGptShoppingSyncTask(ChatGptShoppingService chatGptShoppingService)
     {
         _chatGptShoppingService = chatGptShoppingService;
-        _chatGptShoppingSettings = chatGptShoppingSettings;
     }
 
     #endregion

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Core;
 using Nop.Core.Infrastructure;
@@ -30,15 +29,14 @@ public class ChatGptShoppingController : BasePluginController
     private readonly ChatGptShoppingService _chatGptShoppingService;
     private readonly ICurrencyService _currencyService;
     private readonly ILocalizationService _localizationService;
+    private readonly ILogger _logger;
     private readonly INopFileProvider _nopFileProvider;
     private readonly INotificationService _notificationService;
-    private readonly ILogger _logger;
     private readonly IScheduleTaskService _scheduleTaskService;
     private readonly ISettingService _settingService;
     private readonly IStoreContext _storeContext;
     private readonly IStoreService _storeService;
     private readonly IWebHelper _webHelper;
-    private readonly IWebHostEnvironment _webHostEnvironment;
 
     #endregion
 
@@ -47,28 +45,26 @@ public class ChatGptShoppingController : BasePluginController
     public ChatGptShoppingController(ChatGptShoppingService chatGptShoppingService,
         ICurrencyService currencyService,
         ILocalizationService localizationService,
+        ILogger logger,
         INopFileProvider nopFileProvider,
         INotificationService notificationService,
-        ILogger logger,
         IScheduleTaskService scheduleTaskService,
         ISettingService settingService,
         IStoreContext storeContext,
         IStoreService storeService,
-        IWebHelper webHelper,
-        IWebHostEnvironment webHostEnvironment)
+        IWebHelper webHelper)
     {
         _chatGptShoppingService = chatGptShoppingService;
         _currencyService = currencyService;
         _localizationService = localizationService;
+        _logger = logger;
         _nopFileProvider = nopFileProvider;
         _notificationService = notificationService;
-        _logger = logger;
         _scheduleTaskService = scheduleTaskService;
         _settingService = settingService;
         _storeContext = storeContext;
         _storeService = storeService;
         _webHelper = webHelper;
-        _webHostEnvironment = webHostEnvironment;
     }
 
     #endregion
@@ -97,13 +93,14 @@ public class ChatGptShoppingController : BasePluginController
         //file paths
         foreach (var store in await _storeService.GetAllStoresAsync())
         {
-            var localFilePath = _nopFileProvider.Combine(_webHostEnvironment.WebRootPath, "files", "exportimport", store.Id + "-" + chatGptShoppingSettings.StaticFileName);
+            var pathToFile = $"{ChatGptShoppingDefaults.FilePathDirectory}{store.Id}-{ChatGptShoppingDefaults.FeedFileName}";
+            var localFilePath = _nopFileProvider.GetAbsolutePath(pathToFile);
             if (_nopFileProvider.FileExists(localFilePath))
             {
                 model.GeneratedFiles.Add(new GeneratedFileModel
                 {
                     StoreName = store.Name,
-                    FileUrl = $"{_webHelper.GetStoreLocation(false)}files/exportimport/{store.Id}-{chatGptShoppingSettings.StaticFileName}"
+                    FileUrl = $"{_webHelper.GetStoreLocation()}{pathToFile}"
                 });
             }
         }
@@ -113,8 +110,6 @@ public class ChatGptShoppingController : BasePluginController
         {
             model.CurrencyId_OverrideForStore = await _settingService.SettingExistsAsync(chatGptShoppingSettings, x => x.CurrencyId, storeScope);
             model.ProductPictureSize_OverrideForStore = await _settingService.SettingExistsAsync(chatGptShoppingSettings, x => x.ProductPictureSize, storeScope);
-            model.AutoSyncEnabled_OverrideForStore = await _settingService.SettingExistsAsync(chatGptShoppingSettings, x => x.AutoSyncEnabled, storeScope);
-            model.AutoSyncPeriod_OverrideForStore = await _settingService.SettingExistsAsync(chatGptShoppingSettings, x => x.AutoSyncPeriod, storeScope);
         }
 
         return View("~/Plugins/Feed.ChatGptShopping/Views/Configure.cshtml", model);
@@ -141,8 +136,6 @@ public class ChatGptShoppingController : BasePluginController
          * This behavior can increase performance because cached settings will not be cleared 
          * and loaded from database after each update */
         await _settingService.SaveSettingOverridablePerStoreAsync(chatGptShoppingSettings, x => x.CurrencyId, model.CurrencyId_OverrideForStore, storeScope, false);
-        await _settingService.SaveSettingOverridablePerStoreAsync(chatGptShoppingSettings, x => x.AutoSyncEnabled, model.AutoSyncEnabled_OverrideForStore, storeScope, false);
-        await _settingService.SaveSettingOverridablePerStoreAsync(chatGptShoppingSettings, x => x.AutoSyncPeriod, model.AutoSyncPeriod_OverrideForStore, storeScope, false);
         await _settingService.SaveSettingOverridablePerStoreAsync(chatGptShoppingSettings, x => x.ProductPictureSize, model.ProductPictureSize_OverrideForStore, storeScope, false);
 
         //now clear settings cache

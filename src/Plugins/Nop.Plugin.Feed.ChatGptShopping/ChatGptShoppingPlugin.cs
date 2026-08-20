@@ -58,7 +58,6 @@ public class ChatGptShoppingPlugin : BasePlugin, IMiscPlugin
         await _settingService.SaveSettingAsync(new ChatGptShoppingSettings
         {
             CurrencyId = _currencySettings.PrimaryStoreCurrencyId,
-            StaticFileName = "chatgptshopping_products.jsonl.gz",
             ProductPictureSize = 125,
             AutoSyncEnabled = false,
             AutoSyncPeriod = ChatGptShoppingDefaults.SynchronizationTask.Period / 60,
@@ -90,10 +89,11 @@ public class ChatGptShoppingPlugin : BasePlugin, IMiscPlugin
             ["Plugins.Feed.ChatGptShopping.Configuration.AutoSyncEnabled"] = "Enable auto synchronization",
             ["Plugins.Feed.ChatGptShopping.Configuration.AutoSyncEnabled.Hint"] = "Determine whether to enable auto synchronization. This will automatically synchronize changes for the products and add new ones. If disabled, synchronization must be started manually on this page.",
             ["Plugins.Feed.ChatGptShopping.Configuration.AutoSyncPeriod"] = "Auto synchronization period",
-            ["Plugins.Feed.ChatGptShopping.Configuration.AutoSyncPeriod.Hint"] = "Set the period (in minutes) for auto synchronization.",
+            ["Plugins.Feed.ChatGptShopping.Configuration.AutoSyncPeriod.Hint"] = "Set the period (in minutes) for auto synchronization. Changes to this value will only take effect after a restart.",
             ["Plugins.Feed.ChatGptShopping.Configuration.AutoSyncPeriod.Invalid"] = "Period is invalid",
             ["Plugins.Feed.ChatGptShopping.Generate"] = "Generate feed",
             ["Plugins.Feed.ChatGptShopping.SuccessResult"] = "ChatGPT Shopping feed has been successfully generated.",
+            ["Plugins.Feed.ChatGptShopping.ReturnPolicy"] = "Please refer to our store's return policy for details on returns and exchanges.",
         });
 
         await base.InstallAsync();
