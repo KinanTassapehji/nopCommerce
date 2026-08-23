@@ -22,6 +22,7 @@ using Nop.Services.Messages;
 using Nop.Services.Stores;
 using Nop.Web.Framework.Mvc.Routing;
 using static brevo_csharp.Model.GetAttributesAttributes;
+using Configuration = brevo_csharp.Client.Configuration;
 
 namespace Nop.Plugin.Misc.Brevo.Services;
 
@@ -567,7 +568,7 @@ public partial class BrevoManager
             language = await _languageService.GetLanguageByIdAsync(customer?.LanguageId ?? subscription.LanguageId)
                 ?? (await _languageService.GetAllLanguagesAsync(storeId: subscription.StoreId)).FirstOrDefault();
 
-            var attributes = new Dictionary<string, string>
+            var attributes = new Dictionary<string, object>
             {
                 [BrevoDefaults.UsernameServiceAttribute] = customer?.Username,
                 [BrevoDefaults.SMSServiceAttribute] = sms,
@@ -796,7 +797,7 @@ public partial class BrevoManager
             }
 
             //update contact
-            var attributes = new Dictionary<string, string>
+            var attributes = new Dictionary<string, object>
             {
                 [BrevoDefaults.IdServiceAttribute] = order.Id.ToString(),
                 [BrevoDefaults.OrderIdServiceAttribute] = order.Id.ToString(),

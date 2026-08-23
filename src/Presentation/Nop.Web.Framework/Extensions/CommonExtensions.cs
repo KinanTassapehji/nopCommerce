@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using Humanizer;
-using Humanizer.Localisation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Nop.Web.Framework.Extensions;

@@ -24,12 +24,12 @@
         }
         else
         {
-            var languages = await Model.AvailableLanguages.SelectAwait(async lang => new SelectListItem
+            var languages = Model.AvailableLanguages.Select(lang => new SelectListItem
             {
                 Text = lang.Name,
                 Value = Url.RouteUrl(NopRouteNames.Standard.CHANGE_LANGUAGE, new { langid = lang.Id, returnUrl }, webHelper.GetCurrentRequestProtocol()),
                 Selected = lang.Id.Equals(Model.CurrentLanguageId)
-            }).ToListAsync();
+            }).ToList();
 
             <select id="customerlanguage" name="customerlanguage" asp-items="@languages" onchange="setLocation(this.value);" aria-label="@T("Languages.Selector.Label")"></select>
         }

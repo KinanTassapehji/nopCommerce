@@ -1062,7 +1062,7 @@ public class AvalaraTaxManager : IDisposable
                 ?? throw new NopException("Failed to retrieve company");
 
             //get existing items
-            var items = await ServiceClient.ListItemsByCompanyAsync(selectedCompany.id, null, null, null, null, null, null)
+            var items = await ServiceClient.ListItemsByCompanyAsync(selectedCompany.id, null, null, null, null, null, null, null, null, null, null, null)
                 ?? throw new NopException("No response from the service");
 
             //return the paginated and filtered list
@@ -1116,7 +1116,7 @@ public class AvalaraTaxManager : IDisposable
                 return 0;
 
             //create items and get the result
-            var createdItems = await ServiceClient.CreateItemsAsync(selectedCompany.id, exportedItems)
+            var createdItems = await ServiceClient.CreateItemsAsync(selectedCompany.id, null, exportedItems)
                 ?? throw new NopException("No response from the service");
 
             //display results
@@ -1607,18 +1607,18 @@ public class AvalaraTaxManager : IDisposable
     /// <param name="customerId">Customer id</param>
     /// <returns>
     /// A task that represents the asynchronous operation
-    /// The task result contains the customer details
     /// </returns>
-    public async Task<CustomerModel> DeleteCustomerAsync(int customerId)
+    public async Task DeleteCustomerAsync(int customerId)
     {
-        return (await HandleFunctionAsync(async () =>
+        await HandleFunctionAsync<object>(async () =>
         {
             if (_avalaraTaxSettings.CompanyId is null)
                 throw new NopException("Company not selected");
 
-            return await ServiceClient.DeleteCustomerAsync(_avalaraTaxSettings.CompanyId.Value, customerId.ToString())
-                ?? throw new NopException("Failed to delete customer");
-        })).Result;
+            await ServiceClient.DeleteCustomerAsync(_avalaraTaxSettings.CompanyId.Value, customerId.ToString());
+
+            return null;
+        });
     }
 
     /// <summary>

@@ -160,12 +160,12 @@
                             </div>
                             @for (int i = 0; i < Model.NewsLetterSubscriptionTypes.Count; i++)
                             {
-                                var brevoLists = await Model.AvailableLists.SelectAwait(async brevoList => new SelectListItem
+                                var brevoLists = Model.AvailableLists.Select(brevoList => new SelectListItem
                                 {
                                     Text = brevoList.Text,
                                     Value = brevoList.Value,
                                     Selected = brevoList.Value.Equals(Model.NewsLetterSubscriptionTypes[i].ListId.ToString())
-                                }).ToListAsync();
+                                }).ToList();
 
                                 <div class="form-group row">
                                     <div class="col-md-3">

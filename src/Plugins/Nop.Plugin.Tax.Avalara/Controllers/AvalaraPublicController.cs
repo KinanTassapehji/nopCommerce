@@ -76,7 +76,7 @@ public class AvalaraPublicController : BasePublicController
                 Id = certificate.id ?? 0,
                 Status = certificate.status,
                 SignedDate = certificate.signedDate.ToShortDateString(),
-                ExpirationDate = certificate.expirationDate.ToShortDateString(),
+                ExpirationDate = certificate.expirationDate?.ToShortDateString(),
                 ExposureZone = certificate.exposureZone?.name
             }).ToList() ?? new List<ExemptionCertificateModel>(),
             AvailableExposureZones = (await _avalaraTaxManager.GetExposureZonesAsync())

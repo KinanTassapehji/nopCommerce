@@ -195,7 +195,7 @@ public static class AsyncIEnumerableExtensions
     public static IOrderedAsyncEnumerable<TSource> OrderByDescendingAwait<TSource, TKey>(
         this IEnumerable<TSource> source, Func<TSource, ValueTask<TKey>> keySelector)
     {
-        return source.ToAsyncEnumerable().OrderByDescendingAwait(keySelector);
+        return source.ToAsyncEnumerable().OrderByDescending((item, _) => keySelector(item));
     }
 
     /// <summary>
