@@ -26,6 +26,7 @@ function makeMainZip(cb) {
 function del_cldr(cb) {
   return deleteAsync(['./wwwroot/lib_npm/cldr-data/main/**',
     '!./wwwroot/lib_npm/cldr-data/main/en',
+    '!./wwwroot/lib_npm/cldr-data/main/ar',
     '!./wwwroot/lib_npm/cldr-data/main/*.zip']).then(() => {
       cb()
     })

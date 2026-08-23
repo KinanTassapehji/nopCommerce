@@ -44,8 +44,11 @@ export default function copyDependencies()
       .pipe(filter(['**/*.js', '!**/.build']))
       .pipe(gulp.dest(targetPath + '/cldrjs')),
       
+    //only the locales the store supports; prepareCldr.js then zips them and leaves ar/en unpacked
     gulp
-      .src(nodeModules + 'cldr-data/{main,segments,supplemental}/**')
+      .src([nodeModules + 'cldr-data/{segments,supplemental}/**',
+            nodeModules + 'cldr-data/main/{ar,en}*/**'],
+        { base: nodeModules + 'cldr-data' })
       .pipe(gulp.dest(targetPath + '/cldr-data')),
 
     //Moment.js  
@@ -53,7 +56,10 @@ export default function copyDependencies()
       .src(`${nodeModules}moment/min/moment-with-locales.min.js*`)
       .pipe(gulp.dest(targetPath + '/moment/min')),
     gulp
-      .src(`${nodeModules}moment/dist/**`)
+      .src([`${nodeModules}moment/dist/**`,
+            `!${nodeModules}moment/dist/locale/**`,
+            `${nodeModules}moment/dist/locale/{ar,en}*`],
+        { base: `${nodeModules}moment/dist` })
       .pipe(gulp.dest(targetPath + '/moment')),
 
     //Marked
@@ -68,7 +74,9 @@ export default function copyDependencies()
 
     //Summernote
     gulp
-      .src(`${nodeModules}summernote/dist/{lang,font}/**`)
+      .src([`${nodeModules}summernote/dist/font/**`,
+            `${nodeModules}summernote/dist/lang/summernote-{ar,en}-*`],
+        { base: `${nodeModules}summernote/dist` })
       .pipe(gulp.dest(targetPath + '/summernote')),
 
     //OverlayScrollbars
