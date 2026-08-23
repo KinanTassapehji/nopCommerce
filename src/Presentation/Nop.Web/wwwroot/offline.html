@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>You're offline | tmtm</title>
+<meta name="theme-color" content="#02787e">
+<link rel="icon" href="/icons/icons_0/favicon-32x32.png" sizes="32x32">
+<style>
+  :root {
+    --teal-deep: #02787e;
+    --teal: #009a95;
+    --teal-bright: #00d9cc;
+    --ink: #10201f;
+    --muted: #5c6b6a;
+    --surface: #ffffff;
+    --surface-alt: #f6f9f9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px calc(24px + env(safe-area-inset-left, 0px));
+    font-family: "Segoe UI", "Noto Sans Arabic", Tahoma, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--surface-alt);
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid #dfe5e5;
+    border-radius: 20px;
+    box-shadow: 0 14px 38px rgba(2, 120, 126, 0.16);
+    max-width: 420px;
+    width: 100%;
+    padding: 40px 28px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--teal-deep) 0%, var(--teal) 55%, var(--teal-bright) 100%);
+  }
+  .mark { width: 72px; height: 72px; margin: 0 auto 20px; display: block; }
+  h1 { font-size: 22px; color: var(--teal-deep); margin-bottom: 10px; }
+  p { color: var(--muted); line-height: 1.6; font-size: 15px; }
+  .actions { margin-top: 26px; }
+  button {
+    font: inherit;
+    font-weight: 600;
+    min-height: 44px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--teal-deep);
+    color: #fff;
+    cursor: pointer;
+  }
+  button:hover { background: #01585c; }
+  button:focus-visible { outline: 2px solid var(--teal-deep); outline-offset: 2px; }
+  .hint { margin-top: 18px; font-size: 13px; color: var(--muted); }
+  @media (prefers-color-scheme: dark) {
+    :root { --surface: #12201f; --surface-alt: #0b1514; --ink: #eaf3f2; --muted: #9bb0ae; }
+    .card { border-color: #24403e; }
+    h1 { color: var(--teal-bright); }
+  }
+</style>
+</head>
+<body>
+  <main class="card">
+    <img class="mark" src="/Themes/TmTm/Content/images/brand-mark.svg" alt="tmtm" width="72" height="72">
+    <h1>You're offline</h1>
+    <p>We couldn't reach the store. Check your connection and try again — your cart is safe and will be waiting.</p>
+    <div class="actions">
+      <button type="button" onclick="location.reload()">Try again</button>
+    </div>
+    <p class="hint" id="hint"></p>
+  </main>
+  <script>
+    // Reload automatically the moment connectivity returns.
+    window.addEventListener('online', function () { location.reload(); });
+    var hint = document.getElementById('hint');
+    if (!navigator.onLine) { hint.textContent = 'Waiting for a connection…'; }
+  </script>
+</body>
+</html>

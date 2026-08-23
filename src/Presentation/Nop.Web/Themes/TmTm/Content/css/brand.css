@@ -1,0 +1,627 @@
+/* ==========================================================================
+   TmTm — brand layer
+   Loaded after styles(.rtl).css. Restyles the surfaces that carry brand
+   identity; everything else inherits the re-pointed DefaultClean variables.
+
+   Written with CSS logical properties (inline-start/end) so this one file
+   serves both the LTR and RTL stylesheets.
+
+   Palette rule from the guideline: #00d9cc is never used on its own, so it
+   appears only inside var(--tm-gradient*). Because the gradient runs into
+   #00d9cc (1.78:1 against white), the gradient is reserved for decoration —
+   rules, strips, accents. Any surface carrying a label uses the solid
+   --tm-teal-deep, which holds white text at 5.26:1.
+   ========================================================================== */
+
+/* --- Base ----------------------------------------------------------------
+   The mini guideline defines no typeface, so this is a system stack with
+   Arabic coverage rather than an invented webfont dependency. */
+body {
+  font-family: "Segoe UI", "Noto Sans Arabic", "Dubai", Tahoma, Arial, sans-serif;
+  color: var(--tm-ink);
+  background: var(--tm-surface-alt);
+}
+
+.master-wrapper-content {
+  background: var(--tm-surface-alt);
+}
+
+a {
+  color: var(--tm-teal-deep);
+  transition: color var(--tm-transition);
+}
+
+a:hover {
+  color: var(--tm-teal-hover);
+}
+
+/* Visible keyboard focus — DefaultClean leaves this to the browser default. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--tm-teal-deep);
+  outline-offset: 2px;
+  border-radius: var(--tm-radius-sm);
+}
+
+/* --- Header --------------------------------------------------------------- */
+.header {
+  background: var(--tm-surface);
+  box-shadow: var(--tm-shadow);
+  position: relative;
+}
+
+/* The brand's gradient rule, used as the header's baseline. */
+.header:after {
+  content: "";
+  display: block;
+  height: 3px;
+  background: var(--tm-gradient);
+}
+
+/* Guideline: minimum clear space on all sides equals the height of the "t". */
+.header-logo {
+  padding: var(--tm-logo-clear-space);
+}
+
+.header-logo img {
+  max-height: 50px;
+  width: auto;
+}
+
+.header-links a,
+.header-selectors a {
+  color: var(--tm-ink-muted);
+}
+
+.header-links a:hover,
+.header-selectors a:hover {
+  color: var(--tm-teal-deep);
+}
+
+/* Cart / wishlist counters — solid, they carry a digit. */
+.header-links .cart-qty,
+.header-links .wishlist-qty {
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+  border-radius: 999px;
+  padding-inline: 8px;
+  font-weight: 700;
+}
+
+/* --- Primary navigation --------------------------------------------------- */
+/* Solid, not gradient: this bar carries labels, and white on #00d9cc is
+   1.78:1. The gradient survives as the strip along its foot. */
+.header-menu {
+  background: var(--tm-teal-deep);
+  border-radius: var(--tm-radius);
+  overflow: hidden;
+  border-top: 0;
+  border-bottom: 0;
+  position: relative;
+}
+
+.header-menu:after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  height: 4px;
+  background: var(--tm-gradient);
+}
+
+/* DefaultClean gives each top-level item a white pill and a grey divider,
+   which reads as an artefact once the bar itself carries the gradient. */
+.header-menu .menu > .menu__item {
+  background-color: transparent;
+  padding-inline: 6px;
+}
+
+.header-menu .menu > .menu__item:not(:last-child) {
+  border-right: 0;
+  border-inline-end: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+/* Top-level items. Dropdown items nest their label in an <a class="menu__link">
+   inside the toggle, so that nested link is whitened here too. */
+.header-menu .menu > .menu__item > .menu__link,
+.header-menu .menu > .menu__item > .menu__item-toggle,
+.header-menu .menu > .menu__item > .menu__item-toggle > .menu__link {
+  color: var(--tm-white);
+  font-weight: 600;
+  border-radius: var(--tm-radius-sm);
+  padding: 10px 16px;
+  transition: background var(--tm-transition), color var(--tm-transition);
+}
+
+.header-menu .menu > .menu__item > .menu__item-toggle > .menu__link {
+  padding: 0;
+}
+
+.header-menu .menu > .menu__item > .menu__link:hover,
+.header-menu .menu > .menu__item:hover > .menu__item-toggle,
+.header-menu .menu > .menu__item:hover > .menu__item-toggle > .menu__link {
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--tm-white);
+}
+
+/* Dropdown panels sit on white, so they revert to ink-on-white. Scoped to
+   genuinely nested items so it cannot reach the top-level labels above. */
+.header-menu .menu__item .menu__item,
+.header-menu .menu__group {
+  background: var(--tm-surface);
+}
+
+.header-menu .menu__item .menu__item .menu__link,
+.header-menu .menu__group .menu__link {
+  color: var(--tm-ink);
+}
+
+.header-menu .menu__list-view .menu__link:hover {
+  background-color: var(--tm-teal-tint);
+  color: var(--tm-teal-deep);
+}
+
+.header-menu .menu__group-title {
+  color: var(--tm-teal-deep);
+  font-weight: 700;
+}
+
+.header-menu .menu__item .menu__item .menu__link::before,
+.header-menu .menu__group .menu__link::before {
+  background-color: var(--tm-teal);
+}
+
+/* --- Search --------------------------------------------------------------- */
+.search-box input.search-box-text {
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius);
+  padding-inline: 14px;
+  transition: border-color var(--tm-transition), box-shadow var(--tm-transition);
+}
+
+.search-box input.search-box-text:focus {
+  border-color: var(--tm-teal);
+  box-shadow: 0 0 0 3px rgba(0, 154, 149, 0.18);
+}
+
+.search-box .search-box-button {
+  background: var(--tm-teal-deep);
+  border: 0;
+  border-radius: var(--tm-radius);
+  color: var(--tm-white);
+  font-weight: 600;
+}
+
+/* --- Buttons -------------------------------------------------------------- */
+.button-1,
+.button-2,
+input[type="button"],
+input[type="submit"],
+button {
+  border-radius: var(--tm-radius);
+  font-weight: 600;
+  transition: background var(--tm-transition), color var(--tm-transition),
+              box-shadow var(--tm-transition), transform var(--tm-transition);
+}
+
+/* Secondary / utility buttons */
+.button-2 {
+  background: var(--tm-white);
+  color: var(--tm-teal-deep);
+  border: 1px solid var(--tm-teal-border);
+}
+
+.button-2:hover {
+  background: var(--tm-teal-tint);
+  border-color: var(--tm-teal);
+  color: var(--tm-teal-hover);
+}
+
+/* Primary buttons — solid deep teal keeps white label text at 5.26:1. */
+.button-1 {
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+  border: 0;
+}
+
+.button-1:hover {
+  background: var(--tm-teal-hover);
+  color: var(--tm-white);
+}
+
+.button-1:active {
+  background: var(--tm-teal-active);
+  transform: translateY(1px);
+}
+
+/* The money CTAs get depth via shadow rather than a gradient fill,
+   so their labels keep the 5.26:1 contrast of solid deep teal. */
+.button-1.add-to-cart-button,
+.button-1.checkout-button,
+.button-1.product-box-add-to-cart-button,
+.button-1.register-button,
+.button-1.login-button {
+  background: var(--tm-teal-deep);
+  box-shadow: var(--tm-shadow);
+}
+
+.button-1.add-to-cart-button:hover,
+.button-1.checkout-button:hover,
+.button-1.product-box-add-to-cart-button:hover,
+.button-1.register-button:hover,
+.button-1.login-button:hover {
+  background: var(--tm-teal-hover);
+  box-shadow: var(--tm-shadow-lg);
+}
+
+/* --- Page titles — the guideline's gradient rule with terminal dot -------- */
+.page-title,
+.topic-block-title,
+.block .title {
+  position: relative;
+  border: 0;
+  padding-block-end: 14px;
+  margin-block-end: 18px;
+}
+
+.page-title h1,
+.page-title h2 {
+  color: var(--tm-teal-deep);
+  font-weight: 700;
+}
+
+.page-title:after,
+.topic-block-title:after {
+  content: "";
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  width: min(240px, 60%);
+  height: 4px;
+  border-radius: 999px;
+  background: var(--tm-gradient);
+}
+
+/* the dot that terminates the rule in the brand document */
+.page-title:before,
+.topic-block-title:before {
+  content: "";
+  position: absolute;
+  inset-block-end: -3px;
+  inset-inline-start: min(238px, 59.5%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--tm-teal-bright);
+  z-index: 1;
+}
+
+/* --- Content blocks / sidebar --------------------------------------------- */
+.block .title {
+  color: var(--tm-teal-deep);
+  font-weight: 700;
+}
+
+.block .listbox {
+  background: var(--tm-surface);
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius);
+}
+
+.block a:hover {
+  color: var(--tm-teal-deep);
+}
+
+/* --- Product cards -------------------------------------------------------- */
+.item-box .product-item {
+  background: var(--tm-surface);
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius-lg); /* echoes the logo's rounded square */
+  overflow: hidden;
+  transition: box-shadow var(--tm-transition), border-color var(--tm-transition),
+              transform var(--tm-transition);
+}
+
+.item-box .product-item:hover {
+  border-color: var(--tm-teal);
+  box-shadow: var(--tm-shadow-lg);
+  transform: translateY(-3px);
+}
+
+.item-box .product-title a {
+  color: var(--tm-ink);
+  font-weight: 600;
+}
+
+.item-box .product-title a:hover {
+  color: var(--tm-teal-deep);
+}
+
+.item-box .prices .actual-price,
+.prices .actual-price,
+.product-price span {
+  color: var(--tm-teal-deep);
+  font-weight: 700;
+}
+
+.item-box .prices .old-price,
+.prices .old-price {
+  color: var(--tm-ink-muted);
+}
+
+/* --- Tables / data -------------------------------------------------------- */
+.data-table th,
+.forum-table th,
+.compare-products-table th {
+  background: var(--tm-teal-tint);
+  color: var(--tm-teal-deep);
+  border-block-end: 2px solid var(--tm-teal-border);
+}
+
+.data-table tr:hover td {
+  background: var(--tm-surface-alt);
+}
+
+/* --- Cart / checkout ------------------------------------------------------ */
+.cart-total .order-total,
+.cart-total .order-total strong {
+  color: var(--tm-teal-deep);
+  font-weight: 700;
+}
+
+.opc .step-title,
+.checkout-page .section .title {
+  background: var(--tm-teal-tint);
+  color: var(--tm-teal-deep);
+  border-radius: var(--tm-radius-sm);
+}
+
+.opc .allow .step-title {
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+}
+
+/* --- Notifications -------------------------------------------------------- */
+.bar-notification.success {
+  background: var(--tm-success);
+}
+
+.bar-notification.error {
+  background: var(--tm-error);
+}
+
+/* --- Footer --------------------------------------------------------------- */
+.footer {
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+  margin-block-start: 40px;
+}
+
+.footer:before {
+  content: "";
+  display: block;
+  height: 4px;
+  background: var(--tm-gradient);
+}
+
+.footer-upper {
+  border: 0;
+}
+
+.footer .title,
+.footer .footer-block .title {
+  color: var(--tm-white);
+  font-weight: 700;
+}
+
+/* Full white, not a tinted white: at 0.82 alpha these links measured
+   4.08:1 on the teal footer, under the 4.5:1 floor for 14px text. */
+.footer a,
+.footer li a {
+  color: var(--tm-white);
+}
+
+.footer a:hover,
+.footer li a:hover {
+  color: var(--tm-white);
+}
+
+.footer-lower {
+  border-block-start: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.footer-powered-by,
+.footer-designed-by {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Reversed lockup on the teal footer. */
+.footer .footer-logo img {
+  content: url("../images/logo-white.png");
+  max-height: 50px;
+}
+
+/* --- Newsletter ----------------------------------------------------------- */
+.newsletter-email input[type="email"] {
+  border-radius: var(--tm-radius);
+  border: 1px solid var(--tm-teal-border);
+}
+
+.newsletter-subscribe-button {
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+  border: 0;
+  border-radius: var(--tm-radius);
+}
+
+/* --- Pager ---------------------------------------------------------------- */
+.pager li a,
+.pager li span {
+  border-radius: var(--tm-radius-sm);
+  border: 1px solid var(--tm-line);
+  color: var(--tm-ink);
+}
+
+.pager li.current-page span,
+.pager li a:hover {
+  background: var(--tm-teal-deep);
+  border-color: var(--tm-teal-deep);
+  color: var(--tm-white);
+}
+
+/* --- Scroll-to-top -------------------------------------------------------- */
+.scroll-back-button {
+  background: var(--tm-teal-deep);
+  border-radius: 50%;
+  box-shadow: var(--tm-shadow);
+}
+
+/* --- Reduced motion ------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .item-box .product-item:hover {
+    transform: none;
+  }
+}
+
+/* --- Contrast corrections against DefaultClean's own specificity ----------
+   Measured on the live page; each of these failed the WCAG AA floor before
+   being pinned here. */
+
+/* .overview/.variant-overview set .button-2 to #eaeaea at (0,2,0), which beat
+   the plain .button-2 rule above and dropped the label to 4.37:1. */
+.overview .button-2,
+.variant-overview .button-2,
+.wishlist-content .button-2,
+.address-list-page .button-2 {
+  background-color: var(--tm-white);
+  color: var(--tm-teal-deep);
+  border: 1px solid var(--tm-teal-border);
+}
+
+.overview .button-2:hover,
+.variant-overview .button-2:hover,
+.wishlist-content .button-2:hover,
+.address-list-page .button-2:hover {
+  background-color: var(--tm-teal-tint);
+  color: var(--tm-teal-hover);
+}
+
+/* The collapsible footer menu inherits body ink, which lands at 3.2:1 on the
+   teal footer. */
+.footer .footer-menu__title,
+.footer .footer-menu__title a,
+.footer .footer-menu__body a {
+  color: var(--tm-white);
+}
+
+/* ==========================================================================
+   Touch & standalone (PWA) layer
+   DefaultClean's grid already reflows correctly down to 390px with no
+   horizontal overflow; what it lacks is touch ergonomics and the chrome an
+   installed app needs.
+   ========================================================================== */
+
+/* --- Touch ergonomics ----------------------------------------------------
+   Applies to touch pointers only, so desktop density is unaffected.
+   Target is 44px (Apple HIG / Material), above the WCAG 2.2 SC 2.5.8 floor. */
+@media (pointer: coarse) {
+
+  .header-links a,
+  .header-selectors a,
+  .header-menu .menu__link,
+  .header-menu .menu__item-toggle,
+  .footer a,
+  .pager li a,
+  .pager li span,
+  .block .list a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .header-menu .menu__link,
+  .header-menu .menu__item-toggle {
+    padding-block: 12px;
+  }
+
+  .button-1,
+  .button-2,
+  input[type="button"],
+  input[type="submit"],
+  button {
+    min-height: 44px;
+    padding-inline: 18px;
+  }
+
+  /* iOS zooms the page when a focused input is under 16px. */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  /* Replace the grey flash with a brand-tinted one. */
+  a, button, .button-1, .button-2 {
+    -webkit-tap-highlight-color: rgba(0, 154, 149, 0.18);
+  }
+}
+
+/* --- Installed / standalone display --------------------------------------
+   In standalone mode there is no browser chrome, so the header sits directly
+   under the status bar and must respect the safe area on notched devices. */
+@media (display-mode: standalone), (display-mode: minimal-ui) {
+
+  .header {
+    padding-block-start: env(safe-area-inset-top, 0px);
+  }
+
+  .footer {
+    padding-block-end: max(env(safe-area-inset-bottom, 0px), 12px);
+  }
+
+  .master-wrapper-page {
+    padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
+  }
+
+  /* An installed app has no browser back button, so never hide the in-page one. */
+  .breadcrumb {
+    display: block;
+  }
+}
+
+/* Stop the whole page rubber-banding behind the app shell. */
+html {
+  overscroll-behavior-y: none;
+}
+
+/* Images must never force a sideways scroll on a phone. */
+img,
+video,
+iframe,
+table {
+  max-width: 100%;
+}
+
+/* Wide data tables scroll inside themselves rather than widening the page. */
+@media (max-width: 767px) {
+  .cart-collaterals .table-wrapper,
+  .data-table-wrapper,
+  .order-details-page .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

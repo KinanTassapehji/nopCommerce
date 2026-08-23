@@ -1,0 +1,72 @@
+/* ==========================================================================
+   TmTm — brand tokens
+   Source of truth: "mini guidline outline.pdf" (Tia Production House, 2026)
+
+   Brand colors are the three primary teals plus black/white. Nothing else is
+   a brand color. Values below marked "derived" are UI interaction states
+   (hover/active/tints) computed from the primaries — the guideline does not
+   define them, and they must never be used to reproduce the logo.
+   ========================================================================== */
+
+:root {
+  /* --- Primary palette (guideline, exact) ------------------------------- */
+  --tm-teal-deep: #02787e;      /* contrast 5.26:1 on white — AA body text  */
+  --tm-teal: #009a95;           /* contrast 3.47:1 on white — AA large only */
+  --tm-teal-bright: #00d9cc;    /* contrast 1.78:1 — NEVER standalone       */
+
+  /* --- Secondary palette (guideline: these two only) -------------------- */
+  --tm-black: #000000;
+  --tm-white: #ffffff;
+
+  /* --- Primary gradient (guideline: these three colors only) ------------
+     DECORATIVE USE ONLY. The gradient runs into #00d9cc, which carries white
+     text at just 1.78:1 — anything with a label on it must use
+     --tm-teal-deep (5.26:1) instead. Rules, strips and accents only. */
+  --tm-gradient: linear-gradient(90deg, var(--tm-teal-deep) 0%, var(--tm-teal) 55%, var(--tm-teal-bright) 100%);
+  --tm-gradient-diagonal: linear-gradient(135deg, var(--tm-teal-bright) 0%, var(--tm-teal) 45%, var(--tm-teal-deep) 100%);
+
+  /* --- Derived interaction states (not brand colors) -------------------- */
+  --tm-teal-hover: #01585c;     /* 8.23:1 with white — button/link hover    */
+  --tm-teal-active: #014a4e;    /* 10.04:1 with white — pressed state       */
+  --tm-teal-tint: #e6f4f4;      /* surfaces, table stripes, hover rows      */
+  --tm-teal-tint-strong: #cbe8e7;
+  --tm-teal-border: #b3dedc;
+
+  /* --- Neutrals --------------------------------------------------------- */
+  --tm-ink: #10201f;            /* body text — near-black, warmed to teal   */
+  --tm-ink-muted: #5c6b6a;
+  --tm-line: #dfe5e5;
+  --tm-surface: #ffffff;
+  --tm-surface-alt: #f6f9f9;
+
+  /* --- Status ----------------------------------------------------------- */
+  --tm-error: #d51f28;
+  --tm-success: #207d4c;
+  --tm-warning: #a86500;
+
+  /* --- Shape & motion --------------------------------------------------- */
+  --tm-radius-sm: 6px;
+  --tm-radius: 12px;
+  --tm-radius-lg: 20px;         /* echoes the logo's rounded-square icon    */
+  --tm-shadow: 0 6px 20px rgba(2, 120, 126, 0.10);
+  --tm-shadow-lg: 0 14px 38px rgba(2, 120, 126, 0.16);
+  --tm-transition: 0.18s ease;
+
+  /* --- Logo clear space -------------------------------------------------
+     Guideline: minimum clear space on every side = height of the letter "t".
+     At the header lockup size that is ~14px; scale with the logo if resized. */
+  --tm-logo-clear-space: 14px;
+}
+
+/* --------------------------------------------------------------------------
+   Bridge: DefaultClean's own variables are re-pointed at the brand palette so
+   the forked stylesheet (141 var() usages) inherits the re-skin wholesale.
+   -------------------------------------------------------------------------- */
+:root {
+  --accent-blue-color: var(--tm-teal-deep);
+  --accent-blue-active-color: var(--tm-teal-hover);
+  --gray-color: var(--tm-ink-muted);
+  --dark-gray-color: var(--tm-ink);
+  --error-red-color: var(--tm-error);
+  --success-green-color: var(--tm-success);
+}

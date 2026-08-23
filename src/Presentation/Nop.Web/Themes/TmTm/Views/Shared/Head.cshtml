@@ -1,0 +1,73 @@
+@using Nop.Core.Domain.Catalog
+@using Nop.Services.Helpers
+
+@inject CatalogSettings catalogSettings
+@inject IThemeContext themeContext
+@inject IUserAgentHelper userAgentHelper
+
+@{
+    Layout ="";
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+    var supportRtl = await Html.ShouldUseRtlThemeAsync();
+
+    //NOTE: AppendCssFileParts PREPENDS (it does _cssParts.Insert(0, ...)), so the
+    //vendor sheets below are appended first and end up ahead of the theme's own.
+    //The theme's three files use AddCssFileParts so they keep their declared
+    //order: tokens define the palette, styles consume it, brand overrides it.
+
+    //add swiper css file
+    if (catalogSettings.DisplayAllPicturesOnCatalogPages)
+    {
+        NopHtml.AppendCssFileParts("~/lib_npm/swiper/swiper-bundle.min.css");
+    }
+
+    //add jQuery UI css file
+    NopHtml.AppendCssFileParts("~/lib_npm/jquery-ui-dist/jquery-ui.min.css");
+
+    //brand tokens first - both the forked stylesheet and the brand layer read them
+    NopHtml.AddCssFileParts($"~/Themes/{themeName}/Content/css/tokens.css");
+
+    //main CSS file (forked from DefaultClean, palette re-pointed at the tokens)
+    NopHtml.AddCssFileParts($"~/Themes/{themeName}/Content/css/styles{(supportRtl ? ".rtl" : "")}.css");
+
+    //TmTm brand layer - must come last so it wins the cascade.
+    //Written with logical properties, so it serves LTR and RTL alike
+    NopHtml.AddCssFileParts($"~/Themes/{themeName}/Content/css/brand.css");
+}
+
+@*
+    PWA. Icon <link>s and theme-color come from the store's
+    "Favicon and app icons" head code (Admin > Settings > General), which is
+    generated per store id; only the pieces that setting does not cover are
+    emitted here.
+*@
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="tmtm">
+<meta name="application-name" content="tmtm">
+<meta name="color-scheme" content="light">
+
+<script>
+    // env(safe-area-inset-*) only resolves when the viewport opts into
+    // viewport-fit=cover. That meta lives in the core _Root.Head.cshtml, so it
+    // is patched here rather than forking a core view. Runs synchronously in
+    // <head>, before first paint. Without it the insets resolve to 0 and the
+    // standalone CSS degrades harmlessly.
+    (function () {
+        var vp = document.querySelector('meta[name=viewport]');
+        if (vp && vp.content.indexOf('viewport-fit') === -1) {
+            vp.content = vp.content + ', viewport-fit=cover';
+        }
+    })();
+
+    // Registered on load so it never competes with the first paint.
+    // Scope is "/" because sw.js is served from the site root.
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function (e) {
+                console.warn('SW registration failed:', e);
+            });
+        });
+    }
+</script>
