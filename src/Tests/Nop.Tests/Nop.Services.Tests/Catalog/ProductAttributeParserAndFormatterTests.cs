@@ -23,7 +23,7 @@ public class ProductAttributeParserTests : ServiceTest
         _productAttributeFormatter = GetService<IProductAttributeFormatter>();
 
         var product = await GetService<IProductService>()
-            .GetProductBySkuAsync("COMP_CUST");
+            .GetProductBySkuAsync("TM-AW-701");
         var mappings = await productAttributeService.GetProductAttributeMappingsByProductIdAsync(product.Id);
         _productAttributeMappings = await mappings.SelectAwait(async p => KeyValuePair.Create(p, await productAttributeService.GetProductAttributeValuesAsync(p.Id))).ToListAsync();
     }
@@ -113,11 +113,7 @@ public class ProductAttributeParserTests : ServiceTest
         foreach (var productAttributeValue in productAttributeMapping.Value.OrderBy(p => p.Id))
             attributes = _productAttributeParser.AddProductAttribute(attributes, productAttributeMapping.Key, productAttributeValue.Id.ToString());
 
-        attributes = _productAttributeParser.AddGiftCardAttribute(attributes,
-            "recipientName 1", "recipientEmail@gmail.com",
-            "senderName 1", "senderEmail@gmail.com", "custom message");
-
-        var product = new Product { IsGiftCard = true, GiftCardType = GiftCardType.Virtual };
+        var product = new Product();
         var customer = new Customer();
         var store = new Store();
 
@@ -125,73 +121,13 @@ public class ProductAttributeParserTests : ServiceTest
             attributes, customer, store, "<br />", false);
 
         formattedAttributes.Should().Be(
-            "Processor: 2.2 GHz Intel Pentium Dual-Core E2200<br />Processor: 2.5 GHz Intel Pentium Dual-Core E2200 [+$15.00]<br />RAM: 2 GB<br />RAM: 4GB [+$20.00]<br />RAM: 8GB [+$60.00]<br />HDD: 320 GB<br />HDD: 400 GB [+$100.00]<br />OS: Vista Home [+$50.00]<br />OS: Vista Premium [+$60.00]<br />Software: Microsoft Office [+$50.00]<br />Software: Acrobat Reader [+$10.00]<br />Software: Total Commander [+$5.00]<br />From: senderName 1 <senderEmail@gmail.com><br />For: recipientName 1 <recipientEmail@gmail.com>");
+            "المقاس: صغير جداً<br />المقاس: صغير<br />المقاس: وسط<br />المقاس: كبير<br />المقاس: كبير جداً<br />اللون: تركوازي غامق<br />اللون: رملي<br />اللون: فحمي");
 
         formattedAttributes = await _productAttributeFormatter.FormatAttributesAsync(product,
             attributes, customer, store, "<br />", false, false);
 
         formattedAttributes.Should().Be(
-            "Processor: 2.2 GHz Intel Pentium Dual-Core E2200<br />Processor: 2.5 GHz Intel Pentium Dual-Core E2200<br />RAM: 2 GB<br />RAM: 4GB<br />RAM: 8GB<br />HDD: 320 GB<br />HDD: 400 GB<br />OS: Vista Home<br />OS: Vista Premium<br />Software: Microsoft Office<br />Software: Acrobat Reader<br />Software: Total Commander<br />From: senderName 1 <senderEmail@gmail.com><br />For: recipientName 1 <recipientEmail@gmail.com>");
+            "المقاس: صغير جداً<br />المقاس: صغير<br />المقاس: وسط<br />المقاس: كبير<br />المقاس: كبير جداً<br />اللون: تركوازي غامق<br />اللون: رملي<br />اللون: فحمي");
     }
 
-    [Test]
-    public void CanAddAndParseGiftCardAttributes()
-    {
-        var attributes = string.Empty;
-        attributes = _productAttributeParser.AddGiftCardAttribute(attributes,
-            "recipientName 1", "recipientEmail@gmail.com",
-            "senderName 1", "senderEmail@gmail.com", "custom message");
-
-        _productAttributeParser.GetGiftCardAttribute(attributes,
-            out var recipientName,
-            out var recipientEmail,
-            out var senderName,
-            out var senderEmail,
-            out var giftCardMessage);
-        recipientName.Should().Be("recipientName 1");
-        recipientEmail.Should().Be("recipientEmail@gmail.com");
-        senderName.Should().Be("senderName 1");
-        senderEmail.Should().Be("senderEmail@gmail.com");
-        giftCardMessage.Should().Be("custom message");
-    }
-
-    [Test]
-    public async Task CanRenderVirtualGiftCart()
-    {
-        var attributes = _productAttributeParser.AddGiftCardAttribute(string.Empty,
-            "recipientName 1", "recipientEmail@gmail.com",
-            "senderName 1", "senderEmail@gmail.com", "custom message");
-
-        var product = new Product
-        {
-            IsGiftCard = true,
-            GiftCardType = GiftCardType.Virtual
-        };
-        var customer = new Customer();
-        var store = new Store();
-
-        var formattedAttributes = await _productAttributeFormatter.FormatAttributesAsync(product,
-            attributes, customer, store, "<br />", false, false);
-        formattedAttributes.Should().Be("From: senderName 1 <senderEmail@gmail.com><br />For: recipientName 1 <recipientEmail@gmail.com>");
-    }
-
-    [Test]
-    public async Task CanRenderPhysicalGiftCart()
-    {
-        var attributes = _productAttributeParser.AddGiftCardAttribute(string.Empty,
-            "recipientName 1", "recipientEmail@gmail.com",
-            "senderName 1", "senderEmail@gmail.com", "custom message");
-
-        var product = new Product
-        {
-            IsGiftCard = true,
-            GiftCardType = GiftCardType.Physical
-        };
-        var customer = new Customer();
-        var store = new Store();
-
-        var formattedAttributes = await _productAttributeFormatter.FormatAttributesAsync(product,
-            attributes, customer, store, "<br />", false, false);
-        formattedAttributes.Should().Be("From: senderName 1<br />For: recipientName 1");
-    }
 }

@@ -26,7 +26,7 @@ public class WarehouseServiceTests : ServiceTest<Warehouse>
         warehouses.Any().Should().BeTrue();
         warehouses.Count.Should().Be(2);
 
-        warehouses = await _warehouseService.GetAllWarehousesAsync("Warehouse 1 (New York)");
+        warehouses = await _warehouseService.GetAllWarehousesAsync("المستودع الرئيسي (دمشق)");
         warehouses.Any().Should().BeTrue();
         warehouses.Count.Should().Be(1);
     }
@@ -36,15 +36,19 @@ public class WarehouseServiceTests : ServiceTest<Warehouse>
     {
         var address = await _addressService.GetAddressByIdAsync(1);
 
+        //address 1 is the admin's US address: no warehouse matches its country, so the
+        //lookup falls back to the first warehouse
         var warehouses = await _warehouseService.GetNearestWarehouseAsync(address);
         warehouses.Should().NotBeNull();
-        warehouses.Name.Should().BeEquivalentTo("Warehouse 1 (New York)");
+        warehouses.Name.Should().BeEquivalentTo("المستودع الرئيسي (دمشق)");
 
         address = await _addressService.GetAddressByIdAsync(2);
 
+        //a Syrian address matches both warehouses on country, and Syria has no seeded
+        //state provinces to break the tie, so the first match wins
         warehouses = await _warehouseService.GetNearestWarehouseAsync(address);
         warehouses.Should().NotBeNull();
-        warehouses.Name.Should().BeEquivalentTo("Warehouse 2 (Los Angeles)");
+        warehouses.Name.Should().BeEquivalentTo("المستودع الرئيسي (دمشق)");
 
         address = await _addressService.GetAddressByIdAsync(3);
 

@@ -328,29 +328,6 @@
                     </div>
                 </div>
             }
-            @foreach (var gc in Model.GiftCards)
-            {
-                <div class="form-group row">
-                    <div class="col-md-3">
-                        <nop-label asp-for="@Model.GiftCards[0].CouponCode" />
-                        <span style="padding-top: 7px;margin-right: 5px;float: right;">(@(gc.CouponCode))</span>
-                    </div>
-                    <div class="col-md-9">
-                        <div class="form-text-row">@gc.Amount</div>
-                    </div>
-                </div>
-            }
-            @if (Model.RedeemedRewardPoints > 0)
-            {
-                <div class="form-group row">
-                    <div class="col-md-3">
-                        <nop-label asp-for="RedeemedRewardPoints" />
-                    </div>
-                    <div class="col-md-9">
-                        <div class="form-text-row">@($"{Model.RedeemedRewardPoints} {T("Admin.Orders.Fields.RedeemedRewardPoints.Points")} {Model.RedeemedRewardPointsAmount}")</div>
-                    </div>
-                </div>
-            }
             <div class="form-group row">
                 <div class="col-md-3">
                     <nop-label asp-for="OrderTotal" />
@@ -785,17 +762,7 @@
                     <div class="form-text-row">@Model.CustomerIp</div>
                 </div>
             </div>
-            @if (Model.RecurringPaymentId > 0)
-            {
-                <div class="form-group row">
-                    <div class="col-md-3">
-                        <nop-label asp-for="RecurringPaymentId" />
-                    </div>
-                    <div class="col-md-9">
-                        <a asp-controller="RecurringPayment" asp-action="Edit" asp-route-id="@Model.RecurringPaymentId">@T("Admin.Common.View")</a>
-                    </div>
-                </div>
-            }
+
             @if (!string.IsNullOrEmpty(Model.VatNumber))
             {
                 <div class="form-group row">

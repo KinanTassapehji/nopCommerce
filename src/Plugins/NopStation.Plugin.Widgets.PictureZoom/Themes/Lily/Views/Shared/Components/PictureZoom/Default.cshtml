@@ -1,0 +1,134 @@
+﻿@using System.Globalization
+@using NopStation.Plugin.Misc.Core.Helpers
+@{
+    var settings = NopInstance.Load<PictureZoomSettings>();
+    var position = ((PictureZoomPosition)((await workContext.GetWorkingLanguageAsync()).Rtl ? settings.RtlPositionTypeId : settings.LtrPositionTypeId)).ToString().ToLower();
+
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, "/Plugins/NopStation.Plugin.Widgets.PictureZoom/Contents/js/jquery.imagesloaded.js");
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, "/Plugins/NopStation.Plugin.Widgets.PictureZoom/Contents/js/cloud-zoom.1.0.2.js");
+    NopHtml.AppendCssFileParts("/Plugins/NopStation.Plugin.Widgets.PictureZoom/Contents/css/cloud-zoom.css", string.Empty);
+    NopHtml.AppendCssFileParts("/Plugins/NopStation.Plugin.Widgets.PictureZoom/Contents/css/styles.css", string.Empty);
+
+    System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = new System.Globalization.CultureInfo("en-US");
+
+}
+
+<script type="text/javascript" asp-location="Footer">
+    var position = '@position';
+    var isInitializing = false;
+    
+    var cloudZoom = function (position) {
+        if (isInitializing) {
+            return;
+        }
+        
+        isInitializing = true;
+        
+        $("a.cloud-zoom").each(function () {
+            var $zoomLink = $(this);
+            if ($zoomLink.data('zoom')) {
+                try {
+                    $zoomLink.data('zoom').destroy();
+                } catch(e) {}
+            }
+        });
+        
+        $('.mousetrap').remove();
+        $('#cloud-zoom-big').remove();
+        $('div[id="wrap"]').each(function() {
+            var $wrap = $(this);
+            var $content = $wrap.children();
+            $wrap.replaceWith($content);
+        });
+        
+        var $carousel = $('.picture-details-carousel');
+        var $linksToZoom;
+        
+        if ($carousel.length > 0) {
+            $linksToZoom = $carousel.find('.owl-item:not(.cloned).active a.cloud-zoom');
+        } else {
+            $linksToZoom = $("a.cloud-zoom");
+        }
+
+        $linksToZoom.imagesLoaded({
+            done: function ($images) {
+                $images.each(function () {
+                    var $img = $(this);
+                    var $zoomLink = $img.closest('a.cloud-zoom');
+                    var imgWidth = $img.width();
+                    var imgHeight = $img.height();
+
+                    if (imgWidth > 0 && imgHeight > 0) {
+                        var width = imgWidth * @settings.ZoomWidth;
+                        var height = imgHeight * @settings.ZoomHeight;
+                        
+                        $zoomLink.CloudZoom({
+                            zoomWidth: width,
+                            zoomHeight: height,
+                            position: position,
+                            tint: @settings.Tint.ToString().ToLower(),
+                            tintOpacity: @settings.TintOpacity.ToString("N2", new CultureInfo("en-US")),
+                            lensOpacity: @settings.LensOpacity.ToString("N2", new CultureInfo("en-US")),
+                            softFocus: @settings.SoftFocus.ToString().ToLower(),
+                            smoothMove: @settings.SmoothMove,
+                            showTitle: @settings.ShowTitle.ToString().ToLower(),
+                            titleOpacity: @settings.TitleOpacity.ToString("N2", new CultureInfo("en-US")),
+                            adjustX: @settings.AdjustX,
+                            adjustY: @settings.AdjustY
+                        });
+                    }
+                });
+                
+                isInitializing = false;
+            }
+        });
+    }
+
+    var initZoom = function () {
+        if ($(window).width() <= 768) {
+            cloudZoom('inside');
+        }
+        else {
+            cloudZoom(position);
+        }
+    };
+    
+    $(document).ready(function() {
+        var repositionZoomWindow = function() {
+            var $bigZoom = $('#cloud-zoom-big');
+            if ($bigZoom.length > 0 && $bigZoom.parent().prop('tagName') !== 'BODY') {
+                var $activeImg = $('.picture-details-carousel .owl-item.active img.cloud-zoom-image');
+                
+                if ($activeImg.length === 0) {
+                    $activeImg = $('img.cloud-zoom-image').first();
+                }
+                
+                if ($activeImg.length > 0) {
+                    var imgOffset = $activeImg.offset();
+                    var currentTop = parseInt($bigZoom.css('top'));
+                    var currentLeft = parseInt($bigZoom.css('left'));
+                    
+                    $bigZoom.appendTo('body');
+                    
+                    $bigZoom.css({
+                        'position': 'absolute',
+                        'top': imgOffset.top + currentTop + 'px',
+                        'left': imgOffset.left + currentLeft + 'px'
+                    });
+                }
+            }
+        };
+        
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.id === 'cloud-zoom-big') {
+                        repositionZoomWindow();
+                    }
+                });
+            });
+        });
+        
+        observer.observe(document.body, { childList: true, subtree: true });
+    });
+</script>

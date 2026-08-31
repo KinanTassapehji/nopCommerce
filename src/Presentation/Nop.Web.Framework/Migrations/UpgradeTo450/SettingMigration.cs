@@ -38,15 +38,6 @@ public class SettingMigration : MigrationBase
             settingService.SaveSetting(commonSettings, settings => settings.ClearLogOlderThanDays);
         }
 
-        //#5551
-        var catalogSettings = settingService.LoadSetting<CatalogSettings>();
-
-        if (!settingService.SettingExists(catalogSettings, settings => settings.EnableSpecificationAttributeFiltering))
-        {
-            catalogSettings.EnableSpecificationAttributeFiltering = true;
-            settingService.SaveSetting(catalogSettings, settings => settings.EnableSpecificationAttributeFiltering);
-        }
-
         //#5204
         var shippingSettings = settingService.LoadSetting<ShippingSettings>();
 

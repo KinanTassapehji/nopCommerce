@@ -46,7 +46,7 @@ public partial class PdfService : IPdfService
     protected readonly ICountryService _countryService;
     protected readonly ICurrencyService _currencyService;
     protected readonly IDateTimeHelper _dateTimeHelper;
-    protected readonly IGiftCardService _giftCardService;
+
     protected readonly IHtmlFormatter _htmlFormatter;
     protected readonly ILanguageService _languageService;
     protected readonly ILocalizationService _localizationService;
@@ -58,7 +58,6 @@ public partial class PdfService : IPdfService
     protected readonly IPictureService _pictureService;
     protected readonly IPriceFormatter _priceFormatter;
     protected readonly IProductService _productService;
-    protected readonly IRewardPointService _rewardPointService;
     protected readonly ISettingService _settingService;
     protected readonly IShipmentService _shipmentService;
     protected readonly IStateProvinceService _stateProvinceService;
@@ -83,7 +82,7 @@ public partial class PdfService : IPdfService
         ICountryService countryService,
         ICurrencyService currencyService,
         IDateTimeHelper dateTimeHelper,
-        IGiftCardService giftCardService,
+
         IHtmlFormatter htmlFormatter,
         ILanguageService languageService,
         ILocalizationService localizationService,
@@ -95,7 +94,6 @@ public partial class PdfService : IPdfService
         IPictureService pictureService,
         IPriceFormatter priceFormatter,
         IProductService productService,
-        IRewardPointService rewardPointService,
         ISettingService settingService,
         IShipmentService shipmentService,
         IStateProvinceService stateProvinceService,
@@ -116,7 +114,7 @@ public partial class PdfService : IPdfService
         _countryService = countryService;
         _currencyService = currencyService;
         _dateTimeHelper = dateTimeHelper;
-        _giftCardService = giftCardService;
+
         _htmlFormatter = htmlFormatter;
         _languageService = languageService;
         _localizationService = localizationService;
@@ -128,7 +126,6 @@ public partial class PdfService : IPdfService
         _pictureService = pictureService;
         _priceFormatter = priceFormatter;
         _productService = productService;
-        _rewardPointService = rewardPointService;
         _settingService = settingService;
         _shipmentService = shipmentService;
         _storeContext = storeContext;
@@ -614,29 +611,6 @@ public partial class PdfService : IPdfService
                 true, order.CustomerCurrencyCode, false, languageId);
         }
 
-        //gift cards
-        foreach (var gcuh in await _giftCardService.GetGiftCardUsageHistoryAsync(order))
-        {
-            var gcTitle = string.Format(await _localizationService.GetResourceAsync("Pdf.GiftCardInfo", languageId),
-                (await _giftCardService.GetGiftCardByIdAsync(gcuh.GiftCardId))?.GiftCardCouponCode);
-            var gcAmountStr = await _priceFormatter.FormatPriceAsync(
-                -_currencyService.ConvertCurrency(gcuh.UsedValue, order.CurrencyRate), true,
-                order.CustomerCurrencyCode, false, languageId);
-
-            result.GiftCards.Add($"{gcTitle} {gcAmountStr}");
-        }
-
-        //reward points
-        if (order.RedeemedRewardPointsEntryId.HasValue && await _rewardPointService.GetRewardPointsHistoryEntryByIdAsync(order.RedeemedRewardPointsEntryId.Value) is RewardPointsHistory redeemedRewardPointsEntry)
-        {
-            var rpTitle = string.Format(await _localizationService.GetResourceAsync("Pdf.RewardPoints", languageId),
-                -redeemedRewardPointsEntry.Points);
-            var rpAmount = await _priceFormatter.FormatPriceAsync(
-                -_currencyService.ConvertCurrency(redeemedRewardPointsEntry.UsedAmount, order.CurrencyRate),
-                true, order.CustomerCurrencyCode, false, languageId);
-
-            result.RewardPoints = $"{rpTitle} {rpAmount}";
-        }
 
         //order total
         var orderTotalInCustomerCurrency = _currencyService.ConvertCurrency(order.OrderTotal, order.CurrencyRate);

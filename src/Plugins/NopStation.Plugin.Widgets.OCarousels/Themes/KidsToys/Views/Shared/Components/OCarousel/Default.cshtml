@@ -1,0 +1,49 @@
+﻿@model OCarouselListModel
+
+@foreach (var carousel in Model.OCarousels)
+{
+    var carouselType = carousel.CarouselType.ToString().ToLower();
+    var bg = carousel.ShowBackgroundPicture ? $"style=background:url('" + carousel.BackgroundPictureUrl + "') no-repeat center; background-size: cover; " : "";
+    if (carousel.ShowBackgroundPicture)
+    {
+        <div class="ocarousel-background" style="background: url('@carousel.BackgroundPictureUrl') no-repeat center; background-size: cover">
+            <div class="container">
+                @if (carousel.DisplayTitle)
+                {
+                    <div class="d-flex justify-content-center align-items-center mb-0 title">
+                        <i class="icon-leaf-left"></i>
+                        <h2>@carousel.Title</h2>
+                        <i class="icon-leaf-right"></i>
+                    </div>
+                }
+
+                <div class="carousel-container carousel-@carouselType" data-carouselid="@carousel.Id">
+                    <div class="loader">
+                        <div class="lds-dual-ring"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            @if (carousel.DisplayTitle)
+            {
+                <div class="d-flex justify-content-center align-items-center mb-0 title">
+                    <i class="icon-leaf-left"></i>
+                    <h2>@carousel.Title</h2>
+                    <i class="icon-leaf-right"></i>
+                </div>
+            }
+
+            <div class="carousel-container carousel-@carouselType" data-carouselid="@carousel.Id">
+                <div class="loader">
+                    <div class="lds-dual-ring"></div>
+                </div>
+            </div>
+        </div>
+
+    }
+}

@@ -14,7 +14,6 @@ public partial record ShoppingCartModel : BaseNopModel
         Items = new List<ShoppingCartItemModel>();
         Warnings = new List<string>();
         DiscountBox = new DiscountBoxModel();
-        GiftCardBox = new GiftCardBoxModel();
         CheckoutAttributes = new List<CheckoutAttributeModel>();
         OrderReviewData = new OrderReviewDataModel();
 
@@ -38,7 +37,6 @@ public partial record ShoppingCartModel : BaseNopModel
     public bool TermsOfServiceOnOrderConfirmPage { get; set; }
     public bool TermsOfServicePopup { get; set; }
     public DiscountBoxModel DiscountBox { get; set; }
-    public GiftCardBoxModel GiftCardBox { get; set; }
     public OrderReviewDataModel OrderReviewData { get; set; }
 
     public IList<Type> ButtonPaymentMethodViewComponents { get; set; }
@@ -83,14 +81,12 @@ public partial record ShoppingCartModel : BaseNopModel
         public List<SelectListItem> AllowedQuantities { get; set; }
 
         public string AttributeInfo { get; set; }
-
-        public string RecurringInfo { get; set; }
+
 
         public string RentalInfo { get; set; }
 
         public bool AllowItemEditing { get; set; }
 
-        public bool DisableRemoval { get; set; }
 
         public IList<string> Warnings { get; set; }
     }
@@ -162,13 +158,6 @@ public partial record ShoppingCartModel : BaseNopModel
         {
             public string CouponCode { get; set; }
         }
-    }
-
-    public partial record GiftCardBoxModel : BaseNopModel
-    {
-        public bool Display { get; set; }
-        public string Message { get; set; }
-        public bool IsApplied { get; set; }
     }
 
     public partial record OrderReviewDataModel : BaseNopModel

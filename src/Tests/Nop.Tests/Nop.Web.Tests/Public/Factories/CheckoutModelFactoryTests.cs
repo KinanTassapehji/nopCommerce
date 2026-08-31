@@ -27,12 +27,10 @@ public class CheckoutModelFactoryTests : ServiceTest
     private IList<ShoppingCartItem> _cart;
     private OrderSettings _orderSettings;
     private ShippingSettings _shippingSettings;
-    private RewardPointsSettings _rewardPointsSettings;
     private IAddressService _addressService;
     private Address _address;
     private ISettingService _settingService;
     private PaymentSettings _paymentSettings;
-    private IRewardPointService _rewardPointService;
     private Customer _customer;
     private IPaymentMethod _paymentMethod;
     private CommonSettings _commonSettings;
@@ -43,7 +41,6 @@ public class CheckoutModelFactoryTests : ServiceTest
     {
         _settingService = GetService<ISettingService>();
         _shippingSettings = GetService<ShippingSettings>();
-        _rewardPointsSettings = GetService<RewardPointsSettings>();
         _commonSettings = GetService<CommonSettings>();
 
         _shippingSettings.ActiveShippingRateComputationMethodSystemNames.Add("FixedRateTestShippingRateComputationMethod");
@@ -54,9 +51,6 @@ public class CheckoutModelFactoryTests : ServiceTest
         await _settingService.SaveSettingAsync(_paymentSettings);
 
         _customer = await GetService<IWorkContext>().GetCurrentCustomerAsync();
-
-        _rewardPointService = GetService<IRewardPointService>();
-        await _rewardPointService.AddRewardPointsHistoryEntryAsync(_customer, 10000, 1);
 
         _shoppingCartService = GetService<IShoppingCartService>();
         _productService = GetService<IProductService>();
@@ -95,10 +89,6 @@ public class CheckoutModelFactoryTests : ServiceTest
         _paymentSettings.ActivePaymentMethodSystemNames.Clear();
         await _settingService.SaveSettingAsync(_paymentSettings);
 
-        _rewardPointsSettings.Enabled = true;
-        await _settingService.SaveSettingAsync(_rewardPointsSettings);
-        foreach (var history in await _rewardPointService.GetRewardPointsHistoryAsync(_customer.Id))
-            await _rewardPointService.DeleteRewardPointsHistoryEntryAsync(history);
     }
 
     [Test]
@@ -106,10 +96,6 @@ public class CheckoutModelFactoryTests : ServiceTest
     {
         var model = new CheckoutBillingAddressModel();
         await _checkoutModelFactory.PrepareBillingAddressModelAsync(model, _cart);
-
-        model.ShipToSameAddressAllowed.Should().Be(_shippingSettings.ShipToSameAddress &&
-                                                   await _shoppingCartService.ShoppingCartRequiresShippingAsync(_cart));
-        model.ShipToSameAddress.Should().Be(!_orderSettings.DisableBillingAddressCheckoutStep);
 
         model.ExistingAddresses.Any().Should().BeTrue();
         model.ExistingAddresses.Count.Should().Be(1);
@@ -152,33 +138,7 @@ public class CheckoutModelFactoryTests : ServiceTest
     {
         var model = await _checkoutModelFactory.PreparePaymentMethodModelAsync(_cart, 0);
 
-        model.DisplayRewardPoints.Should().BeTrue();
         model.PaymentMethods.Count.Should().Be(1);
-        model.RewardPointsToUseAmount.Should().Be("$1,944.90");
-        model.RewardPointsToUse.Should().Be(1945);
-        model.RewardPointsBalance.Should().Be(10000);
-        model.RewardPointsEnoughToPayForOrder.Should().BeTrue();
-        model.UseRewardPoints.Should().BeFalse();
-    }
-
-    [Test]
-    public async Task PreparePaymentMethodModelShouldDependOnSettings()
-    {
-        var model = await _checkoutModelFactory.PreparePaymentMethodModelAsync(_cart, 0);
-        model.DisplayRewardPoints.Should().BeTrue();
-        model.RewardPointsToUse.Should().Be(1945);
-        model.RewardPointsBalance.Should().Be(10000);
-
-        _rewardPointsSettings.Enabled = false;
-        await _settingService.SaveSettingAsync(_rewardPointsSettings);
-
-        model = await GetService<ICheckoutModelFactory>().PreparePaymentMethodModelAsync(_cart, 0);
-
-        _rewardPointsSettings.Enabled = true;
-        await _settingService.SaveSettingAsync(_rewardPointsSettings);
-
-        model.DisplayRewardPoints.Should().BeFalse();
-        model.RewardPointsBalance.Should().Be(0);
     }
 
     [Test]

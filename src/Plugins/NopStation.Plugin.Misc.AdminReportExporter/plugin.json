@@ -1,0 +1,16 @@
+{
+  "Group": "Nop-Station",
+  "FriendlyName": "Admin Report Exporter",
+  "SystemName": "NopStation.Plugin.Misc.AdminReportExporter",
+  "Version": "4.90.1.0",
+  "SupportedVersions": [
+    "4.90"
+  ],
+  "Author": "Nop-Station Team",
+  "DisplayOrder": 1,
+  "FileName": "NopStation.Plugin.Misc.AdminReportExporter.dll",
+  "Description": "This plugin enables to download Admin Report.",
+  "DependsOnSystemNames": [
+    "NopStation.Core"
+  ]
+}

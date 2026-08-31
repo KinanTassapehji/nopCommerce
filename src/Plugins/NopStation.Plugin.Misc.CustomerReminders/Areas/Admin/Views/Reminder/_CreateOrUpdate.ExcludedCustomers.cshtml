@@ -1,0 +1,80 @@
+@model ReminderModel
+
+<div class="card-body">
+    <p>
+        <strong>@T("NopStation.Plugins.CustomerReminders.Admin.Reminders.ExcludedCustomers.Description")</strong>
+    </p>
+
+    <div id="excludedcustomers-grid-container">
+        @await Html.PartialAsync("Table", new DataTablesModel
+        {
+            Name = "excludedcustomers-grid",
+                UrlRead = new DataUrl("ExcludedCustomerList", "Reminder", null),
+                UrlDelete = new DataUrl("ExcludedCustomerDelete", "Reminder", null),
+                SearchButtonId = "search-excludedcustomers",
+                Length = Model.ReminderExcludedCustomerSearchModel.PageSize,
+                LengthMenu = Model.ReminderExcludedCustomerSearchModel.AvailablePageSizes,
+                Filters = new List<FilterParameter>
+                {
+                new FilterParameter(nameof(Model.ReminderExcludedCustomerSearchModel.ReminderId),Model.Id)
+                },
+                ColumnCollection = new List<ColumnProperty>
+                {
+                    new ColumnProperty(nameof(ReminderExcludedCustomerModel.CustomerEmail))
+                    {
+                    Title = T("Admin.Customers.Customers.Fields.Email").Text,
+                    Width = "300"
+                    },
+                    new ColumnProperty(nameof(ReminderExcludedCustomerModel.CustomerName))
+                    {
+                    Title = T("Admin.Customers.Customers.Fields.FullName").Text,
+                    Width = "200"
+                    },
+                    new ColumnProperty(nameof(ReminderExcludedCustomerModel.Id))
+                    {
+                    Title = T("Admin.Common.Delete").Text,
+                    Width = "100",
+                    ClassName = NopColumnClassDefaults.Button,
+                    Render = new RenderButtonRemove(T("Admin.Common.Delete").Text)
+                    }
+                }
+        })
+
+        <div class="card-footer">
+            <button type="button" id="btnAddNewExcludedCustomer" class="btn btn-primary">
+                @T("NopStation.Plugins.CustomerReminders.Admin.Reminders.ExcludedCustomers.AddNew")
+            </button>
+            <button type="button" id="btnRefresh" style="display:none;" />
+        </div>
+    </div>
+</div>
+<nop-delete-confirmation asp-model-id="excludedcustomers-grid" asp-button-id="delete-selected" />
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+
+        $("#btnAddNewExcludedCustomer").click(function (e) {
+            e.preventDefault();
+
+            var reminderId = @Model.Id;
+            var url = '@Url.Action("CustomerAddPopup", "Reminder")?reminderId=' + reminderId;
+
+            window.open(
+                url,
+                '_blank',
+                'height=800,width=1200,left=100,top=50,scrollbars=yes'
+            );
+
+            return false;
+        });
+
+        $("#btnRefresh").click(function (e) {
+            e.preventDefault();
+
+            $('#excludedcustomers-grid').DataTable().ajax.reload();
+
+            return false;
+        });
+
+    });
+</script>

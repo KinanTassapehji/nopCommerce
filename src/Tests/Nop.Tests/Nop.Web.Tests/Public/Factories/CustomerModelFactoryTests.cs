@@ -4,6 +4,7 @@ using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Customers;
 using Nop.Services.Attributes;
 using Nop.Services.Configuration;
+using Nop.Services.Localization;
 using Nop.Web.Factories;
 using Nop.Web.Models.Customer;
 using NUnit.Framework;
@@ -19,6 +20,7 @@ public class CustomerModelFactoryTests : WebTest
     private CustomerAttribute[] _customerAttributes;
     private CustomerSettings _customerSettings;
     private ISettingService _settingService;
+    private ILocalizationService _localizationService;
 
     [OneTimeSetUp]
     public async Task SetUp()
@@ -32,6 +34,7 @@ public class CustomerModelFactoryTests : WebTest
 
         _customerAttributeService = GetService<IAttributeService<CustomerAttribute, CustomerAttributeValue>>();
         _customerModelFactory = GetService<ICustomerModelFactory>();
+        _localizationService = GetService<ILocalizationService>();
         _customer = await GetService<IWorkContext>().GetCurrentCustomerAsync();
         
         _customerAttributes =
@@ -143,13 +146,13 @@ public class CustomerModelFactoryTests : WebTest
     public async Task CanPrepareRegisterResultModel()
     {
         var model = await _customerModelFactory.PrepareRegisterResultModelAsync((int)UserRegistrationType.AdminApproval, string.Empty);
-        model.Result.Should().Be("Your account will be activated after approving by administrator.");
+        model.Result.Should().Be(await _localizationService.GetResourceAsync("Account.Register.Result.AdminApproval"));
         model = await _customerModelFactory.PrepareRegisterResultModelAsync((int)UserRegistrationType.Disabled, string.Empty);
-        model.Result.Should().Be("Registration not allowed. You can edit this in the admin area.");
+        model.Result.Should().Be(await _localizationService.GetResourceAsync("Account.Register.Result.Disabled"));
         model = await _customerModelFactory.PrepareRegisterResultModelAsync((int)UserRegistrationType.EmailValidation, string.Empty);
-        model.Result.Should().Be("Your registration has been successfully completed. You have just been sent an email containing activation instructions.");
+        model.Result.Should().Be(await _localizationService.GetResourceAsync("Account.Register.Result.EmailValidation"));
         model = await _customerModelFactory.PrepareRegisterResultModelAsync((int)UserRegistrationType.Standard, string.Empty);
-        model.Result.Should().Be("Your registration completed");
+        model.Result.Should().Be(await _localizationService.GetResourceAsync("Account.Register.Result.Standard"));
         model = await _customerModelFactory.PrepareRegisterResultModelAsync(400, string.Empty);
         model.Result.Should().BeNullOrEmpty();
     }

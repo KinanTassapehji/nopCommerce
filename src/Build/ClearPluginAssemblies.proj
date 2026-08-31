@@ -19,6 +19,16 @@
     For plugins it creates too many unnecessary files that just take up space.
     At the moment you can't disable this behavior. That's why we have to manually delete all unnecessary libraries from plugin output directories. -->  
     <Exec Command='dotnet "ClearPluginAssemblies.dll" "OutputPath=$(OutputPath)|PluginPath=$(PluginPath)|SaveLocalesFolders=$(SaveLocalesFolders)"' />
-  </Target> 
+
+    <!-- The RuntimeCompilation package sets PreserveCompilationContext=true on every project that
+    references it transitively, so plugins emit a deps.json carrying compile libraries. At runtime
+    AssemblyPart.GetReferencePaths() cannot resolve those (the plugin dll lives outside the app base
+    directory) and every Razor view compiled at runtime fails with
+    "Cannot find compilation library location for package '<plugin>'". Plugins never need a deps.json. -->
+    <ItemGroup>
+      <PluginDepsFile Include="$(PluginPath)\*.deps.json" />
+    </ItemGroup>
+    <Delete Files="@(PluginDepsFile)" />
+  </Target>
       
 </Project>

@@ -1,0 +1,264 @@
+﻿/* 5 of 101 CSS properties converted by rtl.daskhat.ir 
+ These properties should be override originals. 
+ just load rtl css file after original css file.*/
+
+/* body {direction:rtl;} */
+
+.product-item:hover .quick-view-btn {
+  opacity: 1;
+}
+
+.qv-modal .loader img {
+  position: absolute;
+  top: 50%;
+  right: 45%;
+  transform: translate(-50%, -50%);
+}
+
+@media only screen and (max-width: 767px) {
+  .quick-view-btn {
+    display: none !important;
+  }
+}
+
+.qv-modal {
+  width: 65%;
+  min-height: 380px;
+  background-color: white;
+  margin: 100px auto 50px;
+  position: relative;
+  display: none;
+  top: 50%;
+  text-align: center;
+}
+
+.qvclick-button {
+  display: none;
+}
+
+.qv-modal .mfp-close {
+  border: 1px solid #bbb;
+  background: #ccc;
+}
+
+.qv-modal .product-details-page {
+  padding-top: 0;
+}
+
+.mfp-ready ~ .bar-notification-container {
+  z-index: 100000;
+}
+
+.mfp-ready ~ .ajax-loading-block-window {
+  z-index: 100001;
+}
+
+.mfp-content .product-essential {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.mfp-content .product-collateral {
+  margin: 0;
+}
+
+.mfp-content .overview {
+  margin: 0;
+}
+
+.mfp-content .gallery {
+  margin: 0;
+}
+
+.qv-modal .overview .qty-input, .qv-modal .variant-overview .qty-input {
+  margin-bottom: 10px !important;
+}
+
+.quick-view-product-details-modal .modal-dialog {
+  max-width: 100%;
+  margin: 0;
+}
+
+.quick-view-product-details-modal .overview {
+  margin: 0;
+}
+
+.quick-view-product-details-modal .share-item {
+  display: flex;
+  align-items: center;
+}
+
+  .quick-view-product-details-modal .share-item .share-item-label {
+    margin-left: 8px;
+  }
+
+.quick-view-product-details-modal .modal-content {
+  border: unset;
+}
+
+#quick-view-product-details-modal .product-price span {
+  font-size: 30px !important;
+  font-weight: normal !important;
+}
+
+#quick-view-product-details-modal .tabs-product-details p {
+  font-size: 16px !important;
+}
+
+.add-to-cart-wrapper .btn-quick-view {
+  background: var(--primary-color);
+  padding: 8px 20px;
+  transition: all 0.3s;
+  outline: 0;
+  box-shadow: none !important;
+  text-align: center;
+  width: 100%;
+  text-transform: uppercase;
+  border: none;
+  color: #fff !important;
+}
+
+  .add-to-cart-wrapper .btn-quick-view:hover {
+    background: #46282a;
+  }
+
+  .add-to-cart-wrapper .btn-quick-view.wishlist-icon {
+    border: solid 1px #ddd;
+    background: #fff;
+    color: #666 !important;
+  }
+
+    .add-to-cart-wrapper .btn-quick-view.wishlist-icon:hover {
+      background: #eee;
+    }
+
+.qv-modal .overview-buttons .btn-email-friend, .qv-modal .variant-overview .btn-email-friend, .qv-modal .overview-buttons .btn-compare-product, .qv-modal .variant-overview .btn-compare-product, .qv-modal .overview-buttons .btn-quick-view, .qv-modal .qv-group-product .add-to-wishlist .btn-quick-view {
+  height: 40px;
+  text-transform: uppercase;
+  font-size: 16px;
+  text-align: center;
+  width: 100%;
+  border: 1px solid #ddd;
+  color: #666;
+  background: white;
+}
+
+.qv-modal .overview-buttons .btn-quick-view, .qv-modal .qv-group-product .add-to-wishlist .btn-quick-view {
+  padding: 8px;
+}
+
+  .quick-view-product-details-modal .btn-email-friend:hover, .quick-view-product-details-modal .btn-compare-product:hover, .qv-modal .overview-buttons .btn-quick-view:hover, .qv-modal .qv-group-product .add-to-wishlist .btn-quick-view:hover {
+    background: #eee;
+  }
+
+.mfp-close-btn-in .mfp-close {
+  width: 45px !important;
+  height: 45px !important;
+  background: var(--primary-color) !important;
+  color: white !important;
+}
+
+.c-white {
+  color: #ffffff;
+}
+
+.products-quick-box .modal-dialog {
+  max-width: 75%;
+  margin: 30px auto;
+}
+
+.products-quick-box .modal-content {
+  border: 0;
+  border-radius: 0;
+}
+
+.products-quick-box .owl-dots {
+  display: none;
+}
+
+.products-quick-box .owl-nav {
+  bottom: 0 !important;
+}
+
+.products-quick-box .close {
+  left: 0;
+  position: absolute;
+  top: 0;
+  background: var(--primary-color);
+  opacity: 1;
+  padding: 15px 15px;
+  color: #fff;
+  font-size: 12px;
+  z-index: 5;
+}
+
+  .products-quick-box .close:hover {
+    background: #333;
+    color: #fff !important;
+    opacity: 1;
+  }
+
+.quick-view-product-details-modal .gallery .offer-content {
+  right: 0;
+  top: 0;
+}
+
+#quick-view-modal .gallery .divPictureThumb {
+  display: none;
+}
+
+#quick-view-modal .gallery .picture-thumbs img {
+  width: 100px;
+  height: 100px;
+  margin: 5px 0 0 5px;
+}
+
+#quick-view-modal .gallery .picture-thumbs .slick-track {
+  display: flex;
+}
+
+#quick-view-modal .gallery .picture-thumbs .slick-slide {
+  width: 105px !important;
+}
+
+.quick-view-product-details-modal .additional-details {
+  margin: 0;
+}
+
+  .quick-view-product-details-modal .additional-details .sku {
+    margin: 0;
+  }
+
+.quick-view-product-details-modal .overview .prices-variant {
+  display: flex;
+  align-items: center;
+}
+
+.quick-view-product-details-modal .add-to-cart, .quick-view-product-details-modal .quantity {
+  margin-bottom: 10px !important;
+}
+
+.quick-view-product-details-modal .product-category {
+  margin-bottom: 20px;
+}
+
+.quick-view-product-details-modal dt .required {
+  position: absolute;
+}
+
+.back-in-stock-subscription {
+  margin-bottom: 10px;
+}
+
+.product-tags-box {
+  margin-top: 20px;
+}
+
+@media (min-width: 768px) {
+  .variant-picture + .variant-overview {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+  }
+}

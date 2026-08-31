@@ -15,11 +15,6 @@ public partial record CatalogProductsCommand : BasePageableModel
     public string Price { get; set; }
 
     /// <summary>
-    /// Gets or sets the specification attribute option ids
-    /// </summary>
-    public List<int> Specs { get; set; }
-
-    /// <summary>
     /// Gets or sets the manufacturer ids
     /// </summary>
     public List<int> Ms { get; set; }

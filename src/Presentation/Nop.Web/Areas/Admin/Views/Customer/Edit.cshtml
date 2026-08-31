@@ -218,10 +218,6 @@
 {
     <nop-delete-confirmation asp-model-id="@Model.Id" asp-action="GdprDelete" asp-button-id="customer-gdpr-delete" />
 }
-@if (!string.IsNullOrEmpty(Model.MultiFactorAuthenticationProvider))
-{
-    <nop-delete-confirmation asp-model-id="@Model.Id" asp-action="RemoveBindMFA" asp-button-id="mfa-bind-delete" />
-}
 @if (Model.AllowSendingOfWelcomeMessage)
 {
     <nop-action-confirmation asp-button-id="send-welcome-message" />

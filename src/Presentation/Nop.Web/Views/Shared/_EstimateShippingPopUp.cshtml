@@ -9,25 +9,18 @@
 </div>
 
 <div class="estimate-shipping-row shipping-address">
-    <div class="estimate-shipping-row-item address-item">
-        <div class="estimate-shipping-row">
-            <select asp-for="CountryId"
-                    asp-items="Model.AvailableCountries"
-                    class="estimate-shipping-address-control"
-                    data-trigger="country-select"
-                    data-url="@(Url.RouteUrl(NopRouteNames.Ajax.GET_STATES_BY_COUNTRY_ID))"
-                    data-stateprovince="#@Html.IdFor(model => model.StateProvinceId)"
-                    data-loading="#estimate-shipping-loading-progress"
-                    aria-label="@T("Shipping.EstimateShippingPopUp.Country")"></select>
-            <nop-required />
-        </div>
+    @* the store ships inside Syria only: the country is pre-selected server side and never shown.
+       ponytail: hidden <select> rather than a hidden input - the popup script reads the country name off the selected option *@
+    <div class="estimate-shipping-row-item address-item" hidden aria-hidden="true">
+        <select asp-for="CountryId" asp-items="Model.AvailableCountries" tabindex="-1"></select>
     </div>
     <div class="estimate-shipping-row-item address-item">
         <div class="estimate-shipping-row">
             <select asp-for="StateProvinceId"
-                asp-items="Model.AvailableStates"
-                class="estimate-shipping-address-control"
-                aria-label="@T("Shipping.EstimateShippingPopUp.StateProvince")"></select>
+                    asp-items="Model.AvailableStates"
+                    class="estimate-shipping-address-control"
+                    aria-label="@T("Shipping.EstimateShippingPopUp.StateProvince")"></select>
+            <nop-required />
         </div>
     </div>
     <div class="estimate-shipping-row-item address-item">
@@ -46,6 +39,13 @@
                        placeholder="@T("Shipping.EstimateShippingPopUp.ZipPostalCode")" />
                 <nop-required />
             }
+        </div>
+    </div>
+    <div class="estimate-shipping-row-item address-item">
+        <div class="estimate-shipping-row">
+            <input asp-for="Street"
+                   class="estimate-shipping-address-control"
+                   placeholder="@T("Shipping.EstimateShippingPopUp.Street")" />
         </div>
     </div>
 </div>

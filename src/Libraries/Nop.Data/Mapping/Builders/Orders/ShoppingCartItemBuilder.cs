@@ -21,8 +21,7 @@ public partial class ShoppingCartItemBuilder : NopEntityBuilder<ShoppingCartItem
     {
         table
             .WithColumn(nameof(ShoppingCartItem.CustomerId)).AsInt32().ForeignKey<Customer>()
-            .WithColumn(nameof(ShoppingCartItem.ProductId)).AsInt32().ForeignKey<Product>()
-            .WithColumn(nameof(ShoppingCartItem.CustomWishlistId)).AsInt32().Nullable().ForeignKey<CustomWishlist>();
+            .WithColumn(nameof(ShoppingCartItem.ProductId)).AsInt32().ForeignKey<Product>();
     }
 
     #endregion

@@ -1,0 +1,48 @@
+﻿@using Nop.Web.Extensions
+@using Nop.Web.Framework.Mvc.Routing
+@using Nop.Core.Domain.Catalog
+@using Nop.Web.Framework.UI
+@using NopStation.Plugin.Widgets.PrevNextProduct.Models
+@using Nop.Services.Localization
+
+@inject INopHtmlHelper NopHtml
+
+@model PublicInfoModel
+
+
+@{
+    var supportRtl = await Html.ShouldUseRtlThemeAsync();
+
+    if (supportRtl)
+    {
+        NopHtml.AppendCssFileParts("/Plugins/NopStation.Plugin.Widgets.PrevNextProduct/Themes/Kingdom/Content/css/style.rtl.css", string.Empty);
+    }
+    else
+    {
+        NopHtml.AppendCssFileParts("/Plugins/NopStation.Plugin.Widgets.PrevNextProduct/Themes/Kingdom/Content/css/style.css", string.Empty);
+    }
+}
+<div class="prev-next-container">
+    <div class="row">
+        <div class="col-6">
+            <div class="previous-product">
+                @if (Model.Previous.HasProduct)
+                {
+                    <a href="@(await NopUrl.RouteGenericUrlAsync<Product>(new { SeName = Model.Previous.SeName }))">
+                        <span class=""> <i class="icon icon-left-arrow"></i>&nbsp; &nbsp; @T("NopStation.PrevNextProduct.PreviousProduct") </span>
+                    </a>
+                }
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="next-product">
+                @if (Model.Next.HasProduct)
+                {
+                    <a href="@(await NopUrl.RouteGenericUrlAsync<Product>(new { SeName = Model.Next.SeName }))">
+                        <span class=""> @T("NopStation.PrevNextProduct.NextProduct")&nbsp; &nbsp;<i class="icon icon-right-arrow"></i> </span>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

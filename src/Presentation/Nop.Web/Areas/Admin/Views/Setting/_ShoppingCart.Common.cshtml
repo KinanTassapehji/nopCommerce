@@ -11,16 +11,6 @@
             <span asp-validation-for="ShowDiscountBox"></span>
         </div>
     </div>
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-override-store-checkbox asp-for="ShowGiftCardBox_OverrideForStore" asp-input="ShowGiftCardBox" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
-            <nop-label asp-for="ShowGiftCardBox" />
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="ShowGiftCardBox" />
-            <span asp-validation-for="ShowGiftCardBox"></span>
-        </div>
-    </div>
     <div class="form-group row advanced-setting">
         <div class="col-md-3">
             <nop-override-store-checkbox asp-for="AllowCartItemEditing_OverrideForStore" asp-input="AllowCartItemEditing" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />

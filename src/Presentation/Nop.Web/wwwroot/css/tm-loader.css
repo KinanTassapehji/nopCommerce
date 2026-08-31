@@ -1,0 +1,265 @@
+﻿/* ==========================================================================
+   TmTm — the loader
+
+   One loader for the whole product: storefront and admin load this same file
+   after their brand layer, so every waiting state looks identical. Palette
+   comes from tokens.css, which both sides already link.
+
+   No new markup and no JS: it restyles the four wait states nopCommerce
+   already ships and toggles —
+     .ajax-loading-block-window   storefront blocking overlay (displayAjaxLoading)
+     .please-wait                 storefront inline "wait" labels
+     #ajaxBusy                    admin global ajax indicator (ajaxStart/Stop)
+     .throbber                    admin blocking overlay (long operations)
+
+   jQuery .show() writes an inline display:block on the first three, so the
+   layout here is block + absolutely positioned pseudo-elements, never flex —
+   an inline style would win over it.
+
+   Direction-agnostic: everything is centred or full-width, so the RTL admin
+   and the RTL storefront get this file unchanged.
+   ========================================================================== */
+
+:root {
+  --tm-loader-ring: 76px;   /* spinner diameter */
+  --tm-loader-track: 5px;   /* ring thickness   */
+  --tm-loader-mark: 30px;   /* brand mark inside the ring */
+}
+
+/* The mark is the storefront theme's, referenced from the site root so the
+   admin gets the same file — same arrangement tokens.css already uses. */
+
+@keyframes tm-loader-spin {
+  to { transform: rotate(1turn); }
+}
+
+/* Second, slower counter-rotation on the halo: the ring reads as motion even
+   at the exact moment the fast one blurs. */
+@keyframes tm-loader-halo {
+  0%, 100% { opacity: .35; transform: scale(.94); }
+  50%      { opacity: .12; transform: scale(1.06); }
+}
+
+@keyframes tm-loader-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Indeterminate sweep for the admin top bar. */
+@keyframes tm-loader-sweep {
+  0%   { transform: translateX(-100%) scaleX(.35); }
+  50%  { transform: translateX(0) scaleX(.55); }
+  100% { transform: translateX(100%) scaleX(.35); }
+}
+
+/* --- The ring ------------------------------------------------------------
+   A conic gradient masked into a ring: the brand gradient, spun. Solid
+   --tm-teal-deep leads, so the visible head of the ring is the accessible
+   teal and #00d9cc only ever appears as the decorative tail. */
+.ajax-loading-block-window::before,
+.throbber .curtain-content p::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  width: var(--tm-loader-ring);
+  height: var(--tm-loader-ring);
+  margin-block-start: calc(var(--tm-loader-ring) / -2);
+  margin-inline-start: calc(var(--tm-loader-ring) / -2);
+  border-radius: 50%;
+  background: conic-gradient(from 90deg,
+      rgba(0, 217, 204, 0) 0deg,
+      var(--tm-teal-bright) 70deg,
+      var(--tm-teal) 170deg,
+      var(--tm-teal-deep) 280deg,
+      var(--tm-teal-deep) 360deg);
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - var(--tm-loader-track)), #000 calc(100% - var(--tm-loader-track)));
+  mask: radial-gradient(farthest-side, #0000 calc(100% - var(--tm-loader-track)), #000 calc(100% - var(--tm-loader-track)));
+  animation: tm-loader-spin .85s linear infinite;
+}
+
+/* Breathing halo behind the ring. */
+.ajax-loading-block-window::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  width: calc(var(--tm-loader-ring) + 34px);
+  height: calc(var(--tm-loader-ring) + 34px);
+  margin-block-start: calc((var(--tm-loader-ring) + 34px) / -2);
+  margin-inline-start: calc((var(--tm-loader-ring) + 34px) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--tm-teal-bright) 0%, rgba(0, 217, 204, 0) 70%);
+  animation: tm-loader-halo 1.7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* --- Storefront: blocking overlay ---------------------------------------- */
+.ajax-loading-block-window {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  width: auto;
+  height: auto;
+  margin: 0;
+  background: rgba(255, 255, 255, .72)
+             url('/Themes/TmTm/Content/images/brand-mark.svg') center / var(--tm-loader-mark) no-repeat;
+  -webkit-backdrop-filter: blur(3px) saturate(1.05);
+  backdrop-filter: blur(3px) saturate(1.05);
+  animation: tm-loader-fade .18s ease both;
+}
+
+/* --- Storefront: inline "please wait" ------------------------------------
+   Same ring, 16px, replacing the gif. */
+.please-wait {
+  position: relative;
+  display: inline-block;
+  padding-inline-start: 26px;
+  background: none;
+  font-size: var(--tm-fs-label, 14px);
+  color: var(--tm-ink-muted, #5c6b6a);
+}
+
+.please-wait::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0;
+  width: 16px;
+  height: 16px;
+  margin-block-start: -8px;
+  border-radius: 50%;
+  background: conic-gradient(from 90deg, rgba(0, 217, 204, 0) 0deg, var(--tm-teal) 180deg, var(--tm-teal-deep) 360deg);
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 2px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, #0000 calc(100% - 2px), #000 calc(100% - 2px));
+  animation: tm-loader-spin .85s linear infinite;
+}
+
+/* --- Admin: global ajax indicator ----------------------------------------
+   Fires on every jQuery request, so it must not block: a 3px brand bar
+   riding the top edge instead of the corner gif. */
+#ajaxBusy {
+  height: 3px;
+  background: var(--tm-teal-tint, #e6f4f4);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#ajaxBusy span {
+  display: block;
+  float: none;
+  width: 100%;
+  height: 3px;
+  margin: 0;
+  background: var(--tm-gradient);
+  transform-origin: 0 50%;
+  animation: tm-loader-sweep 1.1s ease-in-out infinite;
+}
+
+/* Kept from the base sheet: the preferences call clears this class to bring
+   the indicator back. */
+#ajaxBusy span.no-ajax-loader {
+  background: none;
+  animation: none;
+}
+
+/* --- Storefront: global ajax indicator ------------------------------------
+   Same bar as the admin's, on the same jQuery events (public.common.js), so a
+   background request is visible without blocking the page. */
+body.tm-loading::before,
+body.tm-loading::after {
+  content: "";
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 3px;
+  z-index: 10001;
+  pointer-events: none;
+}
+
+body.tm-loading::before {
+  background: var(--tm-teal-tint, #e6f4f4);
+}
+
+body.tm-loading::after {
+  background: var(--tm-gradient);
+  transform-origin: 0 50%;
+  animation: tm-loader-sweep 1.1s ease-in-out infinite;
+}
+
+/* --- Admin: blocking overlay (long operations) ---------------------------- */
+.throbber .curtain {
+  background: rgba(9, 26, 26, .82);
+  opacity: 1;
+  filter: none;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.throbber .curtain-content {
+  animation: tm-loader-fade .18s ease both;
+}
+
+.throbber .curtain-content div {
+  padding: 0;
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90%, 360px);
+}
+
+.throbber .curtain-content p {
+  position: relative;
+  height: calc(var(--tm-loader-ring) + 60px);
+  margin: 0;
+}
+
+/* The mark, but white: the curtain is dark, and the mark's own fill is
+   --tm-teal-deep. Masked rather than painted, so one asset serves both sides. */
+.throbber .curtain-content p::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  width: var(--tm-loader-mark);
+  height: var(--tm-loader-mark);
+  margin-block-start: calc(var(--tm-loader-mark) / -2);
+  margin-inline-start: calc(var(--tm-loader-mark) / -2);
+  background: var(--tm-white, #fff);
+  -webkit-mask: url('/Themes/TmTm/Content/images/brand-mark.svg') center / contain no-repeat;
+  mask: url('/Themes/TmTm/Content/images/brand-mark.svg') center / contain no-repeat;
+}
+
+/* The gif the ring replaces. */
+.throbber .curtain-content p img {
+  display: none;
+}
+
+.throbber-header {
+  font-size: var(--tm-fs-title, 20px);
+  line-height: var(--tm-lh-title, 28px);
+  font-weight: 600;
+  letter-spacing: .01em;
+  margin-block-end: 8px;
+  color: var(--tm-white, #fff);
+}
+
+/* --- Motion --------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .ajax-loading-block-window::before,
+  .ajax-loading-block-window::after,
+  .throbber .curtain-content p::before,
+  .please-wait::before,
+  #ajaxBusy span,
+  body.tm-loading::after {
+    animation-duration: 2.4s;
+    animation-timing-function: ease-in-out;
+  }
+
+  .ajax-loading-block-window::before,
+  .throbber .curtain-content p::before,
+  .please-wait::before {
+    animation-name: tm-loader-halo;
+  }
+}

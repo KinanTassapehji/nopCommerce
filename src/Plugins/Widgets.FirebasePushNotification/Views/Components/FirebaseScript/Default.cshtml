@@ -1,0 +1,257 @@
+﻿@model Widgets.FirebasePushNotification.Models.FirebaseScriptModel
+@{
+    //Serialized rather than interpolated into the script below. These are
+    //admin-editable settings rendered into an inline script block, so a raw
+    //value carrying a closing script tag would break out of it and run in
+    //every visitor's browser. Json.Serialize escapes that; Html.Raw did not.
+    var firebaseConfigJson = Json.Serialize(new
+    {
+        apiKey = Model.ApiKey,
+        authDomain = Model.AuthDomain,
+        projectId = Model.ProjectId,
+        messagingSenderId = Model.MessagingSenderId,
+        appId = Model.AppId
+    });
+}
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"></script>
+
+<style>
+    #fcm-prompt {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: none;
+        max-width: 320px;
+        font-family: inherit;
+    }
+    #fcm-prompt p {
+        margin: 0 0 12px;
+        font-size: 14px;
+        color: #333;
+    }
+    #fcm-prompt .fcm-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+    #fcm-prompt button {
+        padding: 6px 16px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+    }
+    #fcm-prompt .fcm-allow {
+        background: #4285f4;
+        color: #fff;
+    }
+    #fcm-prompt .fcm-dismiss {
+        background: #e0e0e0;
+        color: #333;
+    }
+</style>
+
+<div id="fcm-prompt">
+    <p>Would you like to receive notifications about your orders and offers?</p>
+    <div class="fcm-buttons">
+        <button class="fcm-dismiss" id="fcm-dismiss">No thanks</button>
+        <button class="fcm-allow" id="fcm-allow">Enable</button>
+    </div>
+</div>
+
+<script>
+    (function () {
+        console.log('[FCM] Script loaded. isAuthenticated=@(Model.IsAuthenticated ? "true" : "false")');
+
+        var firebaseConfig = @firebaseConfigJson;
+
+        var isAuthenticated = @Json.Serialize(Model.IsAuthenticated);
+        var customerId = @Json.Serialize(Model.CustomerId);
+        var vapidKey = @Json.Serialize(Model.VapidKey);
+
+        // Feature-detect before touching Firebase. WKWebView (in-app browsers,
+        // Capacitor wrapper) lacks one or more of these, and firebase.messaging()
+        // throws messaging/unsupported-browser when called there.
+        if (!('serviceWorker' in navigator)) {
+            console.warn('[FCM] Service workers not supported');
+            return;
+        }
+        if (!('Notification' in window)) {
+            console.warn('[FCM] Notifications not supported');
+            return;
+        }
+        if (!('PushManager' in window)) {
+            console.warn('[FCM] PushManager not supported');
+            return;
+        }
+        if (typeof firebase === 'undefined' || !firebase.messaging) {
+            console.warn('[FCM] Firebase SDK unavailable');
+            return;
+        }
+        if (typeof firebase.messaging.isSupported === 'function' && !firebase.messaging.isSupported()) {
+            console.warn('[FCM] Firebase messaging not supported in this environment');
+            return;
+        }
+
+        var messaging;
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+                console.log('[FCM] Firebase initialized');
+            }
+            messaging = firebase.messaging();
+        } catch (err) {
+            console.warn('[FCM] Firebase init failed:', err);
+            return;
+        }
+
+        function detectPlatform() {
+            var ua = navigator.userAgent || '';
+            if (/android/i.test(ua)) return 'android';
+            if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return 'ios';
+            return 'web';
+        }
+
+        var platform = detectPlatform();
+        console.log('[FCM] Detected platform:', platform);
+
+        var swRegistration = null;
+
+        function registerToken() {
+            console.log('[FCM] Getting FCM token...');
+            messaging.getToken({
+                vapidKey: vapidKey,
+                serviceWorkerRegistration: swRegistration
+            }).then(function (token) {
+                if (!token) {
+                    console.warn('[FCM] No token received');
+                    return;
+                }
+
+                console.log('[FCM] Got token');
+
+                // Scope cache key by customer to support multi-account on same device
+                var cacheKey = 'fcm_token_' + customerId;
+                var lastToken = localStorage.getItem(cacheKey);
+                if (lastToken === token) {
+                    console.log('[FCM] Token already registered for this customer, skipping');
+                    return;
+                }
+
+                console.log('[FCM] Sending token to server (platform=' + platform + ')...');
+                fetch('/api/plugin/FirebasePushNotification/RegisterToken', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: token, platform: platform })
+                }).then(function (response) {
+                    console.log('[FCM] Server response:', response.status);
+                    if (response.ok) {
+                        localStorage.setItem(cacheKey, token);
+                        console.log('[FCM] Token saved to localStorage');
+                    }
+                    return response.json();
+                }).then(function (data) {
+                    console.log('[FCM] Server data:', data);
+                }).catch(function (err) {
+                    console.error('[FCM] RegisterToken API error:', err);
+                });
+            }).catch(function (err) {
+                console.error('[FCM] getToken error:', err);
+            });
+        }
+
+        function showPrompt() {
+            console.log('[FCM] Showing notification prompt');
+            var prompt = document.getElementById('fcm-prompt');
+            prompt.style.display = 'block';
+
+            document.getElementById('fcm-allow').addEventListener('click', function () {
+                prompt.style.display = 'none';
+                console.log('[FCM] User clicked Enable, requesting permission...');
+                Notification.requestPermission().then(function (permission) {
+                    console.log('[FCM] Permission result:', permission);
+                    if (permission === 'granted') {
+                        registerToken();
+                    } else {
+                        localStorage.setItem('fcm_dismissed', 'true');
+                    }
+                }).catch(function (err) {
+                    console.error('[FCM] Permission request error:', err);
+                });
+            });
+
+            document.getElementById('fcm-dismiss').addEventListener('click', function () {
+                prompt.style.display = 'none';
+                localStorage.setItem('fcm_dismissed', 'true');
+                console.log('[FCM] User dismissed prompt');
+            });
+        }
+
+        // Reuse the site's service worker (registered by the theme). Registering the
+        // same script+scope again is idempotent and returns the same registration,
+        // so this is safe whichever of the two runs first.
+        console.log('[FCM] Registering service worker...');
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then(function (registration) {
+                swRegistration = registration;
+                console.log('[FCM] Service worker registered, scope:', registration.scope);
+                console.log('[FCM] Notification.permission:', Notification.permission);
+
+                if (!isAuthenticated) {
+                    console.log('[FCM] User not authenticated, skipping');
+                    return;
+                }
+
+                if (Notification.permission === 'denied') {
+                    console.log('[FCM] Notifications denied by user');
+                    return;
+                }
+
+                if (Notification.permission === 'granted') {
+                    console.log('[FCM] Permission already granted, registering token');
+                    registerToken();
+                    return;
+                }
+
+                // permission is 'default' — show prompt on user gesture
+                if (localStorage.getItem('fcm_dismissed') !== 'true') {
+                    showPrompt();
+                } else {
+                    console.log('[FCM] Prompt previously dismissed');
+                }
+            })
+            .catch(function (err) {
+                console.error('[FCM] Service worker registration failed:', err);
+            });
+
+        messaging.onMessage(function (payload) {
+            console.log('[FCM] Foreground message received:', payload);
+            if (Notification.permission === 'granted') {
+                var n = payload.notification || {};
+                var d = payload.data || {};
+                var title = n.title || d.title || 'Notification';
+                var body = n.body || d.body || '';
+                var url = d.url || d.click_action || '/';
+                var options = {
+                    body: body,
+                    icon: n.icon || '/icons/icons_0/android-chrome-192x192.png',
+                    data: { url: url }
+                };
+                var notif = new Notification(title, options);
+                notif.onclick = function (e) {
+                    e.preventDefault();
+                    window.focus();
+                    if (url) window.location.href = url;
+                };
+            }
+        });
+    })();
+</script>

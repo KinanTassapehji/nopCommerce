@@ -45,14 +45,6 @@ public class SettingMigration : MigrationBase
             settingService.SaveSetting(adminAreaSettings, settings => settings.UseStickyHeaderLayout);
         }
 
-        //#7387
-        var productEditorSettings = settingService.LoadSetting<ProductEditorSettings>();
-        if (!settingService.SettingExists(productEditorSettings, settings => settings.AgeVerification))
-        {
-            productEditorSettings.AgeVerification = false;
-            settingService.SaveSetting(productEditorSettings, settings => settings.AgeVerification);
-        }
-
         //#2184
         var vendorSettings = settingService.LoadSetting<VendorSettings>();
         if (!settingService.SettingExists(vendorSettings, settings => settings.MaximumProductPicturesNumber))
@@ -63,11 +55,6 @@ public class SettingMigration : MigrationBase
 
         //#7571
         var captchaSettings = settingService.LoadSetting<CaptchaSettings>();
-        if (!settingService.SettingExists(captchaSettings, settings => settings.ShowOnCheckGiftCardBalance))
-        {
-            captchaSettings.ShowOnCheckGiftCardBalance = true;
-            settingService.SaveSetting(captchaSettings, settings => settings.ShowOnCheckGiftCardBalance);
-        }
 
         //#5818
         var mediaSettings = settingService.LoadSetting<MediaSettings>();
@@ -250,17 +237,6 @@ public class SettingMigration : MigrationBase
         settingService.SaveSetting(robotsTxtSettings, settings => settings.DisallowPaths);
 
         //#1921
-        var shoppingCartSettings = settingService.LoadSetting<ShoppingCartSettings>();
-        if (!settingService.SettingExists(shoppingCartSettings, settings => settings.AllowMultipleWishlist))
-        {
-            shoppingCartSettings.AllowMultipleWishlist = true;
-            settingService.SaveSetting(shoppingCartSettings, settings => settings.AllowMultipleWishlist);
-        }
-        if (!settingService.SettingExists(shoppingCartSettings, settings => settings.MaximumNumberOfCustomWishlist))
-        {
-            shoppingCartSettings.MaximumNumberOfCustomWishlist = 10;
-            settingService.SaveSetting(shoppingCartSettings, settings => settings.MaximumNumberOfCustomWishlist);
-        }
 
         //#7730
         var aiSettings = settingService.LoadSetting<ArtificialIntelligenceSettings>();
@@ -408,6 +384,7 @@ public class SettingMigration : MigrationBase
             filterLevelSettings.DisplayOnProductDetailsPage = true;
             settingService.SaveSetting(filterLevelSettings, settings => settings.DisplayOnProductDetailsPage);
         }
+        var productEditorSettings = settingService.LoadSetting<ProductEditorSettings>();
         if (!settingService.SettingExists(productEditorSettings, settings => settings.FilterLevelValuesProducts))
         {
             productEditorSettings.FilterLevelValuesProducts = true;

@@ -151,7 +151,7 @@
                                 <span asp-validation-for="@Model.AddSetting.Value"></span>
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <div class="form-group row" @(Model.AddSetting.AvailableStores.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
                             <div class="col-md-3">
                                 <nop-label asp-for="@Model.AddSetting.StoreId" />
                             </div>

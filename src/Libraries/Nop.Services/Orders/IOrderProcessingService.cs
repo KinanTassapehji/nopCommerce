@@ -42,46 +42,6 @@ public partial interface IOrderProcessingService
     Task DeleteOrderAsync(Order order);
 
     /// <summary>
-    /// Process next recurring payment
-    /// </summary>
-    /// <param name="recurringPayment">Recurring payment</param>
-    /// <param name="paymentResult">Process payment result (info about last payment for automatic recurring payments)</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the collection of errors
-    /// </returns>
-    Task<IEnumerable<string>> ProcessNextRecurringPaymentAsync(RecurringPayment recurringPayment, ProcessPaymentResult paymentResult = null);
-
-    /// <summary>
-    /// Cancels a recurring payment
-    /// </summary>
-    /// <param name="recurringPayment">Recurring payment</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    Task<IList<string>> CancelRecurringPaymentAsync(RecurringPayment recurringPayment);
-
-    /// <summary>
-    /// Gets a value indicating whether a customer can cancel recurring payment
-    /// </summary>
-    /// <param name="customerToValidate">Customer</param>
-    /// <param name="recurringPayment">Recurring Payment</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the value indicating whether a customer can cancel recurring payment
-    /// </returns>
-    Task<bool> CanCancelRecurringPaymentAsync(Customer customerToValidate, RecurringPayment recurringPayment);
-
-    /// <summary>
-    /// Gets a value indicating whether a customer can retry last failed recurring payment
-    /// </summary>
-    /// <param name="customer">Customer</param>
-    /// <param name="recurringPayment">Recurring Payment</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains true if a customer can retry payment; otherwise false
-    /// </returns>
-    Task<bool> CanRetryLastRecurringPaymentAsync(Customer customer, RecurringPayment recurringPayment);
-
-    /// <summary>
     /// Send a shipment
     /// </summary>
     /// <param name="shipment">Shipment</param>
@@ -318,26 +278,11 @@ public partial interface IOrderProcessingService
     /// Gets a value indicating whether payment workflow is required
     /// </summary>
     /// <param name="cart">Shopping cart</param>
-    /// <param name="useRewardPoints">A value indicating reward points should be used; null to detect current choice of the customer</param>
     /// <returns>
     /// A task that represents the asynchronous operation
     /// The task result contains the value indicating whether payment workflow is required
     /// </returns>
-    Task<bool> IsPaymentWorkflowRequiredAsync(IList<ShoppingCartItem> cart, bool? useRewardPoints = null);
-
-    /// <summary>
-    /// Gets the next payment date
-    /// </summary>
-    /// <param name="recurringPayment">Recurring payment</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    Task<DateTime?> GetNextPaymentDateAsync(RecurringPayment recurringPayment);
-
-    /// <summary>
-    /// Gets the cycles remaining
-    /// </summary>
-    /// <param name="recurringPayment">Recurring payment</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    Task<int> GetCyclesRemainingAsync(RecurringPayment recurringPayment);
+    Task<bool> IsPaymentWorkflowRequiredAsync(IList<ShoppingCartItem> cart);
 
     /// <summary>
     /// Gets process payment request

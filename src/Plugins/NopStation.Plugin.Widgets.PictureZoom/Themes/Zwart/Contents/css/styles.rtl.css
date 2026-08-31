@@ -1,0 +1,24 @@
+/* 2 of 6 CSS properties converted by rtl.daskhat.ir 
+ These properties should be override originals. 
+ just load rtl css file after original css file.*/
+
+/* body {direction:rtl;} */
+
+.cloud-zoom-thumb-container {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.cloud-zoom-thumb {
+  display: inline-block;
+  border: 1px solid #BBBB8E;
+  margin-left: 10px;
+}
+
+.imgForMobile {
+  display: none;
+}
+
+.product-essential #wrap {
+  z-index: 1000000 !important;
+}

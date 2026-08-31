@@ -1,0 +1,95 @@
+﻿@model IEnumerable<ProductTabModel>
+@using NopStation.Plugin.Widgets.ProductTabs.Models
+
+@if (Model.Any())
+{
+    foreach (var productTab in Model)
+    {
+        var items = productTab.Items.Where(p => p.Products.Any());
+        <div class="product-tab-container custom-container">
+            @if (productTab.DisplayTitle)
+            {
+                <div class="title">
+                    <strong>@productTab.Title</strong>
+                </div>
+            }
+
+            <div class="product-tab-body ns-product-tab">
+                @{
+                    var backgroundImage = @productTab.Picture.ImageUrl;
+                }
+                <div class="product-tab-picture" style="background-image: url('@backgroundImage')">
+                    <a href="@productTab.CustomUrl">
+                        @* <img src="@productTab.Picture.ImageUrl" />*@
+                        @if (productTab.DisplayTitle)
+                        {
+                            <strong>@productTab.Title</strong>
+                        }
+                    </a>
+                </div>
+                <div class="product-tab-item-wrapper">
+                    <ul class="hide nav nav-tabs text-uppercase">
+                        @foreach (var item in items)
+                        {
+                            <li><a href="#product-tab-@item.Id">@item.Name</a></li>
+                        }
+                    </ul>
+                    @foreach (var item in items)
+                    {
+                        <div class="product-tab-items">
+                            <div class="owl-carousel owl-theme" id="product-tab-@item.Id">
+                                @for (int productCounter = 0; productCounter < item.Products.Count; productCounter++)
+                                {
+                                    <div class="product-tab-item item-box">
+                                        @await Html.PartialAsync("_ProductBox", item.Products[productCounter])
+                                    </div>
+
+                                }
+                            </div>
+                        </div>
+
+                        <script asp-location="Footer">
+                            $(document).ready(function () {
+                                $('#product-tab-@item.Id').owlCarousel({
+                                    nav: @productTab.Nav.ToString().ToLower(),
+                                    loop: @productTab.Loop.ToString().ToLower(),
+                                    dots: true,
+                                    margin: @productTab.Margin,
+                                    autoplay: @productTab.AutoPlay.ToString().ToLower(),
+                                    rtl: @productTab.RTL.ToString().ToLower(),
+                                    autoplayTimeout: @productTab.AutoPlayTimeout,
+                                    autoplayHoverPause: @productTab.AutoPlayHoverPause.ToString().ToLower(),
+                                    lazyLoad: @productTab.LazyLoad.ToString().ToLower(),
+                                    lazyLoadEager: @productTab.LazyLoadEager,
+                                    center: @productTab.Center.ToString().ToLower(),
+                                    startPosition: @productTab.StartPosition,
+                                    responsive: {
+                                        0: {
+                                            items: 1
+                                        },
+                                        576: {
+                                            items: 1
+                                        },
+                                        768: {
+                                            items: 2
+                                        },
+                                        992: {
+                                            items: 2
+                                        },
+                                        1200: {
+                                            items: 4
+                                        },
+                                        1500: {
+                                            items: 4
+                                        }
+                                    }
+                                });
+                            });
+                        </script>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}
+

@@ -1,0 +1,16 @@
+{
+  "Group": "Nop-Station",
+  "FriendlyName": "Nop-Station Anywhere Slider",
+  "SystemName": "NopStation.Plugin.Widgets.AnywhereSlider",
+  "Version": "4.90.1.1",
+  "SupportedVersions": [
+    "4.90"
+  ],
+  "Author": "Nop-Station Team",
+  "DisplayOrder": 1,
+  "FileName": "NopStation.Plugin.Widgets.AnywhereSlider.dll",
+  "Description": "This plugin allows to display sliders on public store.",
+  "DependsOnSystemNames": [
+    "NopStation.Core"
+  ]
+}

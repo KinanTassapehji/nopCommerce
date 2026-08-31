@@ -14,29 +14,6 @@ public class SchemaMigration : ForwardOnlyMigration
     /// </summary>
     public override void Up()
     {
-        //#7387
-        var productTableName = nameof(Product);
-
-        var ageVerificationColumnName = nameof(Product.AgeVerification);
-        if (!Schema.Table(productTableName).Column(ageVerificationColumnName).Exists())
-        {
-            Alter.Table(productTableName)
-                .AddColumn(ageVerificationColumnName)
-                .AsBoolean()
-                .NotNullable()
-                .WithDefaultValue(false);
-        }
-
-        var minimumAgeToPurchaseColumnName = nameof(Product.MinimumAgeToPurchase);
-        if (!Schema.Table(productTableName).Column(minimumAgeToPurchaseColumnName).Exists())
-        {
-            Alter.Table(productTableName)
-                .AddColumn(minimumAgeToPurchaseColumnName)
-                .AsInt32()
-                .NotNullable()
-                .WithDefaultValue(0);
-        }
-
         //#7294
         var topicTableName = nameof(Topic);
         var topicAvailableEndDateColumnName = nameof(Topic.AvailableEndDateTimeUtc);

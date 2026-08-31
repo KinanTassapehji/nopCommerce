@@ -1,0 +1,24 @@
+﻿@inject Nop.Core.IWorkContext workContext
+
+@{
+    NopHtml.AppendCssFileParts($"/Plugins/NopStation.Plugin.Widgets.ProductTabs/Themes/NopMotors/Contents/css/owl.carousel.css", string.Empty);   
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, $"/Plugins/NopStation.Plugin.Widgets.ProductTabs/Contents/script/owl.carousel.min.js");
+    var supportRtl = (await workContext.GetWorkingLanguageAsync()).Rtl;
+
+    if (supportRtl)
+    {
+        NopHtml.AppendCssFileParts($"/Plugins/NopStation.Plugin.Widgets.ProductTabs/Themes/NopMotors/Contents/css/styles.rtl.css", string.Empty);
+
+    }
+    else
+    {
+        NopHtml.AppendCssFileParts($"/Plugins/NopStation.Plugin.Widgets.ProductTabs/Themes/NopMotors/Contents/css/styles.css", string.Empty);
+    }
+
+}
+
+<script asp-location="Footer">
+    $(function () {
+        $(".ns-product-tab").tabs();
+    });
+</script>

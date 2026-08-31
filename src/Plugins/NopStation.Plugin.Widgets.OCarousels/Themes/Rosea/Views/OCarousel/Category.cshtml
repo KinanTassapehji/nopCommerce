@@ -1,0 +1,51 @@
+﻿@using Nop.Core.Domain.Catalog;
+@model OCarouselModel
+
+@if (Model.Categories.Count > 0)
+{
+    <div class="owl-carousel ocarousel @Model.CustomCssClass" id="ocarousel-@(Model.Id)">
+        @foreach (var categoryModel in Model.Categories)
+        {
+            <div class="ocarousel-item">
+                <a href="@(await NopUrl.RouteGenericUrlAsync<Category>(new { SeName = categoryModel.SeName }))" title="@categoryModel.PictureModel.Title">
+                    <img alt="@categoryModel.PictureModel.AlternateText" src="@categoryModel.PictureModel.ImageUrl" title="@categoryModel.PictureModel.Title" />
+
+                    <div class="category-name">
+                        <a href="@(await NopUrl.RouteGenericUrlAsync<Category>(new { SeName = categoryModel.SeName }))">@categoryModel.Name</a>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#ocarousel-@(Model.Id)').owlCarousel({
+                nav: @Model.Nav.ToString().ToLower(),
+                navText: ['prev', 'next'],
+                loop: @Model.Loop.ToString().ToLower(),
+                dots: true,
+                margin: 10,
+                autoplay: @Model.AutoPlay.ToString().ToLower(),
+                rtl: @Model.Rtl.ToString().ToLower(),
+                autoplayTimeout: @Model.AutoPlayTimeout,
+                autoplayHoverPause: @Model.AutoPlayHoverPause.ToString().ToLower(),
+                lazyLoad: @Model.LazyLoad.ToString().ToLower(),
+                lazyLoadEager: @Model.LazyLoadEager,
+                center: @Model.Center.ToString().ToLower(),
+                startPosition: @Model.StartPosition,
+                responsive: {
+                    0: {
+                        items: 2
+                    },
+                    576: {
+                        items: 2
+                    },
+                    992: {
+                        items: 3
+                    }
+                }
+            });
+        })
+    </script>
+}

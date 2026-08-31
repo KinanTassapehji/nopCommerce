@@ -1,0 +1,26 @@
+﻿@inject Nop.Core.IWorkContext workContext
+
+@{
+    var supportRtl = (await workContext.GetWorkingLanguageAsync()).Rtl;
+    //Html.AddScriptParts(ResourceLocation.Footer, $"~/Plugins/NopStation.ProductTabs/Contents/script/owl.carousel.min.js");
+
+    if (supportRtl)
+    {
+        //Html.AppendCssFileParts($"~/Plugins/NopStation.ProductTabs/Contents/css/rtl/owl.theme.green.min.css");
+        //Html.AppendCssFileParts($"~/Plugins/NopStation.ProductTabs/Contents/css/rtl/owl.carousel.css");
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.ProductTabs/Themes/BeautyShop/contents/css/styles.rtl.css",string.Empty);
+    }
+    else
+    {
+        //Html.AppendCssFileParts($"~/Plugins/NopStation.ProductTabs/Contents/css/owl.theme.green.min.css");
+        //Html.AppendCssFileParts($"~/Plugins/NopStation.ProductTabs/Contents/css/owl.carousel.css");
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.ProductTabs/Themes/BeautyShop/contents/css/styles.css",string.Empty);
+    }
+
+}
+
+<script asp-location="Footer">
+    $(function () {
+        $(".ns-product-tab").tabs();
+    });
+</script>

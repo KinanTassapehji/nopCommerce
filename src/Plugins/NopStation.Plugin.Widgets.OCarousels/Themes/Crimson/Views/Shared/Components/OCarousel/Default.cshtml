@@ -1,0 +1,12 @@
+﻿@model OCarouselListModel
+
+@foreach (var carousel in Model.OCarousels)
+{
+    var carouselType = carousel.CarouselType.ToString().ToLower();
+
+    <div class="carousel-container carousel-@carouselType" data-carouselid="@carousel.Id">
+        <div class="loader">
+            <div class="lds-ripple"><div></div><div></div></div>
+        </div>
+    </div>
+}

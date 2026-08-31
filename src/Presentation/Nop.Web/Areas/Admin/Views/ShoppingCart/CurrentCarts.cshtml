@@ -9,7 +9,7 @@
     //page title
     ViewBag.PageTitle = T("Admin.CurrentCarts.CartsAndWishlists").Text;
     //active menu item (system name)
-    NopHtml.SetActiveMenuItemSystemName("Current shopping carts and wishlists");
+    NopHtml.SetActiveMenuItemSystemName("Current shopping carts");
 }
 
 @{
@@ -96,28 +96,12 @@
                                 </div>
                             </div>
                             <div class="col-md-7">
-                                <div class="form-group row">
-                                    <div class="col-md-4">
-                                        <nop-label asp-for="ShoppingCartType" />
-                                    </div>
-                                    <div class="col-md-8">
-                                        <nop-select asp-for="ShoppingCartType" asp-items="@Model.AvailableShoppingCartTypes" />
-                                    </div>
-                                </div>
                                 <div class="form-group row" @(Model.HideStoresList ? Html.Raw("style=\"display:none\"") : null)>
                                     <div class="col-md-4">
                                         <nop-label asp-for="StoreId" />
                                     </div>
                                     <div class="col-md-8">
                                         <nop-select asp-for="StoreId" asp-items="Model.AvailableStores" />
-                                    </div>
-                                </div>
-                                <div class="form-group row" @(Model.AvailableCountries.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
-                                    <div class="col-md-4">
-                                        <nop-label asp-for="BillingCountryId" />
-                                    </div>
-                                    <div class="col-md-8">
-                                        <nop-select asp-for="BillingCountryId" asp-items="Model.AvailableCountries" />
                                     </div>
                                 </div>
                             </div>
@@ -136,7 +120,6 @@
 
             <div class="card card-default">
                 <div class="card-body">
-                    <nop-doc-reference asp-string-resource="@T("Admin.Documentation.Reference.ShoppingCartsAndWishlists", Docs.ShoppingCartsAndWishlists + Utm.OnAdmin)" />
 
                     @await Html.PartialAsync("Table", new DataTablesModel
                     {
@@ -148,11 +131,9 @@
                         LengthMenu = Model.AvailablePageSizes,
                         Filters = new List<FilterParameter>
                         {
-                            new FilterParameter(nameof(Model.ShoppingCartType)),
                             new FilterParameter(nameof(Model.StartDate), typeof(DateTime?)),
                             new FilterParameter(nameof(Model.EndDate), typeof(DateTime?)),
                             new FilterParameter(nameof(Model.StoreId)),
-                            new FilterParameter(nameof(Model.BillingCountryId)),
                             new FilterParameter(nameof(Model.ProductId))
                         },
                         ColumnCollection = new List<ColumnProperty>
@@ -190,7 +171,6 @@
                                 new FilterParameter(nameof(ShoppingCartItemSearchModel.StartDate), typeof(DateTime?)),
                                 new FilterParameter(nameof(ShoppingCartItemSearchModel.EndDate), typeof(DateTime?)),
                                 new FilterParameter(nameof(ShoppingCartItemSearchModel.StoreId)),
-                                new FilterParameter(nameof(ShoppingCartItemSearchModel.BillingCountryId)),
                                 new FilterParameter(nameof(ShoppingCartItemSearchModel.ProductId))
                             },
                             ColumnCollection = new List<ColumnProperty>
@@ -246,11 +226,6 @@
         
                         if (row.AttributeInfo && row.AttributeInfo.length > 0)
                             div = "<div>" + row.AttributeInfo + "</div>";
-
-                        if (row.CustomWishlistName && row.CustomWishlistName.length > 0)
-                        {
-                            div += "<div>" + "@T("Enums.Nop.Core.Domain.Orders.ShoppingCartType.Wishlist")" + ": " + $('<div/>').text(row.CustomWishlistName).html() + "</div>";
-                        }
 
                         return '<a href="' + link + '">' + data + '</a>'+div;
                     }

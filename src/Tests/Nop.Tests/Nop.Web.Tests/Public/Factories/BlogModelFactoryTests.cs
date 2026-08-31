@@ -140,16 +140,16 @@ public class BlogModelFactoryTests : BaseNopTest
         model.PagingFilteringContext.FirstItem.Should().Be(1);
         model.PagingFilteringContext.HasNextPage.Should().BeFalse();
         model.PagingFilteringContext.HasPreviousPage.Should().BeFalse();
-        model.PagingFilteringContext.LastItem.Should().Be(2);
+        model.PagingFilteringContext.LastItem.Should().Be(1);
         model.PagingFilteringContext.PageNumber.Should().Be(1);
         model.PagingFilteringContext.PageSize.Should().Be(10);
-        model.PagingFilteringContext.TotalItems.Should().Be(2);
+        model.PagingFilteringContext.TotalItems.Should().Be(1);
         model.PagingFilteringContext.TotalPages.Should().Be(1);
         model.PagingFilteringContext.Tag.Should().BeNull();
         model.PagingFilteringContext.Month.Should().BeNull();
 
         model.BlogPosts.Should().NotBeNull();
-        model.BlogPosts.Count.Should().Be(2);
+        model.BlogPosts.Count.Should().Be(1);
 
         var date = DateTime.Now.ToUniversalTime();
 
@@ -161,12 +161,12 @@ public class BlogModelFactoryTests : BaseNopTest
         model.PagingFilteringContext.Month.Should().NotBeNullOrEmpty();
         model.PagingFilteringContext.Tag.Should().BeNull();
         model.BlogPosts.Should().NotBeNull();
-        model.BlogPosts.Count.Should().Be(2);
+        model.BlogPosts.Count.Should().Be(1);
 
         model = await _blogModelFactory.PrepareBlogPostListModelAsync(new BlogPagingFilteringModel
         {
             Month = $"{date.Year}-{date.Month}",
-            Tag = "nopCommerce"
+            Tag = "إضاءة"
         });
 
         model.PagingFilteringContext.Month.Should().NotBeNullOrEmpty();
@@ -186,14 +186,14 @@ public class BlogModelFactoryTests : BaseNopTest
     public async Task CanPrepareBlogPostTagListModel()
     {
         var model = await _blogModelFactory.PrepareBlogPostTagListModelAsync();
-        model.Tags.Count.Should().Be(5);
+        model.Tags.Count.Should().Be(3);
     }
 
     [Test]
     public async Task PrepareBlogPostTagListModelCountShouldDependOnSettings()
     {
         var model = await _blogModelFactory.PrepareBlogPostTagListModelAsync();
-        model.Tags.Count.Should().Be(5);
+        model.Tags.Count.Should().Be(3);
 
         _blogSettings.NumberOfTags = 1;
         await _settingsService.SaveSettingAsync(_blogSettings);
@@ -220,7 +220,7 @@ public class BlogModelFactoryTests : BaseNopTest
 
         var month = months.First();
 
-        month.BlogPostCount.Should().Be(2);
+        month.BlogPostCount.Should().Be(1);
         month.Month.Should().Be(date.Month);
     }
 

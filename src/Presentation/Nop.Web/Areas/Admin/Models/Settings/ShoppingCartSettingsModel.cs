@@ -16,33 +16,9 @@ public partial record ShoppingCartSettingsModel : BaseNopModel, ISettingsModel
     public bool DisplayCartAfterAddingProduct { get; set; }
     public bool DisplayCartAfterAddingProduct_OverrideForStore { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.DisplayWishlistAfterAddingProduct")]
-    public bool DisplayWishlistAfterAddingProduct { get; set; }
-    public bool DisplayWishlistAfterAddingProduct_OverrideForStore { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.MaximumShoppingCartItems")]
     public int MaximumShoppingCartItems { get; set; }
     public bool MaximumShoppingCartItems_OverrideForStore { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.MaximumWishlistItems")]
-    public int MaximumWishlistItems { get; set; }
-    public bool MaximumWishlistItems_OverrideForStore { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.AllowMultipleWishlist")]
-    public bool AllowMultipleWishlist { get; set; }
-    public bool AllowMultipleWishlist_OverrideForStore { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.MaximumNumberOfCustomWishlist")]
-    public int MaximumNumberOfCustomWishlist { get; set; }
-    public bool MaximumNumberOfCustomWishlist_OverrideForStore { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.AllowOutOfStockItemsToBeAddedToWishlist")]
-    public bool AllowOutOfStockItemsToBeAddedToWishlist { get; set; }
-    public bool AllowOutOfStockItemsToBeAddedToWishlist_OverrideForStore { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.MoveItemsFromWishlistToCart")]
-    public bool MoveItemsFromWishlistToCart { get; set; }
-    public bool MoveItemsFromWishlistToCart_OverrideForStore { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.CartsSharedBetweenStores")]
     public bool CartsSharedBetweenStores { get; set; }
@@ -52,29 +28,14 @@ public partial record ShoppingCartSettingsModel : BaseNopModel, ISettingsModel
     public bool ShowProductImagesOnShoppingCart { get; set; }
     public bool ShowProductImagesOnShoppingCart_OverrideForStore { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.ShowProductImagesOnWishList")]
-    public bool ShowProductImagesOnWishList { get; set; }
-    public bool ShowProductImagesOnWishList_OverrideForStore { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.ShowDiscountBox")]
     public bool ShowDiscountBox { get; set; }
     public bool ShowDiscountBox_OverrideForStore { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.ShowGiftCardBox")]
-    public bool ShowGiftCardBox { get; set; }
-    public bool ShowGiftCardBox_OverrideForStore { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.CrossSellsNumber")]
     public int CrossSellsNumber { get; set; }
     public bool CrossSellsNumber_OverrideForStore { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.EmailWishlistEnabled")]
-    public bool EmailWishlistEnabled { get; set; }
-    public bool EmailWishlistEnabled_OverrideForStore { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.AllowAnonymousUsersToEmailWishlist")]
-    public bool AllowAnonymousUsersToEmailWishlist { get; set; }
-    public bool AllowAnonymousUsersToEmailWishlist_OverrideForStore { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Settings.ShoppingCart.MiniShoppingCartEnabled")]
     public bool MiniShoppingCartEnabled { get; set; }

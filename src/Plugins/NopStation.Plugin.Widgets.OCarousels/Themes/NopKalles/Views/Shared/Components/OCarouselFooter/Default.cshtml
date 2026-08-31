@@ -1,0 +1,30 @@
+﻿@inject Nop.Core.IWorkContext workContext
+
+@{
+    var supportRtl =(await workContext.GetWorkingLanguageAsync()).Rtl;
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, $"~/Plugins/NopStation.Plugin.Widgets.OCarousels/Contents/script/owl.carousel.min.js");
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, $"~/Plugins/NopStation.Plugin.Widgets.OCarousels/Contents/script/nopstation.carousel.js");
+
+
+    if (supportRtl)
+    {
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.OCarousels/Contents/css/rtl/owl.theme.green.min.css");
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.OCarousels/Contents/css/rtl/owl.carousel.css");
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.OCarousels/Themes/NopKalles/Contents/css/styles.rtl.css");
+    }
+    else
+    {
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.OCarousels/Contents/css/owl.theme.green.min.css");
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.OCarousels/Contents/css/owl.carousel.css");
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.OCarousels/Themes/NopKalles/Contents/css/styles.css");
+    }
+}
+
+<script asp-location="Footer">
+    var carouseldata = {};
+    carouseldata.CarouselFailure = '@T("NopStation.OCarousels.LoadingFailed")';
+
+    $(document).ready(function () {
+        Carousel.init('@Url.RouteUrl("OCarousel")', '.carousel-container', '.carousel-container .loader', carouseldata);
+    });
+</script>

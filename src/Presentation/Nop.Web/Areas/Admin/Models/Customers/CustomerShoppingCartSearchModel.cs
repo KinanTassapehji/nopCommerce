@@ -13,7 +13,6 @@ public partial record CustomerShoppingCartSearchModel : BaseSearchModel
 
     public CustomerShoppingCartSearchModel()
     {
-        AvailableShoppingCartTypes = new List<SelectListItem>();
     }
 
     #endregion
@@ -25,7 +24,6 @@ public partial record CustomerShoppingCartSearchModel : BaseSearchModel
     [NopResourceDisplayName("Admin.ShoppingCartType.ShoppingCartType")]
     public int ShoppingCartTypeId { get; set; }
 
-    public IList<SelectListItem> AvailableShoppingCartTypes { get; set; }
 
     #endregion
 }

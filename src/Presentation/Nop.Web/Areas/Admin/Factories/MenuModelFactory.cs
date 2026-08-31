@@ -449,7 +449,8 @@ public partial class MenuModelFactory : IMenuModelFactory
             await PrepareModelAvailableParentMenuItemsAsync(model, _menuSettings.MaximumMainMenuLevels, model.AvailableMenuItems);
         }
 
-        model.AvailableMenuItemTypes = (await MenuItemType.StandardPage.ToSelectListAsync(false)).ToList();
+        model.AvailableMenuItemTypes = (await MenuItemType.StandardPage.ToSelectListAsync(false))
+            .Where(item => item.Value != ((int)MenuItemType.Vendor).ToString()).ToList();
         model.AvailableStandardRoutes = await model.AvailableStandardRoutes.ConstantsToSelectListAsync(typeof(NopRouteNames.General), sortItems: true);
 
         await PrepareAvailableTopicsAsync(model.AvailableTopics);

@@ -120,12 +120,7 @@
                                             @Html.Raw(item.AttributeInfo)
                                         </div>
                                     }
-                                    @if (!string.IsNullOrEmpty(item.RecurringInfo))
-                                    {
-                                        <div class="recurring-info">
-                                            @Html.Raw(item.RecurringInfo)
-                                        </div>
-                                    }
+
                                     @if (!string.IsNullOrEmpty(item.RentalInfo))
                                     {
                                         <div class="rental-info">
@@ -239,15 +234,8 @@
                                 @if (Model.IsEditable)
                                 {
                                     <td class="remove-from-cart">
-                                        @if (item.DisableRemoval)
-                                        {
-                                            <text>&nbsp;</text>
-                                        }
-                                        else
-                                        {
-                                            <input type="checkbox" name="removefromcart" id="removefromcart@(item.Id)" value="@(item.Id)" aria-label="@T("ShoppingCart.Remove")" />
-                                            <button type="button" name="updatecart" class="remove-btn" aria-labelledby="removefromcart@(item.Id)" onclick="$('#removefromcart@(item.Id)').attr('checked', true); $('#updatecart').trigger('click');"></button>
-                                        }
+                                        <input type="checkbox" name="removefromcart" id="removefromcart@(item.Id)" value="@(item.Id)" aria-label="@T("ShoppingCart.Remove")" />
+                                        <button type="button" name="updatecart" class="remove-btn" aria-labelledby="removefromcart@(item.Id)" onclick="$('#removefromcart@(item.Id)').attr('checked', true); $('#updatecart').trigger('click');"></button>
                                     </td>
                                 }
                             </tr>
@@ -287,7 +275,6 @@
                     <div class="cart-collaterals">
                         <div class="deals">
                             @await Html.PartialAsync("_DiscountBox", Model.DiscountBox)
-                            @await Html.PartialAsync("_GiftCardBox", Model.GiftCardBox)
                             @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.OrderSummaryContentDeals, additionalData = Model })
                         </div>
                     </div>

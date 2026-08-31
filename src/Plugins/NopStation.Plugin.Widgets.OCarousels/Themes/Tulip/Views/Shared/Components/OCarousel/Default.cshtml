@@ -1,0 +1,16 @@
+﻿@model OCarouselListModel
+
+@foreach (var carousel in Model.OCarousels)
+{
+    var carouselType = carousel.CarouselType.ToString().ToLower();
+    var bg = carousel.ShowBackgroundPicture ? $"background:url('{carousel.BackgroundPictureUrl}') no-repeat center; background-size: cover;" : "";
+
+    <div class="ocarousel-grid" style=@bg>
+        
+        <div class="carousel-container carousel-@carouselType" data-carouselid="@carousel.Id">
+            <div class="loader">
+                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+            </div>
+        </div>
+    </div>
+}

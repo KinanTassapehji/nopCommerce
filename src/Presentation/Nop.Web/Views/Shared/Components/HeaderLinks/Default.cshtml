@@ -8,7 +8,6 @@
         @if (Model.IsAuthenticated)
         {
             <li><a href="@Url.RouteUrl(NopRouteNames.General.CUSTOMER_INFO)" class="ico-account">@T("Account.MyAccount")@*@Model.CustomerName*@</a></li>
-            <li><a href="@Url.RouteUrl(NopRouteNames.Standard.LOGOUT)" class="ico-logout">@T("Account.Logout")</a></li>
         }
         else
         {
@@ -31,21 +30,13 @@
                 </a>
             </li>
         }
-        @if (Model.WishlistEnabled)
-        {
-            <li>
-                <a href="@Url.RouteUrl(NopRouteNames.General.WISHLIST)" class="ico-wishlist">
-                    <span class="wishlist-label">@T("Wishlist")</span>
-                    <span class="wishlist-qty">@T("Wishlist.HeaderQuantity", Model.WishlistItems)</span>
-                </a>
-            </li>
-        }
         @if (Model.ShoppingCartEnabled)
         {
             <li id="topcartlink">
                 <a href="@Url.RouteUrl(NopRouteNames.General.CART)" class="ico-cart">
                     <span class="cart-label">@T(NopRouteNames.General.CART)</span>
-                    <span class="cart-qty">@T("ShoppingCart.HeaderQuantity", Model.ShoppingCartItems)</span>
+                    @*data-qty carries the bare number the badge prints; the element's own text stays the localised "({0})" so it still reads correctly to a screen reader and to AjaxCart, which rewrites it wholesale*@
+                    <span class="cart-qty" data-qty="@Model.ShoppingCartItems">@T("ShoppingCart.HeaderQuantity", Model.ShoppingCartItems)</span>
                 </a>
             </li>
         }
@@ -87,7 +78,22 @@
                     AjaxCartFailure: "@T("AjaxCart.Failure")"
                 };
 
-                AjaxCart.init(@Model.UsePopupNotifications.ToString().ToLowerInvariant(), '.header-links .cart-qty', '.header-links .wishlist-qty', '#flyout-cart', localized_data);
+                @*TmTm: every .cart-qty on the page, not just the header's - the mobile tab bar carries one too*@
+                AjaxCart.init(@Model.UsePopupNotifications.ToString().ToLowerInvariant(), '.cart-qty', '#flyout-cart', localized_data);
+
+                @*AjaxCart replaces each badge's HTML with the localised "({0})".
+                    Reduce that to the number in data-qty, which is what the badges
+                    actually print - and which lets CSS hide an empty cart's badge
+                    with no script at all. Nothing here writes text content, so the
+                    observer cannot retrigger itself.*@
+                $('.cart-qty').each(function () {
+                    var badge = this;
+                    var sync = function () {
+                        badge.setAttribute('data-qty', (badge.textContent.match(/\d+/) || ['0'])[0]);
+                    };
+                    new MutationObserver(sync).observe(badge, { childList: true, characterData: true, subtree: true });
+                    sync();
+                });
             });
         </script>
     }

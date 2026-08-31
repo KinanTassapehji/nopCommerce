@@ -40,8 +40,5 @@ public partial record PaymentMethodModel : BaseNopModel, IPluginModel
     [NopResourceDisplayName("Admin.Configuration.Payment.Methods.Fields.SupportVoid")]
     public bool SupportVoid { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Payment.Methods.Fields.RecurringPaymentType")]
-    public string RecurringPaymentType { get; set; }
-
     #endregion
 }

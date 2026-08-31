@@ -1,0 +1,342 @@
+@model ReminderReportSearchModel
+
+@{
+    Layout = "_AdminLayout";
+    NopHtml.SetActiveMenuItemSystemName("NopStation.CustomerReminders.ReminderReports");
+    ViewBag.PageTitle = T("NopStation.Plugins.CustomerReminders.Admin.ReminderReports.Title").Text;
+}
+
+@{
+    const string hideSearchBlockAttributeName = "ReminderReport.HideSearchBlock";
+    var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
+}
+<form asp-controller="ReminderReport" asp-action="List" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("NopStation.Plugins.CustomerReminders.Admin.ReminderReports.Title")
+        </h1>
+        <div class="float-right">
+            <div class="btn-group">
+                <button type="button" class="btn btn-success">
+                    <i class="fas fa-download"></i>
+                    @T("Admin.Common.Export")
+                </button>
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">&nbsp;</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li class="dropdown-item">
+                        <button asp-action="ExportToXml" type="submit" name="exportxml-all">
+                            <i class="far fa-file-code"></i>
+                            @T("Admin.Common.ExportToXml.All")
+                        </button>
+                    </li>
+                    <li class="dropdown-item">
+                        <button type="button" id="exportxml-selected">
+                            <i class="far fa-file-code"></i>
+                            @T("Admin.Common.ExportToXml.Selected")
+                        </button>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li class="dropdown-item">
+                        <button asp-action="ExportToExcel" type="submit" name="exportexcel-all">
+                            <i class="far fa-file-excel"></i>
+                            @T("Admin.Common.ExportToExcel.All")
+                        </button>
+                    </li>
+                    <li class="dropdown-item">
+                        <button type="button" id="exportexcel-selected">
+                            <i class="far fa-file-excel"></i>
+                            @T("Admin.Common.ExportToExcel.Selected")
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <button type="button" id="delete-selected" class="btn btn-danger">
+                <i class="far fa-trash-can"></i>
+                @T("Admin.Common.Delete.Selected")
+            </button>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default card-search">
+                        <div class="card-body">
+                            <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+                                <div class="search-text">@T("Admin.Common.Search")</div>
+                                <div class="icon-search"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></div>
+                                <div class="icon-collapse"><i class="far fa-angle-@(!hideSearchBlock ? "up" : "down")" aria-hidden="true"></i></div>
+                            </div>
+
+                            <div class="search-body @(hideSearchBlock ? "closed" : "")">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="ReminderName" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="ReminderName" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="CustomerName" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="CustomerName" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="CustomerEmail" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="CustomerEmail" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="IsMessageSentId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="IsMessageSentId" asp-items="Model.AvailableMessageSentOptions" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="CreatedFrom" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="CreatedFrom" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="CreatedTo" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="CreatedTo" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="StoreNameId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="StoreNameId" asp-items="Model.AvailableStores" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="text-center col-12">
+                                        <button type="submit" id="search-reports" name="search-reports" class="btn btn-primary btn-search">
+                                            <i class="fas fa-search"></i>
+                                            @T("Admin.Common.Search")
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-default">
+                        <div class="card-body">
+                            @await Html.PartialAsync("Table", new DataTablesModel
+                            {
+                                Name = "reminderreports-grid",
+                                                        UrlRead = new DataUrl("List", "ReminderReport", null),
+                                                        SearchButtonId = "search-reports",
+                                                        Length = Model.PageSize,
+                                                        LengthMenu = Model.AvailablePageSizes,
+                                                        Filters = new List<FilterParameter>
+                                                        {
+                                                        new FilterParameter(nameof(Model.ReminderName)),
+                                                        new FilterParameter(nameof(Model.CustomerName)),
+                                                        new FilterParameter(nameof(Model.CustomerEmail)),
+                                                        new FilterParameter(nameof(Model.StoreNameId)),
+                                                        new FilterParameter(nameof(Model.IsMessageSentId)),
+                                                        new FilterParameter(nameof(Model.CreatedFrom)),
+                                                        new FilterParameter(nameof(Model.CreatedTo))
+                                                        },
+                                                        ColumnCollection = new List<ColumnProperty>
+                                                        {
+                                                        new ColumnProperty(nameof(ReminderReportModel.Id))
+                                                        {
+                                                        IsMasterCheckBox = true,
+                                                        Render = new RenderCheckBox("checkbox_reports"),
+                                                        ClassName = NopColumnClassDefaults.CenterAll,
+                                                        Width = "50"
+                                                        },
+                                                        new ColumnProperty(nameof(ReminderReportModel.ReminderName))
+                                                        {
+                                                        Title = T("NopStation.Plugins.CustomerReminders.Admin.ReminderReports.Fields.ReminderName").Text,
+                                                        Width = "200",
+                                                        ClassName = NopColumnClassDefaults.CenterAll
+                                                        },
+                                                        new ColumnProperty(nameof(ReminderReportModel.CustomerName))
+                                                        {
+                                                        Title = T("NopStation.Plugins.CustomerReminders.Admin.ReminderReports.Fields.CustomerName").Text,
+                                                        Width = "150",
+                                                        ClassName = NopColumnClassDefaults.CenterAll
+                                                        },
+                                                        new ColumnProperty(nameof(ReminderReportModel.CustomerEmail))
+                                                        {
+                                                        Title = T("NopStation.Plugins.CustomerReminders.Admin.ReminderReports.Fields.CustomerEmail").Text,
+                                                        Width = "200",
+                                                        ClassName = NopColumnClassDefaults.CenterAll
+                                                        },
+                                                        new ColumnProperty(nameof(ReminderReportModel.StoreName))
+                                                        {
+                                                        Title = T("NopStation.Plugins.CustomerReminders.Admin.ReminderReports.Fields.StoreName").Text,
+                                                        Width = "150",
+                                                        ClassName = NopColumnClassDefaults.CenterAll
+                                                        },
+                                                        new ColumnProperty(nameof(ReminderReportModel.IsMessageSent))
+                                                        {
+                                                        Title = T("NopStation.Plugins.CustomerReminders.Admin.ReminderReports.Fields.IsMessageSent").Text,
+                                                        Width = "100",
+                                                        ClassName = NopColumnClassDefaults.CenterAll,
+                                                        Render = new RenderBoolean()
+                                                        },
+                                                        new ColumnProperty(nameof(ReminderReportModel.CreatedOnUtc))
+                                                        {
+                                                        Title = T("NopStation.Plugins.CustomerReminders.Admin.ReminderReports.Fields.CreatedOn").Text,
+                                                        Width = "150",
+                                                        ClassName = NopColumnClassDefaults.CenterAll,
+                                                        Render = new RenderDate()
+                                                        }
+                                                        }
+                                                        })
+
+                            <script>
+                                $(function() {
+                                    //"delete selected" button
+                                    $("#delete-selected-action-confirmation-submit-button").on("click", function () {
+                                        var postData = {
+                                            selectedIds: selectedIds
+                                        };
+                                        addAntiForgeryToken(postData);
+                                        $.ajax({
+                                            cache: false,
+                                            type: "POST",
+                                            url: "@(Url.Action("DeleteSelected", "ReminderReport"))",
+                                            data: postData,
+                                            traditional: true,
+                                            error: function (jqXHR, textStatus, errorThrown) {
+                                                showAlert('deleteSelectedFailed', errorThrown);
+                                            },
+                                            complete: function (jqXHR, textStatus) {
+                                                if (jqXHR.status === 204)
+                                                {
+                                                    showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                                    return;
+                                                }
+                                                updateTable('#reminderreports-grid');
+                                            }
+                                        });
+                                        $('#delete-selected-action-confirmation').modal('toggle');
+                                        return false;
+                                    });
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+@*export selected (XML). We don't use GET approach because it's limited to 2K-4K chars and won't work for large number of entities*@
+<form asp-controller="ReminderReport" asp-action="ExportXmlSelected" method="post" id="export-xml-selected-form">
+    <input type="hidden" id="selectedIds" name="selectedIds" value="" />
+</form>
+
+@*export selected (Excel). We don't use GET approach because it's limited to 2K-4K chars and won't work for large number of entities*@
+<form asp-controller="ReminderReport" asp-action="ExportExcelSelected" method="post" id="export-excel-selected-form">
+    <input type="hidden" id="selectedIds" name="selectedIds" value="" />
+</form>
+
+<script>
+       $(function() {
+           // Autocomplete for Reminder Name field
+           var reminderNameInput = $('#@Html.IdFor(model => model.ReminderName)');
+           reminderNameInput.autocomplete({
+            delay: 500,
+      minLength: 2,
+               source: '@Url.Action("ReminderNameAutoComplete", "ReminderReport")',
+    select: function(event, ui) {
+                reminderNameInput.val(ui.item.value);
+         return false;
+             }
+           });
+
+      // Autocomplete for Customer Name field
+    var customerNameInput = $('#@Html.IdFor(model => model.CustomerName)');
+     customerNameInput.autocomplete({
+        delay: 500,
+     minLength: 2,
+       source: '@Url.Action("CustomerNameAutoComplete", "ReminderReport")',
+     select: function(event, ui) {
+         customerNameInput.val(ui.item.value);
+             return false;
+      }
+      });
+
+           // Autocomplete for Customer Email field
+           var customerEmailInput = $('#@Html.IdFor(model => model.CustomerEmail)');
+    customerEmailInput.autocomplete({
+      delay: 500,
+             minLength: 2,
+         source: '@Url.Action("CustomerEmailAutoComplete", "ReminderReport")',
+    select: function(event, ui) {
+       customerEmailInput.val(ui.item.value);
+           return false;
+          }
+           });
+
+           $('#exportxml-selected').click(function (e) {
+         e.preventDefault();
+       var ids = selectedIds.join(",");
+          if (!ids) {
+     $('#exportXmlSelected-info').text("@T("NopStation.Plugins.CustomerReminders.Admin.ReminderReports.NoReports")");
+      $("#exportXmlSelected").trigger("click");
+             }
+     else {
+          $('#export-xml-selected-form #selectedIds').val(ids);
+        $('#export-xml-selected-form').submit();
+         updateTable('#reminderreports-grid');
+    }
+         return false;
+           });
+
+           $('#exportexcel-selected').click(function (e) {
+     e.preventDefault();
+         var ids = selectedIds.join(",");
+     if (!ids) {
+      $('#exportExcelSelected-info').text("@T("NopStation.Plugins.CustomerReminders.Admin.ReminderReports.NoReports")");
+         $("#exportExcelSelected").trigger("click");
+         }
+    else {
+        $('#export-excel-selected-form #selectedIds').val(ids);
+                $('#export-excel-selected-form').submit();
+       updateTable('#reminderreports-grid');
+         }
+        return false;
+           });
+    });
+</script>
+
+<nop-alert asp-alert-id="exportXmlSelected" />
+<nop-alert asp-alert-id="exportExcelSelected" />
+<nop-alert asp-alert-id="deleteSelectedFailed" />
+<nop-alert asp-alert-id="nothingSelectedAlert" />
+<nop-action-confirmation asp-button-id="delete-selected" />

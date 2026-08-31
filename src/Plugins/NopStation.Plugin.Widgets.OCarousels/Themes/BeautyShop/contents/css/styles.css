@@ -1,0 +1,318 @@
+﻿.carousel-container.carousel-category {
+  min-height: 250px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container.carousel-manufacturer {
+  min-height: 460px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container.carousel-product {
+  min-height: 440px;
+  position: relative;
+  overflow: hidden;
+}
+
+
+
+.carousel-container .loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+.carousel-category {
+  min-height: 300px;
+  position: relative;
+}
+
+.carousel-manufacturer {
+  height: auto;
+  position: relative;
+}
+
+
+.carousel-product {
+  min-height: 440px;
+  position: relative;
+}
+
+.ocarousel .item-box {
+  width: 100% !important;
+  box-shadow: none;
+  border-radius: 3px;
+}
+
+.ocarousel-background .ocarousel .item-box {
+  box-shadow: none !important;
+}
+
+
+.ocarousel .owl-dots {
+  display: none;
+}
+
+.ocarousel-grid {
+  margin: 0 0 50px;
+}
+
+  .ocarousel-grid .title {
+    margin: 0 0 30px;
+    padding: 0 0 15px;
+    font-size: 30px;
+    font-weight: normal;
+    color: #444;
+  }
+
+.ocarousel .category-name,
+.ocarousel .manufacturer-name {
+  font-weight: normal;
+  font-size: 18px;
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.ocarousel-item {
+  margin: 0 0 80px;
+}
+
+.ocarousel-background {
+  padding: 50px 0 0;
+  position: relative;
+  margin-bottom: 80px;
+}
+
+  .ocarousel-background::before {
+    content: "";
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(255,255,255,0.7);
+    z-index: 0;
+  }
+
+  .ocarousel-background .custom-container {
+    position: relative;
+    z-index: 1;
+  }
+
+
+.ocarousel .owl-nav button.owl-prev,
+.ocarousel .owl-nav button.owl-next {
+  padding: 5px !important;
+  font-size: 23px;
+  position: absolute;
+  margin: 0;
+  border-radius: 3px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.ocarousel .owl-nav button.owl-prev {
+  left: 0;
+  background: #FFFFFF;
+  color: #FFFFFF !important;
+  margin-right: 10px;
+  font-size: 0px !important;
+}
+
+
+  .ocarousel .owl-nav button.owl-prev::before {
+    content: "\e90a";
+    /*content: "\e913"; comment out on RTL*/
+    display: inline-block;
+    font-size: 18px;
+    font-family: 'icomoon' !important;
+    color: #CDD1D5;
+  }
+
+
+.ocarousel .owl-nav button.owl-next {
+  right: 0;
+  background: #FFFFFF;
+  color: #FFFFFF !important;
+  font-size: 0px !important;
+}
+
+  .ocarousel .owl-nav button.owl-next::before {
+    content: "\e913";
+    /*content: "\e90a"; comment out on RTL*/
+    display: inline-block;
+    font-size: 18px;
+    font-family: 'icomoon' !important;
+  }
+
+.ocarousel .owl-nav {
+  position: absolute;
+  top: 40%;
+  width: 100%;
+  opacity: 0;
+}
+
+
+.category-carousel .ocarousel .owl-nav {
+  opacity: 1;
+}
+
+.ocarousel-grid.product-carousel:hover .ocarousel .owl-nav,
+.ocarousel-grid .carousel-manufacturer:hover .ocarousel .owl-nav {
+  opacity: 1;
+}
+
+.ocarousel-grid.product-carousel,
+.manufacturer-carousel .ocarousel-grid .title,
+.category-carousel .ocarousel-grid .title {
+  margin: 0 0 10px;
+  padding: 0 0 15px;
+  font-size: 30px;
+  font-weight: normal;
+  color: #000000;
+  position: relative;
+}
+
+
+  .ocarousel-grid.product-carousel .title strong,
+  .manufacturer-carousel .ocarousel-grid .title strong,
+  .category-carousel .ocarousel-grid .title strong {
+    font-weight: 300;
+  }
+
+.ocarousel .category-name {
+  position: absolute;
+  top: 65%;
+  background: #fff;
+  padding: 30px;
+  width: calc(100% - 50px);
+  transform: translateX(-50%);
+  left: 50%;
+  transition: all 0.3s;
+}
+
+.category-name a {
+  display: block;
+}
+
+.category-name .shop-now {
+  background: #FFFFFF;
+  border: 1px solid #DBA37E;
+  color: #DBA37E;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 10px 10px;
+  margin: 12px auto;
+  display: inline-block;
+}
+
+  .category-name .shop-now::before {
+    content: "\e900";
+    display: inline-block;
+    margin-right: 5px;
+    font-family: 'icomoon' !important;
+  }
+
+.custom-container.category-carousel {
+  text-align: center;
+}
+
+.category-carousel .ocarousel-grid .title {
+  display: inline-block;
+}
+
+.category-carousel .owl-carousel .owl-nav button.owl-prev,
+.category-carousel .owl-carousel .owl-nav button.owl-next {
+  height: 40px;
+  width: 40px;
+  border: 1px solid #C4C4C4;
+}
+
+.category-carousel .owl-carousel .owl-nav button.owl-prev,
+.category-carousel .owl-carousel .owl-nav button.owl-next,
+.category-carousel .ocarousel .owl-nav {
+  position: static;
+  text-align: center;
+}
+
+.category-carousel .owl-carousel .owl-stage-outer {
+  margin-bottom: 15px;
+}
+
+.manufacturer-carousel .ocarousel-item {
+  margin: 2px auto 20px;
+  border-radius: 3px;
+  position: relative;
+  max-width: 85%;
+  border: 1px solid #CDD1D5;
+}
+
+.manufacturer-carousel .ocarousel .manufacturer-name {
+  font-size: 18px;
+  width: 70%;
+  margin-top: 10px;
+  background: #3E70F9;
+  border-radius: 3px;
+  color: #FFFFFF;
+  position: absolute;
+  padding: 8px 10px;
+  text-transform: uppercase;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  opacity: 0;
+  font-weight: 300;
+}
+
+  .manufacturer-carousel .ocarousel .manufacturer-name a:before {
+    content: none;
+  }
+
+.manufacturer-carousel .ocarousel-item:hover .manufacturer-name {
+  opacity: 1;
+  transition: all 0.5s;
+}
+
+@media (min-width: 991px) {
+  .carousel-category .owl-item.active + .active {
+    transform: scale(1);
+  }
+
+    .carousel-category .owl-item.active + .active .category-name {
+      opacity: 1;
+    }
+
+    .carousel-category .owl-item.active,
+    .carousel-category .owl-item.active + .active + .active {
+      transform: scale(0.9);
+      transform-origin: bottom;
+      transition: all 0.3s;
+    }
+
+      .carousel-category .owl-item.active .category-name,
+      .carousel-category .owl-item.active + .active + .active .category-name {
+        opacity: 0;
+      }
+
+  .carousel-container.carousel-category {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ocarousel .manufacturer-name {
+    right: calc(100% + 3.5rem);
+  }
+}
+
+
+@media (max-width: 576px) {
+  .ocarousel .manufacturer-name {
+    right: calc(100% + 3rem);
+  }
+}

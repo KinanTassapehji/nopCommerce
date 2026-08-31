@@ -28,7 +28,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
     protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
     protected readonly ICountryService _countryService;
     protected readonly ICustomerService _customerService;
-    protected readonly ICustomWishlistService _customWishlistService;
     protected readonly IDateTimeHelper _dateTimeHelper;
     protected readonly ILocalizationService _localizationService;
     protected readonly IPriceFormatter _priceFormatter;
@@ -46,7 +45,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
         IBaseAdminModelFactory baseAdminModelFactory,
         ICountryService countryService,
         ICustomerService customerService,
-        ICustomWishlistService customWishlistService,
         IDateTimeHelper dateTimeHelper,
         ILocalizationService localizationService,
         IPriceFormatter priceFormatter,
@@ -60,7 +58,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
         _baseAdminModelFactory = baseAdminModelFactory;
         _countryService = countryService;
         _customerService = customerService;
-        _customWishlistService = customWishlistService;
         _dateTimeHelper = dateTimeHelper;
         _localizationService = localizationService;
         _priceFormatter = priceFormatter;
@@ -106,10 +103,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
     {
         ArgumentNullException.ThrowIfNull(searchModel);
 
-        //prepare available shopping cart types
-        await _baseAdminModelFactory.PrepareShoppingCartTypesAsync(searchModel.AvailableShoppingCartTypes, false);
-
-        //set default search values
         searchModel.ShoppingCartType = ShoppingCartType.ShoppingCart;
 
         //prepare available billing countries
@@ -195,7 +188,7 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
 
         //get shopping cart items
         var items = (await _shoppingCartService
-            .GetShoppingCartAsync(customer, shoppingCartType: searchModel.ShoppingCartType, storeId: searchModel.StoreId, productId: searchModel.ProductId, createdFromUtc: searchModel.StartDate, createdToUtc: searchModel.EndDate, customWishlistId: 0))
+            .GetShoppingCartAsync(customer, shoppingCartType: searchModel.ShoppingCartType, storeId: searchModel.StoreId, productId: searchModel.ProductId, createdFromUtc: searchModel.StartDate, createdToUtc: searchModel.EndDate))
             .ToPagedList(searchModel);
 
         var isSearchProduct = searchModel.ProductId > 0;
@@ -209,10 +202,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
         }
 
         var store = await _storeService.GetStoreByIdAsync(searchModel.StoreId);
-        var customWishlists = items.Any(item => item.ShoppingCartType == ShoppingCartType.Wishlist)
-            ? await _customWishlistService.GetAllCustomWishlistsAsync(customer.Id)
-            : new List<CustomWishlist>();
-
         //prepare list model
         var model = await new ShoppingCartItemListModel().PrepareToGridAsync(searchModel, items, () =>
         {
@@ -241,14 +230,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
 
                     //set product name since it does not survive mapping
                     itemModel.ProductName = product.Name;
-
-                    if (item.ShoppingCartType == ShoppingCartType.Wishlist)
-                    {
-                        itemModel.CustomWishlistName = customWishlists
-                            .FirstOrDefault(wishlist => wishlist.Id == item.CustomWishlistId) is CustomWishlist customWishlist
-                            ? customWishlist.Name
-                            : await _localizationService.GetResourceAsync("Wishlist.Default");
-                    }
 
                     return itemModel;
                 });

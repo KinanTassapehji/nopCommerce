@@ -1,9 +1,7 @@
 ﻿@model CatalogProductsModel
 
-@if (Model.Products.Count <= 0 &&
-     !Model.PriceRangeFilter.Enabled &&
-     !Model.SpecificationFilter.Enabled &&
-     !Model.ManufacturerFilter.Enabled)
+@*no products - nothing to sort, page through or switch view mode (e.g. a category that only holds subcategories)*@
+@if (Model.Products.Count <= 0)
 {
     return;
 }

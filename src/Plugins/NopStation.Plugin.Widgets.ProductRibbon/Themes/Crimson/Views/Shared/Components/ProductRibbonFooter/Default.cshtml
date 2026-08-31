@@ -1,0 +1,17 @@
+﻿@using Nop.Core
+@inject IWorkContext workContext
+
+@{
+    var supportRtl = (await workContext.GetWorkingLanguageAsync()).Rtl;
+
+    if (supportRtl)
+    {
+        NopHtml.AddCssFileParts($"/Plugins/NopStation.Plugin.Widgets.ProductRibbon/Themes/Crimson/Contents/css/styles.rtl.css", string.Empty);
+        NopHtml.AppendCssFileParts($"/Plugins/NopStation.Plugin.Widgets.ProductRibbon/Themes/Crimson/Contents/css/styles.css", string.Empty);
+    }
+    else
+    {
+        NopHtml.AddCssFileParts($"/Plugins/NopStation.Plugin.Widgets.ProductRibbon/Themes/Crimson/Contents/css/styles.css", string.Empty);
+        NopHtml.AppendCssFileParts($"/Plugins/NopStation.Plugin.Widgets.ProductRibbon/Themes/Crimson/Contents/css/styles.css", string.Empty);
+    }
+}

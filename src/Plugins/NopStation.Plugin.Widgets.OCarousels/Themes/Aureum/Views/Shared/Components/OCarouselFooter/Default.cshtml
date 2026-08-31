@@ -1,0 +1,25 @@
+﻿@inject Nop.Core.IWorkContext workContext
+
+@{
+    var supportRtl = (await workContext.GetWorkingLanguageAsync()).Rtl;
+
+    <script  asp-exclude-from-bundle="true" asp-location="Footer" src= "~/Plugins/NopStation.Plugin.Widgets.OCarousels/Contents/script/nopstation.carousel.js"></script>
+
+    if (supportRtl)
+    {
+        NopHtml.AppendCssFileParts($"/Plugins/NopStation.Plugin.Widgets.OCarousels/Themes/Aureum/contents/css/styles.rtl.css");
+    }
+    else
+    {
+        NopHtml.AppendCssFileParts($"/Plugins/NopStation.Plugin.Widgets.OCarousels/Themes/Aureum/contents/css/styles.css");
+    }
+}
+
+<script asp-location="Footer">
+    var carouseldata = {};
+    carouseldata.CarouselFailure = '@T("NopStation.OCarousels.LoadingFailed")';
+
+    $(document).ready(function () {
+        Carousel.init('@Url.RouteUrl("OCarousel")', '.carousel-container', '.carousel-container .loader', carouseldata);
+    });
+</script>

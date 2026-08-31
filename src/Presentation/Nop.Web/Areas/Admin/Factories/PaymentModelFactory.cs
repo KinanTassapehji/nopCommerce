@@ -86,7 +86,6 @@ public partial class PaymentModelFactory : IPaymentModelFactory
                 paymentMethodModel.ConfigurationUrl = method.GetConfigurationPageUrl();
 
                 paymentMethodModel.LogoUrl = await _paymentPluginManager.GetPluginLogoUrlAsync(method);
-                paymentMethodModel.RecurringPaymentType = await _localizationService.GetLocalizedEnumAsync(method.RecurringPaymentType);
 
                 return paymentMethodModel;
             });
@@ -137,7 +136,6 @@ public partial class PaymentModelFactory : IPaymentModelFactory
         foreach (var method in await _paymentPluginManager.LoadAllPluginsAsync())
         {
             var paymentMethodModel = method.ToPluginModel<PaymentMethodModel>();
-            paymentMethodModel.RecurringPaymentType = await _localizationService.GetLocalizedEnumAsync(method.RecurringPaymentType);
 
             model.AvailablePaymentMethods.Add(paymentMethodModel);
 

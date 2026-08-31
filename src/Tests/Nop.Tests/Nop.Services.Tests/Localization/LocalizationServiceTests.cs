@@ -17,6 +17,10 @@ public class LocalizationServiceTests : ServiceTest
     private const string PREFIX = "Nop.Tests.Nop.Services.Tests.Localization";
     private Dictionary<string, string> _resources;
 
+    //AddOrUpdateLocaleResourceAsync writes a row per installed language, so every count
+    //here is "resources x languages" rather than a bare resource count
+    private int _expectedRows;
+
     [OneTimeSetUp]
     public void SetUp()
     {
@@ -29,6 +33,8 @@ public class LocalizationServiceTests : ServiceTest
             [$"{PREFIX}.Val2"] = "Value2",
             [$"{PREFIX}.Val3"] = "Value3"
         };
+
+        _expectedRows = _resources.Count * GetService<ILanguageService>().GetAllLanguagesAsync().Result.Count;
     }
 
     [TearDown]
@@ -57,7 +63,7 @@ public class LocalizationServiceTests : ServiceTest
         localeStringResources = await _lsrRepository.GetAllAsync(query => Filter(_resources, query));
 
         localeStringResources.Any().Should().BeTrue();
-        localeStringResources.Count.Should().Be(3);
+        localeStringResources.Count.Should().Be(_expectedRows);
     }
 
     [Test]
@@ -72,7 +78,7 @@ public class LocalizationServiceTests : ServiceTest
         var rez = _lsrRepository.Table
             .Where(p => p.ResourceName.StartsWith(PREFIX, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-        rez.Count.Should().Be(3);
+        rez.Count.Should().Be(_expectedRows);
     }
 
     [Test]
@@ -83,18 +89,18 @@ public class LocalizationServiceTests : ServiceTest
         var rez = _lsrRepository.Table
             .Where(p => p.ResourceName.StartsWith(PREFIX, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-        rez.Count.Should().Be(3);
+        rez.Count.Should().Be(_expectedRows);
         rez.Count(p => p.ResourceValue == p.ResourceValue.ToUpperInvariant()).Should().Be(0);
 
-        rez.Count(p => _resources.ContainsValue(p.ResourceValue)).Should().Be(3);
+        rez.Count(p => _resources.ContainsValue(p.ResourceValue)).Should().Be(_expectedRows);
 
         await _localizationService.AddOrUpdateLocaleResourceAsync(_resources.ToDictionary(p => p.Key.ToUpperInvariant(), p => p.Value.ToUpperInvariant()));
 
         rez = _lsrRepository.Table
             .Where(p => p.ResourceName.StartsWith(PREFIX, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-        rez.Count.Should().Be(3);
-        rez.Count(p => p.ResourceValue == p.ResourceValue.ToUpperInvariant()).Should().Be(3);
+        rez.Count.Should().Be(_expectedRows);
+        rez.Count(p => p.ResourceValue == p.ResourceValue.ToUpperInvariant()).Should().Be(_expectedRows);
         rez.Count(p => _resources.ContainsValue(p.ResourceValue)).Should().Be(0);
     }
 
@@ -112,7 +118,7 @@ public class LocalizationServiceTests : ServiceTest
         LocaleResourceConsumer.UpdateCount.Should().Be(0);
         await _localizationService.AddOrUpdateLocaleResourceAsync(_resources.ToDictionary(p => p.Key.ToUpperInvariant(), p => p.Value.ToUpperInvariant()));
 
-        LocaleResourceConsumer.UpdateCount.Should().Be(3);
+        LocaleResourceConsumer.UpdateCount.Should().Be(_expectedRows);
     }
 
     [Test]
@@ -141,7 +147,7 @@ public class LocalizationServiceTests : ServiceTest
         var rez = _lsrRepository.Table
             .Where(p => p.ResourceName.StartsWith(PREFIX, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-        rez.Count.Should().Be(3);
+        rez.Count.Should().Be(_expectedRows);
 
         await _localizationService.DeleteLocaleResourcesAsync(PREFIX);
 
@@ -159,7 +165,7 @@ public class LocalizationServiceTests : ServiceTest
         var rez = _lsrRepository.Table
             .Where(p => p.ResourceName.StartsWith(PREFIX, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-        rez.Count.Should().Be(3);
+        rez.Count.Should().Be(_expectedRows);
 
         await _localizationService.DeleteLocaleResourcesAsync(PREFIX.ToUpperInvariant());
 

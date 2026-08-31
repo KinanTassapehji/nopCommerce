@@ -3,17 +3,6 @@
 @inject IStoreService storeService
 
 <div class="card-body">
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="CustomerShoppingCartSearchModel.ShoppingCartTypeId" />
-        </div>
-        <div class="col-md-9">
-            <nop-select asp-for="CustomerShoppingCartSearchModel.ShoppingCartTypeId" asp-items="@Model.CustomerShoppingCartSearchModel.AvailableShoppingCartTypes" />
-        </div>
-    </div>
-</div>
-
-<div class="card-body">
     @await Html.PartialAsync("Table", new DataTablesModel
     {
         Name = "currentshoppingcart-grid",
@@ -77,11 +66,6 @@
 
             if (row.AttributeInfo && row.AttributeInfo.length > 0)
                 div = "<div>" + row.AttributeInfo + "</div>";
-
-            if (row.CustomWishlistName && row.CustomWishlistName.length > 0)
-            {
-                div += "<div>" + "@T("Enums.Nop.Core.Domain.Orders.ShoppingCartType.Wishlist")" + ": " + $('<div/>').text(row.CustomWishlistName).html() + "</div>";
-            }
 
             return '<a href="' + link + '">' + data + '</a>' + div;
         }

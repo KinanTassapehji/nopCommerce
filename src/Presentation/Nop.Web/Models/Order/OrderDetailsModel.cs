@@ -12,7 +12,6 @@ public partial record OrderDetailsModel : BaseNopEntityModel
     public OrderDetailsModel()
     {
         TaxRates = new List<TaxRate>();
-        GiftCards = new List<GiftCard>();
         Items = new List<OrderItemModel>();
         OrderNotes = new List<OrderNote>();
         Shipments = new List<ShipmentBriefModel>();
@@ -75,12 +74,9 @@ public partial record OrderDetailsModel : BaseNopEntityModel
 
     public string OrderTotalDiscount { get; set; }
     public decimal OrderTotalDiscountValue { get; set; }
-    public int RedeemedRewardPoints { get; set; }
-    public string RedeemedRewardPointsAmount { get; set; }
     public string OrderTotal { get; set; }
     public decimal OrderTotalValue { get; set; }
 
-    public IList<GiftCard> GiftCards { get; set; }
 
     public bool ShowSku { get; set; }
     public IList<OrderItemModel> Items { get; set; }
@@ -117,20 +113,12 @@ public partial record OrderDetailsModel : BaseNopEntityModel
         public string VendorName { get; set; }
 
         //downloadable product properties
-        public int DownloadId { get; set; }
-        public int LicenseId { get; set; }
     }
 
     public partial record TaxRate : BaseNopModel
     {
         public string Rate { get; set; }
         public string Value { get; set; }
-    }
-
-    public partial record GiftCard : BaseNopModel
-    {
-        public string CouponCode { get; set; }
-        public string Amount { get; set; }
     }
 
     public partial record OrderNote : BaseNopEntityModel

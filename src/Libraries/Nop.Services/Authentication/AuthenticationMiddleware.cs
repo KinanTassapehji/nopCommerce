@@ -60,12 +60,6 @@ public partial class AuthenticationMiddleware
                 if (!DataSettingsManager.IsDatabaseInstalled())
                     continue;
 
-                var externalAuthenticationSettings =
-                    EngineContext.Current.Resolve<ExternalAuthenticationSettings>();
-
-                if (!externalAuthenticationSettings.LogErrors)
-                    continue;
-
                 var logger =
                     EngineContext.Current.Resolve<ILogger>();
 

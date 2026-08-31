@@ -1,0 +1,95 @@
+﻿@*
+    Forked from the core header for one reason: the phone bar needs a control
+    the core markup does not have — a button that expands the search field.
+
+    A permanently open field ate two thirds of a 390px bar for something a
+    shopper uses on a minority of visits. Collapsed it is a 44px glyph; tapped,
+    it takes the bar over, the logo steps aside and the field takes focus. The
+    core view is otherwise untouched, so every widget zone still fires.
+*@
+<header class="header">
+    <a class="skip" href="#main">@T("Header.SkipNavigation.Text")</a>
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HeaderBefore })
+    <div class="header-upper">
+        <div class="header-selectors-wrapper">
+            @await Component.InvokeAsync(typeof(CurrencySelectorViewComponent))
+            @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HeaderSelectors })
+        </div>
+        <div class="header-links-wrapper">
+            @await Component.InvokeAsync(typeof(HeaderLinksViewComponent))
+            @await Component.InvokeAsync(typeof(FlyoutShoppingCartViewComponent))
+        </div>
+    </div>
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HeaderMiddle })
+    <div class="header-lower">
+        <div class="header-logo">
+            @await Component.InvokeAsync(typeof(LogoViewComponent))
+        </div>
+        <div role="search" class="search-box store-search-box">
+            @await Component.InvokeAsync(typeof(SearchBoxViewComponent))
+        </div>
+    </div>
+    @*Phones and tablets only — brand.css hides it from 1001px up, where the bar
+        has room for the field itself.*@
+    <button class="mobile-search-toggle" type="button" aria-expanded="false" aria-controls="small-search-box-form" aria-label="@T("Search")">
+        <svg class="mobile-search-icon mobile-search-icon--open" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-4.3-4.3" />
+        </svg>
+        <svg class="mobile-search-icon mobile-search-icon--close" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="m6 6 12 12M18 6 6 18" />
+        </svg>
+    </button>
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HeaderAfter })
+</header>
+
+<script asp-location="Footer">
+    //The button owns one class on .header; brand.css does the rest, so nothing
+    //here measures or positions anything.
+    (function () {
+        var header = document.querySelector('.header');
+        var toggle = header && header.querySelector('.mobile-search-toggle');
+        var field = header && header.querySelector('.search-box-text');
+        if (!toggle || !field)
+            return;
+
+        //Submitting an empty field only ever produced a blocking alert from the
+        //core script. A control that cannot do anything yet should say so.
+        var submit = header.querySelector('.search-box-button');
+        if (submit) {
+            var syncSubmit = function () {
+                submit.disabled = !field.value.trim();
+            };
+            field.addEventListener('input', syncSubmit);
+            syncSubmit();
+        }
+
+        function setOpen(open) {
+            header.classList.toggle('search-open', open);
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (open)
+                field.focus();
+            else
+                field.blur();
+        }
+
+        toggle.addEventListener('click', function () {
+            setOpen(!header.classList.contains('search-open'));
+        });
+
+        //Esc is the way out of a search field on every other app; and an empty
+        //field the shopper has left alone should not keep the logo hidden.
+        field.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape')
+                setOpen(false);
+        });
+
+        field.addEventListener('blur', function () {
+            if (!field.value)
+                setTimeout(function () {
+                    if (!header.contains(document.activeElement))
+                        setOpen(false);
+                }, 150);
+        });
+    })();
+</script>

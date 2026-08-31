@@ -16,6 +16,8 @@ public class AffiliateServiceTests : ServiceTest<Affiliate>
     private Affiliate _notActiveAffiliate;
     private Affiliate _activeDeletedAffiliate;
     private Affiliate _notActiveDeletedAffiliate;
+    private int _seededActive;
+    private int _seededAll;
 
     [OneTimeSetUp]
     public async Task SetUp()
@@ -60,7 +62,13 @@ public class AffiliateServiceTests : ServiceTest<Affiliate>
             Deleted = true
         };
 
+        //the store seeds affiliates of its own, so the counts below are measured
+        //against whatever is already there rather than assuming an empty table
+        _seededActive = (await _affiliateService.GetAllAffiliatesAsync()).TotalCount;
+        _seededAll = (await _affiliateService.GetAllAffiliatesAsync(showHidden: true)).TotalCount;
+
         await _affiliateService.InsertAffiliateAsync(_activeAffiliate1);
+        await _affiliateService.InsertAffiliateAsync(_activeAffiliate2);
         await _affiliateService.InsertAffiliateAsync(_notActiveAffiliate);
         await _affiliateService.InsertAffiliateAsync(_activeDeletedAffiliate);
         await _affiliateService.InsertAffiliateAsync(_notActiveDeletedAffiliate);
@@ -70,6 +78,7 @@ public class AffiliateServiceTests : ServiceTest<Affiliate>
     public async Task TearDown()
     {
         await _affiliateService.DeleteAffiliateAsync(_activeAffiliate1);
+        await _affiliateService.DeleteAffiliateAsync(_activeAffiliate2);
         await _affiliateService.DeleteAffiliateAsync(_notActiveAffiliate);
         await _affiliateService.DeleteAffiliateAsync(_activeDeletedAffiliate);
         await _affiliateService.DeleteAffiliateAsync(_notActiveDeletedAffiliate);
@@ -89,9 +98,9 @@ public class AffiliateServiceTests : ServiceTest<Affiliate>
     public async Task CanGetAllAffiliates()
     {
         var affiliates = await _affiliateService.GetAllAffiliatesAsync();
-        affiliates.TotalCount.Should().Be(2);
+        affiliates.TotalCount.Should().Be(_seededActive + 2);
         affiliates = await _affiliateService.GetAllAffiliatesAsync(showHidden: true);
-        affiliates.TotalCount.Should().Be(3);
+        affiliates.TotalCount.Should().Be(_seededAll + 3);
         affiliates = await _affiliateService.GetAllAffiliatesAsync(_activeDeletedAffiliate.FriendlyUrlName);
         affiliates.TotalCount.Should().Be(0);
         affiliates = await _affiliateService.GetAllAffiliatesAsync(_activeAffiliate1.FriendlyUrlName, showHidden: true);

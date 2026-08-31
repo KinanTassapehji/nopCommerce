@@ -243,15 +243,6 @@ public class MenuMigration : Migration
         if (displaynewproductsfooteritem is not null)
             _settingService.DeleteSetting(displaynewproductsfooteritem);
 
-        _menuItemRepository.Insert(new M.MenuItem
-        {
-            MenuId = footerCustomerService.Id,
-            MenuItemType = MenuItemType.StandardPage,
-            RouteName = NopRouteNames.General.CHECK_GIFT_CARD_BALANCE,
-            Title = "Check gift card balance",
-            Published = _settingService.LoadSetting<CustomerSettings>().AllowCustomersToCheckGiftCardBalance
-        });
-
         #endregion
 
         #region My account
@@ -314,17 +305,6 @@ public class MenuMigration : Migration
         if (displayshoppingcartfooteritem is not null)
             _settingService.DeleteSetting(displayshoppingcartfooteritem);
 
-        _menuItemRepository.Insert(new M.MenuItem
-        {
-            MenuId = footerMyAccount.Id,
-            MenuItemType = MenuItemType.StandardPage,
-            RouteName = NopRouteNames.General.WISHLIST,
-            Title = "Wishlist",
-            Published = IsSettingEnabled("displaydefaultfooteritemsettings.displaywishlistfooteritem", out var displaywishlistfooteritem)
-        });
-
-        if (displaywishlistfooteritem is not null)
-            _settingService.DeleteSetting(displaywishlistfooteritem);
 
         _menuItemRepository.Insert(new M.MenuItem
         {

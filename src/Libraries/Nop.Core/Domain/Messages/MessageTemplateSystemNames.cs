@@ -146,21 +146,6 @@ public static partial class MessageTemplateSystemNames
     /// </summary>
     public const string NEW_ORDER_NOTE_ADDED_CUSTOMER_NOTIFICATION = "Customer.NewOrderNote";
 
-    /// <summary>
-    /// Represents system name of notification store owner about cancelled recurring order
-    /// </summary>
-    public const string RECURRING_PAYMENT_CANCELLED_STORE_OWNER_NOTIFICATION = "RecurringPaymentCancelled.StoreOwnerNotification";
-
-    /// <summary>
-    /// Represents system name of notification customer about cancelled recurring order
-    /// </summary>
-    public const string RECURRING_PAYMENT_CANCELLED_CUSTOMER_NOTIFICATION = "RecurringPaymentCancelled.CustomerNotification";
-
-    /// <summary>
-    /// Represents system name of notification customer about failed payment for the recurring payments
-    /// </summary>
-    public const string RECURRING_PAYMENT_FAILED_CUSTOMER_NOTIFICATION = "RecurringPaymentFailed.CustomerNotification";
-
     #endregion
 
     #region Newsletter
@@ -183,11 +168,6 @@ public static partial class MessageTemplateSystemNames
     /// Represents system name of 'Email a friend' message
     /// </summary>
     public const string EMAIL_A_FRIEND_MESSAGE = "Service.EmailAFriend";
-
-    /// <summary>
-    /// Represents system name of 'Email a friend' message with wishlist
-    /// </summary>
-    public const string WISHLIST_TO_FRIEND_MESSAGE = "Wishlist.EmailAFriend";
 
     #endregion
 
@@ -242,11 +222,6 @@ public static partial class MessageTemplateSystemNames
     public const string VENDOR_INFORMATION_CHANGE_STORE_OWNER_NOTIFICATION = "VendorInformationChange.StoreOwnerNotification";
 
     /// <summary>
-    /// Represents system name of notification about gift card
-    /// </summary>
-    public const string GIFT_CARD_NOTIFICATION = "GiftCard.Notification";
-
-    /// <summary>
     /// Represents system name of notification store owner about new product review
     /// </summary>
     public const string PRODUCT_REVIEW_STORE_OWNER_NOTIFICATION = "Product.ProductReview";
@@ -290,11 +265,6 @@ public static partial class MessageTemplateSystemNames
     /// Represents system name of notification store owner about new news comment
     /// </summary>
     public const string NEWS_COMMENT_STORE_OWNER_NOTIFICATION = "News.NewsComment";
-
-    /// <summary>
-    /// Represents system name of notification customer about product receipt
-    /// </summary>
-    public const string BACK_IN_STOCK_NOTIFICATION = "Customer.BackInStock";
 
     /// <summary>
     /// Represents system name of 'Contact us' message

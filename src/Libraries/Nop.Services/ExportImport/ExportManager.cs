@@ -84,7 +84,6 @@ public partial class ExportManager : IExportManager
     protected readonly IProductTagService _productTagService;
     protected readonly IProductTemplateService _productTemplateService;
     protected readonly IShipmentService _shipmentService;
-    protected readonly ISpecificationAttributeService _specificationAttributeService;
     protected readonly IStateProvinceService _stateProvinceService;
     protected readonly IStoreMappingService _storeMappingService;
     protected readonly IStoreService _storeService;
@@ -132,7 +131,6 @@ public partial class ExportManager : IExportManager
         IProductTagService productTagService,
         IProductTemplateService productTemplateService,
         IShipmentService shipmentService,
-        ISpecificationAttributeService specificationAttributeService,
         IStateProvinceService stateProvinceService,
         IStoreMappingService storeMappingService,
         IStoreService storeService,
@@ -176,7 +174,6 @@ public partial class ExportManager : IExportManager
         _productTagService = productTagService;
         _productTemplateService = productTemplateService;
         _shipmentService = shipmentService;
-        _specificationAttributeService = specificationAttributeService;
         _stateProvinceService = stateProvinceService;
         _storeMappingService = storeMappingService;
         _storeService = storeService;
@@ -539,35 +536,6 @@ public partial class ExportManager : IExportManager
     }
 
     /// <returns>A task that represents the asynchronous operation</returns>
-    protected virtual async Task<PropertyManager<ExportSpecificationAttribute>> GetSpecificationAttributeManagerAsync(IList<Language> languages)
-    {
-        var attributeProperties = new[]
-        {
-            new PropertyByName<ExportSpecificationAttribute>("AttributeType", (p, _) => p.AttributeTypeId)
-            {
-                DropDownElements = await SpecificationAttributeType.Option.ToSelectListAsync(useLocalization: false)
-            },
-            new PropertyByName<ExportSpecificationAttribute>("SpecificationAttribute", (p, _) => p.SpecificationAttributeId)
-            {
-                DropDownElements = (await _specificationAttributeService.GetAllSpecificationAttributesAsync()).Select(sa => sa as BaseEntity).ToSelectList(p => (p as SpecificationAttribute)?.Name ?? string.Empty)
-            },
-            new PropertyByName<ExportSpecificationAttribute>("CustomValue", (p, _) => p.CustomValue),
-            new PropertyByName<ExportSpecificationAttribute>("SpecificationAttributeOptionId", (p, _) => p.SpecificationAttributeOptionId),
-            new PropertyByName<ExportSpecificationAttribute>("AllowFiltering", (p, _) => p.AllowFiltering),
-            new PropertyByName<ExportSpecificationAttribute>("ShowOnProductPage", (p, _) => p.ShowOnProductPage),
-            new PropertyByName<ExportSpecificationAttribute>("DisplayOrder", (p, _) => p.DisplayOrder)
-        };
-
-        var localizedProperties = new[]
-        {
-            new PropertyByName<ExportSpecificationAttribute>("CustomValue", async (p, l) =>
-                await GetLocalizedAsync(await _specificationAttributeService.GetProductSpecificationAttributeByIdAsync(p.Id), x => x.CustomValue, l)),
-        };
-
-        return new PropertyManager<ExportSpecificationAttribute>(attributeProperties, _catalogSettings, localizedProperties, languages);
-    }
-
-    /// <returns>A task that represents the asynchronous operation</returns>
     protected virtual async Task<PropertyManager<ExportTierPrice>> GetTierPriceManagerAsync(IList<Language> languages)
     {
         var tierPriceProperties = new[]
@@ -594,7 +562,6 @@ public partial class ExportManager : IExportManager
     protected virtual async Task<byte[]> ExportProductsToXlsxWithAdditionalInfoAsync(PropertyByName<Product>[] properties, PropertyByName<Product>[] localizedProperties, IEnumerable<Product> itemsToExport, IList<Language> languages)
     {
         var productAttributeManager = await GetProductAttributeManagerAsync(languages);
-        var specificationAttributeManager = await GetSpecificationAttributeManagerAsync(languages);
         var tierPriceManager = await GetTierPriceManagerAsync(languages);
 
         await using var stream = new MemoryStream();
@@ -611,7 +578,7 @@ public partial class ExportManager : IExportManager
             fpWorksheet.Visibility = XLWorksheetVisibility.VeryHidden;
             var fbaWorksheet = workbook.Worksheets.Add("ProductAttributesFilters");
             fbaWorksheet.Visibility = XLWorksheetVisibility.VeryHidden;
-            var fsaWorksheet = workbook.Worksheets.Add("SpecificationAttributesFilters");
+            var fsaWorksheet = workbook.Worksheets.Add("TierPricesFilters");
             fsaWorksheet.Visibility = XLWorksheetVisibility.VeryHidden;
 
             //create Headers and format them 
@@ -644,9 +611,6 @@ public partial class ExportManager : IExportManager
 
                 if (_catalogSettings.ExportImportProductAttributes)
                     row = await ExportProductAttributesAsync(item, productAttributeManager, worksheet, localizedWorksheets, row, fbaWorksheet);
-
-                if (_catalogSettings.ExportImportProductSpecificationAttributes)
-                    row = await ExportSpecificationAttributesAsync(item, specificationAttributeManager, worksheet, localizedWorksheets, row, fsaWorksheet);
 
                 if (_catalogSettings.ExportImportTierPrices)
                     row = await ExportTierPricesAsync(item, tierPriceManager, worksheet, localizedWorksheets, row, fsaWorksheet);
@@ -726,48 +690,6 @@ public partial class ExportManager : IExportManager
                     attribute
                 };
             }).ToListAsync();
-
-        if (!attributes.Any())
-            return row;
-
-        attributeManager.WriteDefaultCaption(worksheet, row, ExportImportDefaults.ProductAdditionalInfoCellOffset);
-        worksheet.Row(row).OutlineLevel = 1;
-        worksheet.Row(row).Collapse();
-
-        foreach (var lws in localizedWorksheets)
-        {
-            attributeManager.WriteLocalizedCaption(lws.Worksheet, row, ExportImportDefaults.ProductAdditionalInfoCellOffset);
-            lws.Worksheet.Row(row).OutlineLevel = 1;
-            lws.Worksheet.Row(row).Collapse();
-        }
-
-        foreach (var exportProductAttribute in attributes)
-        {
-            row++;
-            attributeManager.CurrentObject = exportProductAttribute;
-            await attributeManager.WriteDefaultToXlsxAsync(worksheet, row, ExportImportDefaults.ProductAdditionalInfoCellOffset, faWorksheet);
-            worksheet.Row(row).OutlineLevel = 1;
-            worksheet.Row(row).Collapse();
-
-            foreach (var lws in localizedWorksheets)
-            {
-                attributeManager.CurrentLanguage = lws.Language;
-                await attributeManager.WriteLocalizedToXlsxAsync(lws.Worksheet, row, ExportImportDefaults.ProductAdditionalInfoCellOffset, faWorksheet);
-                lws.Worksheet.Row(row).OutlineLevel = 1;
-                lws.Worksheet.Row(row).Collapse();
-            }
-        }
-
-        return row + 1;
-    }
-
-    /// <returns>A task that represents the asynchronous operation</returns>
-    protected virtual async Task<int> ExportSpecificationAttributesAsync(Product item, PropertyManager<ExportSpecificationAttribute> attributeManager,
-        IXLWorksheet worksheet, IList<(Language Language, IXLWorksheet Worksheet)> localizedWorksheets, int row, IXLWorksheet faWorksheet)
-    {
-        var attributes = await (await _specificationAttributeService
-            .GetProductSpecificationAttributesAsync(item.Id)).SelectAwait(
-            async psa => await ExportSpecificationAttribute.CreateAsync(psa, _specificationAttributeService)).ToListAsync();
 
         if (!attributes.Any())
             return row;
@@ -1271,30 +1193,11 @@ public partial class ExportManager : IExportManager
             await WriteLocalizedPropertyXmlAsync(product, p => p.MetaDescription, xmlWriter, languages, await IgnoreExportProductPropertyAsync(p => p.Seo));
             await WriteLocalizedPropertyXmlAsync(product, p => p.MetaTitle, xmlWriter, languages, await IgnoreExportProductPropertyAsync(p => p.Seo));
             await WriteLocalizedSeNameXmlAsync(product, xmlWriter, languages, await IgnoreExportProductPropertyAsync(p => p.Seo));
-            await xmlWriter.WriteStringAsync("AllowCustomerReviews", product.AllowCustomerReviews, await IgnoreExportProductPropertyAsync(p => p.AllowCustomerReviews));
             await xmlWriter.WriteStringAsync("SKU", product.Sku);
             await xmlWriter.WriteStringAsync("ManufacturerPartNumber", product.ManufacturerPartNumber, await IgnoreExportProductPropertyAsync(p => p.ManufacturerPartNumber));
             await xmlWriter.WriteStringAsync("Gtin", product.Gtin, await IgnoreExportProductPropertyAsync(p => p.GTIN));
-            await xmlWriter.WriteStringAsync("IsGiftCard", product.IsGiftCard, await IgnoreExportProductPropertyAsync(p => p.IsGiftCard));
-            await xmlWriter.WriteStringAsync("GiftCardType", product.GiftCardType, await IgnoreExportProductPropertyAsync(p => p.IsGiftCard));
-            await xmlWriter.WriteStringAsync("OverriddenGiftCardAmount", product.OverriddenGiftCardAmount, await IgnoreExportProductPropertyAsync(p => p.IsGiftCard));
-            await xmlWriter.WriteStringAsync("RequireOtherProducts", product.RequireOtherProducts, await IgnoreExportProductPropertyAsync(p => p.RequireOtherProductsAddedToCart));
-            await xmlWriter.WriteStringAsync("RequiredProductIds", product.RequiredProductIds, await IgnoreExportProductPropertyAsync(p => p.RequireOtherProductsAddedToCart));
-            await xmlWriter.WriteStringAsync("AutomaticallyAddRequiredProducts", product.AutomaticallyAddRequiredProducts, await IgnoreExportProductPropertyAsync(p => p.RequireOtherProductsAddedToCart));
-            await xmlWriter.WriteStringAsync("IsDownload", product.IsDownload, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct));
-            await xmlWriter.WriteStringAsync("DownloadId", product.DownloadId, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct));
-            await xmlWriter.WriteStringAsync("UnlimitedDownloads", product.UnlimitedDownloads, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct));
-            await xmlWriter.WriteStringAsync("MaxNumberOfDownloads", product.MaxNumberOfDownloads, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct));
-            await xmlWriter.WriteStringAsync("DownloadExpirationDays", product.DownloadExpirationDays, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct));
-            await xmlWriter.WriteStringAsync("DownloadActivationType", product.DownloadActivationType, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct));
-            await xmlWriter.WriteStringAsync("HasSampleDownload", product.HasSampleDownload, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct));
-            await xmlWriter.WriteStringAsync("SampleDownloadId", product.SampleDownloadId, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct));
-            await xmlWriter.WriteStringAsync("HasUserAgreement", product.HasUserAgreement, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct));
-            await xmlWriter.WriteStringAsync("UserAgreementText", product.UserAgreementText, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct));
-            await xmlWriter.WriteStringAsync("IsRecurring", product.IsRecurring, await IgnoreExportProductPropertyAsync(p => p.RecurringProduct));
-            await xmlWriter.WriteStringAsync("RecurringCycleLength", product.RecurringCycleLength, await IgnoreExportProductPropertyAsync(p => p.RecurringProduct));
-            await xmlWriter.WriteStringAsync("RecurringCyclePeriodId", product.RecurringCyclePeriodId, await IgnoreExportProductPropertyAsync(p => p.RecurringProduct));
-            await xmlWriter.WriteStringAsync("RecurringTotalCycles", product.RecurringTotalCycles, await IgnoreExportProductPropertyAsync(p => p.RecurringProduct));
+
+
             await xmlWriter.WriteStringAsync("IsRental", product.IsRental, await IgnoreExportProductPropertyAsync(p => p.IsRental));
             await xmlWriter.WriteStringAsync("RentalPriceLength", product.RentalPriceLength, await IgnoreExportProductPropertyAsync(p => p.IsRental));
             await xmlWriter.WriteStringAsync("RentalPricePeriodId", product.RentalPricePeriodId, await IgnoreExportProductPropertyAsync(p => p.IsRental));
@@ -1315,15 +1218,13 @@ public partial class ExportManager : IExportManager
             await xmlWriter.WriteStringAsync("MinStockQuantity", product.MinStockQuantity, await IgnoreExportProductPropertyAsync(p => p.MinimumStockQuantity));
             await xmlWriter.WriteStringAsync("LowStockActivityId", product.LowStockActivityId, await IgnoreExportProductPropertyAsync(p => p.LowStockActivity));
             await xmlWriter.WriteStringAsync("NotifyAdminForQuantityBelow", product.NotifyAdminForQuantityBelow, await IgnoreExportProductPropertyAsync(p => p.NotifyAdminForQuantityBelow));
-            await xmlWriter.WriteStringAsync("BackorderModeId", product.BackorderModeId, await IgnoreExportProductPropertyAsync(p => p.Backorders));
-            await xmlWriter.WriteStringAsync("AllowBackInStockSubscriptions", product.AllowBackInStockSubscriptions, await IgnoreExportProductPropertyAsync(p => p.AllowBackInStockSubscriptions));
             await xmlWriter.WriteStringAsync("OrderMinimumQuantity", product.OrderMinimumQuantity, await IgnoreExportProductPropertyAsync(p => p.MinimumCartQuantity));
             await xmlWriter.WriteStringAsync("OrderMaximumQuantity", product.OrderMaximumQuantity, await IgnoreExportProductPropertyAsync(p => p.MaximumCartQuantity));
             await xmlWriter.WriteStringAsync("AllowedQuantities", product.AllowedQuantities, await IgnoreExportProductPropertyAsync(p => p.AllowedQuantities));
             await xmlWriter.WriteStringAsync("AllowAddingOnlyExistingAttributeCombinations", product.AllowAddingOnlyExistingAttributeCombinations, await IgnoreExportProductPropertyAsync(p => p.AllowAddingOnlyExistingAttributeCombinations));
             await xmlWriter.WriteStringAsync("NotReturnable", product.NotReturnable, await IgnoreExportProductPropertyAsync(p => p.NotReturnable));
             await xmlWriter.WriteStringAsync("DisableBuyButton", product.DisableBuyButton, await IgnoreExportProductPropertyAsync(p => p.DisableBuyButton));
-            await xmlWriter.WriteStringAsync("DisableWishlistButton", product.DisableWishlistButton, await IgnoreExportProductPropertyAsync(p => p.DisableWishlistButton));
+
             await xmlWriter.WriteStringAsync("AvailableForPreOrder", product.AvailableForPreOrder, await IgnoreExportProductPropertyAsync(p => p.AvailableForPreOrder));
             await xmlWriter.WriteStringAsync("PreOrderAvailabilityStartDateTimeUtc", product.PreOrderAvailabilityStartDateTimeUtc, await IgnoreExportProductPropertyAsync(p => p.AvailableForPreOrder));
             await xmlWriter.WriteStringAsync("CallForPrice", product.CallForPrice, await IgnoreExportProductPropertyAsync(p => p.CallForPrice));
@@ -1348,8 +1249,6 @@ public partial class ExportManager : IExportManager
             await xmlWriter.WriteStringAsync("Published", product.Published, await IgnoreExportProductPropertyAsync(p => p.Published));
             await xmlWriter.WriteStringAsync("CreatedOnUtc", product.CreatedOnUtc);
             await xmlWriter.WriteStringAsync("UpdatedOnUtc", product.UpdatedOnUtc);
-            await xmlWriter.WriteStringAsync("AgeVerification", product.AgeVerification, await IgnoreExportProductPropertyAsync(p => p.AgeVerification));
-            await xmlWriter.WriteStringAsync("MinimumAgeToPurchase", product.MinimumAgeToPurchase, await IgnoreExportProductPropertyAsync(p => p.AgeVerification));
 
             if (!await IgnoreExportProductPropertyAsync(p => p.Discounts))
             {
@@ -1516,25 +1415,6 @@ public partial class ExportManager : IExportManager
                 await xmlWriter.WriteEndElementAsync();
             }
 
-            if (!await IgnoreExportProductPropertyAsync(p => p.SpecificationAttributes))
-            {
-                await xmlWriter.WriteStartElementAsync("ProductSpecificationAttributes");
-                var productSpecificationAttributes = await _specificationAttributeService.GetProductSpecificationAttributesAsync(product.Id);
-                foreach (var productSpecificationAttribute in productSpecificationAttributes)
-                {
-                    await xmlWriter.WriteStartElementAsync("ProductSpecificationAttribute");
-                    await xmlWriter.WriteStringAsync("ProductSpecificationAttributeId", productSpecificationAttribute.Id);
-                    await xmlWriter.WriteStringAsync("SpecificationAttributeOptionId", productSpecificationAttribute.SpecificationAttributeOptionId);
-                    await xmlWriter.WriteStringAsync("CustomValue", productSpecificationAttribute.CustomValue);
-                    await xmlWriter.WriteStringAsync("AllowFiltering", productSpecificationAttribute.AllowFiltering);
-                    await xmlWriter.WriteStringAsync("ShowOnProductPage", productSpecificationAttribute.ShowOnProductPage);
-                    await xmlWriter.WriteStringAsync("DisplayOrder", productSpecificationAttribute.DisplayOrder);
-                    await xmlWriter.WriteEndElementAsync();
-                }
-
-                await xmlWriter.WriteEndElementAsync();
-            }
-
             if (!await IgnoreExportProductPropertyAsync(p => p.ProductTags))
             {
                 await xmlWriter.WriteStartElementAsync("ProductTags");
@@ -1625,40 +1505,12 @@ public partial class ExportManager : IExportManager
             new PropertyByName<Product>("MetaDescription", (p, _) => p.MetaDescription, await IgnoreExportProductPropertyAsync(p => p.Seo)),
             new PropertyByName<Product>("MetaTitle", (p, _) => p.MetaTitle, await IgnoreExportProductPropertyAsync(p => p.Seo)),
             new PropertyByName<Product>("SeName", async (p, _) => await _urlRecordService.GetSeNameAsync(p, 0), await IgnoreExportProductPropertyAsync(p => p.Seo)),
-            new PropertyByName<Product>("AllowCustomerReviews", (p, _) => p.AllowCustomerReviews, await IgnoreExportProductPropertyAsync(p => p.AllowCustomerReviews)),
             new PropertyByName<Product>("Published", (p, _) => p.Published, await IgnoreExportProductPropertyAsync(p => p.Published)),
             new PropertyByName<Product>("SKU", (p, _) => p.Sku),
             new PropertyByName<Product>("ManufacturerPartNumber", (p, _) => p.ManufacturerPartNumber, await IgnoreExportProductPropertyAsync(p => p.ManufacturerPartNumber)),
             new PropertyByName<Product>("Gtin", (p, _) => p.Gtin, await IgnoreExportProductPropertyAsync(p => p.GTIN)),
-            new PropertyByName<Product>("IsGiftCard", (p, _) => p.IsGiftCard, await IgnoreExportProductPropertyAsync(p => p.IsGiftCard)),
-            new PropertyByName<Product>("GiftCardType", (p, _) => p.GiftCardTypeId, await IgnoreExportProductPropertyAsync(p => p.IsGiftCard))
-            {
-                DropDownElements = await GiftCardType.Virtual.ToSelectListAsync(useLocalization: false)
-            },
-            new PropertyByName<Product>("OverriddenGiftCardAmount", (p, _) => p.OverriddenGiftCardAmount, await IgnoreExportProductPropertyAsync(p => p.IsGiftCard)),
-            new PropertyByName<Product>("RequireOtherProducts", (p, _) => p.RequireOtherProducts, await IgnoreExportProductPropertyAsync(p => p.RequireOtherProductsAddedToCart)),
-            new PropertyByName<Product>("RequiredProductIds", (p, _) => p.RequiredProductIds, await IgnoreExportProductPropertyAsync(p => p.RequireOtherProductsAddedToCart)),
-            new PropertyByName<Product>("AutomaticallyAddRequiredProducts", (p, _) => p.AutomaticallyAddRequiredProducts, await IgnoreExportProductPropertyAsync(p => p.RequireOtherProductsAddedToCart)),
-            new PropertyByName<Product>("IsDownload", (p, _) => p.IsDownload, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct)),
-            new PropertyByName<Product>("DownloadId", (p, _) => p.DownloadId, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct)),
-            new PropertyByName<Product>("UnlimitedDownloads", (p, _) => p.UnlimitedDownloads, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct)),
-            new PropertyByName<Product>("MaxNumberOfDownloads", (p, _) => p.MaxNumberOfDownloads, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct)),
-            new PropertyByName<Product>("DownloadActivationType", (p, _) => p.DownloadActivationTypeId, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct))
-            {
-                DropDownElements = await DownloadActivationType.Manually.ToSelectListAsync(useLocalization: false)
-            },
-            new PropertyByName<Product>("HasSampleDownload", (p, _) => p.HasSampleDownload, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct)),
-            new PropertyByName<Product>("SampleDownloadId", (p, _) => p.SampleDownloadId, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct)),
-            new PropertyByName<Product>("HasUserAgreement", (p, _) => p.HasUserAgreement, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct)),
-            new PropertyByName<Product>("UserAgreementText", (p, _) => p.UserAgreementText, await IgnoreExportProductPropertyAsync(p => p.DownloadableProduct)),
-            new PropertyByName<Product>("IsRecurring", (p, _) => p.IsRecurring, await IgnoreExportProductPropertyAsync(p => p.RecurringProduct)),
-            new PropertyByName<Product>("RecurringCycleLength", (p, _) => p.RecurringCycleLength, await IgnoreExportProductPropertyAsync(p => p.RecurringProduct)),
-            new PropertyByName<Product>("RecurringCyclePeriod", (p, _) => p.RecurringCyclePeriodId, await IgnoreExportProductPropertyAsync(p => p.RecurringProduct))
-            {
-                DropDownElements = await RecurringProductCyclePeriod.Days.ToSelectListAsync(useLocalization: false),
-                AllowBlank = true
-            },
-            new PropertyByName<Product>("RecurringTotalCycles", (p, _) => p.RecurringTotalCycles, await IgnoreExportProductPropertyAsync(p => p.RecurringProduct)),
+
+
             new PropertyByName<Product>("IsRental", (p, _) => p.IsRental, await IgnoreExportProductPropertyAsync(p => p.IsRental)),
             new PropertyByName<Product>("RentalPriceLength", (p, _) => p.RentalPriceLength, await IgnoreExportProductPropertyAsync(p => p.IsRental)),
             new PropertyByName<Product>("RentalPricePeriod", (p, _) => p.RentalPricePeriodId, await IgnoreExportProductPropertyAsync(p => p.IsRental))
@@ -1701,18 +1553,13 @@ public partial class ExportManager : IExportManager
                 DropDownElements = await LowStockActivity.Nothing.ToSelectListAsync(useLocalization: false)
             },
             new PropertyByName<Product>("NotifyAdminForQuantityBelow", (p, _) => p.NotifyAdminForQuantityBelow, await IgnoreExportProductPropertyAsync(p => p.NotifyAdminForQuantityBelow)),
-            new PropertyByName<Product>("BackorderMode", (p, _) => p.BackorderModeId, await IgnoreExportProductPropertyAsync(p => p.Backorders))
-            {
-                DropDownElements = await BackorderMode.NoBackorders.ToSelectListAsync(useLocalization: false)
-            },
-            new PropertyByName<Product>("AllowBackInStockSubscriptions", (p, _) => p.AllowBackInStockSubscriptions, await IgnoreExportProductPropertyAsync(p => p.AllowBackInStockSubscriptions)),
             new PropertyByName<Product>("OrderMinimumQuantity", (p, _) => p.OrderMinimumQuantity, await IgnoreExportProductPropertyAsync(p => p.MinimumCartQuantity)),
             new PropertyByName<Product>("OrderMaximumQuantity", (p, _) => p.OrderMaximumQuantity, await IgnoreExportProductPropertyAsync(p => p.MaximumCartQuantity)),
             new PropertyByName<Product>("AllowedQuantities", (p, _) => p.AllowedQuantities, await IgnoreExportProductPropertyAsync(p => p.AllowedQuantities)),
             new PropertyByName<Product>("AllowAddingOnlyExistingAttributeCombinations", (p, _) => p.AllowAddingOnlyExistingAttributeCombinations, await IgnoreExportProductPropertyAsync(p => p.AllowAddingOnlyExistingAttributeCombinations)),
             new PropertyByName<Product>("NotReturnable", (p, _) => p.NotReturnable, await IgnoreExportProductPropertyAsync(p => p.NotReturnable)),
             new PropertyByName<Product>("DisableBuyButton", (p, _) => p.DisableBuyButton, await IgnoreExportProductPropertyAsync(p => p.DisableBuyButton)),
-            new PropertyByName<Product>("DisableWishlistButton", (p, _) => p.DisableWishlistButton, await IgnoreExportProductPropertyAsync(p => p.DisableWishlistButton)),
+
             new PropertyByName<Product>("AvailableForPreOrder", (p, _) => p.AvailableForPreOrder, await IgnoreExportProductPropertyAsync(p => p.AvailableForPreOrder)),
             new PropertyByName<Product>("PreOrderAvailabilityStartDateTimeUtc", (p, _) => p.PreOrderAvailabilityStartDateTimeUtc, await IgnoreExportProductPropertyAsync(p => p.AvailableForPreOrder)),
             new PropertyByName<Product>("CallForPrice", (p, _) => p.CallForPrice, await IgnoreExportProductPropertyAsync(p => p.CallForPrice)),
@@ -1748,8 +1595,6 @@ public partial class ExportManager : IExportManager
             new PropertyByName<Product>("IsLimitedToStores", (p, _) => p.LimitedToStores, await ProductIgnoreExportLimitedToStoreAsync()),
             new PropertyByName<Product>("LimitedToStores",async (p, _) =>  await GetLimitedToStoresAsync(p), await ProductIgnoreExportLimitedToStoreAsync()),
             new PropertyByName<Product>("DisplayAttributeCombinationImagesOnly",(p, _) =>  p.DisplayAttributeCombinationImagesOnly, !productAdvancedMode),
-            new PropertyByName<Product>("AgeVerification", (p, _) => p.AgeVerification, await IgnoreExportProductPropertyAsync(p => p.AgeVerification)),
-            new PropertyByName<Product>("MinimumAgeToPurchase", (p, _) => p.MinimumAgeToPurchase, await IgnoreExportProductPropertyAsync(p => p.AgeVerification)),
             new PropertyByName<Product>("Picture1", async (p, _) => await GetPictureAsync(p, 0)),
             new PropertyByName<Product>("Picture2", async (p, _) => await GetPictureAsync(p, 1)),
             new PropertyByName<Product>("Picture3", async (p, _) => await GetPictureAsync(p, 2))
@@ -1757,14 +1602,14 @@ public partial class ExportManager : IExportManager
 
         var productList = products.ToList();
 
-        if (!_catalogSettings.ExportImportProductAttributes && !_catalogSettings.ExportImportProductSpecificationAttributes)
+        if (!_catalogSettings.ExportImportProductAttributes)
             return await new PropertyManager<Product>(properties, _catalogSettings).ExportToXlsxAsync(productList);
 
         //activity log
         await _customerActivityService.InsertActivityAsync("ExportProducts",
             string.Format(await _localizationService.GetResourceAsync("ActivityLog.ExportProducts"), productList.Count));
 
-        if (productAdvancedMode || _productEditorSettings.ProductAttributes || _productEditorSettings.SpecificationAttributes || _productEditorSettings.TierPrices)
+        if (productAdvancedMode || _productEditorSettings.ProductAttributes || _productEditorSettings.TierPrices)
             return await ExportProductsToXlsxWithAdditionalInfoAsync(properties, localizedProperties, productList, languages);
 
         return await new PropertyManager<Product>(properties, _catalogSettings, localizedProperties, languages).ExportToXlsxAsync(productList);

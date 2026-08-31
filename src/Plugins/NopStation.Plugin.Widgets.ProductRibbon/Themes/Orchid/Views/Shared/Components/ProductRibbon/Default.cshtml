@@ -1,0 +1,37 @@
+﻿@using Nop.Core
+@model ProductRibbonModel
+@inject IWorkContext workContext
+
+@{
+    var supportRtl = (await workContext.GetWorkingLanguageAsync()).Rtl;
+
+    if (supportRtl)
+    {
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.ProductRibbon/Themes/Orchid/Contents/css/styles.rtl.css");
+    }
+    else
+    {
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.ProductRibbon/Themes/Orchid/Contents/css/styles.css");
+    }
+}
+
+<div class="offer-content">
+    @if (Model.IsNew)
+    {
+        <div class="new-product-label">
+            @T("NopStation.ProductRibbon.RibbonText.New")
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Discount))
+    {
+        <div class="discount-info-label">@Model.Discount</div>
+    }
+
+    @if (Model.IsBestSeller)
+    {
+        <div class="bestseller-label">
+            @T("NopStation.ProductRibbon.RibbonText.BestSeller")
+        </div>
+    }
+</div>

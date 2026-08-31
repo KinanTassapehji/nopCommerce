@@ -1,0 +1,53 @@
+﻿@model OCarouselModel
+
+@if (Model.Products.Count > 0)
+{
+    <div class="owl-carousel ocarousel @Model.CustomCssClass" id="product-ocarousel-@(Model.Id)">
+        @foreach (var item in Model.Products)
+        {
+            <div class="item-box">
+                @await Html.PartialAsync("_ProductBox", item)
+            </div>
+        }
+    </div>
+
+    <script asp-location="Footer">
+       $(document).ready(function () {
+           $('#product-ocarousel-@(Model.Id)').owlCarousel({
+                nav: @Model.Nav.ToString().ToLower(),
+                loop: @Model.Loop.ToString().ToLower(),
+                dots: true,
+                margin: 10,
+                autoplay: @Model.AutoPlay.ToString().ToLower(),
+                rtl: @Model.Rtl.ToString().ToLower(),
+                autoplayTimeout: @Model.AutoPlayTimeout,
+                autoplayHoverPause: @Model.AutoPlayHoverPause.ToString().ToLower(),
+                lazyLoad: @Model.LazyLoad.ToString().ToLower(),
+                lazyLoadEager: @Model.LazyLoadEager,
+                center: @Model.Center.ToString().ToLower(),
+                startPosition: @Model.StartPosition,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    576: {
+                        items: 2
+                    },
+                    768: {
+                        items: 2
+                    },
+                    992: {
+                        items: 4
+                    },
+                    1200: {
+                        items: 5
+                    },
+                    1500: {
+                        items: 5
+                    }
+                }
+            });
+        });
+    </script>
+}
+@NopHtml.GenerateInlineScripts(ResourceLocation.Footer)

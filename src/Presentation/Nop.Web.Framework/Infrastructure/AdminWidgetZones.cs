@@ -88,7 +88,6 @@ public static partial class AdminWidgetZones
     public static string EmailAccountDetailsButtons => "admin_email_account_details_buttons";
     public static string EmailAccountDetailsTop => "admin_email_account_details_top";
     public static string EmailAccountListButtons => "admin_email_account_list_buttons";
-    public static string ExternalAuthenticationListButtons => "admin_external_authentication_list_buttons";
     public static string FilterLevelDetailsBottom => "admin_filter_level_details_bottom";
     public static string FilterLevelDetailsButtons => "admin_filter_level_details_buttons";
     public static string FilterLevelDetailsTop => "admin_filter_level_details_top";
@@ -113,9 +112,6 @@ public static partial class AdminWidgetZones
     public static string GdprConsentDetailsTop => "admin_gdpr_consent_details_top";
     public static string GeneralCommonDetailsBlock => "admin_general_common_details_block";
     public static string GeneralCommonSettingsButtons => "admin_general_common_settings_buttons";
-    public static string GiftCardDetailsBlock => "admin_gift_card_details_block";
-    public static string GiftCardDetailsButtons => "admin_gift_card_details_buttons";
-    public static string GiftCardListButtons => "admin_gift_card_list_buttons";
     public static string HeaderAfter => "admin_header_after";
     public static string HeaderBefore => "admin_header_before";
     public static string HeaderMiddle => "admin_header_middle";
@@ -144,7 +140,6 @@ public static partial class AdminWidgetZones
     public static string MessageTemplateDetailsTop => "admin_message_template_details_top";
     public static string MessageTemplateListButtons => "admin_message_template_list_buttons";
     public static string MessageTemplateTestButtons => "admin_message_template_test_buttons";
-    public static string MultiFactorAuthenticationListButtons => "admin_multifactor_authentication_list_buttons";
     public static string NewsCommentListButtons => "admin_news_comment_list_buttons";
     public static string NewsDetailsBlock => "admin_news_details_block";
     public static string NewsDetailsButtons => "admin_news_details_buttons";
@@ -214,8 +209,6 @@ public static partial class AdminWidgetZones
     public static string ProductDetailsProductAttributesCombinationsTop => "admin_product_details_product_attributes_combinations_top";
     public static string ProductDetailsProductAttributesInfoBottom => "admin_product_details_product_attributes_info_bottom";
     public static string ProductDetailsProductAttributesInfoTop => "admin_product_details_product_attributes_info_top";
-    public static string ProductDetailsSpecificationAttributeDetailsBottom => "admin_product_details_specification_attributes_bottom";
-    public static string ProductDetailsSpecificationAttributeDetailsTop => "admin_product_details_specification_attributes_top";
     public static string ProductDetailsStockQuantityHistoryBottom => "admin_product_details_stock_quantity_history_bottom";
     public static string ProductDetailsStockQuantityHistoryTop => "admin_product_details_stock_quantity_history_top";
     public static string ProductListButtons => "admin_product_list_buttons";
@@ -251,8 +244,6 @@ public static partial class AdminWidgetZones
     public static string ReturnRequestReasonDetailsButtons => "admin_return_request_reason_details_buttons";
     public static string ReturnRequestReasonSettingsBottom => "admin_return_request_reason_settings_bottom";
     public static string ReturnRequestReasonSettingsTop => "admin_return_request_reason_settings_top";
-    public static string RewardPointsSettingsDetailsBlock => "admin_reward_points_settings_details_block";
-    public static string RewardPointsSettingsButtons => "admin_reward_points_settings_buttons";
     public static string RobotsTxtSettingsButtons => "admin_robots_txt_settings_buttons";
     public static string ScheduleTaskListButtons => "admin_schedule_task_list_buttons";
     public static string SearchBoxBefore => "admin_searchbox_before";
@@ -269,14 +260,6 @@ public static partial class AdminWidgetZones
     public static string ShippingSettingsButtons => "admin_shipping_settings_buttons";
     public static string ShoppingCartSettingsDetailsBlock => "admin_shopping_cart_settings_details_block";
     public static string ShoppingCartSettingsButtons => "admin_shopping_cart_settings_buttons";
-    public static string SpecificationAttributeDetailsBlock => "admin_specification_attribute_details_block";
-    public static string SpecificationAttributeDetailsButtons => "admin_specification_attribute_details_buttons";
-    public static string SpecificationAttributeListButtons => "admin_specification_attribute_list_buttons";
-    public static string SpecificationAttributeOptionDetailsBottom => "admin_specification_attribute_option_details_bottom";
-    public static string SpecificationAttributeOptionDetailsButtons => "admin_specification_attribute_option_details_buttons";
-    public static string SpecificationAttributeOptionDetailsTop => "admin_specification_attribute_option_details_top";
-    public static string SpecificationAttributeGroupDetailsButtons => "admin_specification_attribute_group_details_buttons";
-    public static string SpecificationAttributeGroupDetailsBlock => "admin_specification_attribute_group_details_block";
     public static string StoreDetailsBottom => "admin_store_details_bottom";
     public static string StoreDetailsButtons => "admin_store_details_buttons";
     public static string StoreDetailsTop => "admin_store_details_top";

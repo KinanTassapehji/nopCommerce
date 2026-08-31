@@ -884,6 +884,14 @@ i.false-icon {
   max-height: 45px;
 }
 
+/* center the sidebar brand logo (both expanded and collapsed states) */
+.main-sidebar .brand-link.logo-switch .logo-xl,
+.main-sidebar .brand-link.logo-switch .logo-xs {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+
 .layout-fixed .brand-link {
   width: auto;
 }
@@ -2145,4 +2153,15 @@ div.dt-container div.dt-paging {
   .float-lg-right {
     float: none;
   }
+}
+
+/* dashboard: center table headers and values */
+.dashboard table th,
+.dashboard table td {
+  text-align: center !important;
+}
+
+.dashboard table th div.dt-column-header,
+.dashboard table th div.dt-column-footer {
+  justify-content: center !important;
 }

@@ -1,0 +1,3 @@
+@model DateTime?
+
+<input id="@Html.IdForModel()" name="@Html.NameForModel()" value="@(Model.HasValue? Model.Value.ToString("HH:mm") : "")" type="time" class="form-control" />

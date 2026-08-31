@@ -67,10 +67,10 @@ public class CommonModelFactoryTests : BaseNopTest
     {
         var model = await _commonModelFactory.PrepareLogoModelAsync();
         model.StoreName.Should().NotBeNullOrEmpty();
-        model.StoreName.Should().Be("Your store name");
+        model.StoreName.Should().Be("تمتم");
         model.LogoPath.Should().NotBeNullOrEmpty();
         model.LogoPath.Should()
-            .Be($"http://{NopTestsDefaults.HostIpAddress}/Themes/DefaultClean/Content/images/logo.png");
+            .Be($"http://{NopTestsDefaults.HostIpAddress}/Themes/TmTm/Content/images/logo.png");
     }
 
     [Test]
@@ -78,14 +78,15 @@ public class CommonModelFactoryTests : BaseNopTest
     {
         var model = await _commonModelFactory.PrepareLanguageSelectorModelAsync();
 
-        model.CurrentLanguageId.Should().Be(1);
+        //the bundled ar-SY pack sorts ahead of English, so it is the working language
+        model.CurrentLanguageId.Should().Be(2);
         model.UseImages.Should().Be(_localizationSettings.UseImagesForLanguageSelection);
 
         model.AvailableLanguages.Should().NotBeNullOrEmpty();
         var lang = model.AvailableLanguages.FirstOrDefault();
         lang.Should().NotBeNull();
-        lang?.Name.Should().Be("English");
-        lang?.FlagImageFileName.Should().Be("us.png");
+        lang?.Name.Should().Be("العربية");
+        lang?.FlagImageFileName.Should().Be("sy.png");
     }
 
     [Test]
@@ -113,12 +114,10 @@ public class CommonModelFactoryTests : BaseNopTest
         model.IsAuthenticated.Should().BeTrue();
         model.CustomerName.Should().Be("John");
         model.ShoppingCartEnabled.Should().BeTrue();
-        model.WishlistEnabled.Should().BeTrue();
         model.AllowPrivateMessages.Should().Be(_forumSettings.AllowPrivateMessages);
         model.UnreadPrivateMessages.Should().BeEmpty();
         model.AlertMessage.Should().BeEmpty();
         model.ShoppingCartItems.Should().Be(0);
-        model.WishlistItems.Should().Be(0);
     }
 
     [Test]
@@ -140,7 +139,7 @@ public class CommonModelFactoryTests : BaseNopTest
         model.TwitterLink.Should().Be(_storeInformationSettings.TwitterLink);
         model.YoutubeLink.Should().Be(_storeInformationSettings.YoutubeLink);
         model.InstagramLink.Should().Be(_storeInformationSettings.InstagramLink);
-        model.WorkingLanguageId.Should().Be(1);
+        model.WorkingLanguageId.Should().Be(2);
         model.NewsEnabled.Should().Be(_newsSettings.Enabled);
     }
 
@@ -149,7 +148,7 @@ public class CommonModelFactoryTests : BaseNopTest
     {
         var model = await _commonModelFactory.PrepareFooterModelAsync();
 
-        model.StoreName.Should().Be("Your store name");
+        model.StoreName.Should().Be("تمتم");
         model.HidePoweredByNopCommerce.Should().Be(_storeInformationSettings.HidePoweredByNopCommerce);
     }
 
@@ -226,8 +225,8 @@ public class CommonModelFactoryTests : BaseNopTest
     {
         var model = await _commonModelFactory.PrepareStoreThemeSelectorModelAsync();
         model.CurrentStoreTheme.Should().NotBeNull();
-        model.CurrentStoreTheme.Name.Should().Be("DefaultClean");
-        model.CurrentStoreTheme.Title.Should().Be("Default clean");
+        model.CurrentStoreTheme.Name.Should().Be("TmTm");
+        model.CurrentStoreTheme.Title.Should().Be("TmTm");
         model.AvailableStoreThemes.Should().NotBeNull();
         model.AvailableStoreThemes.Count.Should().BeGreaterThan(0);
     }
@@ -245,6 +244,7 @@ public class CommonModelFactoryTests : BaseNopTest
         var model = await _commonModelFactory.PrepareRobotsTextFileAsync();
         model.Should().NotBeNullOrEmpty();
 
-        model.Trim().Split(Environment.NewLine).Length.Should().Be(165);
+        //two published languages, so the localized disallow blocks are emitted twice
+        model.Trim().Split(Environment.NewLine).Length.Should().Be(222);
     }
 }

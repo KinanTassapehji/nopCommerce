@@ -82,30 +82,6 @@ public partial class ProcessPaymentRequest
 
     #endregion
 
-    #region Recurring payments
-
-    /// <summary>
-    /// Gets or sets an initial (parent) order identifier if order is recurring
-    /// </summary>
-    public Order InitialOrder { get; set; }
-
-    /// <summary>
-    /// Gets or sets the cycle length
-    /// </summary>
-    public int RecurringCycleLength { get; set; }
-
-    /// <summary>
-    /// Gets or sets the cycle period
-    /// </summary>
-    public RecurringProductCyclePeriod RecurringCyclePeriod { get; set; }
-
-    /// <summary>
-    /// Gets or sets the total cycles
-    /// </summary>
-    public int RecurringTotalCycles { get; set; }
-
-    #endregion
-
     /// <summary>
     /// You can store any custom value in this property
     /// </summary>

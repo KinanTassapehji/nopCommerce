@@ -17,7 +17,6 @@ public partial record ProductDetailsModel : BaseNopEntityModel, IMetaTagsSupport
         DefaultPictureModel = new PictureModel();
         PictureModels = new List<PictureModel>();
         VideoModels = new List<VideoModel>();
-        GiftCard = new GiftCardModel();
         ProductPrice = new ProductPriceModel();
         AddToCart = new AddToCartModel();
         ProductAttributes = new List<ProductAttributeModel>();
@@ -25,7 +24,6 @@ public partial record ProductDetailsModel : BaseNopEntityModel, IMetaTagsSupport
         VendorModel = new VendorBriefInfoModel();
         Breadcrumb = new ProductBreadcrumbModel();
         ProductTags = new List<ProductTagModel>();
-        ProductSpecificationModel = new ProductSpecificationModel();
         ProductManufacturers = new List<ManufacturerBriefInfoModel>();
         ProductReviewOverview = new ProductReviewOverviewModel();
         ProductReviews = new ProductReviewsModel();
@@ -65,9 +63,7 @@ public partial record ProductDetailsModel : BaseNopEntityModel, IMetaTagsSupport
     public bool ShowVendor { get; set; }
     public VendorBriefInfoModel VendorModel { get; set; }
 
-    public bool HasSampleDownload { get; set; }
 
-    public GiftCardModel GiftCard { get; set; }
 
     public bool IsShipEnabled { get; set; }
     public bool IsFreeShipping { get; set; }
@@ -84,7 +80,6 @@ public partial record ProductDetailsModel : BaseNopEntityModel, IMetaTagsSupport
 
     public string StockAvailability { get; set; }
 
-    public bool DisplayBackInStockSubscription { get; set; }
 
     public bool DisplayAttributeCombinationImagesOnly { get; set; }
 
@@ -103,7 +98,6 @@ public partial record ProductDetailsModel : BaseNopEntityModel, IMetaTagsSupport
 
     public IList<ProductAttributeModel> ProductAttributes { get; set; }
 
-    public ProductSpecificationModel ProductSpecificationModel { get; set; }
 
     public IList<ManufacturerBriefInfoModel> ProductManufacturers { get; set; }
 
@@ -148,7 +142,6 @@ public partial record ProductDetailsModel : BaseNopEntityModel, IMetaTagsSupport
         public AddToCartModel()
         {
             AllowedQuantities = new List<SelectListItem>();
-            ProductToWishlist = new ProductToWishlistModel();
         }
         public int ProductId { get; set; }
 
@@ -166,7 +159,6 @@ public partial record ProductDetailsModel : BaseNopEntityModel, IMetaTagsSupport
         public string CustomerEnteredPriceRange { get; set; }
 
         public bool DisableBuyButton { get; set; }
-        public bool DisableWishlistButton { get; set; }
 
         //rental
         public bool IsRental { get; set; }
@@ -176,36 +168,11 @@ public partial record ProductDetailsModel : BaseNopEntityModel, IMetaTagsSupport
         public DateTime? PreOrderAvailabilityStartDateTimeUtc { get; set; }
         public string PreOrderAvailabilityStartDateTimeUserTime { get; set; }
 
-        //updating existing shopping cart or wishlist item?
+        //updating existing shopping cart item?
         public int UpdatedShoppingCartItemId { get; set; }
         public ShoppingCartType? UpdateShoppingCartItemType { get; set; }
-        public ProductToWishlistModel ProductToWishlist { get; set; }
     }
     
-    public partial record GiftCardModel : BaseNopModel
-    {
-        public bool IsGiftCard { get; set; }
-
-        [NopResourceDisplayName("Products.GiftCard.RecipientName")]
-        public string RecipientName { get; set; }
-
-        [NopResourceDisplayName("Products.GiftCard.RecipientEmail")]
-        [DataType(DataType.EmailAddress)]
-        public string RecipientEmail { get; set; }
-
-        [NopResourceDisplayName("Products.GiftCard.SenderName")]
-        public string SenderName { get; set; }
-
-        [NopResourceDisplayName("Products.GiftCard.SenderEmail")]
-        [DataType(DataType.EmailAddress)]
-        public string SenderEmail { get; set; }
-
-        [NopResourceDisplayName("Products.GiftCard.Message")]
-        public string Message { get; set; }
-
-        public GiftCardType GiftCardType { get; set; }
-    }
-
     public partial record TierPriceModel : BaseNopModel
     {
         public string Price { get; set; }

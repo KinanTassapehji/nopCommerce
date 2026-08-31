@@ -28,22 +28,6 @@ public class SettingMigration : MigrationBase
         var settingRepository = EngineContext.Current.Resolve<IRepository<Setting>>();
         var settingService = EngineContext.Current.Resolve<ISettingService>();
 
-        //#4904 External authentication errors logging
-        var externalAuthenticationSettings = settingService.LoadSetting<ExternalAuthenticationSettings>();
-        if (!settingService.SettingExists(externalAuthenticationSettings, settings => settings.LogErrors))
-        {
-            externalAuthenticationSettings.LogErrors = false;
-            settingService.SaveSetting(externalAuthenticationSettings, settings => settings.LogErrors);
-        }
-
-        var multiFactorAuthenticationSettings = settingService.LoadSetting<MultiFactorAuthenticationSettings>();
-        if (!settingService.SettingExists(multiFactorAuthenticationSettings, settings => settings.ForceMultifactorAuthentication))
-        {
-            multiFactorAuthenticationSettings.ForceMultifactorAuthentication = false;
-
-            settingService.SaveSetting(multiFactorAuthenticationSettings, settings => settings.ForceMultifactorAuthentication);
-        }
-
         //#5102 Delete Full-text settings
         settingRepository
             .Delete(setting => setting.Name == "commonsettings.usefulltextsearch" || setting.Name == "commonsettings.fulltextmode");

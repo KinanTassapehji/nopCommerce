@@ -1,6 +1,5 @@
 ﻿@using Nop.Core
 @model CustomerInfoModel
-@inject Nop.Core.IWebHelper webHelper
 @{
     Layout = "_ColumnsTwo";
 
@@ -137,44 +136,6 @@
                     }
                 </div>
             </section>
-            @if (Model.CompanyEnabled || Model.DisplayVatNumber)
-            {
-                <section class="fieldset">
-                    <h2 class="title">
-                        @T("Account.CompanyDetails")
-                    </h2>
-                    <div class="form-fields">
-                        @if (Model.CompanyEnabled)
-                        {
-                            <div class="inputs">
-                                <label asp-for="Company" asp-postfix=":"></label>
-                                <input asp-for="Company" />
-                                @if (Model.CompanyRequired)
-                                {
-                                    <nop-required />
-                                }
-                                <span asp-validation-for="Company"></span>
-                            </div>
-                        }
-                        @if (Model.DisplayVatNumber)
-                        {
-                            <div class="inputs">
-                                <label asp-for="VatNumber" asp-postfix=":"></label>
-                                <input asp-for="VatNumber" />
-                                @if (Model.VatNumberRequired)
-                                {
-                                    <nop-required />
-                                }
-                                <span asp-validation-for="VatNumber"></span>
-                                <span class="vat-status">@Model.VatNumberStatusNote</span>
-                                <span class="vat-note">
-                                    <em>@T("Account.Fields.VatNumber.Note")</em>
-                                </span>
-                            </div>
-                        }
-                    </div>
-                </section>
-            }
             @if (Model.StreetAddressEnabled ||
         Model.StreetAddress2Enabled ||
         Model.ZipPostalCodeEnabled ||
@@ -313,31 +274,6 @@
                     </div>
                 </section>
             }
-
-            @if (Model.NewsletterEnabled &&  Model.NewsLetterSubscriptions.Count > 0)
-            {
-                <section class="fieldset">
-                    <h2 class="title">
-                        @T("Account.SubscribeToNewsletter")
-                    </h2>
-                    <div class="form-fields">
-                        <div class="inputs">
-                            <div class="attributes">
-                                <ul>
-                                    @for (int i = 0; i < Model.NewsLetterSubscriptions.Count; i++)
-                                    {
-                                        <li>
-                                            <label for="@Html.IdFor(m => m.NewsLetterSubscriptions[i].IsActive)">@Model.NewsLetterSubscriptions[i].Name</label>
-                                            <input type="hidden" asp-for="NewsLetterSubscriptions[i].TypeId" />
-                                            <input class="form-check-input" type="checkbox" asp-for="NewsLetterSubscriptions[i].IsActive" />
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            }
             @if (Model.CustomerAttributes.Count > 0)
             {
                 <section class="fieldset">
@@ -375,78 +311,6 @@
                     </div>
                 </section>
             }
-            @if (Model.NumberOfExternalAuthenticationProviders > 0)
-            {
-                <section class="fieldset">
-                    <h2 class="title">
-                        @T("Account.AssociatedExternalAuth")
-                    </h2>
-                    @if (Model.AssociatedExternalAuthRecords.Count > 0)
-                    {
-                        //existing associated external records
-                        <div class="table-wrapper">
-                            <table class="data-table">
-                                <colgroup>
-                                    <col />
-                                    <col />
-                                    <col />
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th class="auth-method-name">
-                                            @T("Account.AssociatedExternalAuth.AuthMethodName")
-                                        </th>
-                                        <th class="email">
-                                            @T("Account.AssociatedExternalAuth.Email")
-                                        </th>
-                                        <th class="external-id">
-                                            @T("Account.AssociatedExternalAuth.ExternalIdentifier")
-                                        </th>
-                                        @if (Model.AllowCustomersToRemoveAssociations)
-                                        {
-                                            <th class="remove">
-                                                @T("Account.AssociatedExternalAuth.Remove")
-                                            </th>
-                                        }
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.AssociatedExternalAuthRecords)
-                                    {
-                                        <tr>
-                                            <td class="auth-method-name">
-                                                @item.AuthMethodName
-                                            </td>
-                                            <td class="email">
-                                                @item.Email
-                                            </td>
-                                            <td class="external-id">
-                                                @CommonHelper.EnsureMaximumLength(item.ExternalIdentifier, 40, "...")
-                                            </td>
-                                            @if (Model.AllowCustomersToRemoveAssociations)
-                                            {
-                                                <td class="remove">
-                                                    <a href="#" onclick="return removeexternalassociation(@item.Id)">@T("Account.AssociatedExternalAuth.Remove")</a>
-                                                </td>
-                                            }
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    @if (Model.NumberOfExternalAuthenticationProviders > Model.AssociatedExternalAuthRecords.Count)
-                    {
-                        //we can add more external records
-                        var loginUrl = Url.RouteUrl(NopRouteNames.General.LOGIN, null, webHelper.GetCurrentRequestProtocol());
-                        <div class="form-fields add-more-external-records">
-                            @T("Account.AssociatedExternalAuth.AddMoreRecords")
-                            <a href="@loginUrl">@loginUrl</a>
-                        </div>
-                    }
-                </section>
-            }
-
             @if (Model.GdprConsents.Count > 0)
             {
                 <section class="fieldset">
@@ -481,6 +345,18 @@
                     </div>
                 </section>
             }
+            @* ponytail: inside the form only for placement - the selector navigates on
+                change, its value is not bound by the info post *@
+            <section class="fieldset customer-language">
+                <h2 class="title">
+                    @T("Languages.Selector.Label")
+                </h2>
+                <div class="form-fields">
+                    <div class="inputs">
+                        @await Component.InvokeAsync(typeof(LanguageSelectorViewComponent))
+                    </div>
+                </div>
+            </section>
             <section class="buttons">
                 <button type="submit" id="save-info-button" name="save-info-button" class="button-1 save-customer-info-button">@T("Common.Save")</button>
             </section>
@@ -488,28 +364,3 @@
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CustomerInfoBottom, additionalData = Model })
     </div>
 </div>
-
-<script asp-location="Footer">
-    function removeexternalassociation(itemId) {
-        if (confirm('@T("Common.AreYouSure")')) {
-            var postData = {
-                id: itemId
-            };
-            addAntiForgeryToken(postData);
-            $.ajax({
-                cache: false,
-                type: "POST",
-                url: "@Url.RouteUrl(NopRouteNames.Ajax.CUSTOMER_REMOVE_EXTERNAL_ASSOCIATION)",
-                data: postData,
-                dataType: "json",
-                success: function (data, textStatus, jqXHR) {
-                    location.href = data.redirect;
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert('Failed to delete');
-                }
-            });
-        }
-        return false;
-    }
-</script>

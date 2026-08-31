@@ -69,7 +69,7 @@ public class CatalogModelFactorySpecialTests : WebTest
         model.TotalVendors.Should().Be(2);
         model.Vendors.Any().Should().BeTrue();
         model.Vendors.Count.Should().Be(1);
-        model.Vendors[0].Name.Should().Be("Vendor 1");
+        model.Vendors[0].Name.Should().Be("استوديو سرو");
     }
 
     [Test]
@@ -88,7 +88,8 @@ public class CatalogModelFactorySpecialTests : WebTest
 
         model.CategoryBreadcrumb.Any().Should().BeFalse();
         model.SubCategories.Count.Should().Be(3);
-        model.CatalogProductsModel.Products.Count.Should().Be(6);
+        //ShowProductsFromSubcategories is on, so this is the whole "المنزل والمعيشة" tree
+        model.CatalogProductsModel.Products.Count.Should().Be(12);
     }
 
     [Test]
@@ -96,8 +97,9 @@ public class CatalogModelFactorySpecialTests : WebTest
     {
         var model = await _catalogModelFactory.PreparePopularProductTagsModelAsync(_catalogSettings.NumberOfProductTags);
 
-        model.Tags.Count.Should().Be(16);
-        model.TotalTags.Should().Be(16);
+        //capped by NumberOfProductTags above; the catalogue carries more than that
+        model.Tags.Count.Should().Be(20);
+        model.TotalTags.Should().Be(68);
     }
 
     [Test]

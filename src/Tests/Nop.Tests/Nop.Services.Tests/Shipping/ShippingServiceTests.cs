@@ -30,8 +30,8 @@ public class ShippingServiceTests : ServiceTest
     [Test]
     public async Task CanGetShoppingCartTotalWeightWithoutAttributes()
     {
-        var product1 = await _productService.GetProductBySkuAsync("AS_551_LP");
-        var product2 = await _productService.GetProductBySkuAsync("FIRST_PRP");
+        var product1 = await _productService.GetProductBySkuAsync("TM-BB-203");
+        var product2 = await _productService.GetProductBySkuAsync("TM-BB-202");
 
         var request = new GetShippingOptionRequest
         {

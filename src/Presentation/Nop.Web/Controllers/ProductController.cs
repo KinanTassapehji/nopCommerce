@@ -126,7 +126,7 @@ public partial class ProductController : BasePublicController
     
     #region Product details page
 
-    public virtual async Task<IActionResult> ProductDetails(int productId, int updatecartitemid = 0, int? customwishlistid = null)
+    public virtual async Task<IActionResult> ProductDetails(int productId, int updatecartitemid = 0)
     {
         var product = await _productService.GetProductByIdAsync(productId);
         if (product == null || product.Deleted)
@@ -135,8 +135,6 @@ public partial class ProductController : BasePublicController
         var notAvailable =
             //published?
             (!product.Published && !_catalogSettings.AllowViewUnpublishedProductPage) ||
-            //ACL (access control list) 
-            !await _aclService.AuthorizeAsync(product) ||
             //Store mapping
             !await _storeMappingService.AuthorizeAsync(product) ||
             //availability dates
@@ -159,13 +157,13 @@ public partial class ProductController : BasePublicController
             return LocalRedirectPermanent(productUrl);
         }
 
-        //update existing shopping cart or wishlist  item?
+        //update existing shopping cart item?
         ShoppingCartItem updatecartitem = null;
         if (_shoppingCartSettings.AllowCartItemEditing && updatecartitemid > 0)
         {
             var productUrl = await _nopUrlHelper.RouteGenericUrlAsync(product);
             var store = await _storeContext.GetCurrentStoreAsync();
-            var cart = await _shoppingCartService.GetShoppingCartAsync(await _workContext.GetCurrentCustomerAsync(), storeId: store.Id, customWishlistId: customwishlistid);
+            var cart = await _shoppingCartService.GetShoppingCartAsync(await _workContext.GetCurrentCustomerAsync(), ShoppingCartType.ShoppingCart, store.Id);
             updatecartitem = cart.FirstOrDefault(x => x.Id == updatecartitemid);
 
             //not found?
@@ -258,7 +256,7 @@ public partial class ProductController : BasePublicController
         //entered quantity
         wrappedProduct.Quantity = _productAttributeParser.ParseEnteredQuantity(product, form);
 
-        //product and gift card attributes
+        //product attributes
         wrappedProduct.AttributesXml = await _productAttributeParser.ParseProductAttributesAsync(product, form, addToCartWarnings);
 
         //rental attributes
@@ -315,7 +313,7 @@ public partial class ProductController : BasePublicController
         var product = await _productService.GetProductByIdAsync(productId);
         var currentStore = await _storeContext.GetCurrentStoreAsync();
 
-        if (product == null || product.Deleted || !product.Published || !product.AllowCustomerReviews ||
+        if (product == null || product.Deleted || !product.Published ||
             !await _productReviewService.CanAddReviewAsync(product.Id, _catalogSettings.ShowProductReviewsPerStore ? currentStore.Id : 0))
             return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
         
@@ -556,13 +554,13 @@ public partial class ProductController : BasePublicController
         };
 
         var products = await (await _compareProductsService.GetComparedProductsAsync())
-            //ACL and store mapping
-            .WhereAwait(async p => await _aclService.AuthorizeAsync(p) && await _storeMappingService.AuthorizeAsync(p))
+            //store mapping
+            .WhereAwait(async p => await _storeMappingService.AuthorizeAsync(p))
             //availability dates
             .Where(p => _productService.ProductIsAvailable(p)).ToListAsync();
 
         //prepare model
-        var poModels = (await _productModelFactory.PrepareProductOverviewModelsAsync(products, prepareSpecificationAttributes: true))
+        var poModels = (await _productModelFactory.PrepareProductOverviewModelsAsync(products))
             .ToList();
         foreach (var poModel in poModels)
         {

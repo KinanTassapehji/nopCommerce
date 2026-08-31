@@ -303,10 +303,6 @@ public partial record CatalogSettingsModel : BaseNopModel, ISettingsModel
     public bool DisplayTaxShippingInfoShoppingCart { get; set; }
     public bool DisplayTaxShippingInfoShoppingCart_OverrideForStore { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Settings.Catalog.DisplayTaxShippingInfoWishlist")]
-    public bool DisplayTaxShippingInfoWishlist { get; set; }
-    public bool DisplayTaxShippingInfoWishlist_OverrideForStore { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.Settings.Catalog.DisplayTaxShippingInfoOrderDetailsPage")]
     public bool DisplayTaxShippingInfoOrderDetailsPage { get; set; }
     public bool DisplayTaxShippingInfoOrderDetailsPage_OverrideForStore { get; set; }
@@ -314,10 +310,6 @@ public partial record CatalogSettingsModel : BaseNopModel, ISettingsModel
     [NopResourceDisplayName("Admin.Configuration.Settings.Catalog.ExportImportProductAttributes")]
     public bool ExportImportProductAttributes { get; set; }
     public bool ExportImportProductAttributes_OverrideForStore { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.Catalog.ExportImportProductSpecificationAttributes")]
-    public bool ExportImportProductSpecificationAttributes { get; set; }
-    public bool ExportImportProductSpecificationAttributes_OverrideForStore { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Settings.Catalog.ExportImportTierPrices")]
     public bool ExportImportTierPrices { get; set; }
@@ -338,10 +330,6 @@ public partial record CatalogSettingsModel : BaseNopModel, ISettingsModel
     [NopResourceDisplayName("Admin.Configuration.Settings.Catalog.ExportImportSplitProductsFile")]
     public bool ExportImportSplitProductsFile { get; set; }
     public bool ExportImportSplitProductsFile_OverrideForStore { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.Catalog.RemoveRequiredProducts")]
-    public bool RemoveRequiredProducts { get; set; }
-    public bool RemoveRequiredProducts_OverrideForStore { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Settings.Catalog.ExportImportRelatedEntitiesByName")]
     public bool ExportImportRelatedEntitiesByName { get; set; }
@@ -394,10 +382,6 @@ public partial record CatalogSettingsModel : BaseNopModel, ISettingsModel
     [NopResourceDisplayName("Admin.Configuration.Settings.Catalog.EnablePriceRangeFiltering")]
     public bool EnablePriceRangeFiltering { get; set; }
     public bool EnablePriceRangeFiltering_OverrideForStore { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.Catalog.EnableSpecificationAttributeFiltering")]
-    public bool EnableSpecificationAttributeFiltering { get; set; }
-    public bool EnableSpecificationAttributeFiltering_OverrideForStore { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Settings.Catalog.DisplayFromPrices")]
     public bool DisplayFromPrices { get; set; }

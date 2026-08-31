@@ -71,21 +71,6 @@ public partial class OrderItem : BaseEntity
     public string AttributesXml { get; set; }
 
     /// <summary>
-    /// Gets or sets the download count
-    /// </summary>
-    public int DownloadCount { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether download is activated
-    /// </summary>
-    public bool IsDownloadActivated { get; set; }
-
-    /// <summary>
-    /// Gets or sets a license download identifier (in case this is a downloadable product)
-    /// </summary>
-    public int? LicenseDownloadId { get; set; }
-
-    /// <summary>
     /// Gets or sets the total weight of one item
     /// It's nullable for compatibility with the previous version of nopCommerce where was no such property
     /// </summary>

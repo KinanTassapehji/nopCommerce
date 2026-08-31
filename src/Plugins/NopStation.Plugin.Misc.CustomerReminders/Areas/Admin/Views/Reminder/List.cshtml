@@ -1,0 +1,141 @@
+@model ReminderSearchModel
+
+@{
+    ViewBag.PageTitle = T("NopStation.Plugins.CustomerReminders.Admin.Reminders.Title").Text;
+    Layout = "_AdminLayout";
+    NopHtml.SetActiveMenuItemSystemName("NopStation.CustomerReminders.Reminders");
+}
+
+@{
+    const string hideSearchBlockAttributeName = "ReminderPage.HideSearchBlock";
+    var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
+}
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+      @T("NopStation.Plugins.CustomerReminders.Admin.Reminders")
+  </h1>
+    <div class="float-right">
+        <a asp-controller="Reminder" asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus-square"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card card-default card-search">
+                    <div class="card-body">
+                        <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+                            <div class="search-text">@T("Admin.Common.Search")</div>
+                            <div class="icon-search"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></div>
+                            <div class="icon-collapse"><i class="far fa-angle-@(!hideSearchBlock ? "up" : "down")" aria-hidden="true"></i></div>
+                        </div>
+
+                        <div class="search-body @(hideSearchBlock ? "closed" : "")">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="SearchReminderName" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-editor asp-for="SearchReminderName" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="SearchEnabledId" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-select asp-for="SearchEnabledId" asp-items="Model.AvailableEnabledOptions" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="text-center col-12">
+                                    <button type="button" id="search-reminders" class="btn btn-primary btn-search">
+                                        <i class="fas fa-magnifying-glass"></i>
+                                        @T("Admin.Common.Search")
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-default">
+                    <div class="card-body">
+                        @await Html.PartialAsync("Table", new DataTablesModel
+                        {
+                            Name = "reminders-grid",
+                            UrlRead = new DataUrl("List", "Reminder", null),
+                            UrlDelete = new DataUrl("Delete", "Reminder", null),
+                            SearchButtonId = "search-reminders",
+                            Length = Model.PageSize,
+                            LengthMenu = Model.AvailablePageSizes,
+                            Filters = new List<FilterParameter>
+                            {
+                                new FilterParameter(nameof(Model.SearchReminderName)),
+                                new FilterParameter(nameof(Model.SearchEnabledId))
+                            },
+                            ColumnCollection = new List<ColumnProperty>
+                            {
+                                new ColumnProperty(nameof(ReminderModel.Name))
+                                {
+                                    Title = T("NopStation.Plugins.CustomerReminders.Admin.Reminders.Fields.Name").Text,
+                                    Width = "300"
+                                },
+                                new ColumnProperty(nameof(ReminderModel.IsEnabled))
+                                {
+                                    Title = T("NopStation.Plugins.CustomerReminders.Admin.Reminders.Fields.IsEnabled").Text,
+                                    Width = "100",
+                                    ClassName = NopColumnClassDefaults.CenterAll,
+                                    Render = new RenderBoolean()
+                                },
+                                new ColumnProperty(nameof(ReminderModel.Id))
+                                {
+                                    Title = T("Admin.Common.Edit").Text,
+                                    Width = "100",
+                                    ClassName = NopColumnClassDefaults.CenterAll,
+                                    Render = new RenderButtonEdit(new DataUrl("Edit"))
+                                },
+                                new ColumnProperty(nameof(ReminderModel.Id))
+                                {
+                                    Title = T("Admin.Common.Delete").Text,
+                                    Width = "100",
+                                    ClassName = NopColumnClassDefaults.CenterAll,
+                                    Render = new RenderButtonRemove(T("Admin.Common.Delete").Text)
+                                }
+                            }
+                        })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<nop-delete-confirmation asp-model-id="reminders-grid" asp-button-id="delete-selected" />
+
+<script>
+    $(function() {
+        // Autocomplete for Reminder Name field
+        var reminderNameInput = $('#@Html.IdFor(model => model.SearchReminderName)');
+        reminderNameInput.autocomplete({
+            delay: 500,
+            minLength: 2,
+            source: '@Url.Action("ReminderNameAutoComplete", "Reminder")',
+            select: function(event, ui) {
+                reminderNameInput.val(ui.item.value);
+                return false;
+            }
+        });
+    });
+</script>

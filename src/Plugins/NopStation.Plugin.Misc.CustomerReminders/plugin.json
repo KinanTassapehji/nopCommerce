@@ -1,0 +1,14 @@
+{
+  "Group": "Nop-Station",
+  "FriendlyName": "Nop-Station Customer Reminders",
+  "SystemName": "NopStation.Plugin.Misc.CustomerReminders",
+  "Version": "4.90.1.0",
+  "SupportedVersions": [ "4.90" ],
+  "Author": "Nop-Station Team",
+  "DisplayOrder": 1,
+  "FileName": "NopStation.Plugin.Misc.CustomerReminders.dll",
+  "Description": "This plugin enables sending email notifications to remind customers.",
+  "DependsOnSystemNames": [
+    "NopStation.Core"
+  ]
+}

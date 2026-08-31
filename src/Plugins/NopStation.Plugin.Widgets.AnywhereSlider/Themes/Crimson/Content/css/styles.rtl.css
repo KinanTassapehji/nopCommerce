@@ -1,0 +1,201 @@
+﻿/* 8 of 88 CSS properties converted by rtl.daskhat.ir 
+ These properties should be override originals. 
+ just load rtl css file after original css file.*/
+
+/* body {direction:rtl;} */
+
+.margin-top-30 {
+  margin-top: 30px;
+}
+
+.home-page-slider-1 {
+  font-family: 'barlowbold';
+}
+
+  .home-page-slider-1 .owl-nav.disabled {
+    display: none !important;
+  }
+
+  .home-page-slider-1 .owl-dots {
+    position: absolute;
+    bottom: 20px;
+    right: 49%;
+  }
+
+  .home-page-slider-1 button.owl-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, .9) !important;
+    opacity: 1 !important;
+    margin-left: 3px;
+  }
+
+    .home-page-slider-1 button.owl-dot.active {
+      width: 20px;
+      border-radius: 5px;
+      background-color: var(--primary-color) !important;
+    }
+
+  .home-page-slider-1 .home-page-slider-item {
+    position: relative;
+  }
+
+  .home-page-slider-1 .slider-caption {
+    position: absolute;
+    top: 30%;
+    right: 20%;
+    z-index: 2;
+  }
+
+  .home-page-slider-1 .slider-title {
+    font-size: 77px;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    text-transform: uppercase;
+    text-align: right;
+  }
+
+  .home-page-slider-1 .slider-subtitle {
+    font-family: barlowregular;
+    font-size: 28px;
+    letter-spacing: 8px;
+    margin-bottom: 10px;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  .home-page-slider-1 .slider-btn {
+    font-family: barlowregular;
+    font-size: 16px;
+    color: white;
+    padding: 10px 20px;
+    background: var(--primary-color);
+    display: inline-block !important;
+    transition: all 0.5s;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+    .home-page-slider-1 .slider-btn:hover {
+      background: #46282a;
+      cursor: pointer;
+    }
+
+.home-page-slider-2 {
+  padding: 50px 0;
+  margin: 50px 0;
+}
+
+  .home-page-slider-2.owl-carousel .owl-nav {
+    position: absolute;
+    right: 0;
+    bottom: 50px;
+  }
+
+  .home-page-slider-2 .slider-caption h3 {
+    font-size: 16px;
+    font-family: barlowregular;
+    font-weight: 400;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .home-page-slider-2 .slider-caption .slider-btn {
+    background: var(--primary-color);
+    padding: 10px 20px;
+    transition: all 0.3s;
+    box-shadow: none !important;
+    color: #ffffff;
+  }
+
+    .home-page-slider-2 .slider-caption .slider-btn:hover {
+      background: #46282a;
+    }
+
+  .home-page-slider-2.owl-carousel .owl-dots {
+    display: none !important;
+  }
+
+  .home-page-slider-2 .single-slide-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .home-page-slider-2 .slider-caption {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: #ffffff;
+  }
+
+    .home-page-slider-2 .slider-caption h2 {
+      font-size: 45px;
+      color: var(--primary-color);
+      font-family: 'barlowbold';
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+.home-page-slider-container {
+  overflow: hidden;
+}
+
+@media(min-width: 768px) and (max-width: 1199px) {
+  .home-page-slider-1 .slider-caption {
+    top: 15%;
+    right: 20%;
+  }
+
+  .home-page-slider-1 .slider-title {
+    font-size: 36px;
+  }
+
+  .home-page-slider-1 .slider-subtitle {
+    font-size: 28px;
+    letter-spacing: 5px;
+    margin-bottom: 18px;
+  }
+}
+
+@media (min-width: 320px) and (max-width:767px) {
+  .home-page-slider-1 .slider-caption {
+    display: none !important;
+  }
+
+  .home-page-slider-1 .owl-dots {
+    right: 45%;
+  }
+}
+
+@media(min-width: 1367px) {
+  .home-page-slider-2 {
+    width: 1028px !important;
+  }
+}
+
+@media(max-width: 991px) {
+  .home-page-slider-2 .slider-caption h2 {
+    font-size: 32px;
+  }
+}
+
+@media(max-width: 767px) {
+  .home-page-slider-2.owl-carousel .owl-nav button.owl-prev, .home-page-slider-2.owl-carousel .owl-nav button.owl-next {
+    padding: 10px !important;
+  }
+
+  .home-page-slider-2 .slider-caption h2 {
+    font-size: 28px;
+  }
+}
+
+@media(max-width: 575px) {
+  .home-page-slider-2.owl-carousel .owl-nav {
+    right: 35%;
+    bottom: 10px;
+  }
+}

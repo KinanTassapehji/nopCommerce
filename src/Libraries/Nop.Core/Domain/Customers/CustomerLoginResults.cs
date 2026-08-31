@@ -39,9 +39,4 @@ public enum CustomerLoginResults
     /// Locked out
     /// </summary>
     LockedOut = 7,
-
-    /// <summary>
-    /// Requires multi-factor authentication
-    /// </summary>
-    MultiFactorAuthenticationRequired = 8
 }

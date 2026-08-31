@@ -60,10 +60,6 @@
             <table class="table table-hover table-bordered">
                 <col />
                 <col />
-                @if (Model.HasDownloadableProducts)
-                {
-                    <col />
-                }
                 <col />
                 <col />
                 <col />
@@ -80,12 +76,6 @@
                 <th>
                     @T("Admin.Orders.Products.ProductName")
                 </th>
-                @if (Model.HasDownloadableProducts)
-                {
-                    <th>
-                        @T("Admin.Orders.Products.Download")
-                    </th>
-                }
                 <th>
                     @T("Admin.Orders.Products.Price")
                 </th>
@@ -121,12 +111,7 @@
                                     @Html.Raw(item.AttributeInfo)
                                 </p>
                             }
-                            @if (!string.IsNullOrEmpty(item.RecurringInfo))
-                            {
-                                <p>
-                                    @Html.Raw(item.RecurringInfo)
-                                </p>
-                            }
+
                             @if (!string.IsNullOrEmpty(item.RentalInfo))
                             {
                                 <p>
@@ -161,62 +146,8 @@
                                     }
                                 </p>
                             }
-                            @if (item.PurchasedGiftCardIds.Count > 0)
-                            {
-                                <p>
-                                    @T("Admin.Orders.Products.GiftCards")<text>:</text>
-                                    @for (var i = 0; i < item.PurchasedGiftCardIds.Count; i++)
-                                    {
-                                        <a asp-controller="GiftCard" asp-action="Edit" asp-route-id="@item.PurchasedGiftCardIds[i]">@item.PurchasedGiftCardIds[i]</a>
-                                        if (i != item.PurchasedGiftCardIds.Count - 1)
-                                        {
-                                            <text>,</text>
-                                        }
-                                    }
-                                </p>
-                            }
                         </td>
 
-                        @if (Model.HasDownloadableProducts)
-                        {
-                            <td style="width: 15%;" class="text-center">
-                                @if (item.IsDownload)
-                                {
-                                    <div>
-                                        @string.Format(T("Admin.Orders.Products.Download.DownloadCount").Text, item.DownloadCount)
-                                        <button type="submit" name="btnResetDownloadCount@(item.Id)" title="@T("Admin.Orders.Products.Download.ResetDownloadCount.Title")" id="btnResetDownloadCount@(item.Id)" class="btn btn-sm bg-navy">
-                                            @T("Admin.Orders.Products.Download.ResetDownloadCount")
-                                        </button>
-                                        <hr/>
-                                    </div>
-                                    if (item.DownloadActivationType == DownloadActivationType.Manually)
-                                    {
-                                        <div>
-                                            <button type="submit" name="btnPvActivateDownload@(item.Id)" id="btnPvActivateDownload@(item.Id)" class="btn btn-sm bg-green">
-                                                @(item.IsDownloadActivated ? T("Admin.Orders.Products.Download.Deactivate") : T("Admin.Orders.Products.Download.Activate"))
-                                            </button>
-                                            <hr/>
-                                        </div>
-                                    }
-                                    <div>
-                                        <div>
-                                            <strong>
-                                                @T("Admin.Orders.Products.License")
-                                            </strong>
-                                        </div>
-                                        @if (item.LicenseDownloadGuid != Guid.Empty)
-                                        {
-                                            <div>
-                                                <a asp-controller="Download" asp-action="DownloadFile" asp-route-downloadGuid="@item.LicenseDownloadGuid">@T("Admin.Orders.Products.License.DownloadLicense")</a>
-                                            </div>
-                                        }
-                                        <button type="submit" id="pvlicensefile" name="pvlicensefile" onclick="javascript:OpenWindow('@(Url.Action("UploadLicenseFilePopup", "Order", new {id = Model.Id, orderItemId = item.Id, btnId = "btnRefreshPage", formId = "order-form"}))', 500, 400, true); return false;" class="btn btn-sm bg-olive">
-                                            @T("Admin.Orders.Products.License.UploadFile")
-                                        </button>
-                                    </div>
-                                }
-                            </td>
-                        }
                         <td style="width: 15%;" class="text-center">
                             @if (Model.AllowCustomersToSelectTaxDisplayType)
                             {

@@ -79,26 +79,6 @@ public partial interface IPaymentMethod : IPlugin
     Task<VoidPaymentResult> VoidAsync(VoidPaymentRequest voidPaymentRequest);
 
     /// <summary>
-    /// Process recurring payment
-    /// </summary>
-    /// <param name="processPaymentRequest">Payment info required for an order processing</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the process payment result
-    /// </returns>
-    Task<ProcessPaymentResult> ProcessRecurringPaymentAsync(ProcessPaymentRequest processPaymentRequest);
-
-    /// <summary>
-    /// Cancels a recurring payment
-    /// </summary>
-    /// <param name="cancelPaymentRequest">Request</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the result
-    /// </returns>
-    Task<CancelRecurringPaymentResult> CancelRecurringPaymentAsync(CancelRecurringPaymentRequest cancelPaymentRequest);
-
-    /// <summary>
     /// Gets a value indicating whether customers can complete a payment after order is placed but not completed (for redirection payment methods)
     /// </summary>
     /// <param name="order">Order</param>
@@ -163,11 +143,6 @@ public partial interface IPaymentMethod : IPlugin
     /// Gets a value indicating whether void is supported
     /// </summary>
     bool SupportVoid { get; }
-
-    /// <summary>
-    /// Gets a recurring payment type of payment method
-    /// </summary>
-    RecurringPaymentType RecurringPaymentType { get; }
 
     /// <summary>
     /// Gets a payment method type

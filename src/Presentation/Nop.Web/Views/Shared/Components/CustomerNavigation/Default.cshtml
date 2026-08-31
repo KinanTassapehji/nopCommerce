@@ -12,6 +12,11 @@
                     <a href="@Url.RouteUrl(item.RouteName)">@(item.Title)</a>
                 </li>
             }
+            @*logout is an action rather than a tab, so it is not one of the
+                CustomerNavigationItems - it lives here now that the header no longer shows it*@
+            <li class="customer-logout inactive">
+                <a href="@Url.RouteUrl(NopRouteNames.Standard.LOGOUT)">@T("Account.Logout")</a>
+            </li>
             @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.AccountNavigationAfter, additionalData = Model })
         </ul>
     </div>

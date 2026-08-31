@@ -1,0 +1,13 @@
+﻿@using Nop.Core
+@inject IWorkContext workContext
+@{
+    var supportRtl = (await workContext.GetWorkingLanguageAsync()).Rtl;
+    if (supportRtl)
+    {
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.ProductRibbon/Contents/css/styles.rtl.css", string.Empty);
+    }
+    else
+    {
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.ProductRibbon/Contents/css/styles.css", string.Empty);
+    }
+}

@@ -165,7 +165,6 @@ public partial class MenuModelFactory : IMenuModelFactory
 
         if (product is null || product.Deleted || !product.Published ||
             !_productService.ProductIsAvailable(product) ||
-            !await _aclService.AuthorizeAsync(product) ||
             !await _storeMappingService.AuthorizeAsync(product))
         {
             return (string.Empty, string.Empty);

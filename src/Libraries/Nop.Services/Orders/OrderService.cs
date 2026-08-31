@@ -29,8 +29,7 @@ public partial class OrderService : IOrderService
     protected readonly IRepository<OrderNote> _orderNoteRepository;
     protected readonly IRepository<Product> _productRepository;
     protected readonly IRepository<ProductWarehouseInventory> _productWarehouseInventoryRepository;
-    protected readonly IRepository<RecurringPayment> _recurringPaymentRepository;
-    protected readonly IRepository<RecurringPaymentHistory> _recurringPaymentHistoryRepository;
+
     protected readonly IShipmentService _shipmentService;
     private static readonly char[] _separator = [';'];
 
@@ -47,8 +46,7 @@ public partial class OrderService : IOrderService
         IRepository<OrderNote> orderNoteRepository,
         IRepository<Product> productRepository,
         IRepository<ProductWarehouseInventory> productWarehouseInventoryRepository,
-        IRepository<RecurringPayment> recurringPaymentRepository,
-        IRepository<RecurringPaymentHistory> recurringPaymentHistoryRepository,
+
         IShipmentService shipmentService)
     {
         _htmlFormatter = htmlFormatter;
@@ -60,8 +58,7 @@ public partial class OrderService : IOrderService
         _orderNoteRepository = orderNoteRepository;
         _productRepository = productRepository;
         _productWarehouseInventoryRepository = productWarehouseInventoryRepository;
-        _recurringPaymentRepository = recurringPaymentRepository;
-        _recurringPaymentHistoryRepository = recurringPaymentHistoryRepository;
+
         _shipmentService = shipmentService;
     }
 
@@ -570,32 +567,6 @@ public partial class OrderService : IOrderService
     }
 
     /// <summary>
-    /// Gets all downloadable order items
-    /// </summary>
-    /// <param name="customerId">Customer identifier; null to load all records</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the order items
-    /// </returns>
-    public virtual async Task<IList<OrderItem>> GetDownloadableOrderItemsAsync(int customerId)
-    {
-        if (customerId == 0)
-            throw new ArgumentOutOfRangeException(nameof(customerId));
-
-        var query = from orderItem in _orderItemRepository.Table
-            join o in _orderRepository.Table on orderItem.OrderId equals o.Id
-            join p in _productRepository.Table on orderItem.ProductId equals p.Id
-            where customerId == o.CustomerId &&
-                  p.IsDownload &&
-                  !o.Deleted
-            orderby o.CreatedOnUtc descending, orderItem.Id
-            select orderItem;
-
-        var orderItems = await query.ToListAsync();
-        return orderItems;
-    }
-
-    /// <summary>
     /// Delete an order item
     /// </summary>
     /// <param name="orderItem">The order item</param>
@@ -654,96 +625,6 @@ public partial class OrderService : IOrderService
             qtyCanBeAddedToShipmentTotal = 0;
 
         return qtyCanBeAddedToShipmentTotal;
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether download is allowed
-    /// </summary>
-    /// <param name="orderItem">Order item to check</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the true if download is allowed; otherwise, false.
-    /// </returns>
-    public virtual async Task<bool> IsDownloadAllowedAsync(OrderItem orderItem)
-    {
-        if (orderItem is null)
-            return false;
-
-        var order = await GetOrderByIdAsync(orderItem.OrderId);
-        if (order == null || order.Deleted)
-            return false;
-
-        //order status
-        if (order.OrderStatus == OrderStatus.Cancelled)
-            return false;
-
-        var product = await _productService.GetProductByIdAsync(orderItem.ProductId);
-
-        if (product == null || !product.IsDownload)
-            return false;
-
-        //payment status
-        switch (product.DownloadActivationType)
-        {
-            case DownloadActivationType.WhenOrderIsPaid:
-                if (order.PaymentStatus == PaymentStatus.Paid && order.PaidDateUtc.HasValue)
-                {
-                    //expiration date
-                    if (product.DownloadExpirationDays.HasValue)
-                    {
-                        if (order.PaidDateUtc.Value.AddDays(product.DownloadExpirationDays.Value) > DateTime.UtcNow)
-                        {
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
-
-                break;
-            case DownloadActivationType.Manually:
-                if (orderItem.IsDownloadActivated)
-                {
-                    //expiration date
-                    if (product.DownloadExpirationDays.HasValue)
-                    {
-                        if (order.CreatedOnUtc.AddDays(product.DownloadExpirationDays.Value) > DateTime.UtcNow)
-                        {
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
-
-                break;
-            default:
-                break;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether license download is allowed
-    /// </summary>
-    /// <param name="orderItem">Order item to check</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the true if license download is allowed; otherwise, false.
-    /// </returns>
-    public virtual async Task<bool> IsLicenseDownloadAllowedAsync(OrderItem orderItem)
-    {
-        if (orderItem == null)
-            return false;
-
-        return await IsDownloadAllowedAsync(orderItem) &&
-               orderItem.LicenseDownloadId.HasValue &&
-               orderItem.LicenseDownloadId > 0;
     }
 
     /// <summary>
@@ -844,131 +725,6 @@ public partial class OrderService : IOrderService
     public virtual async Task InsertOrderNoteAsync(OrderNote orderNote)
     {
         await _orderNoteRepository.InsertAsync(orderNote);
-    }
-
-    #endregion
-
-    #region Recurring payments
-
-    /// <summary>
-    /// Deletes a recurring payment
-    /// </summary>
-    /// <param name="recurringPayment">Recurring payment</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task DeleteRecurringPaymentAsync(RecurringPayment recurringPayment)
-    {
-        await _recurringPaymentRepository.DeleteAsync(recurringPayment);
-    }
-
-    /// <summary>
-    /// Gets a recurring payment
-    /// </summary>
-    /// <param name="recurringPaymentId">The recurring payment identifier</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the recurring payment
-    /// </returns>
-    public virtual async Task<RecurringPayment> GetRecurringPaymentByIdAsync(int recurringPaymentId)
-    {
-        return await _recurringPaymentRepository.GetByIdAsync(recurringPaymentId, cache => default);
-    }
-
-    /// <summary>
-    /// Inserts a recurring payment
-    /// </summary>
-    /// <param name="recurringPayment">Recurring payment</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task InsertRecurringPaymentAsync(RecurringPayment recurringPayment)
-    {
-        await _recurringPaymentRepository.InsertAsync(recurringPayment);
-    }
-
-    /// <summary>
-    /// Updates the recurring payment
-    /// </summary>
-    /// <param name="recurringPayment">Recurring payment</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task UpdateRecurringPaymentAsync(RecurringPayment recurringPayment)
-    {
-        await _recurringPaymentRepository.UpdateAsync(recurringPayment);
-    }
-
-    /// <summary>
-    /// Search recurring payments
-    /// </summary>
-    /// <param name="storeId">The store identifier; 0 to load all records</param>
-    /// <param name="customerId">The customer identifier; 0 to load all records</param>
-    /// <param name="initialOrderId">The initial order identifier; 0 to load all records</param>
-    /// <param name="initialOrderStatus">Initial order status identifier; null to load all records</param>
-    /// <param name="pageIndex">Page index</param>
-    /// <param name="pageSize">Page size</param>
-    /// <param name="showHidden">A value indicating whether to show hidden records</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the recurring payments
-    /// </returns>
-    public virtual async Task<IPagedList<RecurringPayment>> SearchRecurringPaymentsAsync(int storeId = 0,
-        int customerId = 0, int initialOrderId = 0, OrderStatus? initialOrderStatus = null,
-        int pageIndex = 0, int pageSize = int.MaxValue, bool showHidden = false)
-    {
-        int? initialOrderStatusId = null;
-        if (initialOrderStatus.HasValue)
-            initialOrderStatusId = (int)initialOrderStatus.Value;
-
-        var query1 = from rp in _recurringPaymentRepository.Table
-            join o in _orderRepository.Table on rp.InitialOrderId equals o.Id
-            join c in _customerRepository.Table on o.CustomerId equals c.Id
-            where
-                !rp.Deleted &&
-                (showHidden || !o.Deleted) &&
-                (showHidden || !c.Deleted) &&
-                (showHidden || rp.IsActive) &&
-                (customerId == 0 || o.CustomerId == customerId) &&
-                (storeId == 0 || o.StoreId == storeId) &&
-                (initialOrderId == 0 || o.Id == initialOrderId) &&
-                (!initialOrderStatusId.HasValue || initialOrderStatusId.Value == 0 ||
-                 o.OrderStatusId == initialOrderStatusId.Value)
-            select rp.Id;
-
-        var query2 = from rp in _recurringPaymentRepository.Table
-            where query1.Contains(rp.Id)
-            orderby rp.StartDateUtc, rp.Id
-            select rp;
-
-        var recurringPayments = await query2.ToPagedListAsync(pageIndex, pageSize);
-
-        return recurringPayments;
-    }
-
-    #endregion
-
-    #region Recurring payments history
-
-    /// <summary>
-    /// Gets a recurring payment history
-    /// </summary>
-    /// <param name="recurringPayment">The recurring payment</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the result
-    /// </returns>
-    public virtual async Task<IList<RecurringPaymentHistory>> GetRecurringPaymentHistoryAsync(RecurringPayment recurringPayment)
-    {
-        ArgumentNullException.ThrowIfNull(recurringPayment);
-
-        return await _recurringPaymentHistoryRepository.Table
-            .Where(rph => rph.RecurringPaymentId == recurringPayment.Id)
-            .ToListAsync();
-    }
-
-    /// <summary>
-    /// Inserts a recurring payment history entry
-    /// </summary>
-    /// <param name="recurringPaymentHistory">Recurring payment history entry</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task InsertRecurringPaymentHistoryAsync(RecurringPaymentHistory recurringPaymentHistory)
-    {
-        await _recurringPaymentHistoryRepository.InsertAsync(recurringPaymentHistory);
     }
 
     #endregion

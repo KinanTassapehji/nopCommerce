@@ -61,21 +61,6 @@ public class ProductServiceTests : ServiceTest
     #region Tests
 
     [Test]
-    public void CanParseRequiredProductIds()
-    {
-        var product = new Product
-        {
-            RequiredProductIds = "1, 4,7 ,a,"
-        };
-
-        var ids = _productService.ParseRequiredProductIds(product);
-        ids.Length.Should().Be(3);
-        ids[0].Should().Be(1);
-        ids[1].Should().Be(4);
-        ids[2].Should().Be(7);
-    }
-
-    [Test]
     public void ShouldBeAvailableWhenStartDateIsNotSet()
     {
         var product = new Product

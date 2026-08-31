@@ -62,18 +62,6 @@ public class Indexes : ForwardOnlyMigration
             .OnColumn(nameof(QueuedEmail.CreatedOnUtc)).Descending()
             .WithOptions().NonClustered();
 
-        Create.Index("IX_PSAM_SpecificationAttributeOptionId_AllowFiltering").OnTable(NameCompatibilityManager.GetTableName(typeof(ProductSpecificationAttribute)))
-            .OnColumn(nameof(ProductSpecificationAttribute.SpecificationAttributeOptionId)).Ascending()
-            .OnColumn(nameof(ProductSpecificationAttribute.AllowFiltering)).Ascending()
-            .WithOptions().NonClustered()
-            .Include(nameof(ProductSpecificationAttribute.ProductId));
-
-        Create.Index("IX_PSAM_AllowFiltering").OnTable(NameCompatibilityManager.GetTableName(typeof(ProductSpecificationAttribute)))
-            .OnColumn(nameof(ProductSpecificationAttribute.AllowFiltering)).Ascending()
-            .WithOptions().NonClustered()
-            .Include(nameof(ProductSpecificationAttribute.ProductId))
-            .Include(nameof(ProductSpecificationAttribute.SpecificationAttributeOptionId));
-
         Create.Index("IX_Product_VisibleIndividually_Published_Deleted_Extended").OnTable(nameof(Product))
             .OnColumn(nameof(Product.VisibleIndividually)).Ascending()
             .OnColumn(nameof(Product.Published)).Ascending()
@@ -93,10 +81,6 @@ public class Indexes : ForwardOnlyMigration
 
         Create.Index("IX_Product_Name").OnTable(nameof(Product))
             .OnColumn(nameof(Product.Name)).Ascending()
-            .WithOptions().NonClustered();
-
-        Create.Index("IX_Product_SubjectToAcl").OnTable(nameof(Product))
-            .OnColumn(nameof(Product.SubjectToAcl)).Ascending()
             .WithOptions().NonClustered();
 
         Create.Index("IX_Product_ShowOnHomepage").OnTable(nameof(Product))

@@ -95,10 +95,6 @@
                         var dataDict = new ViewDataDictionary(ViewData) { new KeyValuePair<string, object>("productId", Model.ProductId) };
                         @await Html.PartialAsync("_ProductAddAttributes", Model.ProductAttributes, dataDict)
 
-                        var dataDictGiftCard = new ViewDataDictionary(ViewData);
-                        dataDictGiftCard.TemplateInfo.HtmlFieldPrefix = $"giftcard_{@Model.ProductId}";
-                        @await Html.PartialAsync("_ProductAddGiftCardInfo", Model.GiftCard, dataDictGiftCard)
-
                         @await Html.PartialAsync("_ProductAddRentalInfo", Model)
 
                         <div class="card card-default">

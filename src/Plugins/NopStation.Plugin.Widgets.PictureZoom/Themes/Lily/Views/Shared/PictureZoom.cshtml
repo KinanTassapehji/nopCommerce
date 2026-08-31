@@ -1,0 +1,174 @@
+﻿@model ProductDetailsModel
+@using System.Globalization
+@using NopStation.Plugin.Misc.Core.Helpers
+
+@{
+    var settings = NopInstance.Load<PictureZoomSettings>();
+    var position = ((PictureZoomPosition)((await workContext.GetWorkingLanguageAsync()).Rtl ? settings.RtlPositionTypeId : settings.LtrPositionTypeId)).ToString().ToLower();
+
+    System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = new System.Globalization.CultureInfo("en-US");
+
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, "/Plugins/NopStation.Plugin.Widgets.PictureZoom/Contents/js/jquery.imagesloaded.js");
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, "/Plugins/NopStation.Plugin.Widgets.PictureZoom/Contents/js/cloud-zoom.1.0.2.js");
+    NopHtml.AppendCssFileParts("/Plugins/NopStation.Plugin.Widgets.PictureZoom/Contents/css/cloud-zoom.css", string.Empty);
+    NopHtml.AppendCssFileParts("/Plugins/NopStation.Plugin.Widgets.PictureZoom/Contents/css/styles.css", string.Empty);
+    NopHtml.AppendCssFileParts("/Plugins/NopStation.Plugin.Widgets.PictureZoom/Themes/Lily/Contents/css/styles.css", string.Empty);
+}
+
+<div class="gallery" data-popup="#dialogForImgPopUp">
+    <div class="picture">
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBeforePictures, additionalData = Model.Id })
+
+        @if (Model.PictureModels.Count > 1)
+        {
+            <div class="owl-carousel picture-details-carousel" data-productid="@Model.Id">
+                @foreach (var picture in Model.PictureModels)
+                {
+                    <div class="item">
+                        <a href="@picture.FullSizeImageUrl" class="cloud-zoom" data-productid="@Model.Id">
+                            <img src="@picture.ImageUrl" alt="@picture.AlternateText" title="@picture.Title" style="border-width: 0px;" class="cloud-zoom-image cloud-zoom-image-size" data-productid="@Model.Id" />
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+
+        else
+        {
+            <link rel="image_src" href="@Model.DefaultPictureModel.FullSizeImageUrl" />
+            <a href="@Model.DefaultPictureModel.FullSizeImageUrl" class="cloud-zoom" id="main-product-img-lightbox-anchor-@Model.Id">
+                <img alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" style="border-width: 0px;" class="cloud-zoom-image cloud-zoom-image-size" width="400" id="main-product-img-@Model.Id" />
+            </a>
+        }
+
+        <div class="imgForMobile" id="dialogForImgPopUp">
+            <img alt="" src="" />
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" asp-location="Footer">
+    $(document).ready(function () {
+        var $carousel = $('.picture-details-carousel');
+
+        if ($carousel.length > 0) {
+            var carouselInitTimeout;
+            
+            $carousel.owlCarousel({
+                nav: true,
+                items: 1,
+                responsiveBaseElement: 'body',
+                margin: 10,
+                dots: true,
+                loop: true,
+                autoplay: true,
+                autoplayTimeout: 5000,
+                autoplayHoverPause: true,
+                onInitialized: function () {
+                    setTimeout(function () {
+                        initZoom();
+                    }, 500);
+                },
+                onChanged: function (event) {
+                    clearTimeout(carouselInitTimeout);
+                    carouselInitTimeout = setTimeout(function () {
+                        initZoom();
+                    }, 400);
+                }
+            });
+        } else {
+            initZoom();
+        }
+    });
+
+    $(document).on('product_attributes_changed', function (event) {
+        try {
+            var $carousel = $('.picture-details-carousel[data-productid="@Model.Id"]');
+            
+            if ($carousel.length > 0 && event.changedData) {
+                if (event.changedData.pictureDefaultSizeUrl || event.changedData.pictureFullSizeUrl) {
+                    var targetImageUrl = event.changedData.pictureDefaultSizeUrl || '';
+                    var targetFullImageUrl = event.changedData.pictureFullSizeUrl || '';
+                    var foundIndex = -1;
+                    var $allItems = $carousel.find('.owl-item:not(.cloned)');
+                    
+                    if (targetImageUrl || targetFullImageUrl) {
+                        var targetImageName = '';
+                        if (targetImageUrl) {
+                            var urlParts = targetImageUrl.split('/');
+                            var fileName = urlParts[urlParts.length - 1];
+                            targetImageName = fileName.split('_')[0];
+                        } else if (targetFullImageUrl) {
+                            var urlParts = targetFullImageUrl.split('/');
+                            var fileName = urlParts[urlParts.length - 1];
+                            targetImageName = fileName.split('_')[0];
+                        }
+                        
+                        $allItems.each(function(index) {
+                            var $item = $(this);
+                            var $img = $item.find('img[data-productid="@Model.Id"]');
+                            var $anchor = $item.find('a[data-productid="@Model.Id"]');
+                            
+                            if ($img.length > 0) {
+                                var currentImgSrc = $img.attr('src') || '';
+                                var currentFullHref = $anchor.attr('href') || '';
+                                
+                                if (currentImgSrc.indexOf(targetImageName) !== -1 || currentFullHref.indexOf(targetImageName) !== -1) {
+                                    foundIndex = index;
+                                    return false;
+                                }
+                            }
+                        });
+                    }
+                    
+                    if (foundIndex >= 0) {
+                        setTimeout(function() {
+                            $carousel.trigger('to.owl.carousel', foundIndex);
+                            setTimeout(function() {
+                                initZoom();
+                            }, 300);
+                        }, 100);
+                    } else {
+                        var $activeItem = $carousel.find('.owl-item.active');
+                        if ($activeItem.length === 0) {
+                            $activeItem = $carousel.find('.owl-item:not(.cloned)').first();
+                        }
+                        
+                        var $activeAnchor = $activeItem.find('a[data-productid="@Model.Id"]');
+                        var $activeImg = $activeItem.find('img[data-productid="@Model.Id"]');
+                        
+                        if (event.changedData.pictureDefaultSizeUrl && $activeImg.length > 0) {
+                            $activeImg.attr('src', event.changedData.pictureDefaultSizeUrl);
+                        }
+                        if (event.changedData.pictureFullSizeUrl && $activeAnchor.length > 0) {
+                            $activeAnchor.attr('href', event.changedData.pictureFullSizeUrl);
+                        }
+                        
+                        if (event.changedData.pictureDefaultSizeUrl || event.changedData.pictureFullSizeUrl) {
+                            $activeImg.one('load', function() {
+                                setTimeout(function() {
+                                    initZoom();
+                                }, 150);
+                            });
+                            
+                            if ($activeImg.length > 0 && $activeImg[0] && $activeImg[0].complete) {
+                                setTimeout(function() {
+                                    initZoom();
+                                }, 150);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch(e) {}
+    });
+
+    $(window).resize(function () {
+        initZoom();
+    });
+</script>
+
+@if (Model.CustomProperties.TryGetValue("AjaxLoad", out string ajaxLoad) && bool.Parse(ajaxLoad))
+{
+    @NopHtml.GenerateInlineScripts(ResourceLocation.Footer)
+}

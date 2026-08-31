@@ -18,8 +18,6 @@ using Nop.Core.Domain.Seo;
 using Nop.Core.Events;
 using Nop.Core.Infrastructure;
 using Nop.Data;
-using Nop.Services.Authentication.External;
-using Nop.Services.Authentication.MultiFactor;
 using Nop.Services.Blogs;
 using Nop.Services.Catalog;
 using Nop.Services.Cms;
@@ -65,7 +63,6 @@ public partial class CommonModelFactory : ICommonModelFactory
     protected readonly CatalogSettings _catalogSettings;
     protected readonly CurrencySettings _currencySettings;
     protected readonly IActionContextAccessor _actionContextAccessor;
-    protected readonly IAuthenticationPluginManager _authenticationPluginManager;
     protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
     protected readonly IBlogService _blogService;
     protected readonly ICategoryService _categoryService;
@@ -80,7 +77,6 @@ public partial class CommonModelFactory : ICommonModelFactory
     protected readonly IMaintenanceService _maintenanceService;
     protected readonly IManufacturerService _manufacturerService;
     protected readonly IMeasureService _measureService;
-    protected readonly IMultiFactorAuthenticationPluginManager _multiFactorAuthenticationPluginManager;
     protected readonly INewsService _newsService;
     protected readonly INopDataProvider _dataProvider;
     protected readonly INopFileProvider _fileProvider;
@@ -117,7 +113,6 @@ public partial class CommonModelFactory : ICommonModelFactory
         CatalogSettings catalogSettings,
         CurrencySettings currencySettings,
         IActionContextAccessor actionContextAccessor,
-        IAuthenticationPluginManager authenticationPluginManager,
         IBaseAdminModelFactory baseAdminModelFactory,
         IBlogService blogService,
         ICategoryService categoryService,
@@ -132,7 +127,6 @@ public partial class CommonModelFactory : ICommonModelFactory
         IMaintenanceService maintenanceService,
         IManufacturerService manufacturerService,
         IMeasureService measureService,
-        IMultiFactorAuthenticationPluginManager multiFactorAuthenticationPluginManager,
         INewsService newsService,
         INopDataProvider dataProvider,
         INopFileProvider fileProvider,
@@ -165,7 +159,6 @@ public partial class CommonModelFactory : ICommonModelFactory
         _catalogSettings = catalogSettings;
         _currencySettings = currencySettings;
         _actionContextAccessor = actionContextAccessor;
-        _authenticationPluginManager = authenticationPluginManager;
         _baseAdminModelFactory = baseAdminModelFactory;
         _blogService = blogService;
         _categoryService = categoryService;
@@ -181,7 +174,6 @@ public partial class CommonModelFactory : ICommonModelFactory
         _maintenanceService = maintenanceService;
         _manufacturerService = manufacturerService;
         _measureService = measureService;
-        _multiFactorAuthenticationPluginManager = multiFactorAuthenticationPluginManager;
         _newsService = newsService;
         _fileProvider = fileProvider;
         _nopUrlHelper = nopUrlHelper;
@@ -725,14 +717,6 @@ public partial class CommonModelFactory : ICommonModelFactory
 
                 case ITaxProvider taxProvider:
                     isEnabled = _taxPluginManager.IsPluginActive(taxProvider);
-                    break;
-
-                case IExternalAuthenticationMethod externalAuthenticationMethod:
-                    isEnabled = _authenticationPluginManager.IsPluginActive(externalAuthenticationMethod);
-                    break;
-
-                case IMultiFactorAuthenticationMethod multiFactorAuthenticationMethod:
-                    isEnabled = _multiFactorAuthenticationPluginManager.IsPluginActive(multiFactorAuthenticationMethod);
                     break;
 
                 case IWidgetPlugin widgetPlugin:

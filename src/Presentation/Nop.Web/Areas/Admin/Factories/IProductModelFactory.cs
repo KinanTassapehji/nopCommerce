@@ -41,26 +41,6 @@ public partial interface IProductModelFactory
     Task<ProductModel> PrepareProductModelAsync(ProductModel model, Product product, bool excludeProperties = false);
 
     /// <summary>
-    /// Prepare required product search model to add to the product
-    /// </summary>
-    /// <param name="searchModel">Required product search model to add to the product</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the required product search model to add to the product
-    /// </returns>
-    Task<AddRequiredProductSearchModel> PrepareAddRequiredProductSearchModelAsync(AddRequiredProductSearchModel searchModel);
-
-    /// <summary>
-    /// Prepare required product list model to add to the product
-    /// </summary>
-    /// <param name="searchModel">Required product search model to add to the product</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the required product list model to add to the product
-    /// </returns>
-    Task<AddRequiredProductListModel> PrepareAddRequiredProductListModelAsync(AddRequiredProductSearchModel searchModel);
-
-    /// <summary>
     /// Prepare paged related product list model
     /// </summary>
     /// <param name="searchModel">Related product search model</param>
@@ -185,29 +165,6 @@ public partial interface IProductModelFactory
     /// The task result contains the product video list model
     /// </returns>
     Task<ProductVideoListModel> PrepareProductVideoListModelAsync(ProductVideoSearchModel searchModel, Product product);
-
-    /// <summary>
-    /// Prepare paged product specification attribute list model
-    /// </summary>
-    /// <param name="searchModel">Product specification attribute search model</param>
-    /// <param name="product">Product</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the product specification attribute list model
-    /// </returns>
-    Task<ProductSpecificationAttributeListModel> PrepareProductSpecificationAttributeListModelAsync(
-        ProductSpecificationAttributeSearchModel searchModel, Product product);
-
-    /// <summary>
-    /// Prepare paged product specification attribute model
-    /// </summary>
-    /// <param name="productId">Product id</param>
-    /// <param name="specificationId">Specification attribute id</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the product specification attribute model
-    /// </returns>
-    Task<AddSpecificationAttributeModel> PrepareAddSpecificationAttributeModelAsync(int productId, int? specificationId);
 
     /// <summary>
     /// Prepare product tag search model

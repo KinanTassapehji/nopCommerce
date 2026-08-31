@@ -1,0 +1,157 @@
+﻿.button-2.quick-view-btn {
+  font-size: 0;
+  display: inline-block;
+  margin: 0;
+  height: 40px !important;
+  width: 40px;
+  position: relative;
+  border: none;
+  background-color: var(--primary-color);
+  transition: all 0.25s;
+  border-radius: 50%;
+  cursor: pointer;
+  vertical-align: middle;
+  color: var(--white);
+}
+
+  .button-2.quick-view-btn:hover {
+    background-color: var(--secondary-color);
+  }
+
+  .button-2.quick-view-btn::before {
+    font-family: "icomoon" !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    font-size: 18px;
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+  }
+
+  .button-2.quick-view-btn.button-outline {
+    background-color: var(--white);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+  }
+
+    .button-2.quick-view-btn.button-outline:hover {
+      background-color: var(--secondary-color);
+      border: 2px solid var(--secondary-color);
+      color: var(--primary-color);
+    }
+
+.button-2.add-to-wishlist-button::before {
+  content: "\e963";
+}
+
+.button-2.quick-view-btn::before {
+  content: "\e94d";
+}
+
+@media (min-width: 992px) {
+  .qv-modal .gallery {
+    width: 45%;
+    display: block;
+  }
+}
+
+.qv-modal .gallery .picture {
+  display: block;
+  width: 100%;
+}
+
+.qv-modal .gallery .details_picture-slider {
+  width: 100%;
+}
+
+.qv-modal .gallery #wrap {
+  max-width: 100%;
+  width: 100%;
+}
+
+.qv-modal .gallery .cloud-zoom-thumb-container {
+  display: none;
+}
+
+  .qv-modal .gallery .cloud-zoom-thumb-container .cloud-zoom-thumb {
+    width: 25%;
+    padding: 4px;
+  }
+
+.qv-modal .mfp-close {
+  background: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #fff !important;
+}
+
+.qv-modal h1 {
+  font-size: 20px;
+  line-height: 27px;
+}
+
+@media (min-width: 992px) {
+  .qv-modal .product-essential .overview {
+    width: 55%;
+  }
+}
+
+.qv-modal .product-essential .overview .product-name h1 {
+  text-align: right;
+  color: var(--primary-color);
+  font-weight: 400;
+}
+
+.qv-modal .product-essential .overview .additional-details {
+  width: auto;
+  text-align: right;
+  margin-bottom: 0;
+}
+
+  .qv-modal .product-essential .overview .additional-details .label {
+    width: auto;
+    padding-left: 10px;
+  }
+
+  .qv-modal .product-essential .overview .additional-details .value {
+    width: auto;
+  }
+
+.qv-modal .product-essential .overview .attributes dt, .qv-modal .product-essential .overview .attributes dd {
+  text-align: right;
+}
+
+.qv-modal .product-essential .overview .product-cart-wrapper {
+  padding: 15px 0;
+  border: 1px solid var(--grey);
+  box-sizing: border-box;
+  box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+  .qv-modal .product-essential .overview .product-cart-wrapper > div {
+    padding: 0 20px;
+  }
+
+  .qv-modal .product-essential .overview .product-cart-wrapper .availability {
+    border-bottom: 1px solid var(--grey);
+    padding-bottom: 15px;
+  }
+
+    .qv-modal .product-essential .overview .product-cart-wrapper .availability .stock {
+      text-align: center;
+      font-weight: 500;
+    }
+
+      .qv-modal .product-essential .overview .product-cart-wrapper .availability .stock .value {
+        color: var(--primary-color);
+      }
+
+@media (min-width: 992px) {
+  .qv-modal .overview-buttons > div {
+    width: calc(33.33% - 4px);
+  }
+}

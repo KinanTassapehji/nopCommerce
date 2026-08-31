@@ -61,7 +61,7 @@ public class SchemaMigration : ForwardOnlyMigration
         Create.TableFor<CustomerAddressMapping>();
         Create.TableFor<CustomerRole>();
         Create.TableFor<CustomerCustomerRoleMapping>();
-        Create.TableFor<ExternalAuthenticationRecord>();
+
         Create.TableFor<CheckoutAttribute>();
         Create.TableFor<CheckoutAttributeValue>();
         Create.TableFor<ReturnRequestAction>();
@@ -72,13 +72,10 @@ public class SchemaMigration : ForwardOnlyMigration
         Create.TableFor<ProductTag>();
         Create.TableFor<Product>();
         Create.TableFor<ProductTemplate>();
-        Create.TableFor<BackInStockSubscription>();
         Create.TableFor<RelatedProduct>();
         Create.TableFor<FilterLevelValue>();
         Create.TableFor<FilterLevelValueProductMapping>();
         Create.TableFor<ReviewType>();
-        Create.TableFor<SpecificationAttributeGroup>();
-        Create.TableFor<SpecificationAttribute>();
         Create.TableFor<ProductAttributeCombination>();
         Create.TableFor<ProductAttributeCombinationPicture>();
         Create.TableFor<ProductAttributeMapping>();
@@ -86,13 +83,10 @@ public class SchemaMigration : ForwardOnlyMigration
         Create.TableFor<ProductAttributeValuePicture>();
         Create.TableFor<Order>();
         Create.TableFor<OrderItem>();
-        Create.TableFor<RewardPointsHistory>();
-        Create.TableFor<GiftCard>();
-        Create.TableFor<GiftCardUsageHistory>();
+
         Create.TableFor<OrderNote>();
-        Create.TableFor<RecurringPayment>();
-        Create.TableFor<RecurringPaymentHistory>();
-        Create.TableFor<CustomWishlist>();
+
+
         Create.TableFor<ShoppingCartItem>();
         Create.TableFor<Store>();
         Create.TableFor<StoreMapping>();
@@ -111,8 +105,6 @@ public class SchemaMigration : ForwardOnlyMigration
         Create.TableFor<ProductReview>();
         Create.TableFor<ProductReviewHelpfulness>();
         Create.TableFor<ProductReviewReviewTypeMapping>();
-        Create.TableFor<SpecificationAttributeOption>();
-        Create.TableFor<ProductSpecificationAttribute>();
         Create.TableFor<TierPrice>();
         Create.TableFor<Warehouse>();
         Create.TableFor<DeliveryDate>();

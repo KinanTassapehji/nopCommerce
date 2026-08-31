@@ -1,0 +1,16 @@
+{
+  "Group": "Nop-Station",
+  "FriendlyName": "Nop-Station Order amount range based discount rules",
+  "SystemName": "NopStation.Plugin.DiscountRules.OrderRange",
+  "Version": "4.90.1.0",
+  "SupportedVersions": [
+    "4.90"
+  ],
+  "Author": "Nop-Station Team",
+  "DisplayOrder": 1,
+  "FileName": "NopStation.Plugin.DiscountRules.OrderRange.dll",
+  "Description": "This plugin allows you to configure discounts for specific price range and condition.",
+  "DependsOnSystemNames": [
+    "NopStation.Core"
+  ]
+}

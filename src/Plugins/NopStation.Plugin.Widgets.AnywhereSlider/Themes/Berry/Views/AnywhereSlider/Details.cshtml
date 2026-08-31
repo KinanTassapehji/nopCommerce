@@ -1,0 +1,54 @@
+﻿@model SliderModel
+
+<div class="owl-carousel slider" id="slider-@(Model.Id)">
+    @foreach (var sliderItemModel in Model.Items)
+    {
+        <div class="slider-item">
+            <div class="slider-picture">
+                <a href="@sliderItemModel.Link" title="@sliderItemModel.Title">
+                    <img alt="@sliderItemModel.ImageAltText" src="@sliderItemModel.PictureUrl" title="" />
+                </a>
+            </div>
+            <div class="slider-caption">
+                <div class="slider-caption-inner">
+                    <h2 class="slider-title">@sliderItemModel.Title</h2>
+                    <h3 class="slider-subtitle">@sliderItemModel.ShortDescription</h3>
+
+                    @if (!string.IsNullOrWhiteSpace(sliderItemModel.ShopNowLink))
+                    {
+                        <a href="@sliderItemModel.ShopNowLink" class="slider-btn">@T("NopStation.AnywhereSlider.ShopNow")</a>
+                    }
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+
+<script>
+        $(document).ready(function () {
+            $('#slider-@Model.Id').owlCarousel({
+                nav: @Model.Nav.ToString().ToLower(),
+                loop: @Model.Loop.ToString().ToLower(),
+                dots: true,
+                margin: @Model.Margin,
+                autoplay: @Model.AutoPlay.ToString().ToLower(),
+                rtl: @Model.Rtl.ToString().ToLower(),
+                autoplayTimeout: @Model.AutoPlayTimeout,
+                autoplayHoverPause: @Model.AutoPlayHoverPause.ToString().ToLower(),
+                lazyLoad: @Model.LazyLoad.ToString().ToLower(),
+                lazyLoadEager: @Model.LazyLoadEager,
+                startPosition: @Model.StartPosition,
+                animateOut: '@Model.AnimateOut',
+                animateIn: '@Model.AnimateIn',
+                responsive: {
+                    0: {
+                        items: 1
+                    }
+                }
+            });
+        });
+</script>
+
+
+

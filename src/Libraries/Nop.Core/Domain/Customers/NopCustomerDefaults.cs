@@ -56,11 +56,6 @@ public static partial class NopCustomerDefaults
     public static string DiscountCouponCodeAttribute => "DiscountCouponCode";
 
     /// <summary>
-    /// Gets a name of generic attribute to store the value of 'GiftCardCouponCodes'
-    /// </summary>
-    public static string GiftCardCouponCodesAttribute => "GiftCardCouponCodes";
-
-    /// <summary>
     /// Gets a name of generic attribute to store the value of 'AvatarPictureId'
     /// </summary>
     public static string AvatarPictureIdAttribute => "AvatarPictureId";
@@ -156,24 +151,9 @@ public static partial class NopCustomerDefaults
     public static string WorkingThemeNameAttribute => "WorkingThemeName";
 
     /// <summary>
-    /// Gets a name of generic attribute to store the value of 'UseRewardPointsDuringCheckout'
-    /// </summary>
-    public static string UseRewardPointsDuringCheckoutAttribute => "UseRewardPointsDuringCheckout";
-
-    /// <summary>
     /// Gets a name of generic attribute to store the value of 'EuCookieLawAccepted'
     /// </summary>
     public static string EuCookieLawAcceptedAttribute => "EuCookieLaw.Accepted";
-
-    /// <summary>
-    /// Gets a name of generic attribute to store the value of 'SelectedMultiFactorAuthProvider'
-    /// </summary>
-    public static string SelectedMultiFactorAuthenticationProviderAttribute => "SelectedMultiFactorAuthProvider";
-
-    /// <summary>
-    /// Gets a name of session key
-    /// </summary>
-    public static string CustomerMultiFactorAuthenticationInfo => "CustomerMultiFactorAuthenticationInfo";
 
     /// <summary>
     /// Gets a name of generic attribute to store the value of 'HideConfigurationSteps'

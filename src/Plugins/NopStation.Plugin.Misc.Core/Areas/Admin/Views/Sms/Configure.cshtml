@@ -1,0 +1,77 @@
+@model SmsSettingsModel
+
+@{
+    Layout = "_AdminLayout";
+    NopHtml.SetActiveMenuItemSystemName("SmsActions.SmsSettings");
+
+    ViewBag.PageTitle = T("Admin.NopStation.Core.SmsSettings").Text;
+}
+
+<form asp-controller="Sms" asp-action="Configure" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.NopStation.Core.SmsSettings")
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.Save")
+            </button>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                @await Component.InvokeAsync(typeof(StoreScopeConfigurationViewComponent))
+                <div asp-validation-summary="All"></div>
+                <div class="cards-group">
+                    <div class="card card-default">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-override-store-checkbox asp-for="MaxSendTries_OverrideForStore" asp-input="MaxSendTries" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                    <nop-label asp-for="MaxSendTries" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="MaxSendTries" />
+                                    <span asp-validation-for="MaxSendTries"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-override-store-checkbox asp-for="MaxMessagesPerBatch_OverrideForStore" asp-input="MaxMessagesPerBatch" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                    <nop-label asp-for="MaxMessagesPerBatch" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="MaxMessagesPerBatch" />
+                                    <span asp-validation-for="MaxMessagesPerBatch"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-override-store-checkbox asp-for="DelayBetweenMessagesMs_OverrideForStore" asp-input="DelayBetweenMessagesMs" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                    <nop-label asp-for="DelayBetweenMessagesMs" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="DelayBetweenMessagesMs" />
+                                    <span asp-validation-for="DelayBetweenMessagesMs"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-override-store-checkbox asp-for="EnableDetailedLogging_OverrideForStore" asp-input="EnableDetailedLogging" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                    <nop-label asp-for="EnableDetailedLogging" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="EnableDetailedLogging" />
+                                    <span asp-validation-for="EnableDetailedLogging"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

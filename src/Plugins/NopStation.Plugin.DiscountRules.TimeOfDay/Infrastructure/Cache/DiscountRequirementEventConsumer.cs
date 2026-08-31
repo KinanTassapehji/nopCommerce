@@ -1,0 +1,36 @@
+using System.Threading.Tasks;
+using Nop.Core.Domain.Configuration;
+using Nop.Core.Domain.Discounts;
+using Nop.Core.Events;
+using Nop.Services.Configuration;
+using Nop.Services.Events;
+
+namespace NopStation.Plugin.DiscountRules.TimeOfDay.Infrastructure.Cache;
+
+public class DiscountRequirementEventConsumer : IConsumer<EntityDeletedEvent<DiscountRequirement>>
+{
+	private readonly ISettingService _settingService;
+
+	public DiscountRequirementEventConsumer(ISettingService settingService)
+	{
+		_settingService = settingService;
+	}
+
+	public async Task HandleEventAsync(EntityDeletedEvent<DiscountRequirement> eventMessage)
+	{
+		DiscountRequirement discountRequirement = eventMessage?.Entity;
+		if (discountRequirement != null)
+		{
+			Setting setting = await _settingService.GetSettingAsync($"DiscountRequirement.TimeOfDay-From-{discountRequirement.Id}");
+			if (setting != null)
+			{
+				await _settingService.DeleteSettingAsync(setting);
+			}
+			Setting setting2 = await _settingService.GetSettingAsync($"DiscountRequirement.TimeOfDay-To-{discountRequirement.Id}");
+			if (setting2 != null)
+			{
+				await _settingService.DeleteSettingAsync(setting2);
+			}
+		}
+	}
+}

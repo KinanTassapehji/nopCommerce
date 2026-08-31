@@ -54,7 +54,6 @@ public partial class CatalogModelFactory : ICatalogModelFactory
     protected readonly IProductService _productService;
     protected readonly IProductTagService _productTagService;
     protected readonly ISearchTermService _searchTermService;
-    protected readonly ISpecificationAttributeService _specificationAttributeService;
     protected readonly IStaticCacheManager _staticCacheManager;
     protected readonly IStoreContext _storeContext;
     protected readonly IUrlRecordService _urlRecordService;
@@ -92,7 +91,6 @@ public partial class CatalogModelFactory : ICatalogModelFactory
         IProductService productService,
         IProductTagService productTagService,
         ISearchTermService searchTermService,
-        ISpecificationAttributeService specificationAttributeService,
         IStaticCacheManager staticCacheManager,
         IStoreContext storeContext,
         IUrlRecordService urlRecordService,
@@ -125,7 +123,6 @@ public partial class CatalogModelFactory : ICatalogModelFactory
         _productService = productService;
         _productTagService = productTagService;
         _searchTermService = searchTermService;
-        _specificationAttributeService = specificationAttributeService;
         _staticCacheManager = staticCacheManager;
         _storeContext = storeContext;
         _urlRecordService = urlRecordService;
@@ -183,62 +180,13 @@ public partial class CatalogModelFactory : ICatalogModelFactory
     }
 
     /// <summary>
-    /// Prepares the specification filter model
-    /// </summary>
-    /// <param name="selectedOptions">The selected options to filter the products</param>
-    /// <param name="availableOptions">The available options to filter the products</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the specification filter model
-    /// </returns>
-    protected virtual async Task<SpecificationFilterModel> PrepareSpecificationFilterModel(IList<int> selectedOptions, IList<SpecificationAttributeOption> availableOptions)
-    {
-        var model = new SpecificationFilterModel();
-
-        if (availableOptions?.Any() == true)
-        {
-            model.Enabled = true;
-
-            var workingLanguage = await _workContext.GetWorkingLanguageAsync();
-
-            foreach (var option in availableOptions)
-            {
-                var attributeFilter = model.Attributes.FirstOrDefault(model => model.Id == option.SpecificationAttributeId);
-                if (attributeFilter == null)
-                {
-                    var attribute = await _specificationAttributeService
-                        .GetSpecificationAttributeByIdAsync(option.SpecificationAttributeId);
-                    attributeFilter = new SpecificationAttributeFilterModel
-                    {
-                        Id = attribute.Id,
-                        Name = await _localizationService
-                            .GetLocalizedAsync(attribute, x => x.Name, workingLanguage.Id)
-                    };
-                    model.Attributes.Add(attributeFilter);
-                }
-
-                attributeFilter.Values.Add(new SpecificationAttributeValueFilterModel
-                {
-                    Id = option.Id,
-                    Name = await _localizationService
-                        .GetLocalizedAsync(option, x => x.Name, workingLanguage.Id),
-                    Selected = selectedOptions?.Any(optionId => optionId == option.Id) == true,
-                    ColorSquaresRgb = option.ColorSquaresRgb
-                });
-            }
-        }
-
-        return model;
-    }
-
-    /// <summary>
     /// Prepares the manufacturer filter model
     /// </summary>
     /// <param name="selectedManufacturers">The selected manufacturers to filter the products</param>
     /// <param name="availableManufacturers">The available manufacturers to filter the products</param>
     /// <returns>
     /// A task that represents the asynchronous operation
-    /// The task result contains the specification filter model
+    /// The task result contains the manufacturer filter model
     /// </returns>
     protected virtual async Task<ManufacturerFilterModel> PrepareManufacturerFilterModel(IList<int> selectedManufacturers, IList<Manufacturer> availableManufacturers)
     {
@@ -333,6 +281,10 @@ public partial class CatalogModelFactory : ICatalogModelFactory
     {
         if (!string.IsNullOrEmpty(model.WarningMessage))
             return;
+
+        //nothing to filter by price (e.g. a category that only holds subcategories) - a manually configured price range would show the filter anyway
+        if (products.TotalCount == 0 && !isFiltering)
+            model.PriceRangeFilter.Enabled = false;
 
         if (!products.Any() && isFiltering)
             model.NoResultMessage = await _localizationService.GetResourceAsync("Catalog.Products.NoResult");
@@ -776,15 +728,6 @@ public partial class CatalogModelFactory : ICatalogModelFactory
             model.PriceRangeFilter = await PreparePriceRangeFilterAsync(selectedPriceRange, availablePriceRange);
         }
 
-        //filterable options
-        var filterableOptions = await _specificationAttributeService
-            .GetFiltrableSpecificationAttributeOptionsByCategoryIdAsync(category.Id);
-
-        if (_catalogSettings.EnableSpecificationAttributeFiltering)
-        {
-            model.SpecificationFilter = await PrepareSpecificationFilterModel(command.Specs, filterableOptions);
-        }
-
         //filterable manufacturers
         if (_catalogSettings.EnableManufacturerFiltering)
         {
@@ -793,7 +736,6 @@ public partial class CatalogModelFactory : ICatalogModelFactory
             model.ManufacturerFilter = await PrepareManufacturerFilterModel(command.Ms, manufacturers);
         }
 
-        var filteredSpecs = command.Specs is null ? null : filterableOptions.Where(fo => command.Specs.Contains(fo.Id)).ToList();
 
         //products
         var products = await _productService.SearchProductsAsync(
@@ -806,10 +748,9 @@ public partial class CatalogModelFactory : ICatalogModelFactory
             priceMin: selectedPriceRange?.From,
             priceMax: selectedPriceRange?.To,
             manufacturerIds: command.Ms,
-            filteredSpecOptions: filteredSpecs,
             orderBy: (ProductSortingEnum)command.OrderBy);
 
-        var isFiltering = filterableOptions.Any() || selectedPriceRange?.From is not null;
+        var isFiltering = selectedPriceRange?.From is not null;
         await PrepareCatalogProductsAsync(model, products, isFiltering);
 
         return model;
@@ -930,16 +871,6 @@ public partial class CatalogModelFactory : ICatalogModelFactory
             model.PriceRangeFilter = await PreparePriceRangeFilterAsync(selectedPriceRange, availablePriceRange);
         }
 
-        // filterable options
-        var filterableOptions = await _specificationAttributeService
-            .GetFiltrableSpecificationAttributeOptionsByManufacturerIdAsync(manufacturer.Id);
-
-        if (_catalogSettings.EnableSpecificationAttributeFiltering)
-        {
-            model.SpecificationFilter = await PrepareSpecificationFilterModel(command.Specs, filterableOptions);
-        }
-
-        var filteredSpecs = command.Specs is null ? null : filterableOptions.Where(fo => command.Specs.Contains(fo.Id)).ToList();
 
         //products
         var products = await _productService.SearchProductsAsync(
@@ -951,10 +882,9 @@ public partial class CatalogModelFactory : ICatalogModelFactory
             excludeFeaturedProducts: !_catalogSettings.IgnoreFeaturedProducts && !_catalogSettings.IncludeFeaturedProductsInNormalLists,
             priceMin: selectedPriceRange?.From,
             priceMax: selectedPriceRange?.To,
-            filteredSpecOptions: filteredSpecs,
             orderBy: (ProductSortingEnum)command.OrderBy);
 
-        var isFiltering = filterableOptions.Any() || selectedPriceRange?.From is not null;
+        var isFiltering = selectedPriceRange?.From is not null;
         await PrepareCatalogProductsAsync(model, products, isFiltering);
 
         return model;

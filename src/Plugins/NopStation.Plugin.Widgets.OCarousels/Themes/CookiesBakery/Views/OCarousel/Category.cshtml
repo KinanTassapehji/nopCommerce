@@ -1,0 +1,118 @@
+﻿@model OCarouselModel
+
+@if (Model.Categories.Count > 0)
+{
+    if (Model.ShowBackgroundPicture)
+    {
+        <div class="category-carousel-container" style="background:url('@Model.BackgroundPictureUrl') no-repeat center; background-size: cover;">
+            <div class="container">
+                <div class="ocarousel-grid category-carousel">
+                    @if (Model.DisplayTitle)
+                    {
+                        <div class="title-container">
+                            <div class="d-flex justify-content-center align-items-center title mb-0 pb-0">
+                                <i class="icon-leaf-left"></i>
+                                <h2>@Model.Title</h2>
+                                <i class="icon-leaf-right"></i>
+                            </div>
+                            <div class="subtitle">
+                                ( @Model.Categories.Count @T("NopStation.OCarousels.Items") )
+                            </div>
+                        </div>
+                    }
+
+                    <div class="owl-carousel ocarousel container pb-5 @Model.CustomCssClass" id="ocarousel-@(Model.Id)">
+                        @foreach (var categoryModel in Model.Categories)
+                        {
+                            <div class="ocarousel-item">
+                                <a href="@(await NopUrl.RouteGenericUrlAsync<Category>(new { sename = categoryModel.SeName }))" title="@categoryModel.PictureModel.Title">
+                                    <img alt="@categoryModel.PictureModel.AlternateText" src="@categoryModel.PictureModel.ImageUrl" title="@categoryModel.PictureModel.Title" />
+                                </a>
+                                <div class="category-name text-center">
+                                    <a class="p-2" href="@(await NopUrl.RouteGenericUrlAsync<Category>(new { SeName = categoryModel.SeName }))">@categoryModel.Name</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="ocarousel-grid category-carousel">
+                @if (Model.DisplayTitle)
+                {
+                    <div class="title-container">
+                        <div class="d-flex justify-content-center align-items-center title mb-0 pb-0">
+                            <i class="icon-leaf-left"></i>
+                            <h2>@Model.Title</h2>
+                            <i class="icon-leaf-right"></i>
+                        </div>
+                        <div class="subtitle">
+                            ( @Model.Categories.Count @T("NopStation.OCarousels.Items") )
+                        </div>
+                    </div>
+                }
+
+                <div class="owl-carousel ocarousel @Model.CustomCssClass" id="ocarousel-@(Model.Id)">
+                    @foreach (var categoryModel in Model.Categories)
+                    {
+                        <div class="ocarousel-item">
+                            <a href="@(await NopUrl.RouteGenericUrlAsync<Category>( new { sename = categoryModel.SeName }))" title="@categoryModel.PictureModel.Title">
+                                <img alt="@categoryModel.PictureModel.AlternateText" src="@categoryModel.PictureModel.ImageUrl" title="@categoryModel.PictureModel.Title" />
+                            </a>
+                            <div class="category-name text-center">
+                                <a class="p-2" href="@(await NopUrl.RouteGenericUrlAsync<Category>( new {SeName = categoryModel.SeName}))">@categoryModel.Name</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <script>
+        $(document).ready(function () {
+            $('#ocarousel-@(Model.Id)').owlCarousel({
+                nav: @Model.Nav.ToString().ToLower(),
+                loop: @Model.Loop.ToString().ToLower(),
+                dots: true,
+                margin: 10,
+                autoplay: @Model.AutoPlay.ToString().ToLower(),
+                rtl: @Model.Rtl.ToString().ToLower(),
+                autoplayTimeout: @Model.AutoPlayTimeout,
+                autoplayHoverPause: @Model.AutoPlayHoverPause.ToString().ToLower(),
+                lazyLoad: @Model.LazyLoad.ToString().ToLower(),
+                lazyLoadEager: @Model.LazyLoadEager,
+                center: @Model.Center.ToString().ToLower(),
+                startPosition: @Model.StartPosition,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    576: {
+                        items: 1
+                    },
+                    768: {
+                        items: 2
+                    },
+                    992: {
+                        items: 4
+                    },
+                    1200: {
+                        items: 5
+                    },
+                    1500: {
+                        items: 5
+                    }
+                }
+            });
+
+            $(".owl-next").html("<i class='icon-arrow-right'></i>");
+            $(".owl-prev").html("<i class='icon-arrow-left'></i>");
+        });
+    </script>
+}
+@NopHtml.GenerateInlineScripts(ResourceLocation.Footer)

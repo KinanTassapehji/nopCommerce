@@ -1,0 +1,16 @@
+{
+  "Group": "Nop-Station",
+  "FriendlyName": "Days of Week Discount Rules",
+  "SystemName": "NopStation.Plugin.DiscountRules.DaysOfWeek",
+  "Version": "4.90.1.0",
+  "SupportedVersions": [
+    "4.90"
+  ],
+  "Author": "Nop-Station Team",
+  "DisplayOrder": 1,
+  "FileName": "NopStation.Plugin.DiscountRules.DaysOfWeek.dll",
+  "Description": "This plugin allows you to configure discounts for specific payment method selected by the customer.",
+  "DependsOnSystemNames": [
+    "NopStation.Core"
+  ]
+}

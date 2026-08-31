@@ -227,10 +227,6 @@ public partial class ProductReviewService : IProductReviewService
                 //apply store mapping constraints
                 productsQuery = await _storeMappingService.ApplyStoreMapping(productsQuery, storeId);
 
-                //apply ACL constraints
-                var customer = await _workContext.GetCurrentCustomerAsync();
-                productsQuery = await _aclService.ApplyAcl(productsQuery, customer);
-
                 query = query.Where(review => productsQuery.Any(product => product.Id == review.ProductId));
             }
 

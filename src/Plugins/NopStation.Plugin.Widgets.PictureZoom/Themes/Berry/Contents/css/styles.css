@@ -1,0 +1,64 @@
+﻿/* Berry Theme PictureZoom Styles */
+
+.cloud-zoom-thumb-container {
+  margin-top: 10px;
+  text-align: left;
+}
+
+.cloud-zoom-thumb {
+  display: inline-block;
+  border: 1px solid #ddd;
+  margin-right: 10px;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.cloud-zoom-thumb:hover {
+  border-color: #333;
+}
+
+.imgForMobile {
+  display: none;
+}
+
+/* Berry theme specific zoom styles */
+.gallery .picture {
+  position: relative;
+}
+
+.gallery .picture .cloud-zoom {
+  display: block;
+  position: relative;
+}
+
+.gallery .picture .cloud-zoom-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.gallery .picture .owl-carousel .owl-item {
+  padding: 0;
+}
+
+.gallery .picture .owl-carousel .owl-nav {
+  margin-top: 10px;
+}
+
+.gallery .picture .owl-carousel .owl-nav button {
+  background: #fff;
+  border: 1px solid #ddd;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.gallery .picture .owl-carousel .owl-nav button:hover {
+  background: #333;
+  color: #fff;
+}

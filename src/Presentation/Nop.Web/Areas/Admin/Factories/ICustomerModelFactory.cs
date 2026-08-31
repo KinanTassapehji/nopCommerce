@@ -50,7 +50,6 @@ public partial interface ICustomerModelFactory
     /// A task that represents the asynchronous operation
     /// The task result contains the reward points list model
     /// </returns>
-    Task<CustomerRewardPointsListModel> PrepareRewardPointsListModelAsync(CustomerRewardPointsSearchModel searchModel, Customer customer);
 
     /// <summary>
     /// Prepare paged customer address list model
@@ -110,18 +109,6 @@ public partial interface ICustomerModelFactory
     /// The task result contains the customer activity log list model
     /// </returns>
     Task<CustomerActivityLogListModel> PrepareCustomerActivityLogListModelAsync(CustomerActivityLogSearchModel searchModel, Customer customer);
-
-    /// <summary>
-    /// Prepare paged customer back in stock subscriptions list model
-    /// </summary>
-    /// <param name="searchModel">Customer back in stock subscriptions search model</param>
-    /// <param name="customer">Customer</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the customer back in stock subscriptions list model
-    /// </returns>
-    Task<CustomerBackInStockSubscriptionListModel> PrepareCustomerBackInStockSubscriptionListModelAsync(
-        CustomerBackInStockSubscriptionSearchModel searchModel, Customer customer);
 
     /// <summary>
     /// Prepare online customer search model

@@ -218,13 +218,12 @@ public partial interface ICustomerService
     /// <param name="storeId">Store identifier</param>
     /// <param name="clearCouponCodes">A value indicating whether to clear coupon code</param>
     /// <param name="clearCheckoutAttributes">A value indicating whether to clear selected checkout attributes</param>
-    /// <param name="clearRewardPoints">A value indicating whether to clear "Use reward points" flag</param>
     /// <param name="clearShippingMethod">A value indicating whether to clear selected shipping method</param>
     /// <param name="clearPaymentMethod">A value indicating whether to clear selected payment method</param>
     /// <returns>A task that represents the asynchronous operation</returns>
     Task ResetCheckoutDataAsync(Customer customer, int storeId,
         bool clearCouponCodes = false, bool clearCheckoutAttributes = false,
-        bool clearRewardPoints = true, bool clearShippingMethod = true,
+        bool clearShippingMethod = true,
         bool clearPaymentMethod = true);
 
     /// <summary>
@@ -312,38 +311,6 @@ public partial interface ICustomerService
     /// The task result contains the new coupon codes document
     /// </returns>
     Task RemoveDiscountCouponCodeAsync(Customer customer, string couponCode);
-
-    /// <summary>
-    /// Gets coupon codes
-    /// </summary>
-    /// <param name="customer">Customer</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the coupon codes
-    /// </returns>
-    Task<string[]> ParseAppliedGiftCardCouponCodesAsync(Customer customer);
-
-    /// <summary>
-    /// Adds a coupon code
-    /// </summary>
-    /// <param name="customer">Customer</param>
-    /// <param name="couponCode">Coupon code</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the new coupon codes document
-    /// </returns>
-    Task ApplyGiftCardCouponCodeAsync(Customer customer, string couponCode);
-
-    /// <summary>
-    /// Removes a coupon code
-    /// </summary>
-    /// <param name="customer">Customer</param>
-    /// <param name="couponCode">Coupon code to remove</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the new coupon codes document
-    /// </returns>
-    Task RemoveGiftCardCouponCodeAsync(Customer customer, string couponCode);
 
     /// <summary>
     /// Returns a list of guids of not existing customers

@@ -1,7 +1,6 @@
 ﻿using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Discounts;
 using Nop.Core.Domain.Localization;
-using Nop.Core.Domain.Security;
 using Nop.Core.Domain.Seo;
 using Nop.Core.Domain.Stores;
 
@@ -10,7 +9,7 @@ namespace Nop.Core.Domain.Catalog;
 /// <summary>
 /// Represents a product
 /// </summary>
-public partial class Product : BaseEntity, ILocalizedEntity, ISlugSupported, IAclSupported, IStoreMappingSupported, IDiscountSupported<DiscountProductMapping>, ISoftDeletedEntity, IMetaTagsSupported
+public partial class Product : BaseEntity, ILocalizedEntity, ISlugSupported, IStoreMappingSupported, IDiscountSupported<DiscountProductMapping>, ISoftDeletedEntity, IMetaTagsSupported
 {
     /// <summary>
     /// Gets or sets the product type identifier
@@ -80,11 +79,6 @@ public partial class Product : BaseEntity, ILocalizedEntity, ISlugSupported, IAc
     public string MetaTitle { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the product allows customer reviews
-    /// </summary>
-    public bool AllowCustomerReviews { get; set; }
-
-    /// <summary>
     /// Gets or sets the rating sum (approved reviews)
     /// </summary>
     public int ApprovedRatingSum { get; set; }
@@ -105,11 +99,6 @@ public partial class Product : BaseEntity, ILocalizedEntity, ISlugSupported, IAc
     public int NotApprovedTotalReviews { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the entity is subject to ACL
-    /// </summary>
-    public bool SubjectToAcl { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether the entity is limited/restricted to certain stores
     /// </summary>
     public bool LimitedToStores { get; set; }
@@ -128,106 +117,6 @@ public partial class Product : BaseEntity, ILocalizedEntity, ISlugSupported, IAc
     /// Gets or sets the Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books).
     /// </summary>
     public string Gtin { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the product is gift card
-    /// </summary>
-    public bool IsGiftCard { get; set; }
-
-    /// <summary>
-    /// Gets or sets the gift card type identifier
-    /// </summary>
-    public int GiftCardTypeId { get; set; }
-
-    /// <summary>
-    /// Gets or sets gift card amount that can be used after purchase. If not specified, then product price will be used.
-    /// </summary>
-    public decimal? OverriddenGiftCardAmount { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the product requires that other products are added to the cart (Product X requires Product Y)
-    /// </summary>
-    public bool RequireOtherProducts { get; set; }
-
-    /// <summary>
-    /// Gets or sets a required product identifiers (comma separated)
-    /// </summary>
-    public string RequiredProductIds { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether required products are automatically added to the cart
-    /// </summary>
-    public bool AutomaticallyAddRequiredProducts { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the product is download
-    /// </summary>
-    public bool IsDownload { get; set; }
-
-    /// <summary>
-    /// Gets or sets the download identifier
-    /// </summary>
-    public int DownloadId { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether this downloadable product can be downloaded unlimited number of times
-    /// </summary>
-    public bool UnlimitedDownloads { get; set; }
-
-    /// <summary>
-    /// Gets or sets the maximum number of downloads
-    /// </summary>
-    public int MaxNumberOfDownloads { get; set; }
-
-    /// <summary>
-    /// Gets or sets the number of days during customers keeps access to the file.
-    /// </summary>
-    public int? DownloadExpirationDays { get; set; }
-
-    /// <summary>
-    /// Gets or sets the download activation type
-    /// </summary>
-    public int DownloadActivationTypeId { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the product has a sample download file
-    /// </summary>
-    public bool HasSampleDownload { get; set; }
-
-    /// <summary>
-    /// Gets or sets the sample download identifier
-    /// </summary>
-    public int SampleDownloadId { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the product has user agreement
-    /// </summary>
-    public bool HasUserAgreement { get; set; }
-
-    /// <summary>
-    /// Gets or sets the text of license agreement
-    /// </summary>
-    public string UserAgreementText { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the product is recurring
-    /// </summary>
-    public bool IsRecurring { get; set; }
-
-    /// <summary>
-    /// Gets or sets the cycle length
-    /// </summary>
-    public int RecurringCycleLength { get; set; }
-
-    /// <summary>
-    /// Gets or sets the cycle period
-    /// </summary>
-    public int RecurringCyclePeriodId { get; set; }
-
-    /// <summary>
-    /// Gets or sets the total cycles
-    /// </summary>
-    public int RecurringTotalCycles { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the product is rental
@@ -330,16 +219,6 @@ public partial class Product : BaseEntity, ILocalizedEntity, ISlugSupported, IAc
     public int NotifyAdminForQuantityBelow { get; set; }
 
     /// <summary>
-    /// Gets or sets a value backorder mode identifier
-    /// </summary>
-    public int BackorderModeId { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to back in stock subscriptions are allowed
-    /// </summary>
-    public bool AllowBackInStockSubscriptions { get; set; }
-
-    /// <summary>
     /// Gets or sets the order minimum quantity
     /// </summary>
     public int OrderMinimumQuantity { get; set; }
@@ -355,7 +234,7 @@ public partial class Product : BaseEntity, ILocalizedEntity, ISlugSupported, IAc
     public string AllowedQuantities { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether we allow adding to the cart/wishlist only attribute combinations that exist and have stock greater than zero.
+    /// Gets or sets a value indicating whether we allow adding to the cart only attribute combinations that exist and have stock greater than zero.
     /// This option is used only when we have "manage inventory" set to "track inventory by product attributes"
     /// </summary>
     public bool AllowAddingOnlyExistingAttributeCombinations { get; set; }
@@ -374,11 +253,6 @@ public partial class Product : BaseEntity, ILocalizedEntity, ISlugSupported, IAc
     /// Gets or sets a value indicating whether to disable buy (Add to cart) button
     /// </summary>
     public bool DisableBuyButton { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to disable "Add to wishlist" button
-    /// </summary>
-    public bool DisableWishlistButton { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether this item is available for Pre-Order
@@ -523,49 +397,12 @@ public partial class Product : BaseEntity, ILocalizedEntity, ISlugSupported, IAc
     public DateTime UpdatedOnUtc { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether <see cref="MinimumAgeToPurchase"/> should be specified
-    /// </summary>
-    public bool AgeVerification { get; set; }
-
-    /// <summary>
-    /// Gets or sets the minimum age to purchase
-    /// </summary>
-    public int MinimumAgeToPurchase { get; set; }
-
-    /// <summary>
     /// Gets or sets the product type
     /// </summary>
     public ProductType ProductType
     {
         get => (ProductType)ProductTypeId;
         set => ProductTypeId = (int)value;
-    }
-
-    /// <summary>
-    /// Gets or sets the backorder mode
-    /// </summary>
-    public BackorderMode BackorderMode
-    {
-        get => (BackorderMode)BackorderModeId;
-        set => BackorderModeId = (int)value;
-    }
-
-    /// <summary>
-    /// Gets or sets the download activation type
-    /// </summary>
-    public DownloadActivationType DownloadActivationType
-    {
-        get => (DownloadActivationType)DownloadActivationTypeId;
-        set => DownloadActivationTypeId = (int)value;
-    }
-
-    /// <summary>
-    /// Gets or sets the gift card type
-    /// </summary>
-    public GiftCardType GiftCardType
-    {
-        get => (GiftCardType)GiftCardTypeId;
-        set => GiftCardTypeId = (int)value;
     }
 
     /// <summary>
@@ -584,15 +421,6 @@ public partial class Product : BaseEntity, ILocalizedEntity, ISlugSupported, IAc
     {
         get => (ManageInventoryMethod)ManageInventoryMethodId;
         set => ManageInventoryMethodId = (int)value;
-    }
-
-    /// <summary>
-    /// Gets or sets the cycle period for recurring products
-    /// </summary>
-    public RecurringProductCyclePeriod RecurringCyclePeriod
-    {
-        get => (RecurringProductCyclePeriod)RecurringCyclePeriodId;
-        set => RecurringCyclePeriodId = (int)value;
     }
 
     /// <summary>

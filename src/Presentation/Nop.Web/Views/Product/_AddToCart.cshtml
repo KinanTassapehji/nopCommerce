@@ -45,10 +45,16 @@
                 }
                 else
                 {
-                    <input asp-for="EnteredQuantity" id="product_enteredQuantity_@Model.ProductId" class="qty-input" type="text" aria-label=@T("Products.Qty.AriaLabel")/>
+                    <div class="qty-stepper">
+                        <button type="button" class="qty-step" data-qty-step="-1" aria-label="@T("Products.Qty.Decrease")" aria-controls="product_enteredQuantity_@Model.ProductId">&minus;</button>
+                        <input asp-for="EnteredQuantity" id="product_enteredQuantity_@Model.ProductId" class="qty-input" type="text" inputmode="numeric" autocomplete="off" aria-label=@T("Products.Qty.AriaLabel")/>
+                        <button type="button" class="qty-step" data-qty-step="1" aria-label="@T("Products.Qty.Increase")" aria-controls="product_enteredQuantity_@Model.ProductId">+</button>
+                    </div>
                     <script asp-location="Footer">
                         //when a customer clicks 'Enter' button we submit the "add to cart" button (if visible)
                         $(function() {
+                            var $qty = $("#product_enteredQuantity_@Model.ProductId");
+
                             $("#@Html.IdFor(model => model.EnteredQuantity)").on("keydown", function(event) {
                                 if (event.keyCode == 13) {
                                     $("#add-to-cart-button-@Model.ProductId").trigger("click");
@@ -56,12 +62,19 @@
                                 }
                             });
 
-                            $("#product_enteredQuantity_@Model.ProductId").on("input propertychange paste", function () {
+                            $qty.on("input propertychange paste", function () {
                                 var data = {
                                     productId: @Model.ProductId,
-                                    quantity: $('#product_enteredQuantity_@Model.ProductId').val()
+                                    quantity: $qty.val()
                                 };
                                 $(document).trigger({ type: "product_quantity_changed", changedData: data });
+                            });
+
+                            //the steppers reuse the handler above by re-firing "input"
+                            $qty.closest(".qty-stepper").find(".qty-step").on("click", function () {
+                                //ponytail: 1 is the floor for every product; per-product minimums are enforced server side
+                                var next = (parseInt($qty.val(), 10) || 1) + parseInt(this.dataset.qtyStep, 10);
+                                $qty.val(Math.max(1, next)).trigger("input");
                             });
                         });
                     </script>

@@ -47,7 +47,6 @@ public partial class OrderModelFactory : IOrderModelFactory
     protected readonly ICurrencyService _currencyService;
     protected readonly ICustomerService _customerService;
     protected readonly IDateTimeHelper _dateTimeHelper;
-    protected readonly IGiftCardService _giftCardService;
     protected readonly ILocalizationService _localizationService;
     protected readonly IOrderProcessingService _orderProcessingService;
     protected readonly IOrderService _orderService;
@@ -57,7 +56,6 @@ public partial class OrderModelFactory : IOrderModelFactory
     protected readonly IPictureService _pictureService;
     protected readonly IPriceFormatter _priceFormatter;
     protected readonly IProductService _productService;
-    protected readonly IRewardPointService _rewardPointService;
     protected readonly IShipmentService _shipmentService;
     protected readonly IShortTermCacheManager _shortTermCacheManager;
     protected readonly IStateProvinceService _stateProvinceService;
@@ -70,7 +68,6 @@ public partial class OrderModelFactory : IOrderModelFactory
     protected readonly MediaSettings _mediaSettings;
     protected readonly OrderSettings _orderSettings;
     protected readonly PdfSettings _pdfSettings;
-    protected readonly RewardPointsSettings _rewardPointsSettings;
     protected readonly ShippingSettings _shippingSettings;
     protected readonly TaxSettings _taxSettings;
     protected readonly VendorSettings _vendorSettings;
@@ -87,7 +84,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         ICurrencyService currencyService,
         ICustomerService customerService,
         IDateTimeHelper dateTimeHelper,
-        IGiftCardService giftCardService,
         ILocalizationService localizationService,
         IOrderProcessingService orderProcessingService,
         IOrderService orderService,
@@ -97,7 +93,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         IPictureService pictureService,
         IPriceFormatter priceFormatter,
         IProductService productService,
-        IRewardPointService rewardPointService,
         IShipmentService shipmentService,
         IShortTermCacheManager shortTermCacheManager,
         IStateProvinceService stateProvinceService,
@@ -110,7 +105,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         MediaSettings mediaSettings,
         OrderSettings orderSettings,
         PdfSettings pdfSettings,
-        RewardPointsSettings rewardPointsSettings,
         ShippingSettings shippingSettings,
         TaxSettings taxSettings,
         VendorSettings vendorSettings)
@@ -123,7 +117,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         _currencyService = currencyService;
         _customerService = customerService;
         _dateTimeHelper = dateTimeHelper;
-        _giftCardService = giftCardService;
         _localizationService = localizationService;
         _orderProcessingService = orderProcessingService;
         _orderService = orderService;
@@ -133,7 +126,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         _pictureService = pictureService;
         _priceFormatter = priceFormatter;
         _productService = productService;
-        _rewardPointService = rewardPointService;
         _shipmentService = shipmentService;
         _shortTermCacheManager = shortTermCacheManager;
         _stateProvinceService = stateProvinceService;
@@ -146,7 +138,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         _mediaSettings = mediaSettings;
         _orderSettings = orderSettings;
         _pdfSettings = pdfSettings;
-        _rewardPointsSettings = rewardPointsSettings;
         _shippingSettings = shippingSettings;
         _taxSettings = taxSettings;
         _vendorSettings = vendorSettings;
@@ -256,45 +247,6 @@ public partial class OrderModelFactory : IOrderModelFactory
             orderModel.OrderTotal = await _priceFormatter.FormatPriceAsync(orderTotalInCustomerCurrency, true, order.CustomerCurrencyCode, false, (await _workContext.GetWorkingLanguageAsync()).Id);
 
             model.Orders.Add(orderModel);
-        }
-
-        return model;
-    }
-
-    /// <summary>
-    /// Prepare the customer recurring payment list model
-    /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the customer recurring payment list model
-    /// </returns>
-    public virtual async Task<CustomerRecurringPaymentListModel> PrepareCustomerRecurringPaymentListModelAsync()
-    {
-        var model = new CustomerRecurringPaymentListModel();
-        var customer = await _workContext.GetCurrentCustomerAsync();
-        var store = await _storeContext.GetCurrentStoreAsync();
-
-        var recurringPayments = await _orderService.SearchRecurringPaymentsAsync(store.Id,
-            customer.Id);
-        foreach (var recurringPayment in recurringPayments)
-        {
-            var order = await _orderService.GetOrderByIdAsync(recurringPayment.InitialOrderId);
-
-            var recurringPaymentModel = new CustomerRecurringPaymentModel
-            {
-                Id = recurringPayment.Id,
-                StartDate = (await _dateTimeHelper.ConvertToUserTimeAsync(recurringPayment.StartDateUtc, DateTimeKind.Utc)).ToString(),
-                CycleInfo = $"{recurringPayment.CycleLength} {await _localizationService.GetLocalizedEnumAsync(recurringPayment.CyclePeriod)}",
-                NextPayment = await _orderProcessingService.GetNextPaymentDateAsync(recurringPayment) is DateTime nextPaymentDate ? (await _dateTimeHelper.ConvertToUserTimeAsync(nextPaymentDate, DateTimeKind.Utc)).ToString() : "",
-                TotalCycles = recurringPayment.TotalCycles,
-                CyclesRemaining = await _orderProcessingService.GetCyclesRemainingAsync(recurringPayment),
-                InitialOrderId = order.Id,
-                InitialOrderNumber = order.CustomOrderNumber,
-                CanCancel = await _orderProcessingService.CanCancelRecurringPaymentAsync(customer, recurringPayment),
-                CanRetryLastPayment = await _orderProcessingService.CanRetryLastRecurringPaymentAsync(customer, recurringPayment)
-            };
-
-            model.RecurringPayments.Add(recurringPaymentModel);
         }
 
         return model;
@@ -519,23 +471,6 @@ public partial class OrderModelFactory : IOrderModelFactory
             model.OrderTotalDiscountValue = orderDiscountInCustomerCurrency;
         }
 
-        //gift cards
-        foreach (var gcuh in await _giftCardService.GetGiftCardUsageHistoryAsync(order))
-        {
-            model.GiftCards.Add(new OrderDetailsModel.GiftCard
-            {
-                CouponCode = (await _giftCardService.GetGiftCardByIdAsync(gcuh.GiftCardId)).GiftCardCouponCode,
-                Amount = await _priceFormatter.FormatPriceAsync(-(_currencyService.ConvertCurrency(gcuh.UsedValue, order.CurrencyRate)), true, order.CustomerCurrencyCode, false, languageId),
-            });
-        }
-
-        //reward points           
-        if (order.RedeemedRewardPointsEntryId.HasValue && await _rewardPointService.GetRewardPointsHistoryEntryByIdAsync(order.RedeemedRewardPointsEntryId.Value) is RewardPointsHistory redeemedRewardPointsEntry)
-        {
-            model.RedeemedRewardPoints = -redeemedRewardPointsEntry.Points;
-            model.RedeemedRewardPointsAmount = await _priceFormatter.FormatPriceAsync(-(_currencyService.ConvertCurrency(redeemedRewardPointsEntry.UsedAmount, order.CurrencyRate)), true, order.CustomerCurrencyCode, false, languageId);
-        }
-
         //total
         var orderTotalInCustomerCurrency = _currencyService.ConvertCurrency(order.OrderTotal, order.CurrencyRate);
         model.OrderTotal = await _priceFormatter.FormatPriceAsync(orderTotalInCustomerCurrency, true, order.CustomerCurrencyCode, false, languageId);
@@ -621,12 +556,6 @@ public partial class OrderModelFactory : IOrderModelFactory
                 orderItemModel.SubTotal = await _priceFormatter.FormatPriceAsync(priceExclTaxInCustomerCurrency, true, order.CustomerCurrencyCode, languageId, false);
                 orderItemModel.SubTotalValue = priceExclTaxInCustomerCurrency;
             }
-
-            //downloadable products
-            if (await _orderService.IsDownloadAllowedAsync(orderItem))
-                orderItemModel.DownloadId = product.DownloadId;
-            if (await _orderService.IsLicenseDownloadAllowedAsync(orderItem))
-                orderItemModel.LicenseId = orderItem.LicenseDownloadId ?? 0;
 
             if (_orderSettings.ShowProductThumbnailInOrderDetailsPage)
             {
@@ -731,78 +660,9 @@ public partial class OrderModelFactory : IOrderModelFactory
         return model;
     }
 
-    /// <summary>
-    /// Prepare the customer reward points model
-    /// </summary>
-    /// <param name="page">Number of items page; pass null to load the first page</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the customer reward points model
-    /// </returns>
-    public virtual async Task<CustomerRewardPointsModel> PrepareCustomerRewardPointsAsync(int? page)
-    {
-        //get reward points history
-        var customer = await _workContext.GetCurrentCustomerAsync();
-        var store = await _storeContext.GetCurrentStoreAsync();
-        var pageSize = _rewardPointsSettings.PageSize;
-        var rewardPoints = await _rewardPointService.GetRewardPointsHistoryAsync(customer.Id, store.Id, true, pageIndex: --page ?? 0, pageSize: pageSize);
-
-        //prepare model
-        var model = new CustomerRewardPointsModel
-        {
-            RewardPoints = await rewardPoints.SelectAwait(async historyEntry =>
-            {
-                var activatingDate = await _dateTimeHelper.ConvertToUserTimeAsync(historyEntry.CreatedOnUtc, DateTimeKind.Utc);
-                return new CustomerRewardPointsModel.RewardPointsHistoryModel
-                {
-                    Points = historyEntry.Points,
-                    PointsBalance = historyEntry.PointsBalance.HasValue ? historyEntry.PointsBalance.ToString()
-                        : string.Format(await _localizationService.GetResourceAsync("RewardPoints.ActivatedLater"), activatingDate),
-                    Message = historyEntry.Message,
-                    CreatedOn = activatingDate,
-                    EndDate = !historyEntry.EndDateUtc.HasValue ? null :
-                        (DateTime?)(await _dateTimeHelper.ConvertToUserTimeAsync(historyEntry.EndDateUtc.Value, DateTimeKind.Utc))
-                };
-            }).ToListAsync(),
-
-            PagerModel = new PagerModel(_localizationService)
-            {
-                PageSize = rewardPoints.PageSize,
-                TotalRecords = rewardPoints.TotalCount,
-                PageIndex = rewardPoints.PageIndex,
-                ShowTotalSummary = true,
-                RouteActionName = NopRouteNames.Standard.CUSTOMER_REWARD_POINTS_PAGED,
-                UseRouteLinks = true,
-                RouteValues = new RewardPointsRouteValues { PageNumber = page ?? 0 }
-            }
-        };
-
-        //current amount/balance
-        var rewardPointsBalance = await _rewardPointService.GetRewardPointsBalanceAsync(customer.Id, store.Id);
-        var rewardPointsAmountBase = await _orderTotalCalculationService.ConvertRewardPointsToAmountAsync(rewardPointsBalance);
-        var currentCurrency = await _workContext.GetWorkingCurrencyAsync();
-        var rewardPointsAmount = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(rewardPointsAmountBase, currentCurrency);
-        model.RewardPointsBalance = rewardPointsBalance;
-        model.RewardPointsAmount = await _priceFormatter.FormatPriceAsync(rewardPointsAmount, true, false);
-
-        //minimum amount/balance
-        var minimumRewardPointsBalance = _rewardPointsSettings.MinimumRewardPointsToUse;
-        var minimumRewardPointsAmountBase = await _orderTotalCalculationService.ConvertRewardPointsToAmountAsync(minimumRewardPointsBalance);
-        var minimumRewardPointsAmount = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(minimumRewardPointsAmountBase, currentCurrency);
-        model.MinimumRewardPointsBalance = minimumRewardPointsBalance;
-        model.MinimumRewardPointsAmount = await _priceFormatter.FormatPriceAsync(minimumRewardPointsAmount, true, false);
-
-        return model;
-    }
-
     #endregion
 
     #region nested class
-
-    /// <summary>
-    /// record that has only page for route value. Used for (My Account) Reward Points pagination
-    /// </summary>
-    public partial record RewardPointsRouteValues : BaseRouteValues;
 
     /// <summary>
     /// Record that has filter options for route values. Used for Customer orders pagination (My Account)

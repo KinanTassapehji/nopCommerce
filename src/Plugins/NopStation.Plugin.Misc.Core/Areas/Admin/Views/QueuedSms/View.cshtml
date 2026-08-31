@@ -1,0 +1,29 @@
+@model QueuedSmsModel
+
+@{
+    ViewBag.PageTitle = T("Admin.NopStation.Core.QueuedSms.ViewDetails").Text;
+    NopHtml.SetActiveMenuItemSystemName("SmsActions.QueuedSms");
+}
+<form asp-controller="QueuedSms" asp-action="View" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.NopStation.Core.QueuedSms.ViewDetails")
+            <small>
+                <i class="fas fa-arrow-circle-left"></i>
+                <a asp-action="List">@T("Admin.NopStation.Core.QueuedSms.BackToList")</a>
+            </small>
+        </h1>
+        <div class="float-right">
+            <button type="submit" formaction="@Url.Action("Resend", new { id = Model.Id })" class="btn btn-secondary">
+                <i class="fas fa-paper-plane"></i>
+                @T("Admin.NopStation.Core.QueuedSms.Resend")
+            </button>
+            <span id="queuedSms-delete" class="btn bg-red">
+                <i class="far fa-trash-alt"></i>
+                @T("Admin.Common.Delete")
+            </span>
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdate", Model)
+</form>
+<nop-delete-confirmation asp-model-id="@Model.Id" asp-button-id="queuedSms-delete" />

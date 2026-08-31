@@ -1,0 +1,74 @@
+@model ReminderRuleModel
+
+<input asp-for="Id" type="hidden" />
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <nop-cards id="reminderrule-cards">
+                <nop-card asp-name="reminderrule-info"
+                          asp-icon="fas fa-info"
+                          asp-title="@T("NopStation.Plugins.CustomerReminders.Admin.ReminderRules.Info")"
+                          asp-hide-block-attribute-name="ReminderRulePage.HideInfoBlock"
+                          asp-hide="false"
+                          asp-advanced="false">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <nop-label asp-for="SystemName" />
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="SystemName" asp-required="true" />
+                                <span asp-validation-for="SystemName"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <nop-label asp-for="Description" />
+                            </div>
+                            <div class="col-md-9">
+                                <nop-textarea asp-for="Description" />
+                                <span asp-validation-for="Description"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <nop-label asp-for="IsEnabled" />
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="IsEnabled" />
+                                <span asp-validation-for="IsEnabled"></span>
+                            </div>
+                        </div>
+
+                        @* Token Groups Selection *@
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <nop-label asp-for="SelectedTokenList" />
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row" style="margin-bottom: 10px;">
+                                    <em>@T("NopStation.Plugins.CustomerReminders.Admin.ReminderRules.Fields.AvailableTokens.Hint")</em>
+                                </div>
+                                <select asp-for="SelectedTokenList" asp-items="Model.AvailableTokens" class="form-control" asp-multiple="true" style="height: 300px;"> </select>
+                                <span asp-validation-for="SelectedTokenList"></span>
+
+                                <script>
+                                    $(document).ready(function() {
+                                           // Initialize multi-select for token groups
+                                            $('#@Html.IdFor(model => model.SelectedTokenList)').select2({
+                                                placeholder: '@T("Admin.Common.Select")',
+                                                allowClear: true,
+                                                width: '100%'
+                                            });
+                                    });
+                                </script>
+                            </div>
+                        </div>
+
+                    </div>
+                </nop-card>
+            </nop-cards>
+        </div>
+    </div>
+</section>

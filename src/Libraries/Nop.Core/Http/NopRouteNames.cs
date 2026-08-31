@@ -104,16 +104,6 @@ public static partial class NopRouteNames
         /// Gets the shopping cart route name
         /// </summary>
         public const string CART = "ShoppingCart";
-
-        /// <summary>
-        /// Gets the wishlist route name
-        /// </summary>
-        public const string WISHLIST = "Wishlist";
-
-        /// <summary>
-        /// Gets the gift card balance route name
-        /// </summary>
-        public const string CHECK_GIFT_CARD_BALANCE = "CheckGiftCardBalance";
     }
 
     /// <summary>
@@ -202,11 +192,6 @@ public static partial class NopRouteNames
         public const string CUSTOMER_PRODUCT_REVIEWS_PAGED = "CustomerProductReviewsPaged";
 
         /// <summary>
-        /// Gets the customer recurring payments route name
-        /// </summary>
-        public const string CUSTOMER_RECURRING_PAYMENTS = "CustomerRecurringPayments";
-
-        /// <summary>
         /// Gets the change currency route name
         /// </summary>
         public const string CHANGE_CURRENCY = "ChangeCurrency";
@@ -227,24 +212,9 @@ public static partial class NopRouteNames
         public const string DOWNLOAD_GET_FILE_UPLOAD = "DownloadGetFileUpload";
 
         /// <summary>
-        /// Gets the email wishlist route name
-        /// </summary>
-        public const string EMAIL_WISHLIST = "EmailWishlist";
-
-        /// <summary>
-        /// Gets the sample download route name
-        /// </summary>
-        public const string GET_SAMPLE_DOWNLOAD = "GetSampleDownload";
-
-        /// <summary>
         /// Gets the login page for checkout as guest route name
         /// </summary>
         public const string LOGIN_CHECKOUT_AS_GUEST = "LoginCheckoutAsGuest";
-
-        /// <summary>
-        /// Gets the multi-factor verification route name
-        /// </summary>
-        public const string MULTIFACTOR_VERIFICATION = "MultiFactorVerification";
 
         /// <summary>
         /// Gets the product email a friend route name
@@ -302,26 +272,6 @@ public static partial class NopRouteNames
         public const string CUSTOMER_RETURN_REQUESTS = "CustomerReturnRequests";
 
         /// <summary>
-        /// Gets the customer downloadable products route name
-        /// </summary>
-        public const string CUSTOMER_DOWNLOADABLE_PRODUCTS = "CustomerDownloadableProducts";
-
-        /// <summary>
-        /// Gets the customer back in stock subscriptions route name
-        /// </summary>
-        public const string CUSTOMER_BACK_IN_STOCK_SUBSCRIPTIONS = "CustomerBackInStockSubscriptions";
-
-        /// <summary>
-        /// Gets the customer reward points route name
-        /// </summary>
-        public const string CUSTOMER_REWARD_POINTS = "CustomerRewardPoints";
-
-        /// <summary>
-        /// Gets the customer reward points paged route name
-        /// </summary>
-        public const string CUSTOMER_REWARD_POINTS_PAGED = "CustomerRewardPointsPaged";
-
-        /// <summary>
         /// Gets the customer change password route name
         /// </summary>
         public const string CUSTOMER_CHANGE_PASSWORD = "CustomerChangePassword";
@@ -355,11 +305,6 @@ public static partial class NopRouteNames
         /// Gets the customer address add route name
         /// </summary>
         public const string CUSTOMER_ADDRESS_ADD = "CustomerAddressAdd";
-
-        /// <summary>
-        /// Gets the customer multi-factor authentication config route name
-        /// </summary>
-        public const string CUSTOMER_MULTI_FACTOR_AUTHENTICATION_PROVIDER_CONFIG = "CustomerMultiFactorAuthenticationProviderConfig";
 
         /// <summary>
         /// Gets the customer profile route name
@@ -407,21 +352,6 @@ public static partial class NopRouteNames
         public const string CANCEL_ORDER = "CancelOrder";
 
         /// <summary>
-        /// Gets the order downloads (file result) route name
-        /// </summary>
-        public const string GET_DOWNLOAD = "GetDownload";
-
-        /// <summary>
-        /// Gets the order downloads (file result) route name
-        /// </summary>
-        public const string GET_LICENSE = "GetLicense";
-
-        /// <summary>
-        /// Gets the download user agreement route name
-        /// </summary>
-        public const string DOWNLOAD_USER_AGREEMENT = "DownloadUserAgreement";
-
-        /// <summary>
         /// Gets the get order note (file result) route name
         /// </summary>
         public const string GET_ORDER_NOTE_FILE = "GetOrderNoteFile";
@@ -440,11 +370,6 @@ public static partial class NopRouteNames
         /// Gets the customer GDPR tools route name
         /// </summary>
         public const string GDPR_TOOLS = "GdprTools";
-
-        /// <summary>
-        /// Gets the customer multi-factor authentication settings route name
-        /// </summary>
-        public const string MULTI_FACTOR_AUTHENTICATION_SETTINGS = "MultiFactorAuthenticationSettings";
 
         /// <summary>
         /// Gets the remove product from compare list route name
@@ -659,19 +584,9 @@ public static partial class NopRouteNames
         public const string ADD_PRODUCT_TO_COMPARE = "AddProductToCompare";
 
         /// <summary>
-        /// Gets the add custom wishlist route name
+        /// Gets the homepage products route name (infinite scrolling)
         /// </summary>
-        public const string ADD_WISHLIST = "AddWishlist";
-
-        /// <summary>
-        /// Gets the back in stock subscribe send route name
-        /// </summary>
-        public const string BACK_IN_STOCK_SUBSCRIBE_SEND = "BackInStockSubscribeSend";
-
-        /// <summary>
-        /// Gets the back in stock notifications route name
-        /// </summary>
-        public const string BACK_IN_STOCK_SUBSCRIBE_POPUP = "BackInStockSubscribePopup";
+        public const string HOMEPAGE_PRODUCTS = "HomepageProducts";
 
         /// <summary>
         /// Gets the select shipping option route name
@@ -694,29 +609,9 @@ public static partial class NopRouteNames
         public const string CUSTOMER_ADDRESS_DELETE = "CustomerAddressDelete";
 
         /// <summary>
-        /// Gets the customer remove external association route name
-        /// </summary>
-        public const string CUSTOMER_REMOVE_EXTERNAL_ASSOCIATION = "CustomerRemoveExternalAssociation";
-
-        /// <summary>
-        /// Gets the delete custom wishlist route name
-        /// </summary>
-        public const string DELETE_CUSTOM_WISHLIST = "DeleteCustomWishlist";
-
-        /// <summary>
         /// Gets the estimate shipping route name
         /// </summary>
         public const string ESTIMATE_SHIPPING = "EstimateShipping";
-
-        /// <summary>
-        /// Gets the move product to custom wishlist route name. Used on catalog/product detail page.
-        /// </summary>
-        public const string MOVE_PRODUCT_TO_CUSTOM_WISHLIST = "MoveProductToCustomWishList";
-
-        /// <summary>
-        /// Gets the move shopping cart to custom wishlist route name. Used on catalog/product detail page.
-        /// </summary>
-        public const string MOVE_CART_TO_CUSTOM_WISHLIST = "MoveToCustomWishlist";
 
         /// <summary>
         /// Gets the product estimate shipping route name

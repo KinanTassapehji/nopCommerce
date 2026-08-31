@@ -1,0 +1,102 @@
+﻿@model SliderModel
+
+<div class="home-page-slider-container">
+    @if (Model.WidgetZoneId == 5)
+    {
+        <div class="owl-carousel home-page-slider-1" id="slider-@(Model.Id)">
+            @foreach (var item in Model.Items)
+            {
+                <div class="slider-item">
+                    <div class="slider-picture">
+                        <a href="@item.Link" title="@item.Title">
+                            <img alt="@item.ImageAltText" src="@item.PictureUrl"/>
+                        </a>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(item.ShortDescription) || !string.IsNullOrWhiteSpace(item.Title) || !string.IsNullOrWhiteSpace(item.Link))
+                    {
+                        <div class="slider-caption">
+                            @if (!string.IsNullOrWhiteSpace(item.Title))
+                            {
+                                <h2 class="slider-title">@item.Title</h2>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(item.ShortDescription))
+                            {
+                                <h3 class="slider-subtitle">@item.ShortDescription</h3>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(item.ShopNowLink))
+                            {
+                                <a href="@item.ShopNowLink" class="slider-btn">@T("NopStation.AnywhereSlider.ShopNow")</a>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    else
+    {
+        <div class="row mb-0 mb-lg-5 mt-lg-0 margin-top-30" style="background:url('@Model.BackGroundPictureUrl')no-repeat center; background-size: cover;">
+            <div class="col-xl-7 col-lg-9 col-md-10 col-11 m-auto owl-carousel home-page-slider-2" id="slider-@Model.Id">
+                @foreach (var item in Model.Items)
+                {
+                    <div class="home-page-slider-item container-fluid">
+                        <div class="row justify-content-center">
+                            <div class="col-11 col-sm-12 single-slide-content">
+                                <div class="row justify-content-center flex-column flex-sm-row">
+                                    <div class="col-12 col-sm-6 p-0 picture">
+                                        <a href="@item.Link" title="@item.Title">
+                                            <img alt="@item.ImageAltText" src="@item.PictureUrl" title="" />
+                                        </a>
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(item.ShortDescription) || !string.IsNullOrWhiteSpace(item.Title) || !string.IsNullOrWhiteSpace(item.Link))
+                                    {
+                                        <div class="col-12 col-sm-6 p-3 slider-caption">
+                                            @if (!string.IsNullOrWhiteSpace(item.Title))
+                                            {
+                                                <h2 class="slider-title">@item.Title</h2>
+                                            }
+                                            @if (!string.IsNullOrWhiteSpace(item.ShortDescription))
+                                            {
+                                                <h3 class="slider-subtitle">@item.ShortDescription</h3>
+                                            }
+                                            @if (!string.IsNullOrWhiteSpace(item.ShopNowLink))
+                                            {
+                                                <a href="@item.ShopNowLink" class="slider-btn">@T("NopStation.AnywhereSlider.ShopNow")</a>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#slider-@Model.Id').owlCarousel({
+            nav: @Model.Nav.ToString().ToLower(),
+            loop: @Model.Loop.ToString().ToLower(),
+            dots: false,
+            margin: @Model.Margin,
+            autoplay: @Model.AutoPlay.ToString().ToLower(),
+            rtl: @Model.Rtl.ToString().ToLower(),
+            autoplayTimeout: @Model.AutoPlayTimeout,
+            autoplayHoverPause: @Model.AutoPlayHoverPause.ToString().ToLower(),
+            lazyLoad: @Model.LazyLoad.ToString().ToLower(),
+            lazyLoadEager: @Model.LazyLoadEager,
+            startPosition: @Model.StartPosition,
+            animateOut: '@Model.AnimateOut',
+            animateIn: '@Model.AnimateIn',
+            responsive: {
+                0: {
+                    items: 1
+                }
+            }
+        });
+    });
+</script>

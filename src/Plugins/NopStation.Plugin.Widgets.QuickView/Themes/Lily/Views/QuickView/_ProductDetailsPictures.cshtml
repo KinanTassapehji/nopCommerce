@@ -1,0 +1,41 @@
+﻿@model ProductDetailsModel
+@{
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, "~/lib_npm/magnific-popup/jquery.magnific-popup.min.js");
+    NopHtml.AppendCssFileParts("~/lib_npm/magnific-popup/magnific-popup.css", string.Empty);
+}
+<div class="gallery">
+    <div class="picture">
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBeforePictures, additionalData = Model })
+        @if (Model.PictureModels.Count == 1)
+        {
+            <img alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" id="main-product-img-@Model.Id" />
+        }
+
+        else if (Model.PictureModels.Count > 1)
+        {
+            <div class="owl-carousel picture-details-carousel">
+                @foreach (var picture in Model.PictureModels)
+                {
+                    <div class="item">
+                        <img alt="@picture.AlternateText" src="@picture.ImageUrl" title="@picture.Title" style="border-width: 0px;" />
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <script>
+        $('.picture-details-carousel').owlCarousel({
+            nav: true, // Show next and prev buttons
+            items: 1,
+            responsiveBaseElement: 'body',
+            margin: 10,
+            dots: true,
+            loop: true,
+            autoplay: true,
+            autoplayTimeout: 3000
+        });
+    </script>
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsAfterPictures, additionalData = Model })
+</div>
+

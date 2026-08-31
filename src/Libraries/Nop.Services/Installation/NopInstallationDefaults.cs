@@ -16,6 +16,11 @@ public static partial class NopInstallationDefaults
     public static string LocalizationResourcesPath => "~/App_Data/Localization/";
 
     /// <summary>
+    /// Gets a path to the language packs bundled with the store (one "&lt;culture&gt;.nopres.xml" file per language)
+    /// </summary>
+    public static string BundledLanguagePacksPath => "~/App_Data/Localization/LanguagePacks/";
+
+    /// <summary>
     /// Gets a localization resources file extension
     /// </summary>
     public static string LocalizationResourcesFileExtension => "nopres.xml";

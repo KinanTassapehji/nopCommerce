@@ -1,0 +1,31 @@
+@model ReminderRuleModel
+
+@{
+    Layout = "_AdminLayout";
+    NopHtml.SetActiveMenuItemSystemName("NopStation.CustomerReminders.ReminderRules");
+    ViewBag.PageTitle = T("NopStation.Plugins.CustomerReminders.Admin.ReminderRules.EditDetails.Title").Text;
+}
+
+<form asp-controller="ReminderRule" asp-action="Edit" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("NopStation.Plugins.CustomerReminders.Admin.ReminderRules.EditDetails") - @Model.SystemName
+            <small>
+                <i class="fas fa-arrow-circle-left"></i>
+                <a asp-action="List">@T("NopStation.Plugins.CustomerReminders.Admin.ReminderRules.BackToList")</a>
+            </small>
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.SaveContinue")
+            </button>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_CreateOrUpdate", Model)
+</form>

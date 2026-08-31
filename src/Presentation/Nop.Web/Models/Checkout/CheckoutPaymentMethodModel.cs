@@ -11,12 +11,6 @@ public partial record CheckoutPaymentMethodModel : BaseNopModel
 
     public IList<PaymentMethodModel> PaymentMethods { get; set; }
 
-    public bool DisplayRewardPoints { get; set; }
-    public int RewardPointsBalance { get; set; }
-    public int RewardPointsToUse { get; set; }
-    public string RewardPointsToUseAmount { get; set; }
-    public bool RewardPointsEnoughToPayForOrder { get; set; }
-    public bool UseRewardPoints { get; set; }
 
     #region Nested classes
 

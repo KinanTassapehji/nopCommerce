@@ -21,27 +21,18 @@
 <div class="page checkout-page billing-address-page">
     @await Component.InvokeAsync(typeof(CheckoutProgressViewComponent), new { step = CheckoutProgressStep.Address })
     <div class="page-title">
-        <h1>@T("Checkout.BillingAddress")</h1>
+        <h1>@T("Checkout.ShippingAddress")</h1>
     </div>
     <div class="page-body checkout-data">
         <form id="billing-form" asp-route="@NopRouteNames.Standard.CHECKOUT_BILLING_ADDRESS" method="post">
             <div class="billing-addresses">
                 <div id="toggle-billing-address">
                     @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CheckoutBillingAddressTop, additionalData = Model })
-                    @if (Model.ShipToSameAddressAllowed)
-                    {
-                        <div class="section ship-to-same-address">
-                            <div class="selector">
-                                <input asp-for="ShipToSameAddress" />
-                                <label asp-for="ShipToSameAddress">@T("Checkout.ShipToSameAddress")</label>
-                            </div>
-                        </div>
-                    }
                     @if (Model.ExistingAddresses.Count > 0)
                     {
                         <div class="section select-billing-address">
                             <h2 class="title">
-                                @T("Checkout.SelectBillingAddress")
+                                @T("Checkout.SelectShippingAddress")
                             </h2>
                             @if (Model.InvalidExistingAddresses.Count > 0)
                             {
@@ -150,20 +141,7 @@
                                             }
                                         </ul>
                                         <div class="select-button">
-                                            <button type="button" class="button-1 select-billing-address-button" onclick="selectBillingAddress@(item.Id)()">@T("Checkout.BillToThisAddress")</button>
-                                            
-                                            <script asp-location="Footer">
-                                                function selectBillingAddress@(item.Id)() {
-                                                    if ($('#@Html.IdFor(model => model.ShipToSameAddress)')
-                                                        .is(':checked')) {
-                                                        setLocation(
-                                                            '@Html.Raw(Url.RouteUrl(NopRouteNames.Standard.CHECKOUT_SELECT_BILLING_ADDRESS, new { addressId = item.Id, shipToSameAddress = "true" }))');
-                                                    } else {
-                                                        setLocation(
-                                                            '@Url.RouteUrl(NopRouteNames.Standard.CHECKOUT_SELECT_BILLING_ADDRESS, new { addressId = item.Id })');
-                                                    }
-                                                }
-                                            </script>
+                                            <button type="button" class="button-1 select-billing-address-button" onclick="setLocation('@Url.RouteUrl(NopRouteNames.Standard.CHECKOUT_SELECT_BILLING_ADDRESS, new { addressId = item.Id })')">@T("Checkout.ShipToThisAddress")</button>
                                         </div>
                                     </div>
                                 }
@@ -174,7 +152,7 @@
                 @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CheckoutBillingAddressMiddle, additionalData = Model })
                 <div class="section new-billing-address" id="billingaddress-new-form">
                     <h2 class="title title-text">
-                        @(Model.ExistingAddresses.Count > 0 ? T("Checkout.OrEnterNewAddress") : T("Checkout.EnterBillingAddress"))
+                        @(Model.ExistingAddresses.Count > 0 ? T("Checkout.OrEnterNewAddress") : T("Checkout.EnterShippingAddress"))
                     </h2>
                     @if (Model.EuVatEnabled)
                     {

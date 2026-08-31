@@ -56,7 +56,7 @@
                     <div class="search-body @(hideSearchBlock ? "closed" : "")">
                         <div class="row">
                             <div class="col-md-5">
-                                <div class="form-group row">
+                                <div class="form-group row" @(Model.AvailableStores.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
                                     <div class="col-md-4">
                                         <nop-label asp-for="SearchStoreId" />
                                     </div>

@@ -1,0 +1,143 @@
+﻿.carousel-container.carousel-product {
+  min-height: 438px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container.carousel-category {
+  min-height: 284px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container.carousel-manufacturer {
+  min-height: 140px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container .loader {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+}
+
+
+.carousel-category {
+  min-height: 284px;
+  position: relative;
+}
+
+.carousel-manufacturer {
+  min-height: 140px;
+  position: relative;
+}
+
+
+.carousel-product {
+  min-height: 438px;
+  position: relative;
+}
+
+
+.ocarousel .item-box {
+  width: 100% !important;
+}
+
+.ocarousel .owl-nav button.owl-prev,
+.ocarousel .owl-nav button.owl-next {
+  border: 1px solid #ccc;
+  padding: 0 !important;
+  background-color: #eee;
+  font-size: 23px !important;
+  position: absolute;
+  margin: 0;
+  border-radius: 4px;
+}
+
+
+
+  .ocarousel .owl-nav button.owl-prev span,
+  .ocarousel .owl-nav button.owl-next span {
+    font-size: 23px;
+    padding: 10px;
+  }
+
+    .ocarousel .owl-nav button.owl-prev span:hover,
+    .ocarousel .owl-nav button.owl-next span:hover,
+    .ocarousel-grid .ocarousel .owl-nav button.owl-prev:hover span,
+    .ocarousel-grid .ocarousel .owl-nav button.owl-next:hover span {
+      color: #fff;
+    }
+
+.ocarousel .owl-nav button.owl-prev {
+  right: 0;
+}
+
+.ocarousel .owl-nav button.owl-next {
+  left: 0;
+}
+
+.ocarousel .owl-nav {
+  position: absolute;
+  top: 30%;
+  width: 100%;
+}
+
+.ocarousel .owl-dots {
+  display: none;
+}
+
+.ocarousel-grid {
+  margin: 0 0 50px;
+}
+
+  .ocarousel-grid .title {
+    margin: 0 0 30px;
+    /*border-bottom: 1px solid #ddd;*/
+    padding: 0 0 15px;
+    font-size: 30px;
+    font-weight: normal;
+    color: #444;
+  }
+
+    .ocarousel-grid .title strong {
+      /*font-weight: normal;*/
+    }
+
+.ocarousel .category-name,
+.ocarousel .manufacturer-name {
+  font-weight: normal;
+  font-size: 18px;
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.ocarousel-item {
+  margin: 0 0 80px;
+}
+
+.ocarousel-background {
+  padding: 50px 0 0;
+  position: relative;
+  margin-bottom: 80px;
+}
+
+  .ocarousel-background::before {
+    content: "";
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    background: rgba(255,255,255,0.7);
+    z-index: 0;
+  }
+
+  .ocarousel-background .custom-container {
+    position: relative;
+    z-index: 1;
+  }

@@ -15,22 +15,20 @@
     NopHtml.AppendPageCssClassParts("html-checkout-page");
 }
 @{
-    //step numbers
+    //step numbers - a single address is collected, and it is the shipping address
     var billingAddressStepNumber = 1;
-    var shippingAddressStepNumber = 2;
-    var shippingMethodStepNumber = 3;
-    var paymentMethodStepNumber = 4;
-    var paymentInfoStepNumber = 5;
-    var confirmOrderStepNumber = 6;
+    var shippingMethodStepNumber = 2;
+    var paymentMethodStepNumber = 3;
+    var paymentInfoStepNumber = 4;
+    var confirmOrderStepNumber = 5;
     if (!Model.ShippingRequired)
     {
-        paymentMethodStepNumber = paymentMethodStepNumber - 2;
-        paymentInfoStepNumber = paymentInfoStepNumber - 2;
-        confirmOrderStepNumber = confirmOrderStepNumber - 2;
+        paymentMethodStepNumber--;
+        paymentInfoStepNumber--;
+        confirmOrderStepNumber--;
     }
     if (Model.DisableBillingAddressCheckoutStep)
     {
-        shippingAddressStepNumber--;
         shippingMethodStepNumber--;
         paymentMethodStepNumber--;
         paymentInfoStepNumber--;
@@ -51,7 +49,7 @@
             <li id="opc-billing" class="tab-section allow">
                 <div class="step-title">
                     <span class="number">@billingAddressStepNumber</span>
-                    <h2 class="title">@T("Checkout.BillingAddress")</h2>
+                    <h2 class="title">@T("Checkout.ShippingAddress")</h2>
                 </div>
                 <div id="checkout-step-billing" class="step a-item" style="display: none;">
                     <form id="co-billing-form" action="" method="post">
@@ -80,40 +78,6 @@
             </li>
             @if (Model.ShippingRequired)
             {
-                <li id="opc-shipping" class="tab-section">
-                    <div class="step-title">
-                        <span class="number">@shippingAddressStepNumber</span>
-                        <h2 class="title">@T("Checkout.ShippingAddress")</h2>
-                    </div>
-                    <div id="checkout-step-shipping" class="step a-item" style="display: none;">
-                        <form action="" id="co-shipping-form" method="post">
-                            <div id="checkout-shipping-load">
-                                @*shipping address content will be loaded here*@
-                            </div>
-                        </form>
-                        <script asp-location="Footer">
-                            Shipping.init('#co-shipping-form', '@(storeLocation)checkout/OpcSaveShipping/');
-                            if ($("#shipping-address-select").length > 0) {
-                                Shipping.newAddress($('#shipping-address-select').val(), @Model.BillingAddress.BillingNewAddress.Id);
-                            }
-                        </script>
-                        <div class="buttons" id="shipping-buttons-container">
-                            @if (!Model.DisableBillingAddressCheckoutStep)
-                            {
-                                <p class="back-link">
-                                    <a href="#" onclick="Checkout.back(); return false; "><small>&laquo; </small>@T("Common.Back")</a>
-                                </p>
-                            }
-
-                            <span id="edit-shipping-address-buttons">
-                                <button id="save-shipping-address-button" type="button" class="button-1" style="display: none" onclick="Shipping.saveEditAddress('@(storeLocation)checkout/SaveEditShippingAddress/'); return false;">@T("Common.Save")</button>
-                            </span>
-
-                            <button type="button" class="button-1 new-address-next-step-button" onclick="Shipping.save()">@T("Common.Continue")</button>
-                            <span id="shipping-please-wait" class="please-wait" style="display: none;"> @T("Common.LoadingNextStep")</span>
-                        </div>
-                    </div>
-                </li>
                 <li id="opc-shipping_method" class="tab-section">
                     <div class="step-title">
                         <span class="number">@shippingMethodStepNumber</span>

@@ -20,7 +20,6 @@ public partial class ProductCategoryCacheEventConsumer : CacheEventConsumer<Prod
         await RemoveByPrefixAsync(NopCatalogDefaults.ProductPricePrefix, entity.ProductId);
         await RemoveByPrefixAsync(NopCatalogDefaults.ProductMultiplePricePrefix, entity.ProductId);
         await RemoveByPrefixAsync(NopCatalogDefaults.CategoryFeaturedProductsIdsPrefix, entity.CategoryId);
-        await RemoveAsync(NopCatalogDefaults.SpecificationAttributeOptionsByCategoryCacheKey, entity.CategoryId.ToString());
         await RemoveByPrefixAsync(NopCatalogDefaults.ManufacturersByCategoryWithIdPrefix, entity.CategoryId);
     }
 }

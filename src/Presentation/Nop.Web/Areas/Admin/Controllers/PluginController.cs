@@ -7,8 +7,6 @@ using Nop.Core.Domain.Payments;
 using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Events;
-using Nop.Services.Authentication.External;
-using Nop.Services.Authentication.MultiFactor;
 using Nop.Services.Catalog;
 using Nop.Services.Cms;
 using Nop.Services.Configuration;
@@ -36,13 +34,10 @@ public partial class PluginController : BaseAdminController
     #region Fields
 
     protected readonly CatalogSettings _catalogSettings;
-    protected readonly ExternalAuthenticationSettings _externalAuthenticationSettings;
-    protected readonly IAuthenticationPluginManager _authenticationPluginManager;
     protected readonly ICommonModelFactory _commonModelFactory;
     protected readonly ICustomerActivityService _customerActivityService;
     protected readonly IEventPublisher _eventPublisher;
     protected readonly ILocalizationService _localizationService;
-    protected readonly IMultiFactorAuthenticationPluginManager _multiFactorAuthenticationPluginManager;
     protected readonly INotificationService _notificationService;
     protected readonly IPermissionService _permissionService;
     protected readonly IPaymentPluginManager _paymentPluginManager;
@@ -55,7 +50,6 @@ public partial class PluginController : BaseAdminController
     protected readonly IUploadService _uploadService;
     protected readonly IWidgetPluginManager _widgetPluginManager;
     protected readonly IWorkContext _workContext;
-    protected readonly MultiFactorAuthenticationSettings _multiFactorAuthenticationSettings;
     protected readonly PaymentSettings _paymentSettings;
     protected readonly ShippingSettings _shippingSettings;
     protected readonly TaxSettings _taxSettings;
@@ -66,13 +60,10 @@ public partial class PluginController : BaseAdminController
     #region Ctor
 
     public PluginController(CatalogSettings catalogSettings,
-        ExternalAuthenticationSettings externalAuthenticationSettings,
-        IAuthenticationPluginManager authenticationPluginManager,
         ICommonModelFactory commonModelFactory,
         ICustomerActivityService customerActivityService,
         IEventPublisher eventPublisher,
         ILocalizationService localizationService,
-        IMultiFactorAuthenticationPluginManager multiFactorAuthenticationPluginManager,
         INotificationService notificationService,
         IPermissionService permissionService,
         IPaymentPluginManager paymentPluginManager,
@@ -85,20 +76,16 @@ public partial class PluginController : BaseAdminController
         IUploadService uploadService,
         IWidgetPluginManager widgetPluginManager,
         IWorkContext workContext,
-        MultiFactorAuthenticationSettings multiFactorAuthenticationSettings,
         PaymentSettings paymentSettings,
         ShippingSettings shippingSettings,
         TaxSettings taxSettings,
         WidgetSettings widgetSettings)
     {
         _catalogSettings = catalogSettings;
-        _externalAuthenticationSettings = externalAuthenticationSettings;
-        _authenticationPluginManager = authenticationPluginManager;
         _commonModelFactory = commonModelFactory;
         _customerActivityService = customerActivityService;
         _eventPublisher = eventPublisher;
         _localizationService = localizationService;
-        _multiFactorAuthenticationPluginManager = multiFactorAuthenticationPluginManager;
         _notificationService = notificationService;
         _permissionService = permissionService;
         _paymentPluginManager = paymentPluginManager;
@@ -111,7 +98,6 @@ public partial class PluginController : BaseAdminController
         _uploadService = uploadService;
         _widgetPluginManager = widgetPluginManager;
         _workContext = workContext;
-        _multiFactorAuthenticationSettings = multiFactorAuthenticationSettings;
         _paymentSettings = paymentSettings;
         _shippingSettings = shippingSettings;
         _taxSettings = taxSettings;
@@ -476,43 +462,6 @@ public partial class PluginController : BaseAdminController
                     _taxSettings.ActiveTaxProviderSystemName = model.SystemName;
                     await _settingService.SaveSettingAsync(_taxSettings);
                     break;
-                case IExternalAuthenticationMethod externalAuthenticationMethod:
-                    pluginIsActive = _authenticationPluginManager.IsPluginActive(externalAuthenticationMethod);
-                    if (pluginIsActive && !model.IsEnabled)
-                    {
-                        //mark as disabled
-                        _externalAuthenticationSettings.ActiveAuthenticationMethodSystemNames.Remove(pluginDescriptor.SystemName);
-                        await _settingService.SaveSettingAsync(_externalAuthenticationSettings);
-                        break;
-                    }
-
-                    if (!pluginIsActive && model.IsEnabled)
-                    {
-                        //mark as enabled
-                        _externalAuthenticationSettings.ActiveAuthenticationMethodSystemNames.Add(pluginDescriptor.SystemName);
-                        await _settingService.SaveSettingAsync(_externalAuthenticationSettings);
-                    }
-
-                    break;
-                case IMultiFactorAuthenticationMethod multiFactorAuthenticationMethod:
-                    pluginIsActive = _multiFactorAuthenticationPluginManager.IsPluginActive(multiFactorAuthenticationMethod);
-                    if (pluginIsActive && !model.IsEnabled)
-                    {
-                        //mark as disabled
-                        _multiFactorAuthenticationSettings.ActiveAuthenticationMethodSystemNames.Remove(pluginDescriptor.SystemName);
-                        await _settingService.SaveSettingAsync(_multiFactorAuthenticationSettings);
-                        break;
-                    }
-
-                    if (!pluginIsActive && model.IsEnabled)
-                    {
-                        //mark as enabled
-                        _multiFactorAuthenticationSettings.ActiveAuthenticationMethodSystemNames.Add(pluginDescriptor.SystemName);
-                        await _settingService.SaveSettingAsync(_multiFactorAuthenticationSettings);
-                    }
-
-                    break;
-
                 case ISearchProvider _:
                     if (!model.IsEnabled)
                     {

@@ -1,0 +1,4 @@
+﻿4.70.1.0: Initial release
+4.80.1.0: Version upgraded
+4.80.1.1: Bug fixed
+4.90.1.0: Version upgraded

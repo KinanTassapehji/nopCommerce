@@ -45,17 +45,14 @@ public partial class NopStartup : INopStartup
         services.AddScoped<ICustomerRoleModelFactory, CustomerRoleModelFactory>();
         services.AddScoped<IDiscountModelFactory, DiscountModelFactory>();
         services.AddScoped<IEmailAccountModelFactory, EmailAccountModelFactory>();
-        services.AddScoped<IExternalAuthenticationMethodModelFactory, ExternalAuthenticationMethodModelFactory>();
         services.AddScoped<IFilterLevelValueModelFactory, FilterLevelValueModelFactory>();
         services.AddScoped<IForumModelFactory, ForumModelFactory>();
-        services.AddScoped<IGiftCardModelFactory, GiftCardModelFactory>();
         services.AddScoped<IHomeModelFactory, HomeModelFactory>();
         services.AddScoped<ILanguageModelFactory, LanguageModelFactory>();
         services.AddScoped<ILogModelFactory, LogModelFactory>();
         services.AddScoped<IManufacturerModelFactory, ManufacturerModelFactory>();
         services.AddScoped<IMeasureModelFactory, MeasureModelFactory>();
         services.AddScoped<IMessageTemplateModelFactory, MessageTemplateModelFactory>();
-        services.AddScoped<IMultiFactorAuthenticationMethodModelFactory, MultiFactorAuthenticationMethodModelFactory>();
         services.AddScoped<INewsLetterSubscriptionModelFactory, NewsLetterSubscriptionModelFactory>();
         services.AddScoped<INewsLetterSubscriptionTypeModelFactory, NewsLetterSubscriptionTypeModelFactory>();
         services.AddScoped<INewsModelFactory, NewsModelFactory>();
@@ -68,7 +65,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IProductReviewModelFactory, ProductReviewModelFactory>();
         services.AddScoped<IReportModelFactory, ReportModelFactory>();
         services.AddScoped<IQueuedEmailModelFactory, QueuedEmailModelFactory>();
-        services.AddScoped<IRecurringPaymentModelFactory, RecurringPaymentModelFactory>();
+
         services.AddScoped<IReturnRequestModelFactory, ReturnRequestModelFactory>();
         services.AddScoped<IReviewTypeModelFactory, ReviewTypeModelFactory>();
         services.AddScoped<IScheduleTaskModelFactory, ScheduleTaskModelFactory>();
@@ -76,9 +73,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<ISettingModelFactory, SettingModelFactory>();
         services.AddScoped<IShippingModelFactory, ShippingModelFactory>();
         services.AddScoped<IShoppingCartModelFactory, ShoppingCartModelFactory>();
-        services.AddScoped<ISpecificationAttributeModelFactory, SpecificationAttributeModelFactory>();
         services.AddScoped<IStoreModelFactory, StoreModelFactory>();
-        services.AddScoped<ITaxModelFactory, TaxModelFactory>();
         services.AddScoped<ITemplateModelFactory, TemplateModelFactory>();
         services.AddScoped<ITopicModelFactory, TopicModelFactory>();
         services.AddScoped<IVendorAttributeModelFactory, VendorAttributeModelFactory>();
@@ -97,7 +92,6 @@ public partial class NopStartup : INopStartup
         services.AddScoped<Factories.ICustomerModelFactory, Factories.CustomerModelFactory>();
         services.AddScoped<Factories.IForumModelFactory, Factories.ForumModelFactory>();
         services.AddScoped<Factories.IFilterLevelValueModelFactory, Factories.FilterLevelValueModelFactory>();
-        services.AddScoped<Factories.IExternalAuthenticationModelFactory, Factories.ExternalAuthenticationModelFactory>();
         services.AddScoped<Factories.IJsonLdModelFactory, Factories.JsonLdModelFactory>();
         services.AddScoped<Factories.INewsModelFactory, Factories.NewsModelFactory>();
         services.AddScoped<Factories.INewsLetterModelFactory, Factories.NewsLetterModelFactory>();

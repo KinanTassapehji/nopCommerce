@@ -37,32 +37,6 @@ public class TestPaymentMethod : BasePlugin, IPaymentMethod
     }
 
     /// <summary>
-    /// Process recurring payment
-    /// </summary>
-    /// <param name="processPaymentRequest">Payment info required for an order processing</param>
-    /// <returns>Process payment result</returns>
-    public Task<ProcessPaymentResult> ProcessRecurringPaymentAsync(ProcessPaymentRequest processPaymentRequest)
-    {
-        var result = new ProcessPaymentResult();
-        result.AddError("Recurring method not supported");
-
-        return Task.FromResult(result);
-    }
-
-    /// <summary>
-    /// Cancels a recurring payment
-    /// </summary>
-    /// <param name="cancelPaymentRequest">Request</param>
-    /// <returns>Result</returns>
-    public Task<CancelRecurringPaymentResult> CancelRecurringPaymentAsync(CancelRecurringPaymentRequest cancelPaymentRequest)
-    {
-        var result = new CancelRecurringPaymentResult();
-        result.AddError("Cancelling recurring orders not supported");
-
-        return Task.FromResult(result);
-    }
-
-    /// <summary>
     /// Gets a value indicating whether customers can complete a payment after order is placed but not completed (for redirection payment methods)
     /// </summary>
     /// <param name="order">Order</param>
@@ -191,12 +165,6 @@ public class TestPaymentMethod : BasePlugin, IPaymentMethod
     public bool SupportVoid => TestSupportVoid;
 
     /// <summary>
-    /// Gets a recurring payment type of payment method
-    /// </summary>
-    /// <returns>A recurring payment type of payment method</returns>
-    public RecurringPaymentType RecurringPaymentType => RecurringPaymentType.NotSupported;
-
-    /// <summary>
     /// Gets a payment method type
     /// </summary>
     /// <returns>A payment method type</returns>
@@ -231,6 +199,5 @@ public class TestPaymentMethod : BasePlugin, IPaymentMethod
     public static decimal AdditionalHandlingFee { get; set; } = decimal.Zero;
 
     #endregion
-
 
 }

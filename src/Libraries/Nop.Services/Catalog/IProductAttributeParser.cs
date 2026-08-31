@@ -147,34 +147,4 @@ public partial interface IProductAttributeParser
     Task<string> ParseProductAttributesAsync(Product product, IFormCollection form, List<string> errors);
 
     #endregion
-
-    #region Gift card attributes
-
-    /// <summary>
-    /// Add gift card attributes
-    /// </summary>
-    /// <param name="attributesXml">Attributes in XML format</param>
-    /// <param name="recipientName">Recipient name</param>
-    /// <param name="recipientEmail">Recipient email</param>
-    /// <param name="senderName">Sender name</param>
-    /// <param name="senderEmail">Sender email</param>
-    /// <param name="giftCardMessage">Message</param>
-    /// <returns>Attributes</returns>
-    string AddGiftCardAttribute(string attributesXml, string recipientName,
-        string recipientEmail, string senderName, string senderEmail, string giftCardMessage);
-
-    /// <summary>
-    /// Get gift card attributes
-    /// </summary>
-    /// <param name="attributesXml">Attributes in XML format</param>
-    /// <param name="recipientName">Recipient name</param>
-    /// <param name="recipientEmail">Recipient email</param>
-    /// <param name="senderName">Sender name</param>
-    /// <param name="senderEmail">Sender email</param>
-    /// <param name="giftCardMessage">Message</param>
-    void GetGiftCardAttribute(string attributesXml, out string recipientName,
-        out string recipientEmail, out string senderName,
-        out string senderEmail, out string giftCardMessage);
-
-    #endregion
 }

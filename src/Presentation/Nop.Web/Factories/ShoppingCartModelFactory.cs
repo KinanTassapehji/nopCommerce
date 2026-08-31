@@ -41,6 +41,15 @@ namespace Nop.Web.Factories;
 /// </summary>
 public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
 {
+    #region Constants
+
+    /// <summary>
+    /// The only country the store ships to
+    /// </summary>
+    protected const string SHIP_TO_COUNTRY_ISO_CODE = "SY";
+
+    #endregion
+
     #region Fields
 
     protected readonly AddressSettings _addressSettings;
@@ -56,12 +65,10 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
     protected readonly ICountryService _countryService;
     protected readonly ICurrencyService _currencyService;
     protected readonly ICustomerService _customerService;
-    protected readonly ICustomWishlistService _customWishlistService;
     protected readonly IDateTimeHelper _dateTimeHelper;
     protected readonly IDiscountService _discountService;
     protected readonly IDownloadService _downloadService;
     protected readonly IGenericAttributeService _genericAttributeService;
-    protected readonly IGiftCardService _giftCardService;
     protected readonly IHttpContextAccessor _httpContextAccessor;
     protected readonly ILocalizationService _localizationService;
     protected readonly IOrderProcessingService _orderProcessingService;
@@ -87,7 +94,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
     protected readonly IWorkContext _workContext;
     protected readonly MediaSettings _mediaSettings;
     protected readonly OrderSettings _orderSettings;
-    protected readonly RewardPointsSettings _rewardPointsSettings;
     protected readonly ShippingSettings _shippingSettings;
     protected readonly ShoppingCartSettings _shoppingCartSettings;
     protected readonly TaxSettings _taxSettings;
@@ -111,12 +117,10 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
         ICountryService countryService,
         ICurrencyService currencyService,
         ICustomerService customerService,
-        ICustomWishlistService customWishlistService,
         IDateTimeHelper dateTimeHelper,
         IDiscountService discountService,
         IDownloadService downloadService,
         IGenericAttributeService genericAttributeService,
-        IGiftCardService giftCardService,
         IHttpContextAccessor httpContextAccessor,
         ILocalizationService localizationService,
         IOrderProcessingService orderProcessingService,
@@ -142,7 +146,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
         IWorkContext workContext,
         MediaSettings mediaSettings,
         OrderSettings orderSettings,
-        RewardPointsSettings rewardPointsSettings,
         ShippingSettings shippingSettings,
         ShoppingCartSettings shoppingCartSettings,
         TaxSettings taxSettings,
@@ -154,7 +157,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
         _catalogSettings = catalogSettings;
         _commonSettings = commonSettings;
         _customerSettings = customerSettings;
-        _customWishlistService = customWishlistService;
         _addressModelFactory = addressModelFactory;
         _checkoutAttributeParser = checkoutAttributeParser;
         _checkoutAttributeService = checkoutAttributeService;
@@ -166,7 +168,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
         _discountService = discountService;
         _downloadService = downloadService;
         _genericAttributeService = genericAttributeService;
-        _giftCardService = giftCardService;
         _httpContextAccessor = httpContextAccessor;
         _localizationService = localizationService;
         _orderProcessingService = orderProcessingService;
@@ -192,7 +193,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
         _workContext = workContext;
         _mediaSettings = mediaSettings;
         _orderSettings = orderSettings;
-        _rewardPointsSettings = rewardPointsSettings;
         _shippingSettings = shippingSettings;
         _shoppingCartSettings = shoppingCartSettings;
         _taxSettings = taxSettings;
@@ -395,17 +395,12 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
         //allow editing?
         //1. setting enabled?
         //2. simple product?
-        //3. has attribute or gift card?
+        //3. has attribute?
         //4. visible individually?
         cartItemModel.AllowItemEditing = _shoppingCartSettings.AllowCartItemEditing &&
                                          product.ProductType == ProductType.SimpleProduct &&
-                                         (!string.IsNullOrEmpty(cartItemModel.AttributeInfo) ||
-                                          product.IsGiftCard) &&
+                                         !string.IsNullOrEmpty(cartItemModel.AttributeInfo) &&
                                          product.VisibleIndividually;
-
-        //disable removal?
-        //1. do other items require this one?
-        cartItemModel.DisableRemoval = (await _shoppingCartService.GetProductsRequiringProductAsync(cart, product)).Any();
 
         //allowed quantities
         var allowedQuantities = _productService.ParseAllowedQuantities(product);
@@ -418,11 +413,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
                 Selected = sci.Quantity == qty
             });
         }
-
-        //recurring info
-        if (product.IsRecurring)
-            cartItemModel.RecurringInfo = string.Format(await _localizationService.GetResourceAsync("ShoppingCart.RecurringPeriod"),
-                product.RecurringCycleLength, await _localizationService.GetLocalizedEnumAsync(product.RecurringCyclePeriod));
 
         //rental info
         if (product.IsRental)
@@ -503,147 +493,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
             sci.RentalStartDateUtc,
             sci.RentalEndDateUtc,
             sci.Quantity,
-            false,
-            sci.Id);
-        foreach (var warning in itemWarnings)
-            cartItemModel.Warnings.Add(warning);
-
-        return cartItemModel;
-    }
-
-    /// <summary>
-    /// Prepare the wishlist item model
-    /// </summary>
-    /// <param name="sci">Shopping cart item</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the shopping cart item model
-    /// </returns>
-    protected virtual async Task<WishlistModel.ShoppingCartItemModel> PrepareWishlistItemModelAsync(ShoppingCartItem sci)
-    {
-        ArgumentNullException.ThrowIfNull(sci);
-
-        var product = await _productService.GetProductByIdAsync(sci.ProductId);
-
-        var cartItemModel = new WishlistModel.ShoppingCartItemModel
-        {
-            Id = sci.Id,
-            Sku = await _productService.FormatSkuAsync(product, sci.AttributesXml),
-            ProductId = product.Id,
-            ProductName = await _localizationService.GetLocalizedAsync(product, x => x.Name),
-            ProductSeName = await _urlRecordService.GetSeNameAsync(product),
-            Quantity = sci.Quantity,
-            AttributeInfo = await _productAttributeFormatter.FormatAttributesAsync(product, sci.AttributesXml),
-        };
-
-        //allow editing?
-        //1. setting enabled?
-        //2. simple product?
-        //3. has attribute or gift card?
-        //4. visible individually?
-        cartItemModel.AllowItemEditing = _shoppingCartSettings.AllowCartItemEditing &&
-                                         product.ProductType == ProductType.SimpleProduct &&
-                                         (!string.IsNullOrEmpty(cartItemModel.AttributeInfo) ||
-                                          product.IsGiftCard) &&
-                                         product.VisibleIndividually;
-
-        //allowed quantities
-        var allowedQuantities = _productService.ParseAllowedQuantities(product);
-        foreach (var qty in allowedQuantities)
-        {
-            cartItemModel.AllowedQuantities.Add(new SelectListItem
-            {
-                Text = qty.ToString(),
-                Value = qty.ToString(),
-                Selected = sci.Quantity == qty
-            });
-        }
-
-        //recurring info
-        if (product.IsRecurring)
-            cartItemModel.RecurringInfo = string.Format(await _localizationService.GetResourceAsync("ShoppingCart.RecurringPeriod"),
-                product.RecurringCycleLength, await _localizationService.GetLocalizedEnumAsync(product.RecurringCyclePeriod));
-
-        //rental info
-        if (product.IsRental)
-        {
-            var rentalStartDate = sci.RentalStartDateUtc.HasValue
-                ? _productService.FormatRentalDate(product, sci.RentalStartDateUtc.Value)
-                : string.Empty;
-            var rentalEndDate = sci.RentalEndDateUtc.HasValue
-                ? _productService.FormatRentalDate(product, sci.RentalEndDateUtc.Value)
-                : string.Empty;
-            cartItemModel.RentalInfo =
-                string.Format(await _localizationService.GetResourceAsync("ShoppingCart.Rental.FormattedDate"),
-                    rentalStartDate, rentalEndDate);
-        }
-
-        //unit prices
-        var currentCurrency = await _workContext.GetWorkingCurrencyAsync();
-        if (product.CallForPrice &&
-            //also check whether the current user is impersonated
-            (!_orderSettings.AllowAdminsToBuyCallForPriceProducts || _workContext.OriginalCustomerIfImpersonated == null))
-        {
-            cartItemModel.UnitPrice = await _localizationService.GetResourceAsync("Products.CallForPrice");
-            cartItemModel.UnitPriceValue = 0;
-        }
-        else
-        {
-            var (shoppingCartUnitPriceWithDiscountBase, _) = await _taxService.GetProductPriceAsync(product, (await _shoppingCartService.GetUnitPriceAsync(sci, true)).unitPrice);
-            var shoppingCartUnitPriceWithDiscount = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(shoppingCartUnitPriceWithDiscountBase, currentCurrency);
-            cartItemModel.UnitPrice = await _priceFormatter.FormatPriceAsync(shoppingCartUnitPriceWithDiscount);
-            cartItemModel.UnitPriceValue = shoppingCartUnitPriceWithDiscount;
-        }
-        //subtotal, discount
-        if (product.CallForPrice &&
-            //also check whether the current user is impersonated
-            (!_orderSettings.AllowAdminsToBuyCallForPriceProducts || _workContext.OriginalCustomerIfImpersonated == null))
-        {
-            cartItemModel.SubTotal = await _localizationService.GetResourceAsync("Products.CallForPrice");
-            cartItemModel.SubTotalValue = 0;
-        }
-        else
-        {
-            //sub total
-            var (subTotal, shoppingCartItemDiscountBase, _, maximumDiscountQty) = await _shoppingCartService.GetSubTotalAsync(sci, true);
-            var (shoppingCartItemSubTotalWithDiscountBase, _) = await _taxService.GetProductPriceAsync(product, subTotal);
-            var shoppingCartItemSubTotalWithDiscount = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(shoppingCartItemSubTotalWithDiscountBase, currentCurrency);
-            cartItemModel.SubTotal = await _priceFormatter.FormatPriceAsync(shoppingCartItemSubTotalWithDiscount);
-            cartItemModel.SubTotalValue = shoppingCartItemSubTotalWithDiscount;
-            cartItemModel.MaximumDiscountedQty = maximumDiscountQty;
-
-            //display an applied discount amount
-            if (shoppingCartItemDiscountBase > decimal.Zero)
-            {
-                (shoppingCartItemDiscountBase, _) = await _taxService.GetProductPriceAsync(product, shoppingCartItemDiscountBase);
-                if (shoppingCartItemDiscountBase > decimal.Zero)
-                {
-                    var shoppingCartItemDiscount = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(shoppingCartItemDiscountBase, currentCurrency);
-                    cartItemModel.Discount = await _priceFormatter.FormatPriceAsync(shoppingCartItemDiscount);
-                    cartItemModel.DiscountValue = shoppingCartItemDiscount;
-                }
-            }
-        }
-
-        //picture
-        if (_shoppingCartSettings.ShowProductImagesOnWishList)
-        {
-            cartItemModel.Picture = await PrepareCartItemPictureModelAsync(sci,
-                _mediaSettings.CartThumbPictureSize, true, cartItemModel.ProductName);
-        }
-
-        //item warnings
-        var itemWarnings = await _shoppingCartService.GetShoppingCartItemWarningsAsync(
-            await _workContext.GetCurrentCustomerAsync(),
-            sci.ShoppingCartType,
-            product,
-            sci.StoreId,
-            sci.AttributesXml,
-            sci.CustomerEnteredPrice,
-            sci.RentalStartDateUtc,
-            sci.RentalEndDateUtc,
-            sci.Quantity,
-            false,
             sci.Id);
         foreach (var warning in itemWarnings)
             cartItemModel.Warnings.Add(warning);
@@ -783,27 +632,24 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
                 //enabled for the current store
                 .FirstOrDefaultAwaitAsync(async a => a.CountryId == null || await _storeMappingService.AuthorizeAsync(await _countryService.GetCountryByAddressAsync(a)));
 
-            //countries
-            var defaultEstimateCountryId = (setEstimateShippingDefaultAddress && shippingAddress != null)
-                ? shippingAddress.CountryId
-                : model.CountryId;
-            model.AvailableCountries.Add(new SelectListItem
-            {
-                Text = await _localizationService.GetResourceAsync("Address.SelectCountry"),
-                Value = "0"
-            });
-
             var currentLanguage = await _workContext.GetWorkingLanguageAsync();
-            foreach (var c in await _countryService.GetAllCountriesForShippingAsync(currentLanguage.Id))
+
+            //countries - the store ships inside Syria only, so the picker holds a single
+            //pre-selected option and the view keeps it hidden
+            //ponytail: still a <select>, because the popup script reads the country name off the selected option
+            var shipToCountry = await _countryService.GetCountryByTwoLetterIsoCodeAsync(SHIP_TO_COUNTRY_ISO_CODE);
+            var defaultEstimateCountryId = shipToCountry?.Id;
+            model.CountryId = defaultEstimateCountryId;
+            if (shipToCountry != null)
                 model.AvailableCountries.Add(new SelectListItem
                 {
-                    Text = await _localizationService.GetLocalizedAsync(c, x => x.Name),
-                    Value = c.Id.ToString(),
-                    Selected = c.Id == defaultEstimateCountryId
+                    Text = await _localizationService.GetLocalizedAsync(shipToCountry, x => x.Name),
+                    Value = shipToCountry.Id.ToString(),
+                    Selected = true
                 });
 
             //states
-            var defaultEstimateStateId = (setEstimateShippingDefaultAddress && shippingAddress != null)
+            var defaultEstimateStateId = (setEstimateShippingDefaultAddress && shippingAddress?.CountryId == defaultEstimateCountryId)
                 ? shippingAddress.StateProvinceId
                 : model.StateProvinceId;
             var states = defaultEstimateCountryId.HasValue
@@ -830,12 +676,14 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
                 });
             }
 
-            if (setEstimateShippingDefaultAddress && shippingAddress != null)
+            if (setEstimateShippingDefaultAddress && shippingAddress?.CountryId == defaultEstimateCountryId)
             {
                 if (!_shippingSettings.EstimateShippingCityNameEnabled)
                     model.ZipPostalCode = shippingAddress.ZipPostalCode;
                 else
                     model.City = shippingAddress.City;
+
+                model.Street = shippingAddress.Address1;
             }
         }
 
@@ -889,7 +737,7 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
         model.TermsOfServicePopup = _commonSettings.PopupForTermsOfServiceLinks;
         model.DisplayTaxShippingInfo = _catalogSettings.DisplayTaxShippingInfoShoppingCart;
 
-        //discount and gift card boxes
+        //discount box
         model.DiscountBox.Display = _shoppingCartSettings.ShowDiscountBox;
         var discountCouponCodes = await _customerService.ParseAppliedDiscountCouponCodesAsync(customer);
 
@@ -907,8 +755,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
                 });
             }
         }
-
-        model.GiftCardBox.Display = _shoppingCartSettings.ShowGiftCardBox;
 
         //cart warnings
         var cartWarnings = await _shoppingCartService.GetShoppingCartWarningsAsync(cart, checkoutAttributesXml, validateCheckoutAttributes);
@@ -940,8 +786,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
             .ToList();
         foreach (var pm in buttonPaymentMethods)
         {
-            if (await _shoppingCartService.ShoppingCartIsRecurringAsync(cart) && pm.RecurringPaymentType == RecurringPaymentType.NotSupported)
-                continue;
 
             var viewComponent = pm.GetPublicViewComponent();
             model.ButtonPaymentMethodViewComponents.Add(viewComponent);
@@ -953,77 +797,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
         if (prepareAndDisplayOrderReviewData)
         {
             model.OrderReviewData = await PrepareOrderReviewDataModelAsync(cart);
-        }
-
-        return model;
-    }
-
-    /// <summary>
-    /// Prepare the wishlist model
-    /// </summary>
-    /// <param name="model">Wishlist model</param>
-    /// <param name="cart">List of the shopping cart item</param>
-    /// <param name="isEditable">Whether model is editable</param>
-    /// <param name="list">Custom wishlist identifier</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the wishlist model
-    /// </returns>
-    public virtual async Task<WishlistModel> PrepareWishlistModelAsync(WishlistModel model, IList<ShoppingCartItem> cart, bool isEditable = true, int? list = null)
-    {
-        ArgumentNullException.ThrowIfNull(cart);
-        ArgumentNullException.ThrowIfNull(model);
-
-        var currentCustomer = await _workContext.GetCurrentCustomerAsync();
-        var isGuest = await _customerService.IsGuestAsync(currentCustomer);
-
-        model.EmailWishlistEnabled = _shoppingCartSettings.EmailWishlistEnabled;
-        model.ListId = list;
-        model.AllowMultipleWishlist = _shoppingCartSettings.AllowMultipleWishlist && !isGuest;
-        model.IsEditable = isEditable;
-        model.DisplayAddToCart = await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.ENABLE_SHOPPING_CART);
-        model.DisplayTaxShippingInfo = _catalogSettings.DisplayTaxShippingInfoWishlist;
-
-        //custom wishlist items
-        var currentWishlists = await _customWishlistService.GetAllCustomWishlistsAsync(currentCustomer.Id);
-        foreach (var wishlist in currentWishlists)
-        {
-            var customWishlistModel = new CustomWishlistModel
-            {
-                Id = wishlist.Id,
-                Name = wishlist.Name
-            };
-            model.CustomWishlistItems.Add(customWishlistModel);
-        }
-
-        if (list != null)
-        {
-            var customWishlist = await _customWishlistService.GetCustomWishlistByIdAsync(list.Value);
-            if (customWishlist != null)
-                model.CustomWishlistName = customWishlist.Name;
-        }
-
-        if (!cart.Any())
-            return model;
-
-        //simple properties
-        var customer = await _customerService.GetShoppingCartCustomerAsync(cart);
-
-        model.CustomerGuid = customer.CustomerGuid;
-        model.CustomerFullname = await _customerService.GetCustomerFullNameAsync(customer);
-        model.ShowProductImages = _shoppingCartSettings.ShowProductImagesOnWishList;
-        model.ShowSku = _catalogSettings.ShowSkuOnProductDetailsPage;
-
-        //cart warnings
-        var cartWarnings = await _shoppingCartService.GetShoppingCartWarningsAsync(cart, string.Empty, false);
-        foreach (var warning in cartWarnings)
-            model.Warnings.Add(warning);
-
-        //cart items
-        foreach (var sci in cart)
-        {
-            var cartItemModel = await PrepareWishlistItemModelAsync(sci);
-            model.Items.Add(cartItemModel);
         }
 
         return model;
@@ -1078,16 +851,9 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
 
                 var minOrderSubtotalAmountOk = await _orderProcessingService.ValidateMinOrderSubtotalAmountAsync(cart);
 
-                var cartProductIds = cart.Select(ci => ci.ProductId).ToArray();
-
-                var downloadableProductsRequireRegistration =
-                    _customerSettings.RequireRegistrationForDownloadableProducts && await _productService.HasAnyDownloadableProductAsync(cartProductIds);
-
                 model.DisplayCheckoutButton = !_orderSettings.TermsOfServiceOnShoppingCartPage &&
                                               minOrderSubtotalAmountOk &&
-                                              !checkoutAttributesExist &&
-                                              !(downloadableProductsRequireRegistration
-                                                && await _customerService.IsGuestAsync(customer));
+                                              !checkoutAttributesExist;
 
                 //products. sort descending (recently added products)
                 foreach (var sci in cart
@@ -1261,7 +1027,7 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
             model.DisplayTax = displayTax;
 
             //total
-            var (shoppingCartTotalBase, orderTotalDiscountAmountBase, _, appliedGiftCards, redeemedRewardPoints, redeemedRewardPointsAmount) = await _orderTotalCalculationService.GetShoppingCartTotalAsync(cart);
+            var (shoppingCartTotalBase, orderTotalDiscountAmountBase, _) = await _orderTotalCalculationService.GetShoppingCartTotalAsync(cart);
             if (shoppingCartTotalBase.HasValue)
             {
                 var shoppingCartTotal = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(shoppingCartTotalBase.Value, currentCurrency);
@@ -1273,48 +1039,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
             {
                 var orderTotalDiscountAmount = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(orderTotalDiscountAmountBase, currentCurrency);
                 model.OrderTotalDiscount = await _priceFormatter.FormatPriceAsync(-orderTotalDiscountAmount, true, false);
-            }
-
-            //gift cards
-            if (appliedGiftCards != null && appliedGiftCards.Any())
-            {
-                foreach (var appliedGiftCard in appliedGiftCards)
-                {
-                    var gcModel = new OrderTotalsModel.GiftCard
-                    {
-                        Id = appliedGiftCard.GiftCard.Id,
-                        CouponCode = appliedGiftCard.GiftCard.GiftCardCouponCode,
-                    };
-                    var amountCanBeUsed = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(appliedGiftCard.AmountCanBeUsed, currentCurrency);
-                    gcModel.Amount = await _priceFormatter.FormatPriceAsync(-amountCanBeUsed, true, false);
-
-                    var remainingAmountBase = await _giftCardService.GetGiftCardRemainingAmountAsync(appliedGiftCard.GiftCard) - appliedGiftCard.AmountCanBeUsed;
-                    var remainingAmount = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(remainingAmountBase, currentCurrency);
-                    gcModel.Remaining = await _priceFormatter.FormatPriceAsync(remainingAmount, true, false);
-
-                    model.GiftCards.Add(gcModel);
-                }
-            }
-
-            //reward points to be spent (redeemed)
-            if (redeemedRewardPointsAmount > decimal.Zero)
-            {
-                var redeemedRewardPointsAmountInCustomerCurrency = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(redeemedRewardPointsAmount, currentCurrency);
-                model.RedeemedRewardPoints = redeemedRewardPoints;
-                model.RedeemedRewardPointsAmount = await _priceFormatter.FormatPriceAsync(-redeemedRewardPointsAmountInCustomerCurrency, true, false);
-            }
-
-            //reward points to be earned
-            if (_rewardPointsSettings.Enabled && _rewardPointsSettings.DisplayHowMuchWillBeEarned && shoppingCartTotalBase.HasValue)
-            {
-                //get shipping total
-                var shippingBaseInclTax = !model.RequiresShipping ? 0 : (await _orderTotalCalculationService.GetShoppingCartShippingTotalAsync(cart, true)).shippingTotal ?? 0;
-
-                //get total for reward points
-                var totalForRewardPoints = _orderTotalCalculationService
-                    .CalculateApplicableOrderTotalForRewardPoints(shippingBaseInclTax, shoppingCartTotalBase.Value);
-                if (totalForRewardPoints > decimal.Zero)
-                    model.WillEarnRewardPoints = await _orderTotalCalculationService.CalculateRewardPointsAsync(customer, totalForRewardPoints);
             }
         }
 
@@ -1344,7 +1068,8 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
                 CountryId = request.CountryId,
                 StateProvinceId = request.StateProvinceId,
                 ZipPostalCode = request.ZipPostalCode,
-                City = request.City
+                City = request.City,
+                Address1 = request.Street
             };
 
             var rawShippingOptions = new List<ShippingOption>();
@@ -1474,32 +1199,6 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
                     model.ShippingOptions.First().Selected = true;
             }
         }
-
-        return model;
-    }
-
-    /// <summary>
-    /// Prepare the wishlist email a friend model
-    /// </summary>
-    /// <param name="model">Wishlist email a friend model</param>
-    /// <param name="excludeProperties">Whether to exclude populating of model properties from the entity</param>
-    /// <param name="wishlistId">Custom wishlist identifier</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the wishlist email a friend model
-    /// </returns>
-    public virtual async Task<WishlistEmailAFriendModel> PrepareWishlistEmailAFriendModelAsync(WishlistEmailAFriendModel model, bool excludeProperties, int? wishlistId = null)
-    {
-        ArgumentNullException.ThrowIfNull(model);
-
-        model.DisplayCaptcha = _captchaSettings.Enabled && _captchaSettings.ShowOnEmailWishlistToFriendPage;
-        if (!excludeProperties)
-        {
-            var customer = await _workContext.GetCurrentCustomerAsync();
-            model.YourEmailAddress = customer.Email;
-        }
-
-        model.ListId = wishlistId;
 
         return model;
     }

@@ -1,0 +1,15 @@
+﻿@inject Nop.Core.IWorkContext workContext
+@{
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, $"/Plugins/NopStation.Plugin.Widgets.OCarousels/Contents/script/nopstation.carousel.js");
+
+    NopHtml.AppendCssFileParts($"/Plugins/NopStation.Plugin.Widgets.OCarousels/Themes/Berry/contents/css/styles.css", string.Empty);
+}
+
+<script asp-location="Footer">
+    var carouseldata = {};
+    carouseldata.CarouselFailure = '@T("NopStation.OCarousels.LoadingFailed")';
+
+    $(document).ready(function () {
+        Carousel.init('@Url.RouteUrl("OCarousel")', '.carousel-container', '.carousel-container .loader', carouseldata);
+    });
+</script>

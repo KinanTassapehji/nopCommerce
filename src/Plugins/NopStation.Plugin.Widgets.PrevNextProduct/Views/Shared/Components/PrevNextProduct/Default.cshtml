@@ -1,0 +1,36 @@
+﻿@using Nop.Web.Framework.Mvc.Routing
+@using Nop.Core.Domain.Catalog
+
+@model NopStation.Plugin.Widgets.PrevNextProduct.Models.PublicInfoModel
+
+@{
+    var supportRtl = await Html.ShouldUseRtlThemeAsync();
+
+    if (supportRtl)
+    {
+        NopHtml.AppendCssFileParts("~/Plugins/NopStation.Plugin.Widgets.PrevNextProduct/Contents/css/style.rtl.css", string.Empty);
+    }
+    else
+    {
+        NopHtml.AppendCssFileParts("~/Plugins/NopStation.Plugin.Widgets.PrevNextProduct/Contents/css/style.css", string.Empty);
+    }
+}
+
+<div class="prev-next-container">
+    <div class="previous-product">
+        @if (Model.Previous.HasProduct)
+        {
+            <a href="@(await NopUrl.RouteGenericUrlAsync<Product>(new { SeName = Model.Previous.SeName }))">
+                @Model.Previous.Name
+            </a>
+        }
+    </div>
+    <div class="next-product">
+        @if (Model.Next.HasProduct)
+        {
+            <a href="@(await NopUrl.RouteGenericUrlAsync<Product>(new { SeName = Model.Next.SeName }))">
+                @Model.Next.Name
+            </a>
+        }
+    </div>
+</div>

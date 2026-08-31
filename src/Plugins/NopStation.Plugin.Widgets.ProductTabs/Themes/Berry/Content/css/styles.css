@@ -1,0 +1,42 @@
+.product-tab-container .product-tab-picture {
+    position: relative;
+    padding-top: 100%;
+}
+.product-tab-container .product-tab-picture img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  height: 100%;
+  width: 100%;
+  object-fit:cover;
+}
+
+.product-tab-container .owl-carousel .owl-nav button.owl-prev,
+.product-tab-container .owl-carousel .owl-nav button.owl-next {
+  line-height: 24px;
+  width: 30px;
+  border: 2px solid var(--theme-color);
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.product-tab-container .owl-carousel .owl-nav {
+  top: -40px;
+  right: 5px;
+}
+
+.product-tab-container .ui-tabs .ui-tabs-nav {
+  border-bottom: 1px solid #ddd;
+}
+
+.ui-state-default a, .ui-state-default a:link,
+.ui-state-default a:visited, a.ui-button,
+a:link.ui-button, a:visited.ui-button, .ui-button {
+  color: #454545;
+}
+
+.product-tab-container .owl-carousel .owl-nav button.owl-prev span,
+.product-tab-container .owl-carousel .owl-nav button.owl-next span {
+  color: var(--theme-color);
+}

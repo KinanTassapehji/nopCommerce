@@ -1,0 +1,21 @@
+﻿@inject Nop.Core.IWorkContext workContext
+
+@{
+    var supportRtl = (await workContext.GetWorkingLanguageAsync()).Rtl;
+
+    if (supportRtl)
+    {
+        NopHtml.AppendCssFileParts("/Plugins/NopStation.Plugin.Widgets.ProductTabs/Themes/CapeTownBooks/Contents/css/styles.rtl.css", string.Empty);
+    }
+    else
+    {
+        NopHtml.AppendCssFileParts("/Plugins/NopStation.Plugin.Widgets.ProductTabs/Themes/CapeTownBooks/Contents/css/styles.css", string.Empty);
+    }
+}
+
+
+<script asp-location="Footer">
+    $(function () {
+        $(".ns-product-tab").tabs();
+    });
+</script>

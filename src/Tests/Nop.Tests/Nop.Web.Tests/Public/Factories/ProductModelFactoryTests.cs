@@ -140,22 +140,11 @@ public class ProductModelFactoryTests : WebTest
         model.YourEmailAddress.Should().Be(NopTestsDefaults.AdminEmail);
     }
 
-    [Test]
-    public async Task CanPrepareProductSpecificationModel()
-    {
-        var product = await _productService.GetProductByIdAsync(1);
-        var model = await _productModelFactory.PrepareProductSpecificationModelAsync(product);
-
-        var group = model.Groups.FirstOrDefault();
-
-        group.Should().NotBe(null);
-    }
-
     #region Nested class
 
     public class ProductModelFactoryForTest : ProductModelFactory
     {
-        public ProductModelFactoryForTest(CaptchaSettings captchaSettings, CatalogSettings catalogSettings, CustomerSettings customerSettings, ICategoryService categoryService, ICurrencyService currencyService, ICustomerService customerService, ICustomWishlistService customWishlistService, IDateRangeService dateRangeService, IDateTimeHelper dateTimeHelper, IDownloadService downloadService, IGenericAttributeService genericAttributeService, IJsonLdModelFactory jsonLdModelFactory, ILocalizationService localizationService, IManufacturerService manufacturerService, IPermissionService permissionService, IPictureService pictureService, IPriceCalculationService priceCalculationService, IPriceFormatter priceFormatter, IProductAttributeParser productAttributeParser, IProductAttributeService productAttributeService, IProductReviewService productReviewService, IProductService productService, IProductTagService productTagService, IProductTemplateService productTemplateService, IReviewTypeService reviewTypeService, IShoppingCartService shoppingCartService, ISpecificationAttributeService specificationAttributeService, IStaticCacheManager staticCacheManager, IStoreContext storeContext, IStoreService storeService, IShoppingCartModelFactory shoppingCartModelFactory, ITaxService taxService, IUrlRecordService urlRecordService, IVendorService vendorService, IVideoService videoService, IWebHelper webHelper, IWorkContext workContext, MediaSettings mediaSettings, OrderSettings orderSettings, SeoSettings seoSettings, ShippingSettings shippingSettings, VendorSettings vendorSettings) : base(captchaSettings, catalogSettings, customerSettings, categoryService, currencyService, customerService, customWishlistService, dateRangeService, dateTimeHelper, downloadService, genericAttributeService, jsonLdModelFactory, localizationService, manufacturerService, permissionService, pictureService, priceCalculationService, priceFormatter, productAttributeParser, productAttributeService, productReviewService, productService, productTagService, productTemplateService, reviewTypeService, shoppingCartService, specificationAttributeService, staticCacheManager, storeContext, storeService, shoppingCartModelFactory, taxService, urlRecordService, vendorService, videoService, webHelper, workContext, mediaSettings, orderSettings, seoSettings, shippingSettings, vendorSettings)
+        public ProductModelFactoryForTest(CaptchaSettings captchaSettings, CatalogSettings catalogSettings, CustomerSettings customerSettings, ICategoryService categoryService, ICurrencyService currencyService, ICustomerService customerService, IDateRangeService dateRangeService, IDateTimeHelper dateTimeHelper, IDownloadService downloadService, IGenericAttributeService genericAttributeService, IJsonLdModelFactory jsonLdModelFactory, ILocalizationService localizationService, IManufacturerService manufacturerService, IPermissionService permissionService, IPictureService pictureService, IPriceCalculationService priceCalculationService, IPriceFormatter priceFormatter, IProductAttributeParser productAttributeParser, IProductAttributeService productAttributeService, IProductReviewService productReviewService, IProductService productService, IProductTagService productTagService, IProductTemplateService productTemplateService, IReviewTypeService reviewTypeService, IShoppingCartService shoppingCartService, IStaticCacheManager staticCacheManager, IStoreContext storeContext, IStoreService storeService, IShoppingCartModelFactory shoppingCartModelFactory, ITaxService taxService, IUrlRecordService urlRecordService, IVendorService vendorService, IVideoService videoService, IWebHelper webHelper, IWorkContext workContext, MediaSettings mediaSettings, OrderSettings orderSettings, SeoSettings seoSettings, ShippingSettings shippingSettings, VendorSettings vendorSettings) : base(captchaSettings, catalogSettings, customerSettings, categoryService, currencyService, customerService, dateRangeService, dateTimeHelper, downloadService, genericAttributeService, jsonLdModelFactory, localizationService, manufacturerService, permissionService, pictureService, priceCalculationService, priceFormatter, productAttributeParser, productAttributeService, productReviewService, productService, productTagService, productTemplateService, reviewTypeService, shoppingCartService, staticCacheManager, storeContext, storeService, shoppingCartModelFactory, taxService, urlRecordService, vendorService, videoService, webHelper, workContext, mediaSettings, orderSettings, seoSettings, shippingSettings, vendorSettings)
         {
         }
 
@@ -181,10 +170,6 @@ public class ProductModelFactoryTests : WebTest
                                               !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.ENABLE_SHOPPING_CART) ||
                                               !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.DISPLAY_PRICES);
 
-                //add to wishlist button
-                priceModel.DisableWishlistButton = product.DisableWishlistButton ||
-                                                   !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.ENABLE_WISHLIST) ||
-                                                   !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.DISPLAY_PRICES);
                 //compare products
                 priceModel.DisableAddToCompareListButton = !_catalogSettings.CompareProductsEnabled;
 
@@ -393,10 +378,6 @@ public class ProductModelFactoryTests : WebTest
                     !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.ENABLE_SHOPPING_CART) ||
                     !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.DISPLAY_PRICES);
 
-                //add to wishlist button (ignore "DisableWishlistButton" property for grouped products)
-                priceModel.DisableWishlistButton =
-                    !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.ENABLE_WISHLIST) ||
-                    !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.DISPLAY_PRICES);
 
                 //compare products
                 priceModel.DisableAddToCompareListButton = !_catalogSettings.CompareProductsEnabled;
@@ -472,7 +453,9 @@ public class ProductModelFactoryTests : WebTest
             {
                 ForceRedirectionAfterAddingToCart = forceRedirectionAfterAddingToCart,
                 CurrencyCode = currentCurrency.CurrencyCode,
-                ProductId = product.Id
+                ProductId = product.Id,
+                //set once for every product type, as the production factory does
+                DisableAddToCompareListButton = !_catalogSettings.CompareProductsEnabled
             };
 
             switch (product.ProductType)
@@ -510,7 +493,9 @@ public class ProductModelFactoryTests : WebTest
             {
                 ProductId = product.Id,
                 //currency code
-                CurrencyCode = currentCurrency.CurrencyCode
+                CurrencyCode = currentCurrency.CurrencyCode,
+                //compare products - set for every product, as the production factory does
+                DisableAddToCompareListButton = !_catalogSettings.CompareProductsEnabled
             };
 
             if (await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.DISPLAY_PRICES))

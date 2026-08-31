@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    TmTm — brand layer
    Loaded after styles(.rtl).css. Restyles the surfaces that carry brand
    identity; everything else inherits the re-pointed DefaultClean variables.
@@ -14,24 +14,30 @@
    ========================================================================== */
 
 /* --- Base ----------------------------------------------------------------
-   The mini guideline defines no typeface, so this is a system stack with
+   The mini guideline defines no typeface,
+so this is a system stack with
    Arabic coverage rather than an invented webfont dependency. */
-body {
+body{
   font-family: "Segoe UI", "Noto Sans Arabic", "Dubai", Tahoma, Arial, sans-serif;
   color: var(--tm-ink);
-  background: var(--tm-surface-alt);
+  background: var(--tm-surface);
 }
 
-.master-wrapper-content {
-  background: var(--tm-surface-alt);
+/* DefaultClean butts the first section straight against the header. Match the
+   same stack rhythm the sections use between themselves. Padding, not margin:
+   a top margin here collapses through .master-wrapper-page and lands above
+   the header instead. */
+.master-wrapper-content{
+  background: var(--tm-surface);
+  padding-block-start: var(--tm-stack-lg);
 }
 
-a {
+a{
   color: var(--tm-teal-deep);
   transition: color var(--tm-transition);
 }
 
-a:hover {
+a:hover{
   color: var(--tm-teal-hover);
 }
 
@@ -40,21 +46,22 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible{
   outline: 2px solid var(--tm-teal-deep);
   outline-offset: 2px;
   border-radius: var(--tm-radius-sm);
 }
 
 /* --- Header --------------------------------------------------------------- */
-.header {
+.header{
   background: var(--tm-surface);
   box-shadow: var(--tm-shadow);
   position: relative;
 }
 
-/* The brand's gradient rule, used as the header's baseline. */
-.header:after {
+/* The brand's gradient rule,
+used as the header's baseline. */
+.header:after{
   content: "";
   display: block;
   height: 3px;
@@ -62,28 +69,27 @@ textarea:focus-visible {
 }
 
 /* Guideline: minimum clear space on all sides equals the height of the "t". */
-.header-logo {
+.header-logo{
   padding: var(--tm-logo-clear-space);
 }
 
-.header-logo img {
+.header-logo img{
   max-height: 50px;
   width: auto;
 }
 
 .header-links a,
-.header-selectors a {
+.header-selectors a{
   color: var(--tm-ink-muted);
 }
 
 .header-links a:hover,
-.header-selectors a:hover {
+.header-selectors a:hover{
   color: var(--tm-teal-deep);
 }
 
-/* Cart / wishlist counters — solid, they carry a digit. */
-.header-links .cart-qty,
-.header-links .wishlist-qty {
+/* they carry a digit. */
+.header-links .cart-qty{
   background: var(--tm-teal-deep);
   color: var(--tm-white);
   border-radius: 999px;
@@ -91,159 +97,283 @@ textarea:focus-visible {
   font-weight: 700;
 }
 
-/* --- Primary navigation --------------------------------------------------- */
-/* Solid, not gradient: this bar carries labels, and white on #00d9cc is
-   1.78:1. The gradient survives as the strip along its foot. */
-.header-menu {
-  background: var(--tm-teal-deep);
-  border-radius: var(--tm-radius);
-  overflow: hidden;
-  border-top: 0;
-  border-bottom: 0;
-  position: relative;
-}
-
-.header-menu:after {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  inset-block-end: 0;
-  height: 4px;
-  background: var(--tm-gradient);
-}
-
-/* DefaultClean gives each top-level item a white pill and a grey divider,
-   which reads as an artefact once the bar itself carries the gradient. */
-.header-menu .menu > .menu__item {
-  background-color: transparent;
-  padding-inline: 6px;
-}
-
-.header-menu .menu > .menu__item:not(:last-child) {
-  border-right: 0;
-  border-inline-end: 1px solid rgba(255, 255, 255, 0.28);
-}
-
-/* Top-level items. Dropdown items nest their label in an <a class="menu__link">
-   inside the toggle, so that nested link is whitened here too. */
-.header-menu .menu > .menu__item > .menu__link,
-.header-menu .menu > .menu__item > .menu__item-toggle,
-.header-menu .menu > .menu__item > .menu__item-toggle > .menu__link {
-  color: var(--tm-white);
-  font-weight: 600;
-  border-radius: var(--tm-radius-sm);
-  padding: 10px 16px;
-  transition: background var(--tm-transition), color var(--tm-transition);
-}
-
-.header-menu .menu > .menu__item > .menu__item-toggle > .menu__link {
-  padding: 0;
-}
-
-.header-menu .menu > .menu__item > .menu__link:hover,
-.header-menu .menu > .menu__item:hover > .menu__item-toggle,
-.header-menu .menu > .menu__item:hover > .menu__item-toggle > .menu__link {
-  background: rgba(0, 0, 0, 0.18);
-  color: var(--tm-white);
-}
-
-/* Dropdown panels sit on white, so they revert to ink-on-white. Scoped to
-   genuinely nested items so it cannot reach the top-level labels above. */
-.header-menu .menu__item .menu__item,
-.header-menu .menu__group {
-  background: var(--tm-surface);
-}
-
-.header-menu .menu__item .menu__item .menu__link,
-.header-menu .menu__group .menu__link {
-  color: var(--tm-ink);
-}
-
-.header-menu .menu__list-view .menu__link:hover {
-  background-color: var(--tm-teal-tint);
-  color: var(--tm-teal-deep);
-}
-
-.header-menu .menu__group-title {
-  color: var(--tm-teal-deep);
-  font-weight: 700;
-}
-
-.header-menu .menu__item .menu__item .menu__link::before,
-.header-menu .menu__group .menu__link::before {
-  background-color: var(--tm-teal);
-}
+/* --- Primary navigation ---------------------------------------------------
+   The standalone category band this section used to skin is gone: below 1001px
+   the tree moved into the mobile sheet (see the mobile app shell further down),
+   and above it the header never carried one. .header-menu now exists only
+   inside .tm-sheet, which brings its own skin.
+   -------------------------------------------------------------------------- */
 
 /* --- Search --------------------------------------------------------------- */
-.search-box input.search-box-text {
+.search-box input.search-box-text{
   border: 1px solid var(--tm-line);
   border-radius: var(--tm-radius);
   padding-inline: 14px;
   transition: border-color var(--tm-transition), box-shadow var(--tm-transition);
 }
 
-.search-box input.search-box-text:focus {
+.search-box input.search-box-text:focus{
   border-color: var(--tm-teal);
   box-shadow: 0 0 0 3px rgba(0, 154, 149, 0.18);
 }
 
-.search-box .search-box-button {
+.search-box .search-box-button{
   background: var(--tm-teal-deep);
   border: 0;
   border-radius: var(--tm-radius);
   color: var(--tm-white);
   font-weight: 600;
 }
+
+/* --- Form controls -------------------------------------------------------
+   DefaultClean ships every <select> at the OS default: a square grey box with
+   the platform's own arrow, which matches nothing else on the page. Styling
+   the element itself rather than introducing a wrapper component means all
+   ~45 dropdowns in the store (language, currency, sort by / page size,
+   country + state, product and checkout attributes, quantity, return reasons,
+   forum filters ...) pick this up with no markup change and no script.
+
+   The option list is styled through the customizable-select spec further down
+   where the browser supports it, and stays the browser's own popup where it
+   does not. Either way it is still a real <select>: keyboard nav, typeahead,
+   mobile pickers and screen-reader semantics come for free.
+   ponytail: native <select>; revisit only if a searchable dropdown is asked for.
+   ------------------------------------------------------------------------- */
+select:not([multiple]){
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%235c6b6a' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 8px;
+  padding-inline: 14px 34px;
+  cursor: pointer;
+}
+
+/* background-position has no logical form, so the arrow is flipped by hand. */
+[dir="rtl"] select:not([multiple]){
+  background-position: left 12px center;
+}
+
+/* Shared field skin — the same border, radius and focus ring the search box
+   already wears, so a dropdown and the text input beside it read as one set. */
+select,
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+textarea{
+  min-height: 40px;
+  height: auto;
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius);
+  background-color: var(--tm-surface);
+  padding-block: 8px;
+  color: var(--tm-ink);
+  transition: border-color var(--tm-transition), box-shadow var(--tm-transition);
+}
+
+textarea{
+  height: auto;
+  padding-inline: 14px;
+}
+
+select:hover:not(:disabled),
+input[type="text"]:hover:not(:disabled),
+input[type="email"]:hover:not(:disabled),
+input[type="tel"]:hover:not(:disabled),
+input[type="password"]:hover:not(:disabled),
+input[type="number"]:hover:not(:disabled),
+input[type="search"]:hover:not(:disabled){
+  border-color: var(--tm-teal-border);
+}
+
+/* Border + ring for pointer focus. The global :focus-visible outline further
+   up still fires for keyboard focus, so it is deliberately not cancelled. */
+select:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+textarea:focus{
+  border-color: var(--tm-teal);
+  box-shadow: 0 0 0 3px rgba(0, 154, 149, 0.18);
+  color: var(--tm-ink);
+}
+
+select:disabled,
+input:disabled,
+textarea:disabled{
+  background-color: var(--tm-surface-alt);
+  color: var(--tm-ink-muted);
+  cursor: not-allowed;
+  opacity: 1; /* Safari dims disabled controls a second time on top of this */
+}
+
+/* Windows/Linux draw the popup from the element's own colours. */
+select option{
+  background-color: var(--tm-surface);
+  color: var(--tm-ink);
+}
+
+select option:disabled{
+  color: var(--tm-ink-muted);
+}
+
+/* --- The open dropdown ----------------------------------------------------
+   Chrome 135+ (customizable <select>): opting the control and its popup into
+   `appearance: base-select` turns the OS list into a real styleable element,
+   so the open state gets the same card, radius and teal hover the rest of the
+   theme wears. Browsers without it ignore this whole block and keep the native
+   popup — the closed field above looks identical either way.
+   ponytail: no JS combobox; this is the platform doing it.
+   ------------------------------------------------------------------------- */
+@supports (appearance: base-select){
+  select:not([multiple]),
+  select:not([multiple])::picker(select){
+    appearance: base-select;
+  }
+
+  /* base-select draws its own ::picker-icon, so drop the background arrow. */
+  select:not([multiple]){
+    background-image: none;
+    padding-inline: 14px 12px;
+    gap: 10px;
+    align-items: center;
+    text-align: start;
+  }
+
+  select:not([multiple])::picker-icon{
+    color: var(--tm-ink-muted);
+    transition: transform var(--tm-transition);
+  }
+
+  select:not([multiple]):open::picker-icon{
+    transform: rotate(180deg);
+  }
+
+  select:not([multiple])::picker(select){
+    border: 1px solid var(--tm-line);
+    border-radius: var(--tm-radius);
+    background-color: var(--tm-surface);
+    box-shadow: var(--tm-shadow-lg);
+    padding: 6px;
+    margin-block-start: 6px;
+    max-height: 320px;
+    overflow-y: auto;
+    /* the picker renders in the top layer, outside the field's inheritance */
+    font: inherit;
+    color: var(--tm-ink);
+    opacity: 0;
+    translate: 0 -6px;
+    transition: opacity var(--tm-transition), translate var(--tm-transition),
+                overlay var(--tm-transition) allow-discrete,
+                display var(--tm-transition) allow-discrete;
+  }
+
+  select:not([multiple]):open::picker(select){
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  @starting-style{
+    select:not([multiple]):open::picker(select){
+      opacity: 0;
+      translate: 0 -6px;
+    }
+  }
+
+  select option{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 8px 10px;
+    border-radius: var(--tm-radius-sm);
+    cursor: pointer;
+  }
+
+  select option:hover:not(:disabled),
+  select option:focus:not(:disabled){
+    background-color: var(--tm-teal-tint);
+    outline: none;
+  }
+
+  select option:checked{
+    background-color: var(--tm-teal-tint-strong);
+    font-weight: 600;
+  }
+
+  select option:disabled{
+    cursor: not-allowed;
+  }
+
+  /* The tick is the UA's; move it to the trailing edge and brand it. */
+  select option::checkmark{
+    order: 1;
+    margin-inline-start: auto;
+    color: var(--tm-teal-deep);
+  }
+}
+
 
 /* --- Buttons -------------------------------------------------------------- */
 .button-1,
 .button-2,
 input[type="button"],
 input[type="submit"],
-button {
+button,
+.estimate-shipping-button{
   border-radius: var(--tm-radius);
+  /* form controls do not inherit the body face, so an Arabic label on a
+     <button> falls back to the UA default while the <a> beside it does not. */
+  font-family: inherit;
   font-weight: 600;
   transition: background var(--tm-transition), color var(--tm-transition),
               box-shadow var(--tm-transition), transform var(--tm-transition);
 }
 
 /* Secondary / utility buttons */
-.button-2 {
+.button-2{
   background: var(--tm-white);
   color: var(--tm-teal-deep);
   border: 1px solid var(--tm-teal-border);
 }
 
-.button-2:hover {
+.button-2:hover{
   background: var(--tm-teal-tint);
   border-color: var(--tm-teal);
   color: var(--tm-teal-hover);
 }
 
 /* Primary buttons — solid deep teal keeps white label text at 5.26:1. */
-.button-1 {
+.button-1{
   background: var(--tm-teal-deep);
   color: var(--tm-white);
   border: 0;
 }
 
-.button-1:hover {
+.button-1:hover{
   background: var(--tm-teal-hover);
   color: var(--tm-white);
 }
 
-.button-1:active {
+.button-1:active{
   background: var(--tm-teal-active);
   transform: translateY(1px);
 }
 
 /* The money CTAs get depth via shadow rather than a gradient fill,
-   so their labels keep the 5.26:1 contrast of solid deep teal. */
+so their labels keep the 5.26:1 contrast of solid deep teal. */
 .button-1.add-to-cart-button,
 .button-1.checkout-button,
 .button-1.product-box-add-to-cart-button,
 .button-1.register-button,
-.button-1.login-button {
+.button-1.login-button{
   background: var(--tm-teal-deep);
   box-shadow: var(--tm-shadow);
 }
@@ -252,7 +382,7 @@ button {
 .button-1.checkout-button:hover,
 .button-1.product-box-add-to-cart-button:hover,
 .button-1.register-button:hover,
-.button-1.login-button:hover {
+.button-1.login-button:hover{
   background: var(--tm-teal-hover);
   box-shadow: var(--tm-shadow-lg);
 }
@@ -260,7 +390,7 @@ button {
 /* --- Page titles — the guideline's gradient rule with terminal dot -------- */
 .page-title,
 .topic-block-title,
-.block .title {
+.block .title{
   position: relative;
   border: 0;
   padding-block-end: 14px;
@@ -268,13 +398,13 @@ button {
 }
 
 .page-title h1,
-.page-title h2 {
+.page-title h2{
   color: var(--tm-teal-deep);
   font-weight: 700;
 }
 
 .page-title:after,
-.topic-block-title:after {
+.topic-block-title:after{
   content: "";
   position: absolute;
   inset-block-end: 0;
@@ -287,7 +417,7 @@ button {
 
 /* the dot that terminates the rule in the brand document */
 .page-title:before,
-.topic-block-title:before {
+.topic-block-title:before{
   content: "";
   position: absolute;
   inset-block-end: -3px;
@@ -300,23 +430,23 @@ button {
 }
 
 /* --- Content blocks / sidebar --------------------------------------------- */
-.block .title {
+.block .title{
   color: var(--tm-teal-deep);
   font-weight: 700;
 }
 
-.block .listbox {
+.block .listbox{
   background: var(--tm-surface);
   border: 1px solid var(--tm-line);
   border-radius: var(--tm-radius);
 }
 
-.block a:hover {
+.block a:hover{
   color: var(--tm-teal-deep);
 }
 
 /* --- Product cards -------------------------------------------------------- */
-.item-box .product-item {
+.item-box .product-item{
   background: var(--tm-surface);
   border: 1px solid var(--tm-line);
   border-radius: var(--tm-radius-lg); /* echoes the logo's rounded square */
@@ -325,133 +455,366 @@ button {
               transform var(--tm-transition);
 }
 
-.item-box .product-item:hover {
+.item-box .product-item:hover{
   border-color: var(--tm-teal);
   box-shadow: var(--tm-shadow-lg);
   transform: translateY(-3px);
 }
 
-.item-box .product-title a {
+/* The base sheet gives .details `padding: 0 10px` and no block-end padding, so
+   the add-to-cart circle — the last thing in the card — sat flush on the bottom
+   border with its shadow spilling over it. Pad the block end and widen the
+   inline sides to the card's own rhythm. The homepage featured grid zeroes this
+   again at higher specificity, because those cards carry no border. */
+.item-box .details{
+  padding-inline: var(--tm-stack-md);
+  padding-block-end: var(--tm-stack-md);
+}
+
+/* Star ratings are off on the cards: most of the catalogue carries one seeded
+   review, so the row was five stars on everything and told the shopper nothing.
+   The markup stays for the product page, which shows the real review count. */
+.item-box .product-rating-box{
+  display: none;
+}
+
+/* With the rating gone the name should sit right on top of the price line
+   rather than keeping the gap the rating used to fill. */
+.item-box .product-title{
+  margin-block-end: var(--tm-stack-sm);
+}
+
+.item-box .product-title a{
   color: var(--tm-ink);
   font-weight: 600;
 }
 
-.item-box .product-title a:hover {
+.item-box .product-title a:hover{
   color: var(--tm-teal-deep);
 }
 
 .item-box .prices .actual-price,
 .prices .actual-price,
-.product-price span {
+.product-price span{
   color: var(--tm-teal-deep);
   font-weight: 700;
 }
 
 .item-box .prices .old-price,
-.prices .old-price {
+.prices .old-price{
   color: var(--tm-ink-muted);
+}
+
+/* so it becomes a round icon button parked at
+   the end of the price line instead.
+
+   .add-info has no styling of its own in the base sheet,
+so it is free to
+   become the flex row. Written with flex and logical properties,
+so RTL
+   mirrors without a second rule. */
+.item-box .add-info{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tm-stack-sm);
+}
+
+/* Price left, cart right in both directions: this row is a fixed layout, not
+   a reading order, so it does not mirror with the page. */
+[dir="rtl"] .item-box .add-info{
+  flex-direction: row-reverse;
+}
+
+.item-box .add-info .prices{
+  /* min-width:0 lets a long price shrink instead of shoving the button out
+     of the card. */
+  min-width: 0;
+  margin: 0;
+  /* Old and current price stack rather than sharing one line: side by side in a
+     narrow card the pair wrapped, and with a suffixed currency ("249,00 ر.س.")
+     the break landed between the number and the symbol. */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.25;
+}
+
+/* A price stays on one line while it fits, which at these card widths it
+   always does: seven digits at 16px is the first size that would wrap, and a
+   wrapped price is a smaller failure than a clipped one — nowrap here plus the
+   card's own overflow turned a rental price ("45 ل.س لكل 1 يوم (أيام)",
+   165px in a 106px slot) into a number with no period attached to it. */
+.item-box .prices .price{
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.item-box .prices .old-price{
+  font-size: 14px;
+}
+
+.item-box .buttons{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+/* The label stays in the DOM — it is the button's accessible name,
+so screen
+   readers still announce "add to cart" — and is hidden visually only. */
+.item-box .product-box-add-to-cart-button{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;      /* 44px square: the touch-target floor, and it keeps the */
+  height: 44px;     /* circle round under the coarse-pointer rules below     */
+  min-height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+  font-size: 0;
+  line-height: 0;
+  box-shadow: var(--tm-shadow);
+  transition: background var(--tm-transition), transform var(--tm-transition);
+}
+
+/* Masked rather than a background image,
+so the glyph takes currentColor and
+   needs no second asset for hover or for a light-on-dark variant. */
+.item-box .product-box-add-to-cart-button:before{
+  content: "";
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='20' r='1.4'/%3E%3Ccircle cx='18' cy='20' r='1.4'/%3E%3Cpath d='M2 3h3l2.4 11.3a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6.2'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='20' r='1.4'/%3E%3Ccircle cx='18' cy='20' r='1.4'/%3E%3Cpath d='M2 3h3l2.4 11.3a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6.2'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.item-box .product-box-add-to-cart-button:hover,
+.item-box .product-box-add-to-cart-button:focus{
+  background: var(--tm-teal-hover);
+  color: var(--tm-white);
+}
+
+.item-box .product-box-add-to-cart-button:active{
+  transform: scale(0.94);
+}
+
+/* The list view pins this button to min-width:150px at (0,
+3,
+0),
+which would
+   stretch the circle into a pill. */
+.product-list .item-box .product-box-add-to-cart-button{
+  width: 44px;
+  min-width: 0;
+  padding: 0;
+}
+
+/* they sit alongside as
+   matching circles rather than reverting to the old 20% slabs. */
+.item-box .add-to-compare-list-button{
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  min-width: 0;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border-left: 0 !important;
+  background-position: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .item-box .product-box-add-to-cart-button:active{
+    transform: none;
+  }
 }
 
 /* --- Tables / data -------------------------------------------------------- */
 .data-table th,
 .forum-table th,
-.compare-products-table th {
+.compare-products-table th{
   background: var(--tm-teal-tint);
   color: var(--tm-teal-deep);
   border-block-end: 2px solid var(--tm-teal-border);
 }
 
-.data-table tr:hover td {
+.data-table tr:hover td{
   background: var(--tm-surface-alt);
 }
 
 /* --- Cart / checkout ------------------------------------------------------ */
 .cart-total .order-total,
-.cart-total .order-total strong {
+.cart-total .order-total strong{
   color: var(--tm-teal-deep);
   font-weight: 700;
 }
 
 .opc .step-title,
-.checkout-page .section .title {
+.checkout-page .section .title{
   background: var(--tm-teal-tint);
   color: var(--tm-teal-deep);
   border-radius: var(--tm-radius-sm);
 }
 
-.opc .allow .step-title {
+.opc .allow .step-title{
   background: var(--tm-teal-deep);
   color: var(--tm-white);
 }
 
 /* --- Notifications -------------------------------------------------------- */
-.bar-notification.success {
+.bar-notification.success{
   background: var(--tm-success);
 }
 
-.bar-notification.error {
+.bar-notification.error{
   background: var(--tm-error);
 }
 
+/* The base sheet parks 100px under the single-column body, which stacks with
+   the footer's own 40px into ~140px of blank page below the last section — on
+   the homepage that reads as a hole under the brand strip. The footer's margin
+   is the whole gap. .center-2/.side-2 keep theirs: at this width they are
+   floated columns and the margins still do work there. */
+.center-1{
+  margin-block-end: 0;
+}
+
 /* --- Footer --------------------------------------------------------------- */
-.footer {
+.footer{
   background: var(--tm-teal-deep);
   color: var(--tm-white);
   margin-block-start: 40px;
 }
 
-.footer:before {
+.footer:before{
   content: "";
   display: block;
   height: 4px;
   background: var(--tm-gradient);
 }
 
-.footer-upper {
+.footer-upper{
   border: 0;
 }
 
 .footer .title,
-.footer .footer-block .title {
+.footer .footer-block .title{
   color: var(--tm-white);
   font-weight: 700;
 }
 
-/* Full white, not a tinted white: at 0.82 alpha these links measured
-   4.08:1 on the teal footer, under the 4.5:1 floor for 14px text. */
+/* Full white,
+not a tinted white: at 0.82 alpha these links measured
+   4.08:1 on the teal footer,
+under the 4.5:1 floor for 14px text. */
 .footer a,
-.footer li a {
+.footer li a{
   color: var(--tm-white);
 }
 
 .footer a:hover,
-.footer li a:hover {
+.footer li a:hover{
   color: var(--tm-white);
 }
 
-.footer-lower {
+.footer-lower{
   border-block-start: 1px solid rgba(255, 255, 255, 0.18);
   color: rgba(255, 255, 255, 0.92);
 }
 
+/* Copyright, social icons and powered-by share one row.
+   Overrides the float layout styles.css applies from 1001px up. */
+.footer-lower{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 25px;
+}
+
+.footer-lower > *{
+  float: none;
+  margin: 0;
+}
+
+/* Wide enough for one line: copyright pinned to the inline start (right in RTL),
+   powered-by to the inline end (left in RTL), icons centred between them.
+   The 1fr side tracks keep the middle column on the page centre, not between
+   two unequal blocks. */
+@media (min-width: 768px){
+  .footer-lower{
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .footer-info{
+    justify-self: start;
+  }
+
+  .footer-social{
+    justify-self: center;
+  }
+
+  .footer-powered-by{
+    justify-self: end;
+  }
+}
+
+/* styles.rtl.css makes this link inline-block, which turns it into an atomic
+   (bidi-neutral) box - the RTL base direction then reorders it ahead of the
+   "Powered by" text. Plain inline keeps both in one Latin run. */
+.footer-powered-by a{
+  display: inline;
+}
+
+.footer-social .networks{
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.footer-social .networks a{
+  display: block;
+  opacity: 0.9;
+}
+
+.footer-social .networks a:hover,
+.footer-social .networks a:focus{
+  opacity: 1;
+}
+
+.footer-social .networks svg{
+  display: block;
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
 .footer-powered-by,
-.footer-designed-by {
+.footer-designed-by{
   color: rgba(255, 255, 255, 0.92);
 }
 
 /* Reversed lockup on the teal footer. */
-.footer .footer-logo img {
+.footer .footer-logo img{
   content: url("../images/logo-white.png");
   max-height: 50px;
 }
 
 /* --- Newsletter ----------------------------------------------------------- */
-.newsletter-email input[type="email"] {
+.newsletter-email input[type="email"]{
   border-radius: var(--tm-radius);
   border: 1px solid var(--tm-teal-border);
 }
 
-.newsletter-subscribe-button {
+.newsletter-subscribe-button{
   background: var(--tm-teal-deep);
   color: var(--tm-white);
   border: 0;
@@ -460,28 +823,73 @@ button {
 
 /* --- Pager ---------------------------------------------------------------- */
 .pager li a,
-.pager li span {
+.pager li span{
   border-radius: var(--tm-radius-sm);
   border: 1px solid var(--tm-line);
   color: var(--tm-ink);
 }
 
 .pager li.current-page span,
-.pager li a:hover {
+.pager li a:hover{
   background: var(--tm-teal-deep);
   border-color: var(--tm-teal-deep);
   color: var(--tm-white);
 }
 
 /* --- Scroll-to-top -------------------------------------------------------- */
-.scroll-back-button {
+.scroll-back-button{
   background: var(--tm-teal-deep);
   border-radius: 50%;
   box-shadow: var(--tm-shadow);
 }
 
+/* --- Scrollbars -----------------------------------------------------------
+   Standard properties first (Firefox, Chrome 121+); the ::-webkit- block is
+   the fallback for Safari and older Chromium. Thumb is --tm-teal-deep, the
+   only teal that stays legible against the track at this width; the bright
+   teal appears on hover as a gradient, matching the decorative-only rule.
+   The scrollbar is chrome, not a label, so the gradient is safe here.
+   Elements that hide their bar (breadcrumb, gallery tracks) set
+   scrollbar-width:none later in this file and still win. */
+html{
+  scrollbar-width: thin;
+  scrollbar-color: var(--tm-teal-deep) var(--tm-surface-alt);
+}
+
+::-webkit-scrollbar{
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track{
+  background: var(--tm-surface-alt);
+}
+
+::-webkit-scrollbar-thumb{
+  background: var(--tm-teal-deep);
+  border-radius: 999px;
+  /* Inset the thumb without changing the hit target: a transparent border
+     over a padding-box background is the only way to do it in WebKit. */
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background: var(--tm-gradient-diagonal);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:active{
+  background: var(--tm-teal-active);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner{
+  background: var(--tm-surface-alt);
+}
+
 /* --- Reduced motion ------------------------------------------------------- */
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce){
   * {
     transition: none !important;
     scroll-behavior: auto !important;
@@ -495,12 +903,14 @@ button {
    Measured on the live page; each of these failed the WCAG AA floor before
    being pinned here. */
 
-/* .overview/.variant-overview set .button-2 to #eaeaea at (0,2,0), which beat
+/* .overview/.variant-overview set .button-2 to #eaeaea at (0,
+2,
+0),
+which beat
    the plain .button-2 rule above and dropped the label to 4.37:1. */
 .overview .button-2,
 .variant-overview .button-2,
-.wishlist-content .button-2,
-.address-list-page .button-2 {
+.address-list-page .button-2{
   background-color: var(--tm-white);
   color: var(--tm-teal-deep);
   border: 1px solid var(--tm-teal-border);
@@ -508,17 +918,17 @@ button {
 
 .overview .button-2:hover,
 .variant-overview .button-2:hover,
-.wishlist-content .button-2:hover,
-.address-list-page .button-2:hover {
+.address-list-page .button-2:hover{
   background-color: var(--tm-teal-tint);
   color: var(--tm-teal-hover);
 }
 
-/* The collapsible footer menu inherits body ink, which lands at 3.2:1 on the
+/* The collapsible footer menu inherits body ink,
+which lands at 3.2:1 on the
    teal footer. */
 .footer .footer-menu__title,
 .footer .footer-menu__title a,
-.footer .footer-menu__body a {
+.footer .footer-menu__body a{
   color: var(--tm-white);
 }
 
@@ -530,9 +940,11 @@ button {
    ========================================================================== */
 
 /* --- Touch ergonomics ----------------------------------------------------
-   Applies to touch pointers only, so desktop density is unaffected.
-   Target is 44px (Apple HIG / Material), above the WCAG 2.2 SC 2.5.8 floor. */
-@media (pointer: coarse) {
+   Applies to touch pointers only,
+so desktop density is unaffected.
+   Target is 44px (Apple HIG / Material),
+above the WCAG 2.2 SC 2.5.8 floor. */
+@media (pointer: coarse){
 
   .header-links a,
   .header-selectors a,
@@ -574,6 +986,38 @@ button {
     min-height: 44px;
   }
 
+  /* The browser default is 13px painted in the platform's own blue — under
+     half the 2.5.8 floor, and the one control on the page that ignored the
+     re-skin. accent-color keeps the native control (and its indeterminate,
+     disabled and forced-colors states) and only repaints it.
+
+     !important because this is a floor, not a preference, and the base sheet
+     resets it through wildcards this cannot out-specify without repeating
+     each of them — ".login-page .returning-wrapper .inputs.reversed *
+     { width: auto }" is the one that put "remember me" back to 13px. */
+  input[type="checkbox"],
+  input[type="radio"] {
+    inline-size: 20px !important;
+    block-size: 20px !important;
+    margin-inline-end: 6px;
+    accent-color: var(--tm-teal-deep);
+    vertical-align: middle;
+  }
+
+  /* The label is the other half of the target: 20px of box plus the text next
+     to it only counts as one target if pressing the text also toggles it,
+     which it does — every one of these is a <label for>. */
+  .inputs.reversed label,
+  .filter-item label,
+  .selected-filter-item label,
+  .option-list label,
+  .accept-consent label,
+  .terms-of-service label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
   /* Replace the grey flash with a brand-tinted one. */
   a, button, .button-1, .button-2 {
     -webkit-tap-highlight-color: rgba(0, 154, 149, 0.18);
@@ -581,9 +1025,11 @@ button {
 }
 
 /* --- Installed / standalone display --------------------------------------
-   In standalone mode there is no browser chrome, so the header sits directly
+   In standalone mode there is no browser chrome,
+so the header sits directly
    under the status bar and must respect the safe area on notched devices. */
-@media (display-mode: standalone), (display-mode: minimal-ui) {
+@media (display-mode: standalone),
+(display-mode: minimal-ui){
 
   .header {
     padding-block-start: env(safe-area-inset-top, 0px);
@@ -604,7 +1050,7 @@ button {
 }
 
 /* Stop the whole page rubber-banding behind the app shell. */
-html {
+html{
   overscroll-behavior-y: none;
 }
 
@@ -612,16 +1058,3639 @@ html {
 img,
 video,
 iframe,
-table {
+table{
   max-width: 100%;
 }
 
 /* Wide data tables scroll inside themselves rather than widening the page. */
-@media (max-width: 767px) {
+@media (max-width: 767px){
   .cart-collaterals .table-wrapper,
   .data-table-wrapper,
   .order-details-page .table-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
+}
+
+/* --- Homepage — layout ported from the TMTM Stitch comps ------------------
+   Source: Stitch project "Elegant nopCommerce PWA",
+screens "TMTM Homepage -
+   Desktop / Mobile (Logo Updated)". Layout,
+spacing and type scale only —
+   every colour still comes from tokens.css,
+so the comps' Material-3 ramp is
+   not carried over. Two places follow the comp in form but not in colour;
+   both are marked inline,
+and both were failing the AA floor as drawn.
+
+   No markup is forked. The comp's bands map onto views nopCommerce already
+   renders:
+     "Curated Edits" -> HomepageCategories  (.home-page-category-grid)
+     "Featured"      -> HomepageProducts    (.home-page-product-grid)
+
+   The comp's hero is not ported: the store already opens with the slider
+   in the HomepageTop widget zone,
+so the "HomepageText" topic that would
+   have carried it is unpublished and renders nothing.
+   -------------------------------------------------------------------------- */
+
+/* --- Homepage slider ------------------------------------------------------
+   The slider is the first thing in .page-body, so it butts straight up against
+   the category bar above it. Give it the same top gap it would put between
+   itself and a second slider, so the rhythm is the same wherever it appears. */
+.home-page .nop-slider{
+  margin-block-start: var(--tm-stack-md);
+  /* The slider owns the gap on both sides of itself rather than leaving it to
+     whatever widget lands in the zone below, which butted straight against it.
+     --tm-stack-lg is the same rhythm the sections keep between themselves. */
+  margin-block-end: var(--tm-stack-lg);
+  /* Same rounded square as the product cards and category tiles, so the hero
+     sits in the same family instead of being the one hard-cornered block. */
+  border-radius: var(--tm-radius-lg);
+  overflow: hidden;
+}
+
+/* --- Category tiles: HomepageCategories + a category page's subcategories --
+   Icon tiles, not photo bands. The comp's full-bleed 320px tiles cost 664px
+   at the top of a laptop homepage before a single product, and stacked one
+   per screen on a phone. A category is a signpost, not a hero: a square mark
+   with its name under it says the same thing in a fifth of the height.
+
+   .sub-category-grid shares every rule: the two grids print identical markup,
+   and left on the base sheet the subcategory tiles were 22px titles above
+   unsized pictures — a name that wrapped to two lines pushed its own picture
+   down and left the row ragged, with each tile a different size.
+
+   The view prints the name before the picture, so the tile is a reversed
+   column rather than a reordered one — no markup change.
+   -------------------------------------------------------------------------- */
+:is(.home-page-category-grid, .sub-category-grid){
+  margin-block-end: var(--tm-stack-lg);
+}
+
+/* --- OCarousel bands ("وصل حديثاً", the brand strip) ----------------------
+   The plugin ships `margin: 0 0 50px`, so every carousel sat 18px lower than
+   the rhythm the rest of the page keeps — visible as an uneven gap above the
+   band that follows it, and as dead space above the footer when a carousel is
+   the last thing on the page. Head.cshtml adds the theme sheets with
+   AddCssFileParts (end of the list) while plugins prepend, so this wins on
+   order at equal specificity. */
+.ocarousel-grid{
+  margin-block-end: var(--tm-stack-lg);
+}
+
+/* Same rhythm for every band in the stack, whoever ships it: the base sheet's
+   `.product-grid` (50px, so "الأكثر مبيعاً") and the slider plugin's
+   `.slider-grid` (40px) each carried their own bottom margin, leaving three
+   different gaps down one page. */
+.home-page .page-body > *{
+  margin-block-end: var(--tm-stack-lg);
+}
+
+/* One title treatment for every band on the home page, whoever ships it. The
+   base sheet's `.product-grid .title` ("الأكثر مبيعاً", 28px thin grey over a #ddd rule),
+   the plugin's `.ocarousel-grid .title` ("وصل حديثاً", "العلامات التجارية", 24px
+   bold over a theme rule) and this theme's featured band ("منتجات مميزة",
+   32px bold, no rule) were three sizes, two weights and two colours down one
+   page — and the base sheet's `.center-1 .title` centred all of them except
+   the featured band, which set `text-align: start`. Direct children only, so
+   the names inside category/product tiles keep their own centred label. */
+.home-page .page-body > * > .title{
+  display: flex;
+  align-items: center;
+  gap: var(--tm-stack-sm);
+  margin: 0 0 var(--tm-stack-md);
+  border: 0;
+  padding: 0;
+  text-align: start;
+  color: var(--tm-ink);
+  font-size: var(--tm-fs-headline);
+  line-height: var(--tm-lh-headline);
+  font-weight: 700;
+}
+
+/* A brand rule marks where each band starts — the gradient is decorative, so
+   it may run into --tm-teal-bright here where a label never could. The bar is
+   drawn on the flex line, so it flips to the right side in RTL for free, and
+   sizing it in `em` keeps it tied to the heading at every breakpoint. */
+.home-page .page-body > * > .title:before{
+  content: "";
+  flex: none;
+  inline-size: 5px;
+  block-size: 1em;
+  border-radius: 999px;
+  background: var(--tm-gradient-diagonal);
+}
+
+/* the base sheet prints the news heading's text in a <strong> at normal weight */
+.home-page .page-body > * > .title strong{
+  font-weight: inherit;
+}
+
+/* The plugin puts the loading placeholder's reserved height on the bare type
+   class as well as on `.carousel-container` — and its JS drops
+   `.carousel-container` once the ajax lands, so a *loaded* band keeps the
+   placeholder height forever. Brand logos are ~150px in a 400px box: a third
+   of a screen of dead space under "العلامات التجارية". Reserve the height only
+   while the loader is still up. */
+.ocarousel-grid :is(.carousel-product,
+                    .carousel-category,
+                    .carousel-manufacturer):not(.carousel-container){
+  min-height: 0;
+}
+
+:is(.home-page-category-grid, .sub-category-grid) .item-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--tm-stack-md);
+  row-gap: var(--tm-stack-lg);
+}
+
+/* The base sheet's float/clear/percentage-width layout is redundant once the
+   grid owns placement, and its 50px bottom margin breaks the even gap. */
+:is(.home-page-category-grid, .sub-category-grid) .item-box{
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: var(--tm-stack-sm);
+  float: none;
+  width: auto;
+  height: auto;
+  margin: 0;
+}
+
+:is(.home-page-category-grid, .sub-category-grid) .picture{
+  position: relative;
+  inline-size: 100%;
+  max-inline-size: 128px;
+  aspect-ratio: 1;
+  margin: 0;
+  border-radius: var(--tm-radius-lg); /* echoes the logo's rounded square */
+  background: var(--tm-teal-tint);
+  overflow: hidden;
+  box-shadow: var(--tm-shadow);
+  transition: box-shadow var(--tm-transition), transform var(--tm-transition);
+}
+
+:is(.home-page-category-grid, .sub-category-grid) .item-box:hover .picture{
+  box-shadow: var(--tm-shadow-lg);
+  transform: translateY(-3px);
+}
+
+:is(.home-page-category-grid, .sub-category-grid) .picture a{
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The base sheet fakes the tile's aspect with a padded ::before spacer; the
+   aspect-ratio above does it properly, so the spacer has to go. */
+:is(.home-page-category-grid, .sub-category-grid) .picture a:before{
+  content: none;
+}
+
+:is(.home-page-category-grid, .sub-category-grid) .picture a img{
+  position: static;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  object-fit: cover;
+}
+
+/* Name under the mark, in ink: with the photo no longer behind it there is
+   nothing to scrim against, so the white overlay label and its gradient go. */
+:is(.home-page-category-grid, .sub-category-grid) .title{
+  margin: 0;
+  padding: 0;
+  inline-size: 100%;
+  text-align: center;
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  font-weight: 600;
+}
+
+:is(.home-page-category-grid, .sub-category-grid) .title a{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  padding: 0;
+  color: var(--tm-ink);
+}
+
+:is(.home-page-category-grid, .sub-category-grid) .title a:hover{
+  color: var(--tm-teal-deep);
+  text-decoration: none;
+}
+
+
+/* --- "Featured Objects": HomepageProducts ---------------------------------
+   Scoped through .home-page so these tie the base sheet's own
+   ".home-page .product-grid .item-box" rules on specificity and win on order;
+   the category pages keep the bordered card until that comp is ported too. */
+.home-page .home-page-product-grid .item-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--tm-stack-sm);
+  row-gap: var(--tm-stack-md);
+}
+
+.home-page .home-page-product-grid .item-box{
+  float: none;
+  width: auto;
+  margin: 0;
+  /* A grid item defaults to min-width:auto, which lets a long product name
+     widen its track rather than ellipse inside it. */
+  min-width: 0;
+}
+
+/* The comp dropped the card chrome here, which left the featured band as the
+   only grid in the store whose cards had no border and no hover. Every product
+   card now uses the one card treatment from the top of this file — bordered,
+   lifting on hover — so featured, bestsellers, new products and the category
+   pages behave identically. */
+.home-page .home-page-product-grid .picture{
+  margin: 0 0 var(--tm-stack-sm);
+  background: var(--tm-surface-alt);
+  overflow: hidden;
+}
+
+/* Square well, matching every other grid — the comp's 4:5 portrait cropped 20%
+   off each side of a square product shot. */
+.home-page .home-page-product-grid .picture a:before{
+  padding-top: 100%;
+}
+
+.home-page .home-page-product-grid .picture a img{
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.home-page .home-page-product-grid .item-box:hover .picture a img{
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.home-page .home-page-product-grid .product-title{
+  min-height: 0;
+  margin: 0 0 4px;
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+}
+
+/* The base sheet makes the link a block,
+so the clip and the ellipsis have
+   to sit on it rather than on the heading around it. */
+.home-page .home-page-product-grid .product-title a{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-page .home-page-product-grid .prices{
+  min-height: 0;
+  margin: 0;
+}
+
+.home-page .home-page-product-grid .prices .actual-price{
+  font-size: var(--tm-fs-title);
+  line-height: var(--tm-lh-title);
+}
+
+/* The comp shows no buttons on a homepage card. Add-to-cart is kept —
+   dropping it is a merchandising call,
+not a layout one — and rides on the
+   price line as an icon,
+so it needs no vertical offset of its own here. */
+.home-page .home-page-product-grid .add-info{
+  margin-block-start: var(--tm-stack-sm);
+}
+
+@media (min-width: 1001px) {
+
+  :is(.home-page-category-grid, .sub-category-grid) .item-grid{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  :is(.home-page-category-grid, .sub-category-grid) .title{
+    font-size: var(--tm-fs-body);
+    line-height: var(--tm-lh-body);
+  }
+
+  .home-page .home-page-product-grid .item-grid{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: var(--tm-gutter);
+    row-gap: var(--tm-gutter);
+  }
+}
+
+/* The base reduced-motion block turns off transitions but not animations. */
+@media (prefers-reduced-motion: reduce){
+
+  :is(.home-page-category-grid, .sub-category-grid) .item-box:hover .picture,
+  .home-page .home-page-product-grid .item-box:hover .picture a img {
+    transform: none;
+  }
+}
+
+/* --- Header: the Stitch top bar -------------------------------------------
+   Source: Stitch "TMTM Homepage - Desktop (Logo Updated)" — one full-bleed
+   glassy row,
+logo at the start and the actions at the end,
+replacing
+   DefaultClean's three stacked bands (selectors / links / logo + search) and
+   the separate category bar under them.
+
+   No markup is forked. _Header.cshtml nests everything in .header-upper and
+   .header-lower; setting those two to display:contents drops their boxes so
+   their children become flex items of .header itself and can be ordered.
+
+   The comp's centre links (Shop / Collections / About) have no nopCommerce
+   source,
+so nothing is invented for them — the row is logo | actions.
+   -------------------------------------------------------------------------- */
+.header{
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 100;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 1px 0 rgba(16, 32, 31, 0.06);
+  text-align: start;
+}
+
+/* The gradient rule becomes the bar's bottom edge. It stands in for the comp's
+   hairline border and is now the only place the guideline's gradient appears
+   at the top of the page,
+the category bar having gone. */
+.header:after{
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  height: 3px;
+}
+
+/* --- Header action controls (search / account / cart) --------------------
+   Shared by both breakpoints: the search button wears the same round glyph in
+   the phone top bar as on the desktop bar, and the account/cart rules are inert
+   below 1001px, where .header-links-wrapper is hidden in favour of the tab bar.
+
+   The comp draws these as Material Symbols Outlined (person, shopping_bag,
+   search). Their geometry is inlined as masked SVGs rather than pulled from the
+   Google Symbols webfont: the theme deliberately carries no webfont dependency,
+   a font would block the first paint of the header, and a mask takes
+   currentColor so hover and focus need no second asset.
+
+   Every label stays in the DOM and is hidden visually only, so each control
+   keeps its accessible name.
+   ------------------------------------------------------------------------- */
+.header-links :is(.ico-account, .ico-login),
+#topcartlink .ico-cart,
+.search-box .search-box-button{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  min-height: 48px;
+  /* the base sheet floats the search button and pins it to min-width:86px
+     at the same specificity, which would stretch the circle to a pill */
+  min-width: 0;
+  float: none;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  font-size: 0;
+  line-height: 0;
+  text-indent: 0;
+  transition: background var(--tm-transition), color var(--tm-transition);
+}
+
+.header-links :is(.ico-account, .ico-login):before,
+#topcartlink .ico-cart:before,
+.search-box .search-box-button:before{
+  content: "";
+  width: 26px;
+  height: 26px;
+  background-color: currentColor;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* person
+   Material Symbols draw every glyph in the same 960 box but not to the same
+   height: the bag fills 800/960 of it, the person only 560/960, so at a shared
+   26px box the account icon reads noticeably smaller than the cart beside it.
+   Scaling the person's box to 30px evens the two optically (equal geometric
+   mean of the drawn ink); it is not scaled to equal height, which would leave
+   it far wider than the bag. */
+.header-links :is(.ico-account, .ico-login):before{
+  width: 30px;
+  height: 30px;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M367-527q-47-47-47-113t47-113q47-47 113-47t113 47q47 47 47 113t-47 113q-47 47-113 47t-113-47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm296.5-343.5Q560-607 560-640t-23.5-56.5Q513-720 480-720t-56.5 23.5Q400-673 400-640t23.5 56.5Q447-560 480-560t56.5-23.5ZM480-640Zm0 400Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M367-527q-47-47-47-113t47-113q47-47 113-47t113 47q47 47 47 113t-47 113q-47 47-113 47t-113-47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm296.5-343.5Q560-607 560-640t-23.5-56.5Q513-720 480-720t-56.5 23.5Q400-673 400-640t23.5 56.5Q447-560 480-560t56.5-23.5ZM480-640Zm0 400Z'/%3E%3C/svg%3E");
+}
+
+/* shopping_bag */
+#topcartlink .ico-cart:before{
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M240-80q-33 0-56.5-23.5T160-160v-480q0-33 23.5-56.5T240-720h80q0-66 47-113t113-47q66 0 113 47t47 113h80q33 0 56.5 23.5T800-640v480q0 33-23.5 56.5T720-80H240Zm0-80h480v-480h-80v80q0 17-11.5 28.5T600-520q-17 0-28.5-11.5T560-560v-80H400v80q0 17-11.5 28.5T360-520q-17 0-28.5-11.5T320-560v-80h-80v480Zm160-560h160q0-33-23.5-56.5T480-800q-33 0-56.5 23.5T400-720ZM240-160v-480 480Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M240-80q-33 0-56.5-23.5T160-160v-480q0-33 23.5-56.5T240-720h80q0-66 47-113t113-47q66 0 113 47t47 113h80q33 0 56.5 23.5T800-640v480q0 33-23.5 56.5T720-80H240Zm0-80h480v-480h-80v80q0 17-11.5 28.5T600-520q-17 0-28.5-11.5T560-560v-80H400v80q0 17-11.5 28.5T360-520q-17 0-28.5-11.5T320-560v-80h-80v480Zm160-560h160q0-33-23.5-56.5T480-800q-33 0-56.5 23.5T400-720ZM240-160v-480 480Z'/%3E%3C/svg%3E");
+}
+
+/* search */
+.search-box .search-box-button:before{
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z'/%3E%3C/svg%3E");
+}
+
+/* Account and cart read as quiet glyphs on the glass bar; search stays the
+   filled affordance because it submits the adjacent field. */
+.header-links :is(.ico-account, .ico-login),
+#topcartlink .ico-cart{
+  background: none;
+  color: var(--tm-teal-deep);
+}
+
+.header-links :is(.ico-account, .ico-login):hover,
+.header-links :is(.ico-account, .ico-login):focus,
+#topcartlink .ico-cart:hover,
+#topcartlink .ico-cart:focus{
+  background: var(--tm-teal-tint);
+  color: var(--tm-teal-hover);
+}
+
+.search-box .search-box-button{
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+}
+
+/* Empty field, nothing to submit: the core script's only answer to that was a
+   blocking alert. The button says it instead (see the theme's _Header.cshtml). */
+.search-box .search-box-button:disabled,
+.search-box .search-box-button:disabled:hover{
+  background: var(--tm-teal-tint);
+  color: var(--tm-teal-deep);
+  cursor: default;
+}
+
+.search-box .search-box-button:hover:not(:disabled),
+.search-box .search-box-button:focus:not(:disabled){
+  background: var(--tm-teal-hover);
+  color: var(--tm-white);
+}
+
+/* The base sheet paints the bag as a left-aligned PNG and pads the link to
+   clear it; both go,
+along with the pill the li was wrapped in. */
+#topcartlink{
+  width: auto;
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+
+#topcartlink .ico-cart{
+  background-image: none;
+  padding: 0;
+}
+
+/* The count is the one label worth keeping visible — it becomes the comp's
+   badge on the bag rather than a "(1)" trailing the link. */
+#topcartlink .cart-label{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The badge prints data-qty rather than its own text: the element's content is
+   the localised "({0})", which reads as "(3)" in a circle. HeaderLinks keeps
+   data-qty in step with it, server-side and after every AJAX add. */
+#topcartlink .cart-qty{
+  position: absolute;
+  inset-block-start: 1px;
+  inset-inline-end: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding-inline: 5px;
+  border-radius: 999px;
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+  font-size: 0;
+  line-height: 1;
+  font-weight: 700;
+}
+
+#topcartlink .cart-qty:after{
+  content: attr(data-qty);
+  font-size: 11px;
+}
+
+/* An empty cart has nothing to announce. */
+.cart-qty[data-qty="0"]{
+  display: none;
+}
+
+/* Log out has no counterpart in the comp,
+so it stays a text link,
+sized
+   down so it reads as secondary beside the three glyphs. */
+.header-links .ico-logout{
+  font-size: var(--tm-fs-label-sm);
+  line-height: var(--tm-lh-label-sm);
+  color: var(--tm-ink-muted);
+}
+
+.header-links .ico-logout:hover{
+  color: var(--tm-teal-deep);
+}
+
+/* The list that holds the links becomes the icon row. */
+.header-links ul{
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The bar carries exactly two glyphs: cart, then account. Register drops out
+   — it is one click deeper on the login page — and signed out, login wears
+   the same person glyph the account link wears signed in, so the bar does not
+   change shape when a customer signs in. */
+.header-links .ico-register{
+  display: none;
+}
+
+/* Cart leads the row, which in RTL puts it at the right edge. */
+#topcartlink{
+  order: -1;
+}
+
+.header-links li{
+  margin: 0;
+  line-height: 0;
+}
+
+
+@media (min-width: 1001px) {
+
+  /* The one measurement anything sticky below the header offsets against. */
+  :root{
+    --tm-header-h: 80px;
+  }
+
+  .header{
+    display: flex;
+    align-items: center;
+    min-height: 80px;
+    /* Full-bleed band, contents on the same measure as everything below. */
+    padding-inline: calc((100% - 980px) / 2);
+  }
+
+  /* Drop the two band boxes so their children join the header's row. */
+  .header-upper,
+.header-lower{
+    display: contents;
+  }
+
+  /* The skip link is a 1px screen-reader affordance,
+but as a flex item it
+     still claims the row's first slot and a gap,
+pushing the logo out of
+     line with the content below. */
+  .header > .skip{
+    position: absolute;
+  }
+
+  .header-logo{
+    order: 1;
+    display: block;
+    margin: 0;
+    padding: 0;
+    text-align: start;
+  }
+
+  /* Everything from here sits at the end of the row. */
+  .search-box{
+    order: 2;
+    margin-inline-start: auto;
+  }
+
+  /* Spacing rides on the items rather than on the container: display:contents
+     promotes the whitespace between the flattened children into a zero-width
+     anonymous flex item at order 0,
+and a container gap would then be spent
+     in front of it,
+knocking the logo out of line with the content below. */
+  .header-links-wrapper{
+    order: 3;
+    float: none;
+    margin-inline-start: var(--tm-gutter);
+    padding: 0;
+  }
+
+  .header-selectors-wrapper{
+    order: 4;
+    margin-inline-start: var(--tm-gutter);
+    border: 0;
+    padding: 0;
+  }
+
+  /* With one published currency and language this renders nothing,
+and an
+     empty item would still spend its margin at the end of the row.
+     :has(*) rather than :empty — the wrapper always holds whitespace between
+     the view components,
+so :empty never matches it. */
+  .header-selectors-wrapper:not(:has(*)){
+    display: none;
+  }
+
+  /* The band borders belonged to the stacked layout. */
+  .header-upper,
+.header-lower{
+    border: 0;
+  }
+
+  /* Compact pill field. The comp collapses search to an icon that expands on
+     click; that needs script,
+so the field stays visible beside the icon. */
+  .search-box input.search-box-text{
+    width: 220px;
+    height: 48px;
+    border-radius: 999px;
+    padding-inline: 18px;
+  }
+
+  .search-box form{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+}
+
+@media (min-width: 1367px){
+
+  .header {
+    padding-inline: calc((100% - 1200px) / 2);
+  }
+}
+
+/* ==========================================================================
+   Mobile app shell — every viewport below the desktop breakpoint
+   --------------------------------------------------------------------------
+   DefaultClean's phone layout stacks three header bands and then the whole
+   category tree as an always-open list: ~830px of navigation before the first
+   product, on a screen with ~700px to spend. All of it is replaced here by the
+   shell a shopper expects from an installed app:
+
+     top bar     brand + search, sticky, one 64px row
+     tab bar     home / categories / cart / account, fixed to the bottom
+     sheet       the category tree, opened from the categories tab
+
+   The two structural rules the shell relies on are the same ones the desktop
+   bar uses: display:contents flattens .header-upper/.header-lower so their
+   children order freely in one row, and no forked core view is needed.
+   ========================================================================== */
+
+/* The forked header always emits the search toggle; only the mobile shell
+   below ever shows it. Without this the button sat in the desktop bar. */
+.mobile-search-toggle{
+  display: none;
+}
+
+@media (max-width: 1000px){
+
+  /* --- Top bar ----------------------------------------------------------
+     .header is already sticky and glassy from the shared rules above; here it
+     only has to become a single row. It stays sticky on phones too: search is
+     the one control that has to survive a long catalogue scroll, and the cart
+     and account it used to carry now live at the foot of the screen. */
+  .header{
+    display: flex;
+    align-items: center;
+    min-height: 64px;
+    padding-inline: var(--tm-margin-mobile);
+    padding-block: 8px;
+  }
+
+  .header-upper,
+  .header-lower{
+    display: contents;
+  }
+
+  .header-upper,
+  .header-lower{
+    border: 0;
+  }
+
+  /* A 1px skip link still claims a slot in a flex row. */
+  .header > .skip{
+    position: absolute;
+  }
+
+  /* Login, register and cart each have a tab of their own now; repeating them
+     up here cost a whole band and bought nothing. */
+  .header-links-wrapper{
+    display: none;
+  }
+
+  .header-logo{
+    order: 1;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0;
+    line-height: 0;
+    text-align: start;
+  }
+
+  /* Both axes capped so the lockup keeps its ratio: height rules on a roomy
+     phone, width rules on a 320px one. The `a` is in the selector because the
+     base sheet pins max-width on .header-logo a img and would otherwise win. */
+  .header-logo a img{
+    inline-size: auto;
+    block-size: auto;
+    max-block-size: 36px;
+    max-inline-size: 38vw;
+  }
+
+  /* --- Search: a glyph until it is asked for -----------------------------
+     A field that is always open takes two thirds of a 390px bar for something
+     a shopper uses on a minority of visits. Collapsed it is one 44px glyph;
+     tapped, .header gets .search-open, the logo steps aside and the field
+     takes the bar (see the forked _Header.cshtml for the button and the six
+     lines of script that flip the class). */
+  .mobile-search-toggle{
+    order: 4;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 44px;
+    block-size: 44px;
+    min-height: 44px;
+    margin-inline-start: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--tm-teal-deep);
+    cursor: pointer;
+    transition: background-color var(--tm-transition), color var(--tm-transition);
+  }
+
+  .mobile-search-toggle:hover,
+  .mobile-search-toggle:focus-visible{
+    background: var(--tm-teal-tint);
+  }
+
+  .mobile-search-icon{
+    inline-size: 22px;
+    block-size: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* One button, two glyphs: magnifier closed, cross open. */
+  .mobile-search-icon--close,
+  .header.search-open .mobile-search-icon--open{
+    display: none;
+  }
+
+  .header.search-open .mobile-search-icon--close{
+    display: block;
+  }
+
+  /* Closed, the field is out of the flow entirely rather than shrunk — a 0px
+     input still claims the row's gaps and can still take focus. */
+  .search-box{
+    display: none;
+  }
+
+  .header.search-open .header-logo{
+    display: none;
+  }
+
+  /* Open, the cross leads the row so it reads as "back out of search", and the
+     form's own submit glyph stays at the far end where the thumb expects it. */
+  .header.search-open .mobile-search-toggle{
+    order: 0;
+    margin-inline: 0 var(--tm-stack-sm);
+  }
+
+  /* --- Search pill ------------------------------------------------------
+     One rounded field with the submit glyph parked inside it, taking the whole
+     bar once the logo has stepped aside. */
+  .header.search-open .search-box{
+    display: block;
+  }
+  /* flex-basis 0 rather than auto: open, the field takes every pixel left in
+     the bar, not just the width its own content asks for. */
+  .search-box{
+    order: 2;
+    flex: 1 1 0;
+    min-inline-size: 0;
+    margin: 0;
+  }
+
+  /* `flex-wrap: nowrap` and the zero basis below are load-bearing: the base
+     sheet sets `flex-flow: row wrap` with a 200px field, which dropped the
+     submit button onto a second line and made the bar 114px tall. */
+  .search-box form{
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0;
+    padding-inline: 16px 4px;
+    border-radius: 999px;
+    background: var(--tm-surface-alt);
+    box-shadow: inset 0 0 0 1px var(--tm-line);
+    transition: box-shadow var(--tm-transition);
+  }
+
+  .search-box form:focus-within{
+    background: var(--tm-surface);
+    box-shadow: inset 0 0 0 2px var(--tm-teal-deep);
+  }
+
+  .search-box input.search-box-text{
+    flex: 1 1 0;
+    inline-size: auto;
+    min-inline-size: 0;
+    block-size: 48px;
+    min-height: 48px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    /* under 16px iOS zooms the viewport when the field takes focus */
+    font-size: 16px;
+    color: var(--tm-ink);
+  }
+
+  /* The pill carries the focus ring for the whole control, so the field must
+     drop the shared skin's own border-glow — otherwise a second rounded ring
+     shows up inside the pill the moment the field takes focus. */
+  .search-box input.search-box-text:focus,
+  .search-box input.search-box-text:focus-visible{
+    outline: 0;
+    box-shadow: none;
+  }
+
+  /* ponytail: 40px rather than the 44px touch floor — it sits inside a 48px
+     pill whose field is the primary target, and Enter submits the form. */
+  .search-box .search-box-button{
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    margin: 0;
+  }
+
+  .search-box .search-box-button:before{
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Renders nothing while the store publishes one currency; ordered anyway so
+     a second one lands at the end of the bar rather than in front of the logo. */
+  .header-selectors-wrapper{
+    order: 3;
+    margin-inline-start: var(--tm-stack-sm);
+    border: 0;
+    padding: 0;
+  }
+
+  /* jQuery UI hangs the autocomplete list off .search-box. */
+  .search-box .ui-autocomplete{
+    inset-inline: 0 auto;
+    inline-size: 100%;
+    max-block-size: 60vh;
+    overflow-y: auto;
+  }
+}
+
+
+/* --- Bottom sheet ---------------------------------------------------------
+   A native popover, so the browser supplies light dismiss, Esc, top-layer
+   stacking, the invoker wiring and the backdrop. Nothing here needs script.
+
+   ponytail: no scroll lock behind the sheet — overscroll-behavior stops the
+   scroll chaining, which is the part that actually reads as broken. Swap in
+   dialog.showModal() if the page underneath ever has to be truly inert.
+   -------------------------------------------------------------------------- */
+.tm-sheet{
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  max-block-size: min(78dvh, 640px);
+  margin: 0;
+  border: 0;
+  padding: 0;
+  border-start-start-radius: var(--tm-radius-lg);
+  border-start-end-radius: var(--tm-radius-lg);
+  background: var(--tm-surface);
+  color: var(--tm-ink);
+  box-shadow: var(--tm-shadow-lg);
+  overflow: hidden;
+  transform: translateY(100%);
+  transition:
+    transform var(--tm-transition),
+    overlay var(--tm-transition) allow-discrete,
+    display var(--tm-transition) allow-discrete;
+}
+
+.tm-sheet:popover-open{
+  transform: translateY(0);
+}
+
+@starting-style{
+
+  .tm-sheet:popover-open{
+    transform: translateY(100%);
+  }
+}
+
+.tm-sheet::backdrop{
+  background: rgba(16, 32, 31, 0.45);
+  opacity: 0;
+  transition:
+    opacity var(--tm-transition),
+    overlay var(--tm-transition) allow-discrete,
+    display var(--tm-transition) allow-discrete;
+}
+
+.tm-sheet:popover-open::backdrop{
+  opacity: 1;
+}
+
+@starting-style{
+
+  .tm-sheet:popover-open::backdrop{
+    opacity: 0;
+  }
+}
+
+.tm-sheet-grip{
+  flex: 0 0 auto;
+  inline-size: 40px;
+  block-size: 4px;
+  margin: 10px auto 0;
+  border-radius: 999px;
+  background: var(--tm-line);
+}
+
+.tm-sheet-head{
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px var(--tm-margin-mobile) 12px;
+  border-block-end: 1px solid var(--tm-line);
+}
+
+.tm-sheet-title{
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  margin: 0;
+  font-size: var(--tm-fs-title);
+  line-height: var(--tm-lh-title);
+  font-weight: 700;
+  color: var(--tm-ink);
+}
+
+.tm-sheet-close{
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 40px;
+  block-size: 40px;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--tm-surface-alt);
+  color: var(--tm-ink-muted);
+  cursor: pointer;
+  transition: background-color var(--tm-transition), color var(--tm-transition);
+}
+
+.tm-sheet-close:hover,
+.tm-sheet-close:focus-visible{
+  background: var(--tm-teal-tint);
+  color: var(--tm-teal-deep);
+}
+
+.tm-sheet-close svg{
+  inline-size: 20px;
+  block-size: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.tm-sheet-body{
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-block-end: max(env(safe-area-inset-bottom, 0px), 16px);
+}
+
+
+/* --- The category tree inside the sheet -----------------------------------
+   Still the stock MainMenu markup and its accordion script; only the skin
+   changes. The base sheet styles .header-menu as a centred 600px band with a
+   coloured toggle bar, all of which the sheet supplies instead.
+   -------------------------------------------------------------------------- */
+.tm-sheet .header-menu{
+  width: auto;
+  max-width: none;
+  margin: 0;
+  border: 0;
+  background: none;
+}
+
+.tm-sheet .header-menu:after{
+  content: none;
+}
+
+.tm-sheet .menu-container{
+  width: auto;
+  padding: 0;
+}
+
+/* The sheet's own heading is the menu's name. */
+.tm-sheet .menu__toggle{
+  display: none;
+}
+
+.tm-sheet .menu{
+  font-size: var(--tm-fs-body);
+}
+
+/* Only the box model is touched here. `display` is deliberately left alone:
+   .menu-dropdown is a grid whose second row animates from 0fr to 1fr, and that
+   is the whole collapse mechanism. */
+.tm-sheet .menu__item,
+.tm-sheet .menu > .menu__item{
+  width: auto;
+  margin: 0;
+  background: none;
+  color: var(--tm-ink);
+}
+
+/* The base sheet pads the leaf item; here the link inside it carries the
+   padding, so the whole row is the touch target. */
+.tm-sheet .menu__item:not(.menu-dropdown){
+  display: block;
+  padding: 0;
+}
+
+.tm-sheet .menu > .menu__item:not(:last-child){
+  border-block-end: 1px solid var(--tm-line);
+}
+
+.tm-sheet .menu__item-toggle{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 0 0 0;
+  padding-inline-start: var(--tm-margin-mobile);
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Two targets in one row: the label navigates to the category, the chevron
+   opens its children. Stock nopCommerce nests the link inside the toggle, so
+   without this split a tap on the name both navigated and expanded. */
+.tm-sheet .menu__link{
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  min-height: 52px;
+  padding-block: 12px;
+  padding-inline: var(--tm-margin-mobile);
+  color: inherit;
+  font-size: var(--tm-fs-body);
+  line-height: var(--tm-lh-body);
+  text-decoration: none;
+}
+
+.tm-sheet .menu__item-toggle .menu__link{
+  padding-inline-start: 0;
+  padding-inline-end: 0;
+}
+
+.tm-sheet .menu__link:hover,
+.tm-sheet .menu__link:focus-visible{
+  color: var(--tm-teal-deep);
+}
+
+.tm-sheet .menu__item-toggle::after{
+  content: "";
+  flex: 0 0 auto;
+  inline-size: 48px;
+  block-size: 48px;
+  margin: 0;
+  padding: 0;
+  background: none;
+  background-color: currentColor;
+  color: var(--tm-ink-muted);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 15.6 4.7 8.3l1.6-1.6L12 12.4l5.7-5.7 1.6 1.6z'/%3E%3C/svg%3E") center / 16px no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 15.6 4.7 8.3l1.6-1.6L12 12.4l5.7-5.7 1.6 1.6z'/%3E%3C/svg%3E") center / 16px no-repeat;
+  transition: transform var(--tm-transition);
+}
+
+.tm-sheet .menu-dropdown--active > .menu__item-toggle::after{
+  transform: rotate(180deg);
+}
+
+/* Children sit on the tinted surface and one indent in, so depth reads
+   without a second border system. */
+.tm-sheet .menu__list-view,
+.tm-sheet .menu__grid-view{
+  position: static;
+  padding: 0;
+  background: var(--tm-surface-alt);
+  box-shadow: none;
+}
+
+.tm-sheet .menu__list-view .menu__link,
+.tm-sheet .menu__group .menu__link{
+  min-height: 48px;
+  padding-inline-start: calc(var(--tm-margin-mobile) + 16px);
+  color: var(--tm-ink-muted);
+  font-size: var(--tm-fs-label);
+}
+
+.tm-sheet .menu__list-view .menu__link::before,
+.tm-sheet .menu__group .menu__link::before{
+  content: none;
+}
+
+.tm-sheet .menu__group{
+  padding: 0;
+}
+
+.tm-sheet .menu__group-title{
+  padding-inline: calc(var(--tm-margin-mobile) + 16px);
+  padding-block: 12px;
+  font-size: var(--tm-fs-label);
+  font-weight: 700;
+}
+
+/* --- Language switch ------------------------------------------------------
+   The store header carries no language selector at all — the only other one
+   is on the account page — so a bilingual store needs one here.
+   -------------------------------------------------------------------------- */
+.tm-lang-switch{
+  display: flex;
+  gap: 8px;
+  margin: 16px var(--tm-margin-mobile) 0;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--tm-surface-alt);
+}
+
+.tm-lang{
+  flex: 1 1 0;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--tm-ink-muted);
+  font-size: var(--tm-fs-label);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tm-lang.active{
+  background: var(--tm-surface);
+  color: var(--tm-teal-deep);
+  box-shadow: var(--tm-shadow);
+}
+
+
+/* --- Bottom tab bar -------------------------------------------------------
+   Home / Categories / Cart / Account. Search is deliberately absent: it is in
+   the sticky top bar on every page, and a tab bar earns its keep by being the
+   short list, not the complete one.
+
+   ponytail: stroke icons for both states rather than an outline/filled pair —
+   the pill, the colour and the weight bump already carry the active state.
+   -------------------------------------------------------------------------- */
+.mobile-tab-bar{
+  display: none;
+}
+
+@media (max-width: 1000px){
+
+  .mobile-tab-bar{
+    position: fixed;
+    inset-block-end: 0;
+    inset-inline: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: stretch;
+    gap: 2px;
+    padding-inline: 6px;
+    padding-block: 6px;
+    padding-block-end: max(env(safe-area-inset-bottom, 0px), 6px);
+    background: rgba(255, 255, 255, 0.88);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border-block-start: 1px solid var(--tm-line);
+    border-start-start-radius: var(--tm-radius-lg);
+    border-start-end-radius: var(--tm-radius-lg);
+    box-shadow: 0 -4px 20px rgba(2, 120, 126, 0.06);
+  }
+
+  /* Nothing on the page may end up underneath the bar. */
+  .master-wrapper-page{
+    padding-block-end: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-tab{
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-inline-size: 0;
+    min-height: 52px;
+    margin: 0;
+    padding: 4px 2px;
+    border: 0;
+    border-radius: var(--tm-radius);
+    background: none;
+    color: var(--tm-ink-muted);
+    font-family: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: color var(--tm-transition);
+  }
+
+  .mobile-tab:hover,
+  .mobile-tab:focus-visible{
+    color: var(--tm-teal-deep);
+  }
+
+  .mobile-tab:active{
+    transform: scale(0.96);
+  }
+
+  /* Material's active-indicator pill: behind the icon only, so the label keeps
+     its own baseline and the four tabs stay the same height. */
+  .mobile-tab-icon-wrap{
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 48px;
+    max-inline-size: 100%;
+    block-size: 28px;
+    border-radius: 999px;
+    transition: background-color var(--tm-transition);
+  }
+
+  .mobile-tab.active{
+    color: var(--tm-teal-deep);
+  }
+
+  .mobile-tab.active .mobile-tab-icon-wrap{
+    background: var(--tm-teal-tint);
+  }
+
+  .mobile-tab.active .mobile-tab-label{
+    font-weight: 700;
+  }
+
+  .mobile-tab-icon{
+    inline-size: 24px;
+    block-size: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mobile-tab.active .mobile-tab-icon{
+    stroke-width: 2.1;
+  }
+
+  .mobile-tab-label{
+    max-inline-size: 100%;
+    overflow: hidden;
+    font-size: 11px;
+    line-height: 14px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* The element's own text is the localised "({0})" AjaxCart writes; the badge
+     prints the bare number the partial's script parks in data-qty, which also
+     lets an empty cart hide the badge with no script at all. */
+  .mobile-tab-badge{
+    position: absolute;
+    inset-block-start: -3px;
+    inset-inline-end: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 16px;
+    block-size: 16px;
+    padding-inline: 4px;
+    border-radius: 999px;
+    background: var(--tm-teal-deep);
+    box-shadow: 0 0 0 2px var(--tm-surface);
+    font-size: 0;
+    color: var(--tm-white);
+  }
+
+  .mobile-tab-badge::after{
+    content: attr(data-qty);
+    font-size: 10px;
+    line-height: 1;
+    font-weight: 700;
+  }
+}
+
+/* Tablets: a full-bleed sheet and four tabs stretched across 1000px both read
+   as a phone layout that was left to grow. Cap the measure, keep the chrome. */
+@media (min-width: 600px) and (max-width: 1000px){
+
+  .tm-sheet{
+    max-inline-size: 560px;
+    margin-inline: auto;
+    border-radius: var(--tm-radius-lg) var(--tm-radius-lg) 0 0;
+  }
+
+  .mobile-tab-bar{
+    justify-content: center;
+    gap: var(--tm-stack-sm);
+  }
+
+  .mobile-tab{
+    flex: 0 1 120px;
+  }
+}
+
+/* Installed, there is no browser chrome under the bar to absorb the gesture
+   area, so the inset does the whole job. */
+@media (max-width: 1000px) and (display-mode: standalone){
+
+  .mobile-tab-bar{
+    padding-block-end: max(env(safe-area-inset-bottom, 0px), 12px);
+  }
+
+  .master-wrapper-page{
+    padding-block-end: calc(78px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+
+  .mobile-tab,
+  .mobile-tab-icon-wrap,
+  .tm-sheet,
+  .tm-sheet::backdrop,
+  .tm-sheet .menu__item-toggle::after{
+    transition: none;
+  }
+
+  .mobile-tab:active{
+    transform: none;
+  }
+}
+
+/* Pre-2024 browsers have no popover: the sheet then lays out inline at the
+   foot of the page rather than in the top layer, so it is dressed as a plain
+   block and the tab scrolls to it (see _MobileNav.cshtml). */
+@supports not selector(:popover-open){
+
+  .tm-sheet{
+    position: static;
+    max-block-size: none;
+    border-radius: 0;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .tm-sheet-grip,
+  .tm-sheet-close{
+    display: none;
+  }
+}
+
+
+/* --- Catalogue and product page details -----------------------------------
+   Small mobile-only corrections to pages the app shell now opens straight onto.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1000px){
+
+  /* A three-level trail wrapped to three lines, and the fourth level ran off
+     the screen edge. The page's own <h1> already says where you are, so mobile
+     keeps only the step back up: one 44px tap target that truncates cleanly. */
+  .breadcrumb{
+    margin-block-end: var(--tm-stack-md);
+    padding: 0;
+    background: none;
+  }
+
+  .breadcrumb li{
+    display: none;
+  }
+
+  /* The item before the current one is the parent - "back" in one tap. */
+  .breadcrumb li:nth-last-child(2){
+    display: block;
+  }
+
+  /* The home crumb wraps its link in a span; the category crumbs do not. */
+  .breadcrumb li:nth-last-child(2) > span:not(.delimiter){
+    display: block;
+    margin: 0;
+  }
+
+  .breadcrumb li:nth-last-child(2) a{
+    display: block;
+    max-width: 100%;
+    margin: 0;
+    padding-block: 11px;
+    overflow: hidden;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 22px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .breadcrumb li:nth-last-child(2) a span{
+    display: inline;
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  .breadcrumb li:nth-last-child(2) .delimiter{
+    display: none;
+  }
+
+  /* Chevron drawn from two borders: logical sides keep it pointing back in
+     both writing directions once the rotation is flipped for RTL. */
+  .breadcrumb li:nth-last-child(2) a:before{
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-inline-end: 8px;
+    border-block-start: 2px solid currentColor;
+    border-inline-start: 2px solid currentColor;
+    transform: rotate(-45deg);
+    vertical-align: 1px;
+    opacity: .7;
+  }
+
+  [dir="rtl"] .breadcrumb li:nth-last-child(2) a:before{
+    transform: rotate(45deg);
+  }
+
+  /* Sort and page size on one wrapped row rather than three stacked ones. */
+  .product-selectors{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-block-end: var(--tm-stack-md);
+    padding-block: 12px;
+  }
+
+  .product-selectors:after{
+    content: none;
+  }
+
+  .product-selectors > div{
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: 6px;
+    min-inline-size: 0;
+    margin: 0;
+  }
+
+  .product-selectors span{
+    flex: 0 0 auto;
+    font-size: var(--tm-fs-label-sm);
+    line-height: var(--tm-lh-label-sm);
+    color: var(--tm-ink-muted);
+    white-space: nowrap;
+  }
+
+  .product-selectors select{
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    margin: 0;
+  }
+
+  /* NopStation.PictureZoom floats its gallery wrapper with an inline style.
+     Uncleared, the float made the <h1> next to it 644px tall and pushed the
+     price and the add-to-cart button most of a screen further down.
+     !important is the only lever against an inline style. */
+  .gallery > [data-popup]{
+    float: none !important;
+  }
+
+  /* PictureZoom stacks its thumbnails one per row, which cost 200px above the
+     fold for two of them. A snapping side-scroller is both smaller and the
+     gesture a phone shopper reaches for. */
+  .gallery .cloud-zoom-thumb-container{
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .gallery .cloud-zoom-thumb-container::-webkit-scrollbar{
+    display: none;
+  }
+
+  .gallery .cloud-zoom-thumb{
+    flex: 0 0 auto;
+    inline-size: auto;
+    scroll-snap-align: start;
+  }
+
+  /* ponytail: no sticky add-to-cart bar on the product page — it would stack
+     on top of the tab bar for 120px of permanent chrome. Add one (and hide the
+     tab bar while it shows) if the product page ever needs the conversion. */
+}
+
+
+/* --- Cards hold their shape whatever the name does ------------------------
+   A grid row is as tall as its tallest card, so one product name running to
+   three lines pushed that card taller and left the price and cart button of
+   every other card in the row hanging halfway up.
+
+   Two rules settle it at every breakpoint: the name is clamped to two lines
+   and always reserves both, and the card is a column whose price row is
+   pushed to its foot, so anything that still varies is absorbed above the
+   price instead of moving it.
+   -------------------------------------------------------------------------- */
+.item-box .product-item{
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+}
+
+.item-box .details{
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.item-box .add-info{
+  margin-block-start: auto;
+}
+
+/* 2lh is exactly two line boxes of whatever size the title happens to be, so
+   the homepage grid (14px) and the catalogue grids (17px) both reserve their
+   own two lines. Browsers without the unit drop the line and lose only the
+   reserved gap — the clamp and the column above still hold the row together. */
+.item-box .product-title,
+.home-page .home-page-product-grid .product-title{
+  min-block-size: 2lh;
+}
+
+/* Overrides the homepage grid's one-line nowrap ellipsis, which cut names to
+   "طقم عشاء خزفي أ…" and told the shopper almost nothing. */
+.item-box .product-title a,
+.home-page .home-page-product-grid .product-title a{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  white-space: normal;
+}
+
+/* List view lays its card out sideways; the column above would undo that. */
+.product-list .item-box .product-item{
+  display: block;
+}
+
+
+/* --- Catalogue grids ------------------------------------------------------
+   The base sheet gives every card `width:100%; float:left; margin:0 0 80px`:
+   one product per screen with a 80px hole under it. Two columns is what a
+   phone shopper expects, and what the homepage grids already do — this brings
+   the category, search, manufacturer, related and cross-sell grids in line.
+
+   The homepage rules are more specific and keep their own layout: the big
+   single-column category tiles are a deliberate hero treatment.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1000px){
+
+  .item-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--tm-stack-sm);
+    row-gap: var(--tm-stack-md);
+  }
+
+  .item-grid:after{
+    content: none;
+  }
+
+  .item-box{
+    float: none;
+    width: auto;
+    /* a grid item defaults to min-width:auto, which lets a long product name
+       widen its track rather than ellipse inside it */
+    min-width: 0;
+    margin: 0;
+  }
+
+  /* List view is a deliberate one-per-row choice; leave it one per row. */
+  .product-list .item-grid{
+    display: block;
+  }
+
+  .product-list .item-box{
+    margin-block-end: var(--tm-stack-md);
+  }
+}
+
+
+/* A tablet fits a third card and a second hero tile per row; the phone counts
+   leave half the width empty. Placed after the two-column rules above so it
+   wins on order — both selectors carry the same weight. */
+@media (min-width: 600px) and (max-width: 1000px){
+
+  .item-grid{
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--tm-stack-md);
+  }
+
+  :is(.home-page-category-grid, .sub-category-grid) .item-grid{
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .home-page .home-page-product-grid .item-grid{
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--tm-stack-md);
+  }
+}
+
+
+/* --- Product cards on a phone ---------------------------------------------
+   Two 148px cards per row leave the price line ~62px once the 44px cart circle
+   and the card padding are taken out, and a price is one unbreakable token —
+   "129 ل.س.‏" needs 88px at the desktop size, so it was being clipped by the
+   card's own overflow. Reclaim the width, drop the price a step, and let the
+   row wrap as the safety valve for a four-figure price.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1000px){
+
+  .item-box .details{
+    padding-inline: var(--tm-stack-sm);
+  }
+
+  /* The cart circle stays pinned to the row's inline end at every price length.
+     Letting it wrap onto a second line is what made the button sit at a
+     different height in every card: a two-digit price kept it on the price
+     line, a three-digit one pushed it below and to the far side. */
+  .item-box .add-info{
+    flex-wrap: nowrap;
+    gap: 4px;
+  }
+
+  .item-box .add-info .prices{
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  /* A price never breaks mid-token, but it may take a second line: the row
+     above is nowrap and the button sits in its own slot, so wrapping costs a
+     few pixels of card height and nothing else. Ellipsing instead cut a rental
+     price down to a number with no period attached to it —
+     "45 ل.س لكل 1 يوم (أيام)" wants 165px in a 106px slot. */
+  .item-box .prices .price{
+    max-inline-size: 100%;
+    overflow-wrap: break-word;
+  }
+
+  /* 16px rather than 18px: two cards to a row leave ~95px beside the 44px
+     circle, which 18px bold overran at three digits. */
+  .item-box .prices .actual-price,
+  .home-page .home-page-product-grid .prices .actual-price{
+    font-size: var(--tm-fs-body);
+    line-height: var(--tm-lh-body);
+  }
+
+  .item-box .prices .old-price{
+    font-size: var(--tm-fs-label-sm);
+  }
+}
+
+
+/* --- Primary actions and touch targets ------------------------------------
+   A phone has one thing on screen the shopper is meant to press. A 104px
+   button floating in a 390px row does not read as that thing.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1000px){
+
+  /* The base sheet shrink-wraps this panel (inline-block) and floats its
+     children; the selector carries .overview because that is where it does it. */
+  .overview .add-to-cart-panel,
+  .variant-overview .add-to-cart-panel{
+    display: flex;
+    align-items: center;
+    gap: var(--tm-stack-sm);
+  }
+
+  .overview .add-to-cart-panel > *,
+  .variant-overview .add-to-cart-panel > *{
+    float: none;
+  }
+
+  .overview .add-to-cart-panel .qty-input,
+  .variant-overview .add-to-cart-panel .qty-input{
+    flex: 0 0 auto;
+    inline-size: 64px;
+    text-align: center;
+  }
+
+  .overview .add-to-cart-panel .add-to-cart-button,
+  .variant-overview .add-to-cart-panel .add-to-cart-button{
+    flex: 1 1 auto;
+  }
+
+  .checkout-buttons .checkout-button,
+  .login-page .login-button,
+  .login-page .register-button,
+  .registration-page .register-next-step-button,
+  .checkout-page .button-1{
+    inline-size: 100%;
+  }
+
+  /* The cart's remove control renders as an 11px glyph — a quarter of the
+     44px floor, and the one destructive control on the page. */
+  .cart .remove-btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 44px;
+    block-size: 44px;
+    min-height: 44px;
+  }
+
+  /* Returning customers outnumber new ones on a store that has been open a
+     while; the form they came for goes above the pitch for an account. */
+  .login-page .customer-blocks{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .login-page .returning-wrapper{
+    order: -1;
+  }
+}
+
+
+/* --- Catalogue pages: products before filters -----------------------------
+   .side-2 carries the price filter and the "recently viewed"/"tags" blocks,
+   ~350px of them, and stacked first on a phone it pushed the product grid a
+   screen and a half down. Reordering costs nothing and needs no markup.
+
+   Account pages put their navigation in .side-2 via the "left" section, and
+   that has to stay above the content it navigates — hence the page-class list
+   rather than a blanket rule.
+
+   ponytail: order swap, not a filter sheet. Promote it to a sheet of its own
+   (the .tm-sheet popover above is the pattern) when the catalogue grows enough
+   filters that scrolling past the grid to reach them starts to hurt.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1000px){
+
+  /* The column owns the rhythm between its sections, so the base sheet's
+     per-section bottom margins go: .center-1 carried 100px and .side-2 another
+     50px, which stacked with the footer's own 40px into ~140px of empty page
+     between the last block and the footer. */
+  .master-column-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: var(--tm-stack-lg);
+  }
+
+  .master-column-wrapper:after{
+    content: none;
+  }
+
+  .center-1,
+  .center-2,
+  .side-2{
+    margin-block-end: 0;
+  }
+
+  /* The bottom tab bar carries navigation on phones and tablets, so the
+     footer is dead weight there: a teal wall of links between the last
+     product and the tab bar. Hidden outright, not collapsed.
+
+     ponytail: display:none, not a separate mobile footer. Bring back a
+     trimmed one (contact + policy links) if support asks for it. */
+  .footer{
+    display: none;
+  }
+
+  /* Filters, "recently viewed" and the manufacturer list belong after the
+     thing they filter. Stated as the default rather than as a list of page
+     classes: the list silently missed /manufacturer/all, /news and
+     /recentlyviewedproducts, each of which opened on a stack of grey filter
+     bars with the page title below the fold.
+
+     The account and blog pages are the exception — there .side-2 is the
+     navigation for the content beside it, so it stays on top. */
+  .side-2{
+    order: 2;
+  }
+
+  :is(.html-account-page,
+      .html-blog-page,
+      .html-blogpost-page) .side-2{
+    order: 0;
+  }
+}
+
+
+/* --- Product ribbons ------------------------------------------------------
+   NopStation.ProductRibbon ships flat grey blocks (#ddd, padding 15px 25px)
+   that read as unstyled placeholders. TmTm treatment: compact brand pills
+   pinned to the image corner. The plugin registers its sheet with
+   AppendCssFileParts, which inserts at index 0, so brand.css wins on order
+   alone — no !important needed here.
+
+   The plugin only makes .product-essential .picture a positioning context, so
+   the badge had nothing to anchor to on the card or above the gallery. */
+.item-box .product-item,
+.product-details-page .product-essential{
+  position: relative;
+}
+
+.product-item .offer-content,
+.product-details-page .offer-content{
+  top: 12px;
+  right: auto;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  /* Pinned to the physical left in both directions, so the cross-axis
+     alignment has to flip: in RTL the column's start edge is the right one. */
+  align-items: flex-start;
+  gap: 6px;
+  text-transform: none;
+  pointer-events: none; /* never eat a click meant for the product link */
+}
+
+[dir="rtl"] .product-item .offer-content,
+[dir="rtl"] .product-details-page .offer-content{
+  align-items: flex-end;
+}
+
+.offer-content .new-product-label,
+.offer-content .discount-info-label,
+.offer-content .bestseller-label{
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: var(--tm-fs-label-sm);
+  font-weight: 700;
+  line-height: 1.6;
+  white-space: nowrap;
+  box-shadow: var(--tm-shadow);
+}
+
+/* Discount is the one that should carry weight — solid deep teal, 5.26:1. */
+.offer-content .discount-info-label{
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+}
+
+/* "New" is secondary: it should register without competing with the price. */
+.offer-content .new-product-label{
+  background: var(--tm-white);
+  color: var(--tm-teal-deep);
+  box-shadow: inset 0 0 0 1px var(--tm-teal-border), var(--tm-shadow);
+}
+
+.offer-content .bestseller-label{
+  background: var(--tm-warning);
+  color: var(--tm-white);
+}
+
+/* --- Product page: quantity stepper ---------------------------------------
+   The base sheet floats a bare 45px text box next to the button. Replaced with
+   one bordered pill: minus / value / plus, all on the 48px touch floor. The
+   steppers only write into the same input, so every existing handler
+   (product_quantity_changed, add-to-cart) keeps working untouched.
+   -------------------------------------------------------------------------- */
+.overview .add-to-cart-panel,
+.variant-overview .add-to-cart-panel{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--tm-stack-sm);
+}
+
+.overview .add-to-cart-panel > *,
+.variant-overview .add-to-cart-panel > *{
+  float: none;
+}
+
+.qty-stepper{
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--tm-teal-border);
+  border-radius: var(--tm-radius);
+  background: var(--tm-surface);
+  overflow: hidden;
+}
+
+.qty-stepper .qty-step{
+  inline-size: 44px;
+  min-height: 48px;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--tm-teal-deep);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.qty-stepper .qty-step:hover,
+.qty-stepper .qty-step:focus-visible{
+  background: var(--tm-teal-tint);
+  color: var(--tm-teal-hover);
+}
+
+.qty-stepper .qty-step:active{
+  background: var(--tm-teal-tint-strong);
+}
+
+.overview .qty-stepper .qty-input,
+.variant-overview .qty-stepper .qty-input{
+  inline-size: 52px;
+  block-size: auto;
+  min-height: 48px;
+  border: 0;
+  border-inline: 1px solid var(--tm-line);
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  text-align: center;
+  font-size: var(--tm-fs-body);
+  font-weight: 600;
+  color: var(--tm-ink);
+}
+
+.overview .qty-stepper .qty-input:focus,
+.variant-overview .qty-stepper .qty-input:focus{
+  outline: 0;
+  background: var(--tm-teal-tint);
+}
+
+/* Focus has to land on the pill, not on a child with clipped corners. */
+.qty-stepper:focus-within{
+  border-color: var(--tm-teal);
+  box-shadow: 0 0 0 3px var(--tm-teal-tint);
+}
+
+.overview .qty-dropdown,
+.variant-overview .qty-dropdown{
+  min-height: 48px;
+  border: 1px solid var(--tm-teal-border);
+  border-radius: var(--tm-radius);
+  /* styles.css sets `padding: 0 12px` here, which outranks the shared select
+     rule and would leave the arrow sitting on top of the number. */
+  padding-inline: 14px 34px;
+}
+
+.overview .add-to-cart-button,
+.variant-overview .add-to-cart-button{
+  min-height: 48px;
+  height: auto;
+  min-inline-size: 220px;
+  border-radius: var(--tm-radius);
+  padding-inline: 32px;
+  font-size: var(--tm-fs-body);
+  text-transform: none;
+}
+
+@media (max-width: 1000px){
+  /* One row, and the CTA takes whatever the stepper does not. */
+  .overview .add-to-cart-button,
+  .variant-overview .add-to-cart-button{
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    padding-inline: 16px;
+  }
+}
+
+/* --- Product page: share row ----------------------------------------------
+   Replaces the ShareThis embed and the "email a friend" button. Facebook and
+   WhatsApp are plain links; Instagram has no web share endpoint, so its tile
+   copies the link for pasting into a story or DM.
+   -------------------------------------------------------------------------- */
+.product-share{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--tm-stack-sm);
+  clear: both;
+  margin-block: var(--tm-stack-md) 0;
+}
+
+.product-share-label{
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  font-weight: 600;
+  color: var(--tm-ink-muted);
+}
+
+.product-share-networks{
+  display: flex;
+  align-items: center;
+  gap: var(--tm-stack-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-share-networks a,
+.product-share-networks .share-copy-link{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  padding: 0;
+  border: 1px solid var(--tm-teal-border);
+  border-radius: 50%;
+  background: var(--tm-surface);
+  color: var(--tm-teal-deep);
+  cursor: pointer;
+}
+
+.product-share-networks a:hover,
+.product-share-networks a:focus-visible,
+.product-share-networks .share-copy-link:hover,
+.product-share-networks .share-copy-link:focus-visible{
+  background: var(--tm-teal-deep);
+  border-color: var(--tm-teal-deep);
+  color: var(--tm-white);
+  box-shadow: var(--tm-shadow);
+}
+
+.product-share-networks svg{
+  display: block;
+  inline-size: 20px;
+  block-size: 20px;
+  fill: currentColor;
+}
+
+.share-copied-note{
+  font-size: var(--tm-fs-label-sm);
+  line-height: var(--tm-lh-label-sm);
+  color: var(--tm-success);
+  opacity: 0;
+  transition: opacity var(--tm-transition);
+}
+
+.share-copied-note.visible{
+  opacity: 1;
+}
+/* ==========================================================================
+   Colour swatches — product details / checkout attributes
+   The forked sheet draws 32px squares and signals "selected" by filling the
+   container behind them. Circles with an offset ring read as a modern
+   swatch picker and, being a box-shadow, the ring costs no layout shift.
+   Sizes and borders need !important because styles.css marks them !important.
+   Scoped to .attributes so the filter sidebar swatches stay as they are.
+   ========================================================================== */
+
+.attributes .attribute-squares li{
+  margin: 0 var(--tm-stack-sm) var(--tm-stack-sm) 0;
+  vertical-align: top;
+}
+
+.attributes .attribute-squares label{
+  position: relative;
+  overflow: visible;          /* the selected ring sits outside the swatch */
+}
+
+.attributes .attribute-squares .attribute-square-container{
+  padding: 0;
+  background: none;
+  line-height: 0;
+}
+
+.attributes .attribute-squares .attribute-square{
+  width: 30px !important;
+  height: 30px !important;
+  margin: 4px;                /* clear space for the ring */
+  border: 1px solid rgba(16, 32, 31, .16) !important;
+  border-radius: 50%;
+  background-clip: padding-box;
+  box-shadow: inset 0 1px 2px rgba(16, 32, 31, .16);
+  transition: transform var(--tm-transition), box-shadow var(--tm-transition);
+}
+
+.attributes .attribute-squares li:not(.disabled):hover .attribute-square{
+  transform: scale(1.08);
+  box-shadow: inset 0 1px 2px rgba(16, 32, 31, .16),
+              0 0 0 2px var(--tm-surface),
+              0 0 0 3px var(--tm-teal-border);
+}
+
+.attributes .attribute-squares .selected-value .attribute-square-container{
+  background: none;
+}
+
+.attributes .attribute-squares .selected-value .attribute-square,
+.attributes .attribute-squares label:has(input:focus-visible) .attribute-square{
+  box-shadow: inset 0 1px 2px rgba(16, 32, 31, .16),
+              0 0 0 2px var(--tm-surface),
+              0 0 0 4px var(--tm-teal-deep);
+}
+
+/* Core hides the radio with display:none, which drops it out of the tab
+   order entirely. Cover the label with it instead: still invisible, still
+   keyboard reachable, and :has() above paints the focus ring. */
+.attributes .attribute-squares li input{
+  display: block !important;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Unavailable: one diagonal slash clipped to the circle, not the square
+   two-line cross the forked sheet paints across the container box. */
+.attributes .attribute-squares .disabled .attribute-square-container{
+  background: none;
+}
+
+.attributes .attribute-squares .disabled .attribute-square{
+  opacity: .45;
+}
+
+.attributes .attribute-squares .disabled .attribute-square-container::after{
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: linear-gradient(to top right,
+              transparent calc(50% - 1px), var(--tm-error) 50%, transparent calc(50% + 1px));
+  pointer-events: none;
+}
+
+
+/* ==========================================================================
+   Product page
+   --------------------------------------------------------------------------
+   Paired with Themes/TmTm/Views/Product/ProductTemplate.Simple.cshtml and
+   Views/Shared/_TmProductGallery.cshtml. The base sheet floats a 46%/52% pair
+   under a hairline rule and gives every one of the twenty partials in the
+   reading column the same weight; this section replaces the float with a grid,
+   groups the column into a buy box with a quiet frame around it, and folds the
+   description, the specifications and the reviews into panels.
+
+   Written with logical properties, so the one file serves LTR and RTL.
+   ========================================================================== */
+
+.product-details-page{
+  padding-block-start: var(--tm-stack-md);
+}
+
+/* Two independent columns rather than two floats: the gallery can then stay put
+   while the reading column scrolls, and neither has to be cleared. */
+.product-essential{
+  display: grid;
+  gap: var(--tm-stack-lg);
+  margin-block-end: var(--tm-stack-lg);
+  border: 0;
+  padding: 0;
+}
+
+/* The base sheet's float clearer would otherwise be a grid item of its own,
+   claiming a whole row. */
+.product-essential:after{
+  content: none;
+}
+
+.product-essential > .gallery,
+.product-essential > .overview{
+  float: none;
+  inline-size: auto;
+  /* a grid item defaults to min-width:auto, which lets a wide specification
+     table or a long unbroken word push the column past its track */
+  min-inline-size: 0;
+  margin: 0;
+}
+
+/* The grouped template keeps the description inside .product-essential. */
+.product-essential > .full-description{
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 1001px){
+
+  .product-essential{
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+  }
+
+  /* A long option list and a long description both scroll past a gallery that
+     stays where the shopper left it. */
+  .product-essential > .gallery{
+    position: sticky;
+    inset-block-start: calc(var(--tm-header-h) + var(--tm-stack-md));
+  }
+}
+
+
+/* --- Gallery --------------------------------------------------------------
+   One scroll-snap track at every size: swipe on a phone, arrows on a pointer,
+   tap for the full-screen dialog. See _TmProductGallery.cshtml for why this
+   replaces the cloud-zoom markup the PictureZoom plugin ships.
+   -------------------------------------------------------------------------- */
+.tm-gallery{
+  display: grid;
+  gap: var(--tm-stack-sm);
+}
+
+.tm-gallery-stage{
+  position: relative;
+  border-radius: var(--tm-radius-lg);
+  background: var(--tm-surface-alt);
+  overflow: hidden;
+}
+
+/* Square whatever the pictures are: the buy box beside it never moves when the
+   first shot decodes, and a portrait product does not resize the page. */
+.tm-gallery-track{
+  display: flex;
+  aspect-ratio: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.tm-gallery-track::-webkit-scrollbar{
+  display: none;
+}
+
+.tm-gallery-track:focus-visible{
+  outline: 2px solid var(--tm-teal-deep);
+  outline-offset: -2px;
+}
+
+.tm-slide{
+  box-sizing: border-box;
+  flex: 0 0 100%;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: var(--tm-stack-md);
+  scroll-snap-align: center;
+}
+
+.tm-slide img{
+  max-inline-size: 100%;
+  max-block-size: 100%;
+  object-fit: contain;
+}
+
+.tm-gallery-open,
+.tm-gallery-arrow{
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--tm-teal-border);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: var(--tm-teal-deep);
+  cursor: pointer;
+  transition: background var(--tm-transition), color var(--tm-transition), opacity var(--tm-transition);
+}
+
+.tm-gallery-open:hover,
+.tm-gallery-open:focus-visible,
+.tm-gallery-arrow:hover,
+.tm-gallery-arrow:focus-visible{
+  background: var(--tm-teal-deep);
+  border-color: var(--tm-teal-deep);
+  color: var(--tm-white);
+}
+
+.tm-gallery-open svg,
+.tm-gallery-arrow svg,
+.tm-lightbox-close svg{
+  inline-size: 20px;
+  block-size: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tm-gallery-open{
+  inset-block-end: 12px;
+  inset-inline-end: 12px;
+}
+
+.tm-gallery-arrow{
+  inset-block-start: 50%;
+  translate: 0 -50%;
+}
+
+.tm-gallery-prev{
+  inset-inline-start: 12px;
+}
+
+.tm-gallery-next{
+  inset-inline-end: 12px;
+}
+
+/* The chevrons are drawn pointing at a physical side; the buttons swap sides
+   with the writing direction, so the glyphs have to swap with them. */
+[dir="rtl"] .tm-gallery-arrow svg{
+  scale: -1 1;
+}
+
+/* A swipe is the gesture on a touch screen and the arrows are 88px of chrome
+   over the picture; on a pointer they appear when the picture is hovered. */
+@media (hover: none){
+
+  .tm-gallery-arrow{
+    display: none;
+  }
+}
+
+@media (hover: hover){
+
+  .tm-gallery-arrow{
+    opacity: 0;
+  }
+
+  .tm-gallery-stage:hover .tm-gallery-arrow,
+  .tm-gallery-arrow:focus-visible{
+    opacity: 1;
+  }
+}
+
+.tm-gallery-counter{
+  position: absolute;
+  inset-block-end: 12px;
+  inset-inline-start: 12px;
+  z-index: 2;
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(16, 32, 31, 0.62);
+  color: var(--tm-white);
+  font-size: var(--tm-fs-label-sm);
+  line-height: var(--tm-lh-label-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.tm-gallery-thumbs{
+  display: flex;
+  gap: var(--tm-stack-sm);
+  margin: 0;
+  /* room for the active ring, which is a box-shadow and would be clipped */
+  padding: 2px;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.tm-gallery-thumbs::-webkit-scrollbar{
+  display: none;
+}
+
+.tm-gallery-thumbs > li{
+  flex: 0 0 auto;
+  margin: 0;
+  scroll-snap-align: start;
+}
+
+.tm-thumb{
+  display: block;
+  inline-size: 64px;
+  block-size: 64px;
+  padding: 4px;
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius-sm);
+  background: var(--tm-surface);
+  cursor: pointer;
+  transition: border-color var(--tm-transition), box-shadow var(--tm-transition);
+}
+
+.tm-thumb img{
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+
+.tm-thumb:hover{
+  border-color: var(--tm-teal-border);
+}
+
+.tm-thumb.active,
+.tm-thumb:focus-visible{
+  border-color: var(--tm-teal-deep);
+  box-shadow: 0 0 0 1px var(--tm-teal-deep);
+}
+
+@media (min-width: 1001px){
+
+  .tm-thumb{
+    inline-size: 76px;
+    block-size: 76px;
+  }
+}
+
+/* Full screen. The stage is moved into the dialog by the gallery script, so
+   everything above applies here too and only the frame changes. */
+.tm-lightbox{
+  inline-size: 100%;
+  max-inline-size: 100%;
+  block-size: 100%;
+  max-block-size: 100%;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: var(--tm-black);
+}
+
+.tm-lightbox::backdrop{
+  background: rgba(0, 0, 0, 0.92);
+}
+
+.tm-lightbox .tm-gallery-stage{
+  block-size: 100%;
+  border-radius: 0;
+  background: transparent;
+}
+
+.tm-lightbox .tm-gallery-track{
+  aspect-ratio: auto;
+  block-size: 100%;
+}
+
+/* Clear of the close button at the top and the counter at the foot, and of the
+   notch and the home indicator on a phone. */
+.tm-lightbox .tm-slide{
+  padding-block: calc(env(safe-area-inset-top, 0px) + 64px) calc(env(safe-area-inset-bottom, 0px) + 64px);
+}
+
+.tm-lightbox .tm-gallery-open{
+  display: none;
+}
+
+.tm-lightbox .tm-gallery-counter{
+  inset-block-end: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  inset-inline: 0;
+  inline-size: fit-content;
+  margin-inline: auto;
+}
+
+.tm-lightbox-close{
+  position: absolute;
+  z-index: 3;
+  inset-block-start: calc(env(safe-area-inset-top, 0px) + 12px);
+  inset-inline-end: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--tm-white);
+  cursor: pointer;
+}
+
+.tm-lightbox-close:hover,
+.tm-lightbox-close:focus-visible{
+  background: rgba(255, 255, 255, 0.24);
+}
+
+
+/* --- Overview: name and the identity line ---------------------------------
+   Vendor, brand, SKU, part number and the rating each had a row of their own
+   under the title — five rows of label-sized text between the name and the
+   price. One wrapping row instead, with a hairline between the groups.
+   -------------------------------------------------------------------------- */
+.overview .product-name{
+  margin: 0 0 var(--tm-stack-sm);
+  border: 0;
+  padding: 0;
+}
+
+.overview .product-name h1{
+  font-size: var(--tm-fs-headline-sm);
+  line-height: var(--tm-lh-headline-sm);
+  font-weight: 700;
+  color: var(--tm-ink);
+}
+
+@media (min-width: 1001px){
+
+  .overview .product-name h1{
+    font-size: var(--tm-fs-headline);
+    line-height: var(--tm-lh-headline);
+  }
+}
+
+.tm-identity{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tm-stack-sm) var(--tm-stack-md);
+  margin-block-end: var(--tm-stack-md);
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  color: var(--tm-ink-muted);
+}
+
+.tm-identity > *{
+  margin: 0;
+}
+
+.tm-identity > * + *{
+  padding-inline-start: var(--tm-stack-md);
+  border-inline-start: 1px solid var(--tm-line);
+}
+
+.tm-identity .additional-details{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px var(--tm-stack-md);
+}
+
+.tm-identity .additional-details div{
+  margin: 0;
+}
+
+.tm-identity .label{
+  font-weight: 400;
+  color: var(--tm-ink-muted);
+}
+
+.tm-identity .value,
+.tm-identity .value a{
+  color: var(--tm-ink);
+}
+
+.tm-identity .value a:hover{
+  color: var(--tm-teal-deep);
+}
+
+/* The rating sprite is DefaultClean's grey-and-gold pair. Two inline stars in
+   the brand teals instead — no request, and the one colour the guideline allows
+   for something this small. */
+.product-review-box .rating{
+  inline-size: 100px;
+  block-size: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23cbe8e7' d='m10 1.8 2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L2.2 7.5l5.4-.8z'/%3E%3C/svg%3E") repeat-x;
+  background-size: 20px 20px;
+}
+
+.product-review-box .rating div{
+  block-size: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%2302787e' d='m10 1.8 2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L2.2 7.5l5.4-.8z'/%3E%3C/svg%3E") repeat-x;
+  background-size: 20px 20px;
+}
+
+.tm-identity .product-reviews-overview{
+  display: flex;
+  align-items: center;
+  gap: var(--tm-stack-sm);
+  margin: 0;
+}
+
+.tm-identity .product-review-links a{
+  color: var(--tm-teal-deep);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+
+/* --- The buy box ----------------------------------------------------------
+   Price, options and the button in one framed group, so the eye goes from the
+   name straight to the thing it has to decide about. Everything reassuring —
+   SKU above it, delivery and share below — stays at label size outside it.
+   -------------------------------------------------------------------------- */
+.tm-buybox{
+  margin-block-end: var(--tm-stack-md);
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius-lg);
+  padding: var(--tm-stack-md);
+  background: var(--tm-surface);
+}
+
+@media (min-width: 1001px){
+
+  .tm-buybox{
+    padding: var(--tm-gutter);
+  }
+}
+
+/* One baseline-aligned row. The partial prints the struck price before the one
+   that is actually charged, so the order is set here rather than in a fork. */
+.tm-buybox .prices{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px var(--tm-stack-sm);
+  margin: 0;
+  overflow: visible;
+}
+
+.tm-buybox .prices > div{
+  margin: 0;
+}
+
+.tm-buybox .product-price,
+.tm-buybox .rental-price{
+  order: 1;
+}
+
+.tm-buybox .old-product-price,
+.tm-buybox .non-discounted-price{
+  order: 2;
+  color: var(--tm-ink-muted);
+  text-decoration: line-through;
+}
+
+.tm-buybox .product-price span,
+.tm-buybox .product-price > span{
+  font-size: var(--tm-fs-headline-sm);
+  line-height: var(--tm-lh-headline-sm);
+  font-weight: 700;
+  color: var(--tm-teal-deep);
+}
+
+.tm-buybox .old-product-price span,
+.tm-buybox .non-discounted-price span{
+  font-size: var(--tm-fs-body);
+  line-height: var(--tm-lh-body);
+  font-weight: 500;
+  color: inherit;
+}
+
+/* "Price:", "Old price:" and "With discount:" label three numbers the layout
+   has already told apart. Removed from view, kept for the screen reader. */
+.tm-buybox .old-product-price > span:first-child,
+.tm-buybox .discounted-price > span:first-child,
+.tm-buybox .prices > div > label{
+  position: absolute;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Per-unit price and the tax note are footnotes to the row above. */
+.tm-buybox .base-price-pangv,
+.tm-buybox .tax-shipping-info{
+  flex: 1 0 100%;
+  order: 3;
+  margin: 0;
+  font-size: var(--tm-fs-label-sm);
+  line-height: var(--tm-lh-label-sm);
+  color: var(--tm-ink-muted);
+}
+
+.tm-buybox .tier-prices{
+  margin-block-start: var(--tm-stack-md);
+}
+
+.tm-buybox .short-description{
+  margin-block: var(--tm-stack-md) 0;
+  font-size: var(--tm-fs-body);
+  line-height: var(--tm-lh-body);
+  color: var(--tm-ink-muted);
+}
+
+.tm-buybox .availability{
+  margin-block: var(--tm-stack-md) 0;
+  overflow: visible;
+}
+
+.tm-buybox .availability .stock{
+  margin: 0;
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+}
+
+.tm-buybox .availability .stock .value{
+  font-weight: 600;
+  color: var(--tm-ink);
+}
+
+.tm-buybox .attributes,
+.tm-buybox .rental-attributes{
+  margin-block: var(--tm-stack-md) 0;
+}
+
+.tm-buybox .add-to-cart{
+  margin-block-start: var(--tm-stack-md);
+}
+
+.tm-buybox .add-to-cart-panel{
+  margin: 0;
+}
+
+/* The label sits above the stepper, not in the row with it — on a 360px screen
+   "Qty:" plus the pill plus the button never fitted on one line. */
+.tm-buybox .qty-label{
+  flex: 1 0 100%;
+  margin: 0;
+  font-size: var(--tm-fs-label-sm);
+  line-height: var(--tm-lh-label-sm);
+  color: var(--tm-ink-muted);
+}
+
+
+/* --- Assurances -----------------------------------------------------------
+   Free shipping and the delivery date, below the button where they answer
+   "when does it get here" instead of competing with the price.
+   -------------------------------------------------------------------------- */
+.tm-assurances{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tm-stack-sm);
+  margin-block-end: var(--tm-stack-md);
+}
+
+.tm-assurances:empty,
+.tm-assurances > :empty{
+  display: none;
+}
+
+.tm-assurances .delivery{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tm-stack-sm);
+  overflow: visible;
+}
+
+.overview .tm-assurances .free-shipping,
+.tm-assurances .delivery-date{
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  border-radius: 999px;
+  padding: 6px 14px;
+  background: var(--tm-teal-tint);
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  font-weight: 600;
+  color: var(--tm-teal-deep);
+}
+
+/* The base sheet paints a shipping glyph into the background of this one. */
+.overview .tm-assurances .free-shipping{
+  background-image: none;
+  padding-inline-start: 14px;
+}
+
+.tm-assurances .delivery-date .label{
+  font-weight: 400;
+  margin-inline-end: 4px;
+}
+
+
+/* --- Compare and share ---------------------------------------------------- */
+.tm-overview-foot{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tm-stack-md);
+  border-block-start: 1px solid var(--tm-line);
+  padding-block-start: var(--tm-stack-md);
+}
+
+.tm-overview-foot .overview-buttons{
+  margin: 0;
+}
+
+.tm-overview-foot .product-share{
+  margin: 0;
+}
+
+
+/* --- Panels: description, specifications, reviews -------------------------
+   Native <details>. Keyboard, screen readers and browser find-in-page all work
+   on them with no script and no ARIA of ours; the template ships them open and
+   folds all but the first on a phone, so a reader without script still has the
+   whole page.
+   -------------------------------------------------------------------------- */
+.tm-panels{
+  margin-block: var(--tm-stack-lg);
+}
+
+.tm-panel{
+  border-block-end: 1px solid var(--tm-line);
+}
+
+.tm-panel:first-of-type{
+  border-block-start: 1px solid var(--tm-line);
+}
+
+.tm-panel > summary{
+  display: flex;
+  align-items: center;
+  gap: var(--tm-stack-sm);
+  padding-block: var(--tm-stack-md);
+  font-size: var(--tm-fs-title);
+  line-height: var(--tm-lh-title);
+  font-weight: 700;
+  color: var(--tm-ink);
+  cursor: pointer;
+  list-style: none;
+}
+
+.tm-panel > summary::-webkit-details-marker{
+  display: none;
+}
+
+.tm-panel > summary:hover{
+  color: var(--tm-teal-deep);
+}
+
+.tm-panel > summary:focus-visible{
+  outline: 2px solid var(--tm-teal-deep);
+  outline-offset: 2px;
+}
+
+/* Chevron drawn from two borders: it rotates, so one element covers both states
+   and there is no second asset to load. Physical borders on purpose — a
+   chevron pointing down points down in both writing directions, and the
+   logical pair would have mirrored it into an arrow pointing sideways. */
+.tm-panel > summary::after{
+  content: "";
+  margin-inline-start: auto;
+  inline-size: 10px;
+  block-size: 10px;
+  border-right: 2px solid var(--tm-teal-deep);
+  border-bottom: 2px solid var(--tm-teal-deep);
+  rotate: 45deg;
+  translate: 0 -3px;
+  transition: rotate var(--tm-transition), translate var(--tm-transition);
+}
+
+.tm-panel[open] > summary::after{
+  rotate: -135deg;
+  translate: 0 3px;
+}
+
+.tm-panel-count{
+  border-radius: 999px;
+  padding: 2px 10px;
+  background: var(--tm-teal-tint);
+  font-size: var(--tm-fs-label-sm);
+  line-height: var(--tm-lh-label-sm);
+  font-weight: 700;
+  color: var(--tm-teal-deep);
+}
+
+.tm-panel-body{
+  padding-block-end: var(--tm-stack-lg);
+}
+
+/* Each partial prints a heading of its own; inside a panel the summary is that
+   heading, so the inner one only repeats it. */
+.tm-panel-body > .product-specs-box > .title,
+.tm-panel-body .product-reviews > .product-review-list > .title{
+  position: absolute;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.tm-panel-body .product-specs-box,
+.tm-panel-body .product-reviews{
+  margin: 0;
+  padding: 0;
+}
+
+.tm-panel-body .product-reviews .title{
+  font-size: var(--tm-fs-body-lg);
+  line-height: var(--tm-lh-body-lg);
+  font-weight: 700;
+  color: var(--tm-ink);
+}
+
+/* A specification table is the one thing on this page that can be wider than
+   the screen; it scrolls in its own box rather than taking the page with it. */
+.tm-panel-body .table-wrapper{
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+/* Prose the full width of a 1440px page is ~150 characters a line and nobody
+   finishes it. The table below wants every pixel, so only this is capped. */
+.tm-panel-body .full-description{
+  max-inline-size: 72ch;
+  font-size: var(--tm-fs-body);
+  line-height: var(--tm-lh-body-lg);
+  color: var(--tm-ink);
+}
+
+.tm-panel-body .full-description img{
+  max-inline-size: 100%;
+  block-size: auto;
+}
+
+/* The base sheet boxes every cell in 1px of #ddd, which reads as a debug grid.
+   Rows separated instead, the name column carrying the quiet colour. */
+.tm-panel-body .product-specs-box .data-table{
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.tm-panel-body .product-specs-box td{
+  border: 0;
+  border-block-end: 1px solid var(--tm-line);
+  padding: 12px 0;
+  text-align: start;
+  vertical-align: top;
+}
+
+/* The header row is hidden but keeps its cells, and with them the base sheet's
+   1px rule, which drew a stray line under the summary. */
+.tm-panel-body .product-specs-box thead th{
+  border: 0;
+  padding: 0;
+}
+
+.tm-panel-body .product-specs-box td.spec-name{
+  inline-size: 30%;
+  padding-inline-end: var(--tm-stack-md);
+  color: var(--tm-ink-muted);
+}
+
+.tm-panel-body .product-specs-box td.spec-value{
+  color: var(--tm-ink);
+}
+
+.tm-panel-body .product-specs-box td.spec-group-name{
+  border-block-end: 0;
+  padding-block: var(--tm-stack-md) 4px;
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  font-weight: 700;
+  color: var(--tm-teal-deep);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Tags read as chips, not as a comma-separated sentence. */
+.product-tags-box .product-tags-list ul{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tm-stack-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-tags-box .product-tags-list li.separator{
+  display: none;
+}
+
+.product-tags-box .product-tags-list li.tag{
+  margin: 0;
+}
+
+.product-tags-box .product-tags-list .producttag{
+  display: inline-block;
+  border: 1px solid var(--tm-teal-border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  background: var(--tm-surface);
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  color: var(--tm-teal-deep);
+}
+
+.product-tags-box .product-tags-list .producttag:hover{
+  background: var(--tm-teal-tint);
+}
+
+
+/* --- Sticky buy bar -------------------------------------------------------
+   Phones only. Its button is a second trigger for the real one, so attribute
+   validation and the AJAX cart run exactly as they do in the buy box.
+
+   It takes the tab bar's place rather than stacking on it: 120px of permanent
+   chrome over a 640px viewport was why the earlier pass left this out. Home and
+   categories are one scroll away; the thing in reach is the one the shopper
+   came for.
+   -------------------------------------------------------------------------- */
+.tm-buybar{
+  display: none;
+}
+
+@media (max-width: 1000px){
+
+  .tm-buybar{
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    gap: var(--tm-stack-md);
+    padding-inline: var(--tm-margin-mobile);
+    padding-block: 10px;
+    padding-block-end: max(env(safe-area-inset-bottom, 0px), 10px);
+    border-block-start: 1px solid var(--tm-line);
+    border-start-start-radius: var(--tm-radius-lg);
+    border-start-end-radius: var(--tm-radius-lg);
+    background: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 -4px 20px rgba(2, 120, 126, 0.10);
+    animation: tm-buybar-in 0.18s ease;
+  }
+
+  /* [hidden] is a UA display:none, which the rule above would outrank. */
+  .tm-buybar[hidden]{
+    display: none;
+  }
+
+  .tm-buybar-price{
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    font-size: var(--tm-fs-body-lg);
+    line-height: var(--tm-lh-body-lg);
+    font-weight: 700;
+    color: var(--tm-teal-deep);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tm-buybar-cta{
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    min-height: 48px;
+    height: auto;
+    border-radius: var(--tm-radius);
+    padding-inline: 16px;
+    font-size: var(--tm-fs-body);
+    text-transform: none;
+  }
+
+  .mobile-tab-bar{
+    transition: transform var(--tm-transition);
+  }
+
+  body.tm-buybar-on .mobile-tab-bar{
+    transform: translateY(100%);
+  }
+}
+
+@keyframes tm-buybar-in{
+  from{ transform: translateY(100%); }
+  to{ transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce){
+
+  .tm-buybar{
+    animation: none;
+  }
+}
+
+
+/* ==========================================================================
+   Shopping cart on a phone
+   The base sheet turns the cart table into blocks: every cell becomes a full
+   width row, so one line item was seven stacked bands - SKU first in a boxed
+   strip, then the picture, then the name, then price / stepper / total, then
+   the remove x alone in a grey band at the foot. Seven bands and 380px of
+   height for one product, with the least useful field (the SKU) at the top.
+
+   Re-laid as one card: picture at the inline start, name and price beside it,
+   quantity and line total on the foot row, remove as an icon in the corner.
+   Grid areas rather than order/float, so RTL flips it for free.
+   ========================================================================== */
+@media (max-width: 1000px){
+
+  .cart tr{
+    display: grid;
+    /* The last track sizes to the line total. The remove button is taken out
+       of the flow into the corner instead of given a track of its own: as a
+       grid item it forced that track 44px wide on every row, and the name was
+       left wrapping to three lines in what was left. */
+    position: relative;
+    grid-template-columns: 88px minmax(0, 1fr) auto;
+    grid-template-areas:
+      "pic name  name"
+      "pic sku   sku"
+      "pic price price"
+      "qty qty   total";
+    align-items: center;
+    column-gap: var(--tm-stack-md);
+    row-gap: 2px;
+    float: none;
+    inline-size: auto;
+    margin: 0 0 var(--tm-stack-md);
+    border: 1px solid var(--tm-line);
+    border-radius: var(--tm-radius);
+    background: var(--tm-surface);
+    padding: var(--tm-stack-sm);
+  }
+
+  .cart td{
+    border: 0;
+    padding: 0;
+    text-align: start;
+  }
+
+  .cart td.product-picture{
+    grid-area: pic;
+    align-self: start;
+    border: 0;
+    padding: 0;
+  }
+
+  .cart td.product-picture img{
+    inline-size: 88px;
+    block-size: 88px;
+    border-radius: var(--tm-radius-sm);
+    background: var(--tm-teal-tint);
+    object-fit: cover;
+  }
+
+  .cart td.product{
+    grid-area: name;
+    min-inline-size: 0;
+    border: 0;
+    /* clear of the remove button in the corner */
+    padding-inline-end: 44px;
+    text-align: start;
+  }
+
+  .cart td.sku{ grid-area: sku; }
+  .cart td.unit-price{ grid-area: price; }
+
+  .cart td.quantity{
+    grid-area: qty;
+    display: block;
+    padding: 0;
+  }
+
+  .cart td.subtotal{
+    grid-area: total;
+    text-align: end;
+  }
+
+  .cart td.remove-from-cart{
+    position: absolute;
+    inset-block-start: var(--tm-stack-sm);
+    inset-inline-end: var(--tm-stack-sm);
+    margin: 0;
+    border: 0;
+    background: none;
+    padding: 0;
+  }
+
+  /* The row above sets the type hierarchy: the name leads, the SKU is a
+     footnote, the unit price sits between them and the line total closes. */
+  .cart .product a.product-name{
+    font-size: var(--tm-fs-body);
+    font-weight: 600;
+    line-height: var(--tm-lh-body);
+    color: var(--tm-ink);
+  }
+
+  .cart td.sku,
+  .cart td.unit-price{
+    font-size: var(--tm-fs-label);
+    color: var(--tm-ink-muted);
+  }
+
+  .cart .td-title{
+    font-size: var(--tm-fs-label-sm);
+    color: var(--tm-ink-muted);
+  }
+
+  /* The stepper is the label. */
+  .cart td.quantity .td-title{
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .cart td.subtotal .product-subtotal{
+    font-size: var(--tm-fs-body-lg);
+    font-weight: 700;
+    color: var(--tm-teal-deep);
+  }
+}
+
+/* The cart's own quantity control is a column: an up arrow, the box, a down
+   arrow, 100px tall and 50px wide. Same pill as the product page, built from
+   the markup the view already prints - the two divs keep their ids and their
+   click handlers, they just stop being PNG arrows. */
+.cart .product-quantity{
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--tm-teal-border);
+  border-radius: var(--tm-radius);
+  background: var(--tm-surface);
+  overflow: hidden;
+}
+
+/* `div.up` in the base sheet, so the element has to be named here too, or
+   the PNG arrow outranks this rule and shows through the glyph. */
+.cart .product-quantity div.up,
+.cart .product-quantity div.down{
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: auto;
+  min-block-size: 44px;
+  border: 0;
+  background: none;
+  color: var(--tm-teal-deep);
+  font-size: 20px;
+  line-height: 1;
+  user-select: none;
+}
+
+/* The view prints up, value, down. Ordered so the pill reads  - value +  -
+   which RTL mirrors to  + value -  on its own. */
+.cart .product-quantity div.down{ order: 0; }
+.cart .product-quantity .qty-input{ order: 1; }
+.cart .product-quantity div.up{ order: 2; }
+
+.cart .product-quantity div.up:before{ content: "+"; }
+.cart .product-quantity div.down:before{ content: "\2212"; }
+
+.cart .product-quantity div.up:hover,
+.cart .product-quantity div.down:hover{
+  background: var(--tm-teal-tint);
+}
+
+.cart td.quantity input,
+.cart .product-quantity .qty-input{
+  inline-size: 52px;
+  min-block-size: 44px;
+  border: 0;
+  border-inline: 1px solid var(--tm-line);
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  text-align: center;
+  font-size: var(--tm-fs-body);
+  font-weight: 600;
+  color: var(--tm-ink);
+}
+
+.cart .product-quantity:focus-within{
+  border-color: var(--tm-teal);
+  box-shadow: 0 0 0 3px var(--tm-teal-tint);
+}
+
+/* An 11px PNG is not a target. Same x the sheet and the gallery already use,
+   drawn rather than fetched. */
+.cart .remove-from-cart .remove-btn{
+  inline-size: 44px;
+  block-size: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  padding: 0;
+  color: var(--tm-ink-muted);
+  font-size: 0;
+  cursor: pointer;
+}
+
+.cart .remove-from-cart .remove-btn:before{
+  content: "\00d7";
+  font-size: 24px;
+  line-height: 1;
+}
+
+.cart .remove-from-cart .remove-btn:hover,
+.cart .remove-from-cart .remove-btn:focus-visible{
+  background: var(--tm-teal-tint);
+  color: var(--tm-error);
+}
+
+/* --- Coupon and gift-card boxes -------------------------------------------
+   Two 36px halves floated against each other, one with the field's radius and
+   one with the button's: on a phone they read as a broken control. */
+.cart-collaterals .coupon-code{
+  display: flex;
+  gap: var(--tm-stack-sm);
+  overflow: visible;
+}
+
+.cart-collaterals .coupon-code input[type="text"],
+.cart-collaterals .coupon-code button[type="submit"]{
+  float: none;
+  inline-size: auto;
+  block-size: auto;
+  min-block-size: 44px;
+}
+
+.cart-collaterals .coupon-code input[type="text"]{
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  margin: 0;
+}
+
+.cart-collaterals .coupon-code button[type="submit"]{
+  flex: 0 0 auto;
+  border-radius: var(--tm-radius);
+  padding-inline: 16px;
+}
+
+
+/* --- Form fields: room for the required marker ----------------------------
+   .inputs is `text-align: center; white-space: nowrap` and the field is
+   `width: 400px; max-width: 100%`, so the * that follows it had nowhere to go:
+   the line overflowed, the centring pushed the field off the panel's axis and
+   the marker ended up hanging past the opposite edge, 20px clear of the box it
+   belongs to. Give the marker its width back and the line fits again.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1000px){
+
+  .inputs input[type="text"],
+  .inputs input[type="email"],
+  .inputs input[type="tel"],
+  .inputs input[type="password"],
+  .inputs input[type="number"],
+  .inputs select,
+  .inputs textarea{
+    inline-size: calc(100% - 22px);
+  }
+
+  /* The password field wraps its input in .form-input-wrapper, so the width
+     has to come off the wrapper instead. */
+  .inputs .form-input-wrapper{
+    inline-size: calc(100% - 22px);
+  }
+
+  .inputs .form-input-wrapper input{
+    inline-size: 100%;
+  }
+}
+
+
+/* --- Cart footer ----------------------------------------------------------
+   Two 250px buttons centred in a grey band, a checkbox stranded on a line of
+   its own above the terms it belongs to, and the checkout CTA the same width
+   as "continue shopping". On a phone each of these is one decision per row.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1000px){
+
+  .shopping-cart-page .common-buttons{
+    display: flex;
+    flex-direction: column;
+    gap: var(--tm-stack-sm);
+    margin-block-end: var(--tm-stack-lg);
+    border-radius: var(--tm-radius);
+    background: var(--tm-surface-alt);
+    padding: var(--tm-stack-md);
+  }
+
+  .shopping-cart-page .common-buttons button,
+  .shopping-cart-page .common-buttons .estimate-shipping-button{
+    display: block;
+    inline-size: 100%;
+    margin: 0;
+  }
+
+  /* Checkbox and its label on one line, the label carrying the wrap. */
+  .terms-of-service{
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0 6px;
+    padding-inline: 0;
+    text-align: start;
+  }
+
+  .terms-of-service input[type="checkbox"]{
+    flex: 0 0 auto;
+    align-self: center;
+  }
+
+  /* Shrink-to-fit, so "(read)" follows the sentence instead of being pushed
+     to the far edge by a label that had claimed the whole line. */
+  .terms-of-service label{
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    text-align: start;
+  }
+
+  .terms-of-service a{
+    margin: 0;
+  }
+}
+
+/* Manufacturer and vendor tiles keep the base sheet's bordered box; only the
+   corner is brought onto the theme's radius, so they sit in the same family as
+   the category tiles and product cards around them. */
+.manufacturer-grid .picture,
+.vendor-grid .picture{
+  border-color: var(--tm-line);
+  border-radius: var(--tm-radius);
+  overflow: hidden;
+}
+
+
+/* ==========================================================================
+   Account pages: one button language
+   The same secondary action is drawn three different ways in the base sheet:
+   12px grey text on a PNG icon (address / order / return-request lists), a
+   grey #aaa block carrying white text at 2.3:1 (order details), and a red
+   block (cancel order). All three are .button-2 in the markup, so they are
+   pinned back to the shared outline pill here — one shape, one size, on the
+   44px touch floor in both directions.
+
+   Specificity is deliberate: the base sheet reaches (0,3,1) with rules like
+   `.order-details-page .actions button:first-child`, so the class is repeated
+   in these selectors to tie it and win on order.
+   ========================================================================== */
+
+/* The list cards float their actions into the card's corner from 1001px up,
+   where they sit on top of the card title. Back in flow, under the details
+   they act on. */
+.address-list-page .buttons,
+.order-list-page .buttons,
+.return-request-list-page .buttons{
+  position: static;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tm-stack-sm);
+  margin-block-start: var(--tm-stack-md);
+}
+
+.address-list-page .buttons .button-2,
+.order-list-page .buttons .button-2,
+.return-request-list-page .buttons .button-2,
+.order-details-page .actions button.button-2,
+.order-details-page .page-title a.button-2{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--tm-teal-border);
+  border-radius: var(--tm-radius);
+  /* `background`, not `background-color`: the base sheet paints edit.png /
+     remove.png / return.png behind these labels and keeps a mirrored copy of
+     every one of those rules in styles.rtl.css. The label already says which
+     action it is, in whichever direction the page runs.
+     ponytail: text only. Add icons back as a mask-image ::before if the rows
+     ever need scanning at a glance. */
+  background: var(--tm-white);
+  padding-block: 10px;
+  padding-inline: 20px;
+  font-size: var(--tm-fs-label);
+  font-weight: 600;
+  color: var(--tm-teal-deep);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.address-list-page .buttons .button-2:hover,
+.order-list-page .buttons .button-2:hover,
+.return-request-list-page .buttons .button-2:hover,
+.order-details-page .actions button.button-2:hover,
+.order-details-page .page-title a.button-2:hover{
+  background: var(--tm-teal-tint);
+  border-color: var(--tm-teal);
+  color: var(--tm-teal-hover);
+}
+
+/* The one action that should carry weight on the page keeps the solid fill:
+   reorder in the details actions, print at the top of the same page. The base
+   sheet gave it to `button:first-child` instead, which handed the fill to
+   "return items" on any order where reordering is not allowed. */
+.order-details-page .actions button.button-1,
+.order-details-page .page-title a.button-2.print-order-button{
+  border: 1px solid var(--tm-teal-deep);
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+}
+
+.order-details-page .actions button.button-1:hover,
+.order-details-page .page-title a.button-2.print-order-button:hover{
+  background: var(--tm-teal-hover);
+  border-color: var(--tm-teal-hover);
+  color: var(--tm-white);
+}
+
+/* Destructive actions read as destructive — outlined at rest so a list with a
+   delete on every card is not a wall of red, filled on hover. #d51f28 is
+   5.16:1 on white, and white on #d51f28 is the same, so the label holds AA
+   either way round. */
+.address-list-page .buttons .delete-address-button,
+.order-details-page .page-title a.button-2.cancel-order-button{
+  border-color: var(--tm-error);
+  color: var(--tm-error);
+}
+
+.address-list-page .buttons .delete-address-button:hover,
+.order-details-page .page-title a.button-2.cancel-order-button:hover{
+  background: var(--tm-error);
+  border-color: var(--tm-error);
+  color: var(--tm-white);
 }

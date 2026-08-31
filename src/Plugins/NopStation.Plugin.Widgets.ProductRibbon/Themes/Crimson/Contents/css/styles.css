@@ -1,0 +1,44 @@
+﻿.product-item .offer-content,
+.product-details-page .offer-content {
+  position: absolute;
+  width: auto;
+  text-transform: uppercase;
+}
+
+.offer-content .bestseller-label,
+.offer-content .new-product-label,
+.offer-content .discount-info-label {
+  padding: 7px;
+   color: #fff;
+  text-align: center;
+}
+
+.offer-content .bestseller-label {
+  background-color: #46282a !important;
+}
+
+.offer-content .new-product-label {
+  background-color: var(--primary-color) !important;
+}
+
+.offer-content .discount-info-label {
+  background-color: #46282a !important;
+}
+
+.product-details-page .offer-content {
+  z-index: 10000;
+}
+
+.product-details-page .gallery .offer-content {
+  top: 0;
+  left: 0;
+}
+
+.product-item .offer-content {
+  z-index: 999;
+}
+
+.product-essential .gallery,
+.product-essential .picture {
+  position: relative;
+}

@@ -1,0 +1,256 @@
+﻿.carousel-container.carousel-product {
+  min-height: 520px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container.carousel-category {
+  min-height: 250px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container.carousel-manufacturer {
+  min-height: 400px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container .loader img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.carousel-category {
+  min-height: 300px;
+}
+
+.carousel-manufacturer {
+  min-height: 400px;
+}
+
+
+.carousel-product {
+  min-height: 540px;
+}
+
+.ocarousel .owl-nav {
+  position: absolute;
+  top: 40%;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+  .ocarousel .owl-nav button.owl-prev,
+  .ocarousel .owl-nav button.owl-next {
+    position: relative;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 5px 5px !important;
+    background-color: #fff;
+    color: #ED008C;
+    font-size: 13px;
+    border: 1px solid #ED008C;
+    border-radius: 3px;
+  }
+
+.owl-nav button.owl-prev:hover,
+.owl-nav button.owl-prev:focus,
+.owl-nav button.owl-next:hover,
+.owl-nav button.owl-next:focus {
+  background: #ED008C;
+  color: #fff;
+  outline-color: #ED008C;
+}
+
+
+.ocarousel-grid .ocarousel .owl-nav button.owl-prev,
+.ocarousel-grid .ocarousel .owl-nav button.owl-next {
+  position: relative;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 5px 5px !important;
+  background-color: #fff;
+  color: #ED008C;
+  font-size: 13px;
+  border: 1px solid #ED008C;
+  border-radius: 3px;
+}
+
+.ocarousel-grid .ocarousel .owl-nav button.owl-prev {
+  left: 0;
+}
+
+.ocarousel-grid .ocarousel .owl-nav button.owl-next {
+  right: 0;
+}
+
+  .ocarousel-grid .ocarousel .owl-nav button.owl-prev:hover,
+  .ocarousel-grid .ocarousel .owl-nav button.owl-next:hover {
+    background-color: #ED008C;
+    color: #fff;
+  }
+
+.ocarousel .item-box {
+  width: 100% !important;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+
+
+
+.ocarousel .owl-dots {
+  display: none;
+}
+
+.ocarousel-grid {
+  margin: 0 0 70px;
+}
+
+  .ocarousel-grid .title-containe {
+    margin-bottom: 45px;
+  }
+
+  .ocarousel-grid .title {
+    font-size: 30px;
+    font-weight: normal;
+    color: #ED008C;
+    text-align: center;
+  }
+
+    .ocarousel-grid .title h2 {
+      margin: 0 12px;
+      color: #ED008C;
+      font-size: 36px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .ocarousel-grid .title strong {
+      font-weight: normal;
+    }
+
+  .ocarousel-grid .subtitle {
+    padding-top: 3px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: capitalize;
+  }
+
+.ocarousel .category-name,
+.ocarousel .manufacturer-name {
+  font-weight: normal;
+  font-size: 18px;
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.ocarousel-item {
+  margin: 0 0 80px;
+}
+
+.ocarousel-background {
+  padding: 50px 0 0;
+  position: relative;
+  margin-bottom: 80px;
+}
+
+  .ocarousel-background::before {
+    content: "";
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+
+  .ocarousel-background .custom-container {
+    position: relative;
+    z-index: 1;
+  }
+
+.ocarousel-background {
+  margin-bottom: 70px;
+  padding: 50px 0;
+}
+
+  .ocarousel-background .ocarousel-grid {
+    margin-bottom: 0;
+  }
+
+    .ocarousel-background .ocarousel-grid .title,
+    .ocarousel-background .ocarousel-grid .title i,
+    .ocarousel-background .ocarousel-grid .title h2,
+    .ocarousel-background .ocarousel-grid .subtitle {
+      color: #fff;
+    }
+
+
+
+  .ocarousel-background .ocarousel .owl-nav button.owl-prev,
+  .ocarousel-background .ocarousel .owl-nav button.owl-next {
+    position: relative;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 5px 5px !important;
+    color: #ED008C;
+    font-size: 13px;
+    border-color: #ED008C;
+    border-radius: 3px;
+  }
+
+  .ocarousel-background .ocarousel .owl-nav button.owl-prev {
+    margin-right: 2px;
+  }
+
+  .ocarousel-background .ocarousel .owl-nav button.owl-next {
+    margin-left: 2px;
+  }
+
+    .ocarousel-background .ocarousel .owl-nav button.owl-prev:hover,
+    .ocarousel-background .ocarousel .owl-nav button.owl-next:hover {
+      background-color: #ED008C;
+      color: #fff;
+    }
+
+
+
+  .ocarousel-background .ocarousel .owl-nav {
+    position: relative;
+    top: 10px;
+    display: block;
+    text-align: center;
+  }

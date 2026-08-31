@@ -14,8 +14,10 @@ dotnet build src/NopCommerce.sln -c Release
 dotnet test src -c Release                                   # NUnit, whole suite
 dotnet test src --filter "FullyQualifiedName~ProductServiceTests"
 dotnet test src --filter "Name=CanParseProductAttributes"
-dotnet run --project src/Presentation/Nop.Web                # no launchSettings.json — Kestrel default port; first run shows the installation wizard
+dotnet run --project src/Presentation/Nop.Web --urls http://nomo.local:5000   # always nomo.local, never localhost (see below); first run shows the installation wizard
 ```
+
+Always browse the local store at **`http://nomo.local:5000`**, never `localhost:5000` — `nomo.local` is the store URL in the `Store` table, and the NopStation plugin licenses are domain-bound, so their widgets silently render nothing on `localhost`.
 
 Client-side libraries (jQuery, AdminLTE, bootstrap, CLDR data) are copied into `wwwroot/lib` by gulp, not committed:
 

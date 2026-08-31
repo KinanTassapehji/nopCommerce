@@ -33,7 +33,6 @@ public partial class OrderController : BasePublicController
     protected readonly IWebHelper _webHelper;
     protected readonly IWorkContext _workContext;
     protected readonly OrderSettings _orderSettings;
-    protected readonly RewardPointsSettings _rewardPointsSettings;
 
     #endregion
 
@@ -50,8 +49,7 @@ public partial class OrderController : BasePublicController
         IShipmentService shipmentService,
         IWebHelper webHelper,
         IWorkContext workContext,
-        OrderSettings orderSettings,
-        RewardPointsSettings rewardPointsSettings)
+        OrderSettings orderSettings)
     {
         _customerService = customerService;
         _localizationService = localizationService;
@@ -65,7 +63,6 @@ public partial class OrderController : BasePublicController
         _webHelper = webHelper;
         _workContext = workContext;
         _orderSettings = orderSettings;
-        _rewardPointsSettings = rewardPointsSettings;
     }
 
     #endregion
@@ -79,94 +76,6 @@ public partial class OrderController : BasePublicController
             return Challenge();
 
         var model = await _orderModelFactory.PrepareCustomerOrderListModelAsync(pageNumber, limit);
-        return View(model);
-    }
-
-    //My account / Recurring payments
-    public virtual async Task<IActionResult> CustomerRecurringPayments()
-    {
-        if (!await _customerService.IsRegisteredAsync(await _workContext.GetCurrentCustomerAsync()))
-            return Challenge();
-
-        var model = await _orderModelFactory.PrepareCustomerRecurringPaymentListModelAsync();
-        return View(model);
-    }
-
-    //My account / Orders / Cancel recurring order
-    [HttpPost, ActionName("CustomerRecurringPayments")]
-    [FormValueRequired(FormValueRequirement.StartsWith, "cancelRecurringPayment")]
-    public virtual async Task<IActionResult> CancelRecurringPayment(IFormCollection form)
-    {
-        var customer = await _workContext.GetCurrentCustomerAsync();
-        if (!await _customerService.IsRegisteredAsync(customer))
-            return Challenge();
-
-        //get recurring payment identifier
-        var recurringPaymentId = 0;
-        foreach (var formValue in form.Keys)
-            if (formValue.StartsWith("cancelRecurringPayment", StringComparison.InvariantCultureIgnoreCase))
-                recurringPaymentId = Convert.ToInt32(formValue["cancelRecurringPayment".Length..]);
-
-        var recurringPayment = await _orderService.GetRecurringPaymentByIdAsync(recurringPaymentId);
-        if (recurringPayment == null)
-        {
-            return RedirectToRoute(NopRouteNames.Standard.CUSTOMER_RECURRING_PAYMENTS);
-        }
-
-        if (await _orderProcessingService.CanCancelRecurringPaymentAsync(customer, recurringPayment))
-        {
-            var errors = await _orderProcessingService.CancelRecurringPaymentAsync(recurringPayment);
-
-            var model = await _orderModelFactory.PrepareCustomerRecurringPaymentListModelAsync();
-            model.RecurringPaymentErrors = errors.ToList();
-
-            return View(model);
-        }
-
-        return RedirectToRoute(NopRouteNames.Standard.CUSTOMER_RECURRING_PAYMENTS);
-    }
-
-    //My account / Orders / Retry last recurring order
-    [HttpPost, ActionName("CustomerRecurringPayments")]
-    [FormValueRequired(FormValueRequirement.StartsWith, "retryLastPayment")]
-    public virtual async Task<IActionResult> RetryLastRecurringPayment(IFormCollection form)
-    {
-        var customer = await _workContext.GetCurrentCustomerAsync();
-        if (!await _customerService.IsRegisteredAsync(customer))
-            return Challenge();
-
-        //get recurring payment identifier
-        var recurringPaymentId = 0;
-        if (!form.Keys.Any(formValue => formValue.StartsWith("retryLastPayment", StringComparison.InvariantCultureIgnoreCase) &&
-                                        int.TryParse(formValue[(formValue.IndexOf('_') + 1)..], out recurringPaymentId)))
-        {
-            return RedirectToRoute(NopRouteNames.Standard.CUSTOMER_RECURRING_PAYMENTS);
-        }
-
-        var recurringPayment = await _orderService.GetRecurringPaymentByIdAsync(recurringPaymentId);
-        if (recurringPayment == null)
-            return RedirectToRoute(NopRouteNames.Standard.CUSTOMER_RECURRING_PAYMENTS);
-
-        if (!await _orderProcessingService.CanRetryLastRecurringPaymentAsync(customer, recurringPayment))
-            return RedirectToRoute(NopRouteNames.Standard.CUSTOMER_RECURRING_PAYMENTS);
-
-        var errors = await _orderProcessingService.ProcessNextRecurringPaymentAsync(recurringPayment);
-        var model = await _orderModelFactory.PrepareCustomerRecurringPaymentListModelAsync();
-        model.RecurringPaymentErrors = errors.ToList();
-
-        return View(model);
-    }
-
-    //My account / Reward points
-    public virtual async Task<IActionResult> CustomerRewardPoints(int? pageNumber)
-    {
-        if (!await _customerService.IsRegisteredAsync(await _workContext.GetCurrentCustomerAsync()))
-            return Challenge();
-
-        if (!_rewardPointsSettings.Enabled)
-            return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
-
-        var model = await _orderModelFactory.PrepareCustomerRewardPointsAsync(pageNumber);
         return View(model);
     }
 

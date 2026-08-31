@@ -47,7 +47,6 @@ public partial class ProductService : IProductService
     protected readonly IRepository<ProductManufacturer> _productManufacturerRepository;
     protected readonly IRepository<ProductPicture> _productPictureRepository;
     protected readonly IRepository<ProductProductTagMapping> _productTagMappingRepository;
-    protected readonly IRepository<ProductSpecificationAttribute> _productSpecificationAttributeRepository;
     protected readonly IRepository<ProductTag> _productTagRepository;
     protected readonly IRepository<ProductVideo> _productVideoRepository;
     protected readonly IRepository<ProductWarehouseInventory> _productWarehouseInventoryRepository;
@@ -87,7 +86,6 @@ public partial class ProductService : IProductService
         IRepository<ProductManufacturer> productManufacturerRepository,
         IRepository<ProductPicture> productPictureRepository,
         IRepository<ProductProductTagMapping> productTagMappingRepository,
-        IRepository<ProductSpecificationAttribute> productSpecificationAttributeRepository,
         IRepository<ProductTag> productTagRepository,
         IRepository<ProductVideo> productVideoRepository,
         IRepository<ProductWarehouseInventory> productWarehouseInventoryRepository,
@@ -122,7 +120,6 @@ public partial class ProductService : IProductService
         _productManufacturerRepository = productManufacturerRepository;
         _productPictureRepository = productPictureRepository;
         _productTagMappingRepository = productTagMappingRepository;
-        _productSpecificationAttributeRepository = productSpecificationAttributeRepository;
         _productTagRepository = productTagRepository;
         _productVideoRepository = productVideoRepository;
         _productWarehouseInventoryRepository = productWarehouseInventoryRepository;
@@ -159,7 +156,7 @@ public partial class ProductService : IProductService
         {
             case LowStockActivity.DisableBuyButton:
                 product.DisableBuyButton = isMinimumStockReached;
-                product.DisableWishlistButton = isMinimumStockReached;
+
                 await UpdateProductAsync(product);
                 break;
 
@@ -361,24 +358,10 @@ public partial class ProductService : IProductService
         {
             //out of stock
             var productAvailabilityRange = await _dateRangeService.GetProductAvailabilityRangeByIdAsync(product.ProductAvailabilityRangeId);
-            switch (product.BackorderMode)
-            {
-                case BackorderMode.NoBackorders:
-                    stockMessage = productAvailabilityRange == null
-                        ? await _localizationService.GetResourceAsync("Products.Availability.OutOfStock")
-                        : string.Format(await _localizationService.GetResourceAsync("Products.Availability.AvailabilityRange"),
-                            await _localizationService.GetLocalizedAsync(productAvailabilityRange, range => range.Name));
-                    break;
-                case BackorderMode.AllowQtyBelow0:
-                    stockMessage = await _localizationService.GetResourceAsync("Products.Availability.InStock");
-                    break;
-                case BackorderMode.AllowQtyBelow0AndNotifyCustomer:
-                    stockMessage = productAvailabilityRange == null
-                        ? await _localizationService.GetResourceAsync("Products.Availability.Backordering")
-                        : string.Format(await _localizationService.GetResourceAsync("Products.Availability.BackorderingWithDate"),
-                            await _localizationService.GetLocalizedAsync(productAvailabilityRange, range => range.Name));
-                    break;
-            }
+            stockMessage = productAvailabilityRange == null
+                ? await _localizationService.GetResourceAsync("Products.Availability.OutOfStock")
+                : string.Format(await _localizationService.GetResourceAsync("Products.Availability.AvailabilityRange"),
+                    await _localizationService.GetLocalizedAsync(productAvailabilityRange, range => range.Name));
         }
 
         return stockMessage;
@@ -642,9 +625,6 @@ public partial class ProductService : IProductService
             //apply store mapping constraints
             query = await _storeMappingService.ApplyStoreMapping(query, storeId);
 
-            //apply ACL constraints
-            query = await _aclService.ApplyAcl(query, customerRoleIds);
-
             featuredProducts = await query.ToListAsync();
 
             return featuredProducts.Select(p => p.Id).ToList();
@@ -689,9 +669,6 @@ public partial class ProductService : IProductService
             //apply store mapping constraints
             query = await _storeMappingService.ApplyStoreMapping(query, storeId);
 
-            //apply ACL constraints
-            query = await _aclService.ApplyAcl(query, customerRoleIds);
-
             return await query.Select(p => p.Id).ToListAsync();
         });
 
@@ -722,10 +699,6 @@ public partial class ProductService : IProductService
         //apply store mapping constraints
         query = await _storeMappingService.ApplyStoreMapping(query, storeId);
 
-        //apply ACL constraints
-        var customer = await _workContext.GetCurrentCustomerAsync();
-        query = await _aclService.ApplyAcl(query, customer);
-
         query = query.OrderByDescending(p => p.CreatedOnUtc);
 
         return await query.ToPagedListAsync(pageIndex, pageSize);
@@ -751,10 +724,8 @@ public partial class ProductService : IProductService
         //apply store mapping constraints
         query = await _storeMappingService.ApplyStoreMapping(query, storeId);
 
-        //apply ACL constraints
         var customer = await _workContext.GetCurrentCustomerAsync();
         var customerRoleIds = await _customerService.GetCustomerRoleIdsAsync(customer);
-        query = await _aclService.ApplyAcl(query, customerRoleIds);
 
         //category filtering
         if (categoryIds != null && categoryIds.Any())
@@ -794,7 +765,6 @@ public partial class ProductService : IProductService
     /// <param name="searchSku">A value indicating whether to search by a specified "keyword" in product SKU</param>
     /// <param name="searchProductTags">A value indicating whether to search by a specified "keyword" in product tags</param>
     /// <param name="languageId">Language identifier (search for text searching)</param>
-    /// <param name="filteredSpecOptions">Specification options list to filter products; null to load all records</param>
     /// <param name="orderBy">Order by</param>
     /// <param name="showHidden">A value indicating whether to show hidden records</param>
     /// <param name="overridePublished">
@@ -826,7 +796,6 @@ public partial class ProductService : IProductService
         bool searchSku = true,
         bool searchProductTags = false,
         int languageId = 0,
-        IList<SpecificationAttributeOption> filteredSpecOptions = null,
         ProductSortingEnum orderBy = ProductSortingEnum.Position,
         bool showHidden = false,
         bool? overridePublished = null)
@@ -848,12 +817,6 @@ public partial class ProductService : IProductService
         {
             //apply store mapping constraints
             productsQuery = await _storeMappingService.ApplyStoreMapping(productsQuery, storeId);
-        }
-
-        if (!showHidden)
-        {
-            //apply ACL constraints
-            productsQuery = await _aclService.ApplyAcl(productsQuery, customer);
         }
 
         productsQuery =
@@ -1099,30 +1062,6 @@ public partial class ProductService : IProductService
                 select p;
         }
 
-        if (filteredSpecOptions?.Count > 0)
-        {
-            var specificationAttributeIds = filteredSpecOptions
-                .Select(sao => sao.SpecificationAttributeId)
-                .Distinct();
-
-            foreach (var specificationAttributeId in specificationAttributeIds)
-            {
-                var optionIdsBySpecificationAttribute = filteredSpecOptions
-                    .Where(o => o.SpecificationAttributeId == specificationAttributeId)
-                    .Select(o => o.Id);
-
-                var productSpecificationQuery =
-                    from psa in _productSpecificationAttributeRepository.Table
-                    where psa.AllowFiltering && optionIdsBySpecificationAttribute.Contains(psa.SpecificationAttributeOptionId)
-                    select psa;
-
-                productsQuery =
-                    from p in productsQuery
-                    where productSpecificationQuery.Any(pc => pc.ProductId == p.Id)
-                    select p;
-            }
-        }
-
         if (providerResults.Any() && orderBy == ProductSortingEnum.Position && !showHidden)
         {
             var sortedProducts = from p in productsQuery
@@ -1196,13 +1135,6 @@ public partial class ProductService : IProductService
         //apply store mapping constraints
         if (!showHidden && storeId > 0)
             query = await _storeMappingService.ApplyStoreMapping(query, storeId);
-
-        if (!showHidden)
-        {
-            //apply ACL constraints
-            var customer = await _workContext.GetCurrentCustomerAsync();
-            query = await _aclService.ApplyAcl(query, customer);
-        }
 
         query = query.Where(x => !x.Deleted);
         query = query.OrderBy(x => x.DisplayOrder).ThenBy(x => x.Id);
@@ -1351,29 +1283,6 @@ public partial class ProductService : IProductService
             return 0;
 
         return await _productRepository.Table.CountAsync(p => p.VendorId == vendorId && !p.Deleted);
-    }
-
-    /// <summary>
-    /// Parse "required product Ids" property
-    /// </summary>
-    /// <param name="product">Product</param>
-    /// <returns>A list of required product IDs</returns>
-    public virtual int[] ParseRequiredProductIds(Product product)
-    {
-        ArgumentNullException.ThrowIfNull(product);
-
-        if (string.IsNullOrEmpty(product.RequiredProductIds))
-            return Array.Empty<int>();
-
-        var ids = new List<int>();
-
-        foreach (var idStr in product.RequiredProductIds
-                     .Split(_separator, StringSplitOptions.RemoveEmptyEntries)
-                     .Select(x => x.Trim()))
-            if (int.TryParse(idStr, out var id))
-                ids.Add(id);
-
-        return ids.ToArray();
     }
 
     /// <summary>
@@ -1621,48 +1530,6 @@ public partial class ProductService : IProductService
             return null;
 
         return date.ToShortDateString();
-    }
-
-    /// <summary>
-    /// Gets the value whether the sequence contains downloadable products
-    /// </summary>
-    /// <param name="productIds">Product identifiers</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the result
-    /// </returns>
-    public virtual async Task<bool> HasAnyDownloadableProductAsync(int[] productIds)
-    {
-        return await _productRepository.Table
-            .AnyAsync(p => productIds.Contains(p.Id) && p.IsDownload);
-    }
-
-    /// <summary>
-    /// Gets the value whether the sequence contains gift card products
-    /// </summary>
-    /// <param name="productIds">Product identifiers</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the result
-    /// </returns>
-    public virtual async Task<bool> HasAnyGiftCardProductAsync(int[] productIds)
-    {
-        return await _productRepository.Table
-            .AnyAsync(p => productIds.Contains(p.Id) && p.IsGiftCard);
-    }
-
-    /// <summary>
-    /// Gets the value whether the sequence contains recurring products
-    /// </summary>
-    /// <param name="productIds">Product identifiers</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the result
-    /// </returns>
-    public virtual async Task<bool> HasAnyRecurringProductAsync(int[] productIds)
-    {
-        return await _productRepository.Table
-            .AnyAsync(p => productIds.Contains(p.Id) && p.IsRecurring);
     }
 
     /// <summary>

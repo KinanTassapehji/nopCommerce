@@ -89,11 +89,10 @@
                         @await Html.PartialAsync("_ProductReviewOverview", Model.ProductReviewOverview)
                         <!--product manufacturers-->
                         @await Html.PartialAsync("_ProductManufacturers", Model.ProductManufacturers)
-                        <!--compare, email a friend-->
+                        <!--compare-->
                         <div class="overview-buttons">
                             @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsBefore, additionalData = Model })
                             @await Html.PartialAsync("_CompareProductsButton", Model)
-                            @await Html.PartialAsync("_ProductEmailAFriendButton", Model)
                             @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsAfter, additionalData = Model })
                         </div>
                         @await Html.PartialAsync("_ShareButton", Model)
@@ -140,19 +139,11 @@
                                     @await Html.PartialAsync("_SKU_Man_GTIN_Ven", variant)
                                     <!--delivery-->
                                     @await Html.PartialAsync("_DeliveryInfo", variant)
-                                    <!--sample download-->
-                                    @await Html.PartialAsync("_DownloadSample", variant)
                                     <!--attributes-->
                                     @{
                                         var dataDictAttributes = new ViewDataDictionary(ViewData);
                                         dataDictAttributes.TemplateInfo.HtmlFieldPrefix = $"attributes_{variant.Id}";
                                         @await Html.PartialAsync("_ProductAttributes", variant, dataDictAttributes)
-                                    }
-                                    <!--gift card-->
-                                    @{
-                                        var dataDictGiftCard = new ViewDataDictionary(ViewData);
-                                        dataDictGiftCard.TemplateInfo.HtmlFieldPrefix = $"giftcard_{variant.Id}";
-                                        @await Html.PartialAsync("_GiftCardInfo", variant.GiftCard, dataDictGiftCard)
                                     }
                                     <!--rental info-->
                                     @{
@@ -179,12 +170,6 @@
                                         dataDictEstimateShipping.TemplateInfo.HtmlFieldPrefix = $"estimate_shipping_{variant.Id}";
                                         @await Html.PartialAsync("_ProductEstimateShipping", variant.ProductEstimateShipping, dataDictEstimateShipping)
                                     }
-                                    <!--wishlist-->
-                                    @{
-                                        var dataDictAddToWishlist = new ViewDataDictionary(ViewData);
-                                        dataDictAddToWishlist.TemplateInfo.HtmlFieldPrefix = $"addtocart_{variant.Id}";
-                                        @await Html.PartialAsync("_AddToWishlist", variant.AddToCart, dataDictAddToWishlist)
-                                    }
                                 </div>
                             </article>
                         }
@@ -195,7 +180,6 @@
                             </div>
                         }
                     </div>
-                    @await Html.PartialAsync("_ProductSpecifications", Model.ProductSpecificationModel)
                     @await Html.PartialAsync("_ProductTags", Model.ProductTags)
                 </section>
                 @*we do not display "also purchased" for grouped products
@@ -205,10 +189,7 @@
             </article>
         </form>
         <!--product reviews-->
-        @if (Model.ProductReviewOverview.AllowCustomerReviews)
-        {
-            @await Html.PartialAsync("_ProductReviews", Model.ProductReviews)
-        }
+        @await Html.PartialAsync("_ProductReviews", Model.ProductReviews)
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBottom, additionalData = Model })
     </div>
 </div>

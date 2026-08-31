@@ -111,15 +111,6 @@ public partial record OrderSettingsModel : BaseNopModel, ISettingsModel
     public int NumberOfDaysReturnRequestAvailable { get; set; }
     public bool NumberOfDaysReturnRequestAvailable_OverrideForStore { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Settings.Order.ActivateGiftCardsAfterCompletingOrder")]
-    public bool ActivateGiftCardsAfterCompletingOrder { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.Order.DeactivateGiftCardsAfterCancellingOrder")]
-    public bool DeactivateGiftCardsAfterCancellingOrder { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.Order.DeactivateGiftCardsAfterDeletingOrder")]
-    public bool DeactivateGiftCardsAfterDeletingOrder { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.Settings.Order.CompleteOrderWhenDelivered")]
     public bool CompleteOrderWhenDelivered { get; set; }
 
@@ -143,10 +134,6 @@ public partial record OrderSettingsModel : BaseNopModel, ISettingsModel
     [NopResourceDisplayName("Admin.Configuration.Settings.Order.ShowProductThumbnailInOrderDetailsPage")]
     public bool ShowProductThumbnailInOrderDetailsPage { get; set; }
     public bool ShowProductThumbnailInOrderDetailsPage_OverrideForStore { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.Order.DeleteGiftCardUsageHistory")]
-    public bool DeleteGiftCardUsageHistory { get; set; }
-    public bool DeleteGiftCardUsageHistory_OverrideForStore { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Settings.Order.AllowCustomersCancelOrders")]
     public bool AllowCustomersCancelOrders { get; set; }

@@ -1572,6 +1572,20 @@ SK,Žilinský kraj,,True,0
 SK,Banskobystrický kraj,,True,0
 SK,Košický kraj,,True,0
 SK,Prešovský kraj,,True,0
+SY,دمشق,,True,0
+SY,ريف دمشق,,True,1
+SY,حلب,,True,2
+SY,حمص,,True,3
+SY,حماة,,True,4
+SY,اللاذقية,,True,5
+SY,طرطوس,,True,6
+SY,إدلب,,True,7
+SY,دير الزور,,True,8
+SY,الرقة,,True,9
+SY,الحسكة,,True,10
+SY,درعا,,True,11
+SY,السويداء,,True,12
+SY,القنيطرة,,True,13
 TR,Adana,,True,0
 TR,Adıyaman,,True,0
 TR,Afyonkarahisar,,True,0

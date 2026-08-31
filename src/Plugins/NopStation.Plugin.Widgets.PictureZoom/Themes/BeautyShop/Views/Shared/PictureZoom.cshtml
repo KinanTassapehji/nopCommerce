@@ -1,0 +1,75 @@
+@using Nop.Web.Components
+@model ProductDetailsModel
+@using NopStation.Plugin.Misc.Core.Helpers
+@inject Nop.Core.IWorkContext workContext
+@{
+    var supportRtl = (await workContext.GetWorkingLanguageAsync()).Rtl;
+}
+
+<div class="gallery" data-popup="#dialogForImgPopUp">
+
+    <div class="picture">
+        @*<link rel="image_src" href="@Model.DefaultPictureModel.FullSizeImageUrl" />*@
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBeforePictures, additionalData = Model.Id })
+        @*<a href="@Model.DefaultPictureModel.FullSizeImageUrl" class="cloud-zoom">
+                <img alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" style="height:auto; width:100%; border-width: 0px;" class="cloud-zoom-image cloud-zoom-image-size" width="400" id="main-product-img-lightbox-anchor-@Model.Id" />
+            </a>*@
+
+        @if (Model.PictureModels.Count > 1)
+        {
+            <div class="owl-carousel picture-details-carousel">
+                @foreach (var picture in Model.PictureModels)
+                {
+                    <div class="item">
+                        <a href="@picture.FullSizeImageUrl" class="cloud-zoom" id="main-product-img-lightbox-anchor-@picture.Title">
+                            <img src="@picture.ImageUrl" alt="@picture.AlternateText" title="@picture.Title" style="border-width: 0px;" class="cloud-zoom-image cloud-zoom-image-size" id="main-product-img-lightbox-anchor-@picture.Title" />
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+
+        else
+        {
+            <link rel="image_src" href="@Model.DefaultPictureModel.FullSizeImageUrl" />
+            <a href="@Model.DefaultPictureModel.FullSizeImageUrl" class="cloud-zoom" id="main-product-img-lightbox-anchor-@Model.Id">
+                <img alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" style="border-width: 0px;" class="cloud-zoom-image cloud-zoom-image-size" width="400" id="main-product-img-lightbox-anchor-@Model.Id" />
+            </a>
+        }
+
+        <div class="imgForMobile" id="dialogForImgPopUp">
+            <img alt="" src="" />
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript" asp-location="Footer">
+
+    $(document).ready(function () {
+        $('.picture-details-carousel').owlCarousel({
+            nav: true, // Show next and prev buttons
+            items: 1,
+            responsiveBaseElement: 'body',
+            margin: 10,
+            dots: true,
+            rtl: @supportRtl.ToString().ToLower(),
+            loop: true,
+            autoplay: true,
+            autoplayTimeout: 5000,
+            autoplayHoverPause: true
+        });
+
+        initZoom();
+    });
+
+
+    $(window).resize(function () {
+        initZoom();
+    });
+</script>
+
+@if (Model.CustomProperties.TryGetValue("AjaxLoad", out string ajaxLoad) && bool.Parse(ajaxLoad.ToString()))
+{
+    @NopHtml.GenerateScripts(ResourceLocation.Footer)
+}

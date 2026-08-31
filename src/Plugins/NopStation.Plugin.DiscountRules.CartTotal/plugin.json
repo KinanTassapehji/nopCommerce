@@ -1,0 +1,16 @@
+{
+  "Group": "Nop-Station",
+  "FriendlyName": "Nop-Station minimum cart total discount rules",
+  "SystemName": "NopStation.Plugin.DiscountRules.CartTotal",
+  "Version": "4.90.1.1",
+  "SupportedVersions": [
+    "4.90"
+  ],
+  "Author": "Nop-Station Team",
+  "DisplayOrder": 1,
+  "FileName": "NopStation.Plugin.DiscountRules.CartTotal.dll",
+  "Description": "This plugin allows you to configure discounts for a minimum cart total.",
+  "DependsOnSystemNames": [
+    "NopStation.Core"
+  ]
+}

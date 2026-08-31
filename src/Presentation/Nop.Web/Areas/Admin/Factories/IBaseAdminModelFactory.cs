@@ -311,15 +311,6 @@ public partial interface IBaseAdminModelFactory
     Task PrepareGdprRequestTypesAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null);
 
     /// <summary>
-    /// Prepare available specification attribute groups
-    /// </summary>
-    /// <param name="items">Specification attributes</param>
-    /// <param name="withSpecialDefaultItem">Whether to insert the first special item for the default value</param>
-    /// <param name="defaultItemText">Default item text; pass null to use default value of the default item text</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    Task PrepareSpecificationAttributeGroupsAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null);
-
-    /// <summary>
     /// Prepare translation supported model
     /// </summary>
     /// <param name="model">Translation supported model</param>

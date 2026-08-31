@@ -254,9 +254,6 @@ public partial class ManufacturerService : IManufacturerService
         //apply store mapping constraints
         productsQuery = await _storeMappingService.ApplyStoreMapping(productsQuery, store.Id);
 
-        //apply ACL constraints
-        productsQuery = await _aclService.ApplyAcl(productsQuery, customerRoleIds);
-
         var subCategoryIds = _catalogSettings.ShowProductsFromSubcategories
             ? await _categoryService.GetChildCategoryIdsAsync(categoryId, store.Id)
             : null;

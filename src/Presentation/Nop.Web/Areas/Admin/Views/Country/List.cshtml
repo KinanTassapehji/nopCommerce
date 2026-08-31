@@ -1,4 +1,4 @@
-@model CountrySearchModel
+﻿@model CountrySearchModel
 
 @{
     //page title
@@ -125,13 +125,20 @@
                                 Title = T("Admin.Common.Edit").Text,
                                 Width = "50",
                                 ClassName =  NopColumnClassDefaults.Button,
-                                Render = new RenderButtonEdit(new DataUrl("~/Admin/Country/Edit"))
+                                Render = new RenderCustom("renderCountryEdit")
                             }
                         }
                     })
 
 
                     <script>
+                        //ponytail: TmTm ships Syria only - unpublished countries are not editable
+                        function renderCountryEdit(data, type, row, meta) {
+                            if (!row.Published)
+                                return '';
+                            return '<a class="@NopButtonClassDefaults.Default" href="@Url.Content("~/Admin/Country/Edit")/' + data + '"><i class="fas fa-pencil"></i>@T("Admin.Common.Edit").Text</a>';
+                        }
+
                         $(function() {
                             //"publish selected" button
                             $('#publish-selected').click(function (e) {
@@ -218,9 +225,6 @@
                         <ul class="common-list">
                             <li>
                                 <em>@T("Admin.Configuration.Countries.ImportTip")</em>
-                            </li>
-                            <li>
-                                <em><a href="@(OfficialSite.StatesPackage + Utm.OnAdminCountries)" target="_blank">https://www.nopcommerce.com/all-states-provinces-package-nopcommerce-team</a></em>
                             </li>
                         </ul>
                         <div class="form-group row">

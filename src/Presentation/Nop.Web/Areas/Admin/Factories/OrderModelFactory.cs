@@ -63,7 +63,6 @@ public partial class OrderModelFactory : IOrderModelFactory
     protected readonly IDiscountService _discountService;
     protected readonly IDownloadService _downloadService;
     protected readonly IEncryptionService _encryptionService;
-    protected readonly IGiftCardService _giftCardService;
     protected readonly ILocalizationService _localizationService;
     protected readonly IMeasureService _measureService;
     protected readonly IOrderProcessingService _orderProcessingService;
@@ -76,7 +75,6 @@ public partial class OrderModelFactory : IOrderModelFactory
     protected readonly IProductAttributeService _productAttributeService;
     protected readonly IProductService _productService;
     protected readonly IReturnRequestService _returnRequestService;
-    protected readonly IRewardPointService _rewardPointService;
     protected readonly ISettingService _settingService;
     protected readonly IShipmentService _shipmentService;
     protected readonly IStateProvinceService _stateProvinceService;
@@ -113,7 +111,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         IDiscountService discountService,
         IDownloadService downloadService,
         IEncryptionService encryptionService,
-        IGiftCardService giftCardService,
         ILocalizationService localizationService,
         IMeasureService measureService,
         IOrderProcessingService orderProcessingService,
@@ -126,7 +123,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         IProductAttributeService productAttributeService,
         IProductService productService,
         IReturnRequestService returnRequestService,
-        IRewardPointService rewardPointService,
         ISettingService settingService,
         IShipmentService shipmentService,
         IStateProvinceService stateProvinceService,
@@ -158,7 +154,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         _discountService = discountService;
         _downloadService = downloadService;
         _encryptionService = encryptionService;
-        _giftCardService = giftCardService;
         _localizationService = localizationService;
         _measureService = measureService;
         _orderProcessingService = orderProcessingService;
@@ -171,7 +166,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         _productAttributeService = productAttributeService;
         _productService = productService;
         _returnRequestService = returnRequestService;
-        _rewardPointService = rewardPointService;
         _settingService = settingService;
         _shipmentService = shipmentService;
         _stateProvinceService = stateProvinceService;
@@ -288,10 +282,6 @@ public partial class OrderModelFactory : IOrderModelFactory
                 ProductId = orderItem.ProductId,
                 ProductName = product.Name,
                 Quantity = orderItem.Quantity,
-                IsDownload = product.IsDownload,
-                DownloadCount = orderItem.DownloadCount,
-                DownloadActivationType = product.DownloadActivationType,
-                IsDownloadActivated = orderItem.IsDownloadActivated,
                 UnitPriceInclTaxValue = orderItem.UnitPriceInclTax,
                 UnitPriceExclTaxValue = orderItem.UnitPriceExclTax,
                 DiscountInclTaxValue = orderItem.DiscountAmountInclTax,
@@ -308,13 +298,6 @@ public partial class OrderModelFactory : IOrderModelFactory
             //picture
             var orderItemPicture = await _pictureService.GetProductPictureAsync(product, orderItem.AttributesXml);
             (orderItemModel.PictureThumbnailUrl, _) = await _pictureService.GetPictureUrlAsync(orderItemPicture, 75);
-
-            //license file
-            if (orderItem.LicenseDownloadId.HasValue)
-            {
-                orderItemModel.LicenseDownloadGuid = (await _downloadService
-                    .GetDownloadByIdAsync(orderItem.LicenseDownloadId.Value))?.DownloadGuid ?? Guid.Empty;
-            }
 
             var languageId = (await _workContext.GetWorkingLanguageAsync()).Id;
 
@@ -342,13 +325,6 @@ public partial class OrderModelFactory : IOrderModelFactory
                 .FormatOrderPriceAsync(orderItem.PriceExclTax, order.CurrencyRate, order.CustomerCurrencyCode,
                     _orderSettings.DisplayCustomerCurrencyOnOrders, primaryStoreCurrency, languageId, false, true);
 
-            //recurring info
-            if (product.IsRecurring)
-            {
-                orderItemModel.RecurringInfo = string.Format(await _localizationService.GetResourceAsync("Admin.Orders.Products.RecurringPeriod"),
-                    product.RecurringCycleLength, await _localizationService.GetLocalizedEnumAsync(product.RecurringCyclePeriod));
-            }
-
             //rental info
             if (product.IsRental)
             {
@@ -362,10 +338,6 @@ public partial class OrderModelFactory : IOrderModelFactory
 
             //prepare return request models
             await PrepareReturnRequestBriefModelsAsync(orderItemModel.ReturnRequests, orderItem);
-
-            //gift card identifiers
-            orderItemModel.PurchasedGiftCardIds = (await _giftCardService
-                .GetGiftCardsByPurchasedWithOrderItemIdAsync(orderItem.Id)).Select(card => card.Id).ToList();
 
             models.Add(orderItemModel);
         }
@@ -493,24 +465,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         }
         model.OrderTotalDiscountValue = order.OrderDiscount;
 
-        //gift cards
-        foreach (var gcuh in await _giftCardService.GetGiftCardUsageHistoryAsync(order))
-        {
-            model.GiftCards.Add(new OrderModel.GiftCard
-            {
-                CouponCode = (await _giftCardService.GetGiftCardByIdAsync(gcuh.GiftCardId)).GiftCardCouponCode,
-                Amount = await _priceFormatter.FormatPriceAsync(-gcuh.UsedValue, true, false)
-            });
-        }
-
-        //reward points
-        if (order.RedeemedRewardPointsEntryId.HasValue && await _rewardPointService.GetRewardPointsHistoryEntryByIdAsync(order.RedeemedRewardPointsEntryId.Value) is RewardPointsHistory redeemedRewardPointsEntry)
-        {
-            model.RedeemedRewardPoints = -redeemedRewardPointsEntry.Points;
-            model.RedeemedRewardPointsAmount =
-                await _priceFormatter.FormatPriceAsync(-redeemedRewardPointsEntry.UsedAmount, true, false);
-        }
-
         //total
         model.OrderTotal = await _priceFormatter
             .FormatOrderPriceAsync(order.OrderTotal, order.CurrencyRate, order.CustomerCurrencyCode,
@@ -618,8 +572,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         model.PrimaryStoreCurrencyCode = (await _currencyService.GetCurrencyByIdAsync(_currencySettings.PrimaryStoreCurrencyId))?.CurrencyCode;
         model.MaxAmountToRefund = order.OrderTotal - order.RefundedAmount;
 
-        //recurring payment record
-        model.RecurringPaymentId = (await _orderService.SearchRecurringPaymentsAsync(initialOrderId: order.Id, showHidden: true)).FirstOrDefault()?.Id ?? 0;
     }
 
     /// <summary>
@@ -1204,7 +1156,6 @@ public partial class OrderModelFactory : IOrderModelFactory
 
             //prepare order items
             await PrepareOrderItemModelsAsync(model.Items, order);
-            model.HasDownloadableProducts = model.Items.Any(item => item.IsDownload);
 
             //prepare payment info
             await PrepareOrderModelPaymentInfoAsync(model, order);
@@ -1222,31 +1173,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         model.TaxDisplayType = _taxSettings.TaxDisplayType;
 
         return model;
-    }
-
-    /// <summary>
-    /// Prepare upload license model
-    /// </summary>
-    /// <param name="model">Upload license model</param>
-    /// <param name="order">Order</param>
-    /// <param name="orderItem">Order item</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the upload license model
-    /// </returns>
-    public virtual Task<UploadLicenseModel> PrepareUploadLicenseModelAsync(UploadLicenseModel model, Order order, OrderItem orderItem)
-    {
-        ArgumentNullException.ThrowIfNull(model);
-
-        ArgumentNullException.ThrowIfNull(order);
-
-        ArgumentNullException.ThrowIfNull(orderItem);
-
-        model.LicenseDownloadId = orderItem.LicenseDownloadId ?? 0;
-        model.OrderId = order.Id;
-        model.OrderItemId = orderItem.Id;
-
-        return Task.FromResult(model);
     }
 
     /// <summary>
@@ -1361,11 +1287,6 @@ public partial class OrderModelFactory : IOrderModelFactory
         //attributes
         await PrepareProductAttributeModelsAsync(model.ProductAttributes, order, product);
         model.HasCondition = model.ProductAttributes.Any(attribute => attribute.HasCondition);
-
-        //gift card
-        model.GiftCard.IsGiftCard = product.IsGiftCard;
-        if (model.GiftCard.IsGiftCard)
-            model.GiftCard.GiftCardType = product.GiftCardType;
 
         return model;
     }

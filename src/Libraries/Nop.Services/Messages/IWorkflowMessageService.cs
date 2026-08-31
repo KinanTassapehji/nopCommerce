@@ -335,39 +335,6 @@ public partial interface IWorkflowMessageService
     /// </returns>
     Task<IList<int>> SendNewOrderNoteAddedCustomerNotificationAsync(OrderNote orderNote, int languageId);
 
-    /// <summary>
-    /// Sends a "Recurring payment cancelled" notification to a store owner
-    /// </summary>
-    /// <param name="recurringPayment">Recurring payment</param>
-    /// <param name="languageId">Message language identifier</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the queued email identifier
-    /// </returns>
-    Task<IList<int>> SendRecurringPaymentCancelledStoreOwnerNotificationAsync(RecurringPayment recurringPayment, int languageId);
-
-    /// <summary>
-    /// Sends a "Recurring payment cancelled" notification to a customer
-    /// </summary>
-    /// <param name="recurringPayment">Recurring payment</param>
-    /// <param name="languageId">Message language identifier</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the queued email identifier
-    /// </returns>
-    Task<IList<int>> SendRecurringPaymentCancelledCustomerNotificationAsync(RecurringPayment recurringPayment, int languageId);
-
-    /// <summary>
-    /// Sends a "Recurring payment failed" notification to a customer
-    /// </summary>
-    /// <param name="recurringPayment">Recurring payment</param>
-    /// <param name="languageId">Message language identifier</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the queued email identifier
-    /// </returns>
-    Task<IList<int>> SendRecurringPaymentFailedCustomerNotificationAsync(RecurringPayment recurringPayment, int languageId);
-
     #endregion
 
     #region Newsletter workflow
@@ -411,22 +378,6 @@ public partial interface IWorkflowMessageService
     /// </returns>
     Task<IList<int>> SendProductEmailAFriendMessageAsync(Customer customer, int languageId,
         Product product, string customerEmail, string friendsEmail, string personalMessage);
-
-    /// <summary>
-    /// Sends wishlist "email a friend" message
-    /// </summary>
-    /// <param name="customer">Customer</param>
-    /// <param name="languageId">Message language identifier</param>
-    /// <param name="customerEmail">Customer's email</param>
-    /// <param name="friendsEmail">Friend's email</param>
-    /// <param name="personalMessage">Personal message</param>
-    /// <param name="wishlistUrl">Wishlist URL</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the queued email identifier
-    /// </returns>
-    Task<IList<int>> SendWishlistEmailAFriendMessageAsync(Customer customer, int languageId,
-        string customerEmail, string friendsEmail, string personalMessage, string wishlistUrl);
 
     #endregion
 
@@ -563,17 +514,6 @@ public partial interface IWorkflowMessageService
     Task<IList<int>> SendProductReviewReplyCustomerNotificationMessageAsync(ProductReview productReview, int languageId);
 
     /// <summary>
-    /// Sends a gift card notification
-    /// </summary>
-    /// <param name="giftCard">Gift card</param>
-    /// <param name="languageId">Message language identifier</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the queued email identifier
-    /// </returns>
-    Task<IList<int>> SendGiftCardNotificationAsync(GiftCard giftCard, int languageId);
-
-    /// <summary>
     /// Sends a "quantity below" notification to a store owner
     /// </summary>
     /// <param name="product">Product</param>
@@ -653,17 +593,6 @@ public partial interface IWorkflowMessageService
     /// The task result contains the queued email identifier
     /// </returns>
     Task<IList<int>> SendNewsCommentStoreOwnerNotificationMessageAsync(NewsComment newsComment, int languageId);
-
-    /// <summary>
-    /// Sends a 'Back in stock' notification message to a customer
-    /// </summary>
-    /// <param name="subscription">Subscription</param>
-    /// <param name="languageId">Message language identifier</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the queued email identifier
-    /// </returns>
-    Task<IList<int>> SendBackInStockNotificationAsync(BackInStockSubscription subscription, int languageId);
 
     /// <summary>
     /// Sends "contact us" message

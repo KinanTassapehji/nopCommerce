@@ -1,0 +1,99 @@
+﻿@model IEnumerable<ProductTabModel>
+
+@using NopStation.Plugin.Widgets.ProductTabs.Models
+
+@if (Model.Any())
+{
+    foreach (var productTab in Model)
+    {
+        var items = productTab.Items.Where(p => p.Products.Any());
+        <div class="product-tab-container py-5">
+            <div class="custom-container-fluid">
+                @if (productTab.DisplayTitle)
+                {
+                    <div class="title">
+                        <strong>@productTab.Title</strong>
+                    </div>
+                }
+
+                <div class="product-tab-body ns-product-tab row row m-0 p-0">
+                    <div class="col-lg-4 d-none d-lg-block p-0">
+                        <div class="product-tab-picture">
+                            <a href="@productTab.CustomUrl">
+                                <img src="@productTab.Picture.ImageUrl" />
+                                @if (productTab.DisplayTitle)
+                                {
+                                    <strong>@productTab.Title</strong>
+                                }
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 p-0">
+                        <ul class="nav nav-tabs text-uppercase">
+                            @foreach (var item in items)
+                            {
+                                <li><a href="#product-tab-@item.Id">@item.Name</a></li>
+                            }
+                        </ul>
+                        @foreach (var item in items)
+                        {
+                            <div class="product-tab-items">
+                                <div class="owl-carousel owl-theme" id="product-tab-@item.Id">
+                                    @for (int productCounter = 0; productCounter < item.Products.Count;)
+                                    {
+                                        <div class="product-tab-item item-box">
+                                            @for (int i = 0; i < 2 && productCounter < item.Products.Count; i++)
+                                            {
+                                                @await Html.PartialAsync("_ProductBox", item.Products[productCounter])
+                                                productCounter++;
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <script asp-location="Footer">
+                                    $(document).ready(function () {
+                                        $('#product-tab-@item.Id').owlCarousel({
+                                            nav: @productTab.Nav.ToString().ToLower(),
+                                            loop: @productTab.Loop.ToString().ToLower(),
+                                            dots: true,
+                                            margin: @productTab.Margin,
+                                            autoplay: @productTab.AutoPlay.ToString().ToLower(),
+                                            rtl: @productTab.RTL.ToString().ToLower(),
+                                            autoplayTimeout: @productTab.AutoPlayTimeout,
+                                            autoplayHoverPause: @productTab.AutoPlayHoverPause.ToString().ToLower(),
+                                            lazyLoad: @productTab.LazyLoad.ToString().ToLower(),
+                                            lazyLoadEager: @productTab.LazyLoadEager,
+                                            center: @productTab.Center.ToString().ToLower(),
+                                            startPosition: @productTab.StartPosition,
+                                            responsive: {
+                                                0: {
+                                                    items: 1
+                                                },
+                                                576: {
+                                                    items: 2
+                                                },
+                                                768: {
+                                                    items: 2
+                                                },
+                                                992: {
+                                                    items: 2
+                                                },
+                                                1200: {
+                                                    items: 2
+                                                },
+                                                1500: {
+                                                    items: 2
+                                                }
+                                            }
+                                        });
+                                    });
+                            </script>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+}

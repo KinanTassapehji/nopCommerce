@@ -153,11 +153,6 @@ public partial class Order : BaseEntity, ISoftDeletedEntity
     public decimal RefundedAmount { get; set; }
 
     /// <summary>
-    /// Gets or sets the reward points history entry identifier when reward points were earned (gained) for placing this order
-    /// </summary>
-    public int? RewardPointsHistoryEntryId { get; set; }
-
-    /// <summary>
     /// Gets or sets the checkout attribute description
     /// </summary>
     public string CheckoutAttributeDescription { get; set; }
@@ -286,11 +281,6 @@ public partial class Order : BaseEntity, ISoftDeletedEntity
     /// Gets or sets the custom order number without prefix
     /// </summary>
     public string CustomOrderNumber { get; set; }
-
-    /// <summary>
-    /// Gets or sets the reward points history record (spent by a customer when placing this order)
-    /// </summary>
-    public virtual int? RedeemedRewardPointsEntryId { get; set; }
 
     #endregion
 

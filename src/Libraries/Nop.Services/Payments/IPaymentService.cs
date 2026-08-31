@@ -116,36 +116,6 @@ public partial interface IPaymentService
     Task<VoidPaymentResult> VoidAsync(VoidPaymentRequest voidPaymentRequest);
 
     /// <summary>
-    /// Gets a recurring payment type of payment method
-    /// </summary>
-    /// <param name="paymentMethodSystemName">Payment method system name</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains a recurring payment type of payment method
-    /// </returns>
-    Task<RecurringPaymentType> GetRecurringPaymentTypeAsync(string paymentMethodSystemName);
-
-    /// <summary>
-    /// Process recurring payment
-    /// </summary>
-    /// <param name="processPaymentRequest">Payment info required for an order processing</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the process payment result
-    /// </returns>
-    Task<ProcessPaymentResult> ProcessRecurringPaymentAsync(ProcessPaymentRequest processPaymentRequest);
-
-    /// <summary>
-    /// Cancels a recurring payment
-    /// </summary>
-    /// <param name="cancelPaymentRequest">Request</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the result
-    /// </returns>
-    Task<CancelRecurringPaymentResult> CancelRecurringPaymentAsync(CancelRecurringPaymentRequest cancelPaymentRequest);
-
-    /// <summary>
     /// Gets masked credit card number
     /// </summary>
     /// <param name="creditCardNumber">Credit card number</param>

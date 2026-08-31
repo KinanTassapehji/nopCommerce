@@ -24,7 +24,7 @@
         </div>
     </div>
     @await Component.InvokeAsync(typeof(AclCustomerRolesViewComponent), Model)
-    <div class="form-group advanced-setting row">
+    <div class="form-group advanced-setting row" @(Model.AvailableStores.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
         <div class="col-md-3">
             <nop-label asp-for="SelectedStoreIds" />
         </div>

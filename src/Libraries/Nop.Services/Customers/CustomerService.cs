@@ -626,13 +626,12 @@ public partial class CustomerService : ICustomerService
     /// <param name="storeId">Store identifier</param>
     /// <param name="clearCouponCodes">A value indicating whether to clear coupon code</param>
     /// <param name="clearCheckoutAttributes">A value indicating whether to clear selected checkout attributes</param>
-    /// <param name="clearRewardPoints">A value indicating whether to clear "Use reward points" flag</param>
     /// <param name="clearShippingMethod">A value indicating whether to clear selected shipping method</param>
     /// <param name="clearPaymentMethod">A value indicating whether to clear selected payment method</param>
     /// <returns>A task that represents the asynchronous operation</returns>
     public virtual async Task ResetCheckoutDataAsync(Customer customer, int storeId,
         bool clearCouponCodes = false, bool clearCheckoutAttributes = false,
-        bool clearRewardPoints = true, bool clearShippingMethod = true,
+        bool clearShippingMethod = true,
         bool clearPaymentMethod = true)
     {
         ArgumentNullException.ThrowIfNull(customer);
@@ -641,16 +640,12 @@ public partial class CustomerService : ICustomerService
         if (clearCouponCodes)
         {
             await _genericAttributeService.SaveAttributeAsync<string>(customer, NopCustomerDefaults.DiscountCouponCodeAttribute, null);
-            await _genericAttributeService.SaveAttributeAsync<string>(customer, NopCustomerDefaults.GiftCardCouponCodesAttribute, null);
+
         }
 
         //clear checkout attributes
         if (clearCheckoutAttributes)
             await _genericAttributeService.SaveAttributeAsync<string>(customer, NopCustomerDefaults.CheckoutAttributes, null, storeId);
-
-        //clear reward points flag
-        if (clearRewardPoints)
-            await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.UseRewardPointsDuringCheckoutAttribute, false, storeId);
 
         //clear selected shipping method
         if (clearShippingMethod)
@@ -980,138 +975,6 @@ public partial class CustomerService : ICustomerService
         foreach (var existingCouponCode in existingCouponCodes)
             if (!existingCouponCode.Equals(couponCode, StringComparison.InvariantCultureIgnoreCase))
                 await ApplyDiscountCouponCodeAsync(customer, existingCouponCode);
-    }
-
-    /// <summary>
-    /// Gets coupon codes
-    /// </summary>
-    /// <param name="customer">Customer</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the coupon codes
-    /// </returns>
-    public virtual async Task<string[]> ParseAppliedGiftCardCouponCodesAsync(Customer customer)
-    {
-        ArgumentNullException.ThrowIfNull(customer);
-
-        var existingCouponCodes = await _genericAttributeService.GetAttributeAsync<string>(customer, NopCustomerDefaults.GiftCardCouponCodesAttribute);
-
-        var couponCodes = new List<string>();
-        if (string.IsNullOrEmpty(existingCouponCodes))
-            return couponCodes.ToArray();
-
-        try
-        {
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(existingCouponCodes);
-
-            var nodeList1 = xmlDoc.SelectNodes(@"//GiftCardCouponCodes/CouponCode");
-            foreach (XmlNode node1 in nodeList1)
-            {
-                if (node1.Attributes?["Code"] == null)
-                    continue;
-
-                var code = node1.Attributes["Code"].InnerText.Trim();
-                couponCodes.Add(code);
-            }
-        }
-        catch
-        {
-            // ignored
-        }
-
-        return couponCodes.ToArray();
-    }
-
-    /// <summary>
-    /// Adds a coupon code
-    /// </summary>
-    /// <param name="customer">Customer</param>
-    /// <param name="couponCode">Coupon code</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the new coupon codes document
-    /// </returns>
-    public virtual async Task ApplyGiftCardCouponCodeAsync(Customer customer, string couponCode)
-    {
-        ArgumentNullException.ThrowIfNull(customer);
-
-        var result = string.Empty;
-        try
-        {
-            var existingCouponCodes = await _genericAttributeService.GetAttributeAsync<string>(customer, NopCustomerDefaults.GiftCardCouponCodesAttribute);
-
-            couponCode = couponCode.Trim().ToLowerInvariant();
-
-            var xmlDoc = new XmlDocument();
-            if (string.IsNullOrEmpty(existingCouponCodes))
-            {
-                var element1 = xmlDoc.CreateElement("GiftCardCouponCodes");
-                xmlDoc.AppendChild(element1);
-            }
-            else
-                xmlDoc.LoadXml(existingCouponCodes);
-
-            var rootElement = (XmlElement)xmlDoc.SelectSingleNode(@"//GiftCardCouponCodes");
-
-            XmlElement gcElement = null;
-            //find existing
-            var nodeList1 = xmlDoc.SelectNodes(@"//GiftCardCouponCodes/CouponCode");
-            foreach (XmlNode node1 in nodeList1)
-            {
-                if (node1.Attributes?["Code"] == null)
-                    continue;
-
-                var couponCodeAttribute = node1.Attributes["Code"].InnerText.Trim();
-                if (couponCodeAttribute.ToLowerInvariant() != couponCode.ToLowerInvariant())
-                    continue;
-
-                gcElement = (XmlElement)node1;
-                break;
-            }
-
-            //create new one if not found
-            if (gcElement == null)
-            {
-                gcElement = xmlDoc.CreateElement("CouponCode");
-                gcElement.SetAttribute("Code", couponCode);
-                rootElement.AppendChild(gcElement);
-            }
-
-            result = xmlDoc.OuterXml;
-        }
-        catch
-        {
-            // ignored
-        }
-
-        //apply new value
-        await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.GiftCardCouponCodesAttribute, result);
-    }
-
-    /// <summary>
-    /// Removes a coupon code
-    /// </summary>
-    /// <param name="customer">Customer</param>
-    /// <param name="couponCode">Coupon code to remove</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the new coupon codes document
-    /// </returns>
-    public virtual async Task RemoveGiftCardCouponCodeAsync(Customer customer, string couponCode)
-    {
-        ArgumentNullException.ThrowIfNull(customer);
-
-        //get applied coupon codes
-        var existingCouponCodes = await ParseAppliedGiftCardCouponCodesAsync(customer);
-
-        //clear them
-        await _genericAttributeService.SaveAttributeAsync<string>(customer, NopCustomerDefaults.GiftCardCouponCodesAttribute, null);
-
-        //save again except removed one
-        foreach (var existingCouponCode in existingCouponCodes)
-            if (!existingCouponCode.Equals(couponCode, StringComparison.InvariantCultureIgnoreCase))
-                await ApplyGiftCardCouponCodeAsync(customer, existingCouponCode);
     }
 
     /// <summary>

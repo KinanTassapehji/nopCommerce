@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    TmTm — brand tokens
    Source of truth: "mini guidline outline.pdf" (Tia Production House, 2026)
 
@@ -56,6 +56,39 @@
      Guideline: minimum clear space on every side = height of the letter "t".
      At the header lockup size that is ~14px; scale with the logo if resized. */
   --tm-logo-clear-space: 14px;
+
+  /* --- Layout & type scale ----------------------------------------------
+     Ported from the TMTM Stitch comps (project "Elegant nopCommerce PWA").
+     Non-colour only: the palette above stays the single source of truth for
+     colour, and the Stitch Material-3 ramp is deliberately not adopted. */
+  --tm-stack-sm: 8px;
+  --tm-stack-md: 16px;
+  --tm-stack-lg: 32px;
+  --tm-gutter: 24px;
+  --tm-margin-mobile: 20px;
+  --tm-margin-desktop: 64px;
+  --tm-container-max: 1440px;
+
+  /* Height of the sticky header, so anything that sticks below it can offset
+     against one number instead of repeating the two measurements. */
+  --tm-header-h: 64px;
+
+  --tm-fs-display: 48px;
+  --tm-lh-display: 56px;
+  --tm-fs-headline: 32px;
+  --tm-lh-headline: 40px;
+  --tm-fs-headline-sm: 24px;
+  --tm-lh-headline-sm: 32px;
+  --tm-fs-title: 20px;
+  --tm-lh-title: 28px;
+  --tm-fs-body-lg: 18px;
+  --tm-lh-body-lg: 28px;
+  --tm-fs-body: 16px;
+  --tm-lh-body: 24px;
+  --tm-fs-label: 14px;
+  --tm-lh-label: 20px;
+  --tm-fs-label-sm: 12px;
+  --tm-lh-label-sm: 16px;
 }
 
 /* --------------------------------------------------------------------------

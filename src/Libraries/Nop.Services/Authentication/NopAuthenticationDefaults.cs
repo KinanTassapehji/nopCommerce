@@ -13,11 +13,6 @@ public static partial class NopAuthenticationDefaults
     public static string AuthenticationScheme => "Authentication";
 
     /// <summary>
-    /// The default value used for external authentication scheme
-    /// </summary>
-    public static string ExternalAuthenticationScheme => "ExternalAuthentication";
-
-    /// <summary>
     /// The issuer that should be used for any claims that are created
     /// </summary>
     public static string ClaimsIssuer => "nopCommerce";
@@ -36,9 +31,4 @@ public static partial class NopAuthenticationDefaults
     /// The name of the query string parameter which is appended by the handler during a Challenge
     /// </summary>
     public static string ReturnUrlParameter => "returnUrl";
-    
-    /// <summary>
-    /// Gets a key to store external authentication errors to session
-    /// </summary>
-    public static string ExternalAuthenticationErrorsSessionKey => "nop.externalauth.errors";
 }

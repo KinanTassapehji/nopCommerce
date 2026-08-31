@@ -1,0 +1,17 @@
+
+body {
+  direction: rtl;
+}
+
+.cloud-zoom-thumb-container {
+  text-align: center;
+}
+
+.cloud-zoom-thumb {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.imgForMobile {
+  display: none;
+}

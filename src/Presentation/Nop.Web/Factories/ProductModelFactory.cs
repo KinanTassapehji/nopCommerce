@@ -49,7 +49,6 @@ public partial class ProductModelFactory : IProductModelFactory
     protected readonly ICategoryService _categoryService;
     protected readonly ICurrencyService _currencyService;
     protected readonly ICustomerService _customerService;
-    protected readonly ICustomWishlistService _customWishlistService;
     protected readonly IDateRangeService _dateRangeService;
     protected readonly IDateTimeHelper _dateTimeHelper;
     protected readonly IDownloadService _downloadService;
@@ -69,7 +68,6 @@ public partial class ProductModelFactory : IProductModelFactory
     protected readonly IProductTemplateService _productTemplateService;
     protected readonly IReviewTypeService _reviewTypeService;
     protected readonly IShoppingCartService _shoppingCartService;
-    protected readonly ISpecificationAttributeService _specificationAttributeService;
     protected readonly IStaticCacheManager _staticCacheManager;
     protected readonly IStoreContext _storeContext;
     protected readonly IStoreService _storeService;
@@ -97,7 +95,6 @@ public partial class ProductModelFactory : IProductModelFactory
         ICategoryService categoryService,
         ICurrencyService currencyService,
         ICustomerService customerService,
-        ICustomWishlistService customWishlistService,
         IDateRangeService dateRangeService,
         IDateTimeHelper dateTimeHelper,
         IDownloadService downloadService,
@@ -117,7 +114,6 @@ public partial class ProductModelFactory : IProductModelFactory
         IProductTemplateService productTemplateService,
         IReviewTypeService reviewTypeService,
         IShoppingCartService shoppingCartService,
-        ISpecificationAttributeService specificationAttributeService,
         IStaticCacheManager staticCacheManager,
         IStoreContext storeContext,
         IStoreService storeService,
@@ -140,7 +136,6 @@ public partial class ProductModelFactory : IProductModelFactory
         _categoryService = categoryService;
         _currencyService = currencyService;
         _customerService = customerService;
-        _customWishlistService = customWishlistService;
         _dateRangeService = dateRangeService;
         _dateTimeHelper = dateTimeHelper;
         _downloadService = downloadService;
@@ -160,7 +155,6 @@ public partial class ProductModelFactory : IProductModelFactory
         _productTemplateService = productTemplateService;
         _reviewTypeService = reviewTypeService;
         _shoppingCartService = shoppingCartService;
-        _specificationAttributeService = specificationAttributeService;
         _staticCacheManager = staticCacheManager;
         _storeContext = storeContext;
         _storeService = storeService;
@@ -384,10 +378,6 @@ public partial class ProductModelFactory : IProductModelFactory
             DisableBuyButton = (product.ProductType != ProductType.GroupedProduct && product.DisableBuyButton) ||
                 !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.ENABLE_SHOPPING_CART) ||
                 !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.DISPLAY_PRICES),
-            //add to wishlist button (ignore "DisableWishlistButton" property for grouped products)
-            DisableWishlistButton = (product.ProductType != ProductType.GroupedProduct && product.DisableWishlistButton) ||
-                !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.ENABLE_WISHLIST) ||
-                !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.DISPLAY_PRICES),
             //compare products
             DisableAddToCompareListButton = !_catalogSettings.CompareProductsEnabled,
             //currency code
@@ -530,60 +520,6 @@ public partial class ProductModelFactory : IProductModelFactory
     }
 
     /// <summary>
-    /// Prepare the product specification models
-    /// </summary>
-    /// <param name="product">Product</param>
-    /// <param name="group">Specification attribute group</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the list of product specification model
-    /// </returns>
-    protected virtual async Task<IList<ProductSpecificationAttributeModel>> PrepareProductSpecificationAttributeModelAsync(Product product, SpecificationAttributeGroup group)
-    {
-        ArgumentNullException.ThrowIfNull(product);
-
-        var productSpecificationAttributes = await _specificationAttributeService.GetProductSpecificationAttributesAsync(
-            product.Id, specificationAttributeGroupId: group?.Id, showOnProductPage: true);
-
-        var result = new List<ProductSpecificationAttributeModel>();
-
-        foreach (var psa in productSpecificationAttributes)
-        {
-            var option = await _specificationAttributeService.GetSpecificationAttributeOptionByIdAsync(psa.SpecificationAttributeOptionId);
-
-            var model = result.FirstOrDefault(model => model.Id == option.SpecificationAttributeId);
-            if (model == null)
-            {
-                var attribute = await _specificationAttributeService.GetSpecificationAttributeByIdAsync(option.SpecificationAttributeId);
-                model = new ProductSpecificationAttributeModel
-                {
-                    Id = attribute.Id,
-                    Name = await _localizationService.GetLocalizedAsync(attribute, x => x.Name)
-                };
-                result.Add(model);
-            }
-
-            var value = new ProductSpecificationAttributeValueModel
-            {
-                AttributeTypeId = psa.AttributeTypeId,
-                ColorSquaresRgb = option.ColorSquaresRgb,
-                ValueRaw = psa.AttributeType switch
-                {
-                    SpecificationAttributeType.Option => WebUtility.HtmlEncode(await _localizationService.GetLocalizedAsync(option, x => x.Name)),
-                    SpecificationAttributeType.CustomText => WebUtility.HtmlEncode(await _localizationService.GetLocalizedAsync(psa, x => x.CustomValue)),
-                    SpecificationAttributeType.CustomHtmlText => await _localizationService.GetLocalizedAsync(psa, x => x.CustomValue),
-                    SpecificationAttributeType.Hyperlink => $"<a href='{psa.CustomValue}' target='_blank'>{psa.CustomValue}</a>",
-                    _ => null
-                }
-            };
-
-            model.Values.Add(value);
-        }
-
-        return result;
-    }
-
-    /// <summary>
     /// Prepare the product review overview model
     /// </summary>
     /// <param name="product">Product</param>
@@ -623,7 +559,6 @@ public partial class ProductModelFactory : IProductModelFactory
         if (productReview != null)
         {
             productReview.ProductId = product.Id;
-            productReview.AllowCustomerReviews = product.AllowCustomerReviews;
             productReview.CanCurrentCustomerLeaveReview = _catalogSettings.AllowAnonymousUsersToReviewProduct || !await _customerService.IsGuestAsync(await _workContext.GetCurrentCustomerAsync());
             productReview.CanAddNewReview = await _productReviewService.CanAddReviewAsync(product.Id, _catalogSettings.ShowProductReviewsPerStore ? currentStore.Id : 0);
         }
@@ -769,37 +704,6 @@ public partial class ProductModelFactory : IProductModelFactory
     }
 
     /// <summary>
-    /// Prepare the product to wishlist model
-    /// </summary>
-    /// <param name="product">Product</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the product add to wishlist model
-    /// </returns>
-    protected virtual async Task<ProductToWishlistModel> PrepareProductToWishlistModelAsync(Product product)
-    {
-        ArgumentNullException.ThrowIfNull(product);
-
-        var model = new ProductToWishlistModel
-        {
-            ProductId = product.Id
-        };
-        //custom wishlists
-        var currentCustomer = await _workContext.GetCurrentCustomerAsync();
-        var currentWishlists = await _customWishlistService.GetAllCustomWishlistsAsync(currentCustomer.Id);
-        foreach (var wishlist in currentWishlists)
-        {
-            var customWishlistModel = new CustomWishlistModel
-            {
-                Id = wishlist.Id,
-                Name = wishlist.Name
-            };
-            model.CustomWishlistItems.Add(customWishlistModel);
-        }
-        return model;
-    }
-
-    /// <summary>
     /// Prepare the product add to cart model
     /// </summary>
     /// <param name="product">Product</param>
@@ -842,17 +746,12 @@ public partial class ProductModelFactory : IProductModelFactory
             model.MinimumQuantityNotification = string.Format(await _localizationService.GetResourceAsync("Products.MinimumQuantityNotification"), product.OrderMinimumQuantity);
         }
 
-        //'add to cart', 'add to wishlist' buttons
+        //'add to cart' button
         model.DisableBuyButton = product.DisableBuyButton || !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.ENABLE_SHOPPING_CART);
-        model.DisableWishlistButton = product.DisableWishlistButton || !await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.ENABLE_WISHLIST);
         if (!await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.DISPLAY_PRICES))
         {
             model.DisableBuyButton = true;
-            model.DisableWishlistButton = true;
         }
-
-        //custom wishlist items
-        model.ProductToWishlist = await PrepareProductToWishlistModelAsync(product);
 
         //pre-order
         if (product.AvailableForPreOrder)
@@ -1304,7 +1203,6 @@ public partial class ProductModelFactory : IProductModelFactory
     /// <param name="preparePriceModel">Whether to prepare the price model</param>
     /// <param name="preparePictureModel">Whether to prepare the picture model</param>
     /// <param name="productThumbPictureSize">Product thumb picture size (longest side); pass null to use the default value of media settings</param>
-    /// <param name="prepareSpecificationAttributes">Whether to prepare the specification attribute models</param>
     /// <param name="forceRedirectionAfterAddingToCart">Whether to force redirection after adding to cart</param>
     /// <returns>
     /// A task that represents the asynchronous operation
@@ -1312,7 +1210,7 @@ public partial class ProductModelFactory : IProductModelFactory
     /// </returns>
     public virtual async Task<IEnumerable<ProductOverviewModel>> PrepareProductOverviewModelsAsync(IEnumerable<Product> products,
         bool preparePriceModel = true, bool preparePictureModel = true,
-        int? productThumbPictureSize = null, bool prepareSpecificationAttributes = false,
+        int? productThumbPictureSize = null,
         bool forceRedirectionAfterAddingToCart = false)
     {
         ArgumentNullException.ThrowIfNull(products);
@@ -1346,17 +1244,8 @@ public partial class ProductModelFactory : IProductModelFactory
                 model.PictureModels = await PrepareProductOverviewPicturesModelAsync(product, productThumbPictureSize);
             }
 
-            //specs
-            if (prepareSpecificationAttributes)
-            {
-                model.ProductSpecificationModel = await PrepareProductSpecificationModelAsync(product);
-            }
-
             //reviews
             model.ReviewOverviewModel = await PrepareProductReviewOverviewModelAsync(product);
-
-            //custom wishlist items
-            model.ProductToWishlist = await PrepareProductToWishlistModelAsync(product);
 
             models.Add(model);
         }
@@ -1455,7 +1344,6 @@ public partial class ProductModelFactory : IProductModelFactory
             Gtin = product.Gtin,
             ManageInventoryMethod = product.ManageInventoryMethod,
             StockAvailability = await _productService.FormatStockMessageAsync(product, string.Empty),
-            HasSampleDownload = product.IsDownload && product.HasSampleDownload,
             DisplayDiscontinuedMessage = !product.Published && _catalogSettings.DisplayDiscontinuedMessageForUnpublishedProducts,
             AvailableEndDate = product.AvailableEndDateTimeUtc,
             VisibleIndividually = product.VisibleIndividually,
@@ -1528,9 +1416,7 @@ public partial class ProductModelFactory : IProductModelFactory
                 break;
 
             case ManageInventoryMethod.ManageStock:
-                model.InStock = product.BackorderMode != BackorderMode.NoBackorders
-                                || await _productService.GetTotalStockQuantityAsync(product) > 0;
-                model.DisplayBackInStockSubscription = !model.InStock && product.AllowBackInStockSubscriptions;
+                model.InStock = await _productService.GetTotalStockQuantityAsync(product) > 0;
                 break;
 
             case ManageInventoryMethod.ManageStockByAttributes:
@@ -1569,40 +1455,8 @@ public partial class ProductModelFactory : IProductModelFactory
         //'Add to cart' model
         model.AddToCart = await PrepareProductAddToCartModelAsync(product, updatecartitem);
         var customer = await _workContext.GetCurrentCustomerAsync();
-        //gift card
-        if (product.IsGiftCard)
-        {
-            model.GiftCard.IsGiftCard = true;
-            model.GiftCard.GiftCardType = product.GiftCardType;
-
-            if (updatecartitem == null)
-            {
-                model.GiftCard.SenderName = await _customerService.GetCustomerFullNameAsync(customer);
-                model.GiftCard.SenderEmail = customer.Email;
-            }
-            else
-            {
-                _productAttributeParser.GetGiftCardAttribute(updatecartitem.AttributesXml,
-                    out var giftCardRecipientName, out var giftCardRecipientEmail,
-                    out var giftCardSenderName, out var giftCardSenderEmail, out var giftCardMessage);
-
-                model.GiftCard.RecipientName = giftCardRecipientName;
-                model.GiftCard.RecipientEmail = giftCardRecipientEmail;
-                model.GiftCard.SenderName = giftCardSenderName;
-                model.GiftCard.SenderEmail = giftCardSenderEmail;
-                model.GiftCard.Message = giftCardMessage;
-            }
-        }
-
         //product attributes
         model.ProductAttributes = await PrepareProductAttributeModelsAsync(product, updatecartitem);
-
-        //product specifications
-        //do not prepare this model for the associated products. anyway it's not used
-        if (!isAssociatedProduct)
-        {
-            model.ProductSpecificationModel = await PrepareProductSpecificationModelAsync(product);
-        }
 
         //product review overview
         model.ProductReviewOverview = await PrepareProductReviewOverviewModelAsync(product);
@@ -1649,6 +1503,7 @@ public partial class ProductModelFactory : IProductModelFactory
             model.ProductEstimateShipping.ZipPostalCode = estimateShippingModel.ZipPostalCode;
             model.ProductEstimateShipping.UseCity = estimateShippingModel.UseCity;
             model.ProductEstimateShipping.City = estimateShippingModel.City;
+            model.ProductEstimateShipping.Street = estimateShippingModel.Street;
             model.ProductEstimateShipping.AvailableCountries = estimateShippingModel.AvailableCountries;
             model.ProductEstimateShipping.AvailableStates = estimateShippingModel.AvailableStates;
         }
@@ -1920,41 +1775,6 @@ public partial class ProductModelFactory : IProductModelFactory
         {
             var customer = await _workContext.GetCurrentCustomerAsync();
             model.YourEmailAddress = customer.Email;
-        }
-
-        return model;
-    }
-
-    /// <summary>
-    /// Prepare the product specification model
-    /// </summary>
-    /// <param name="product">Product</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the product specification model
-    /// </returns>
-    public virtual async Task<ProductSpecificationModel> PrepareProductSpecificationModelAsync(Product product)
-    {
-        ArgumentNullException.ThrowIfNull(product);
-
-        var model = new ProductSpecificationModel();
-
-        // Add non-grouped attributes first
-        model.Groups.Add(new ProductSpecificationAttributeGroupModel
-        {
-            Attributes = await PrepareProductSpecificationAttributeModelAsync(product, null)
-        });
-
-        // Add grouped attributes
-        var groups = await _specificationAttributeService.GetProductSpecificationAttributeGroupsAsync(product.Id);
-        foreach (var group in groups)
-        {
-            model.Groups.Add(new ProductSpecificationAttributeGroupModel
-            {
-                Id = group.Id,
-                Name = await _localizationService.GetLocalizedAsync(group, x => x.Name),
-                Attributes = await PrepareProductSpecificationAttributeModelAsync(product, group)
-            });
         }
 
         return model;

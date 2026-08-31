@@ -347,7 +347,6 @@ public partial class CommonModelFactory : ICommonModelFactory
             CustomerName = await _customerService.IsRegisteredAsync(customer) ? await _customerService.FormatUsernameAsync(customer) : string.Empty,
             ShoppingCartEnabled = await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.ENABLE_SHOPPING_CART),
             UsePopupNotifications = _messagesSettings.UsePopupNotifications,
-            WishlistEnabled = await _permissionService.AuthorizeAsync(StandardPermission.PublicStore.ENABLE_WISHLIST),
             AllowPrivateMessages = await _customerService.IsRegisteredAsync(customer) && _forumSettings.AllowPrivateMessages,
             UnreadPrivateMessages = unreadMessage,
             AlertMessage = alertMessage,
@@ -357,9 +356,6 @@ public partial class CommonModelFactory : ICommonModelFactory
         if (customer.HasShoppingCartItems)
         {
             model.ShoppingCartItems = (await _shoppingCartService.GetShoppingCartAsync(customer, ShoppingCartType.ShoppingCart, store.Id))
-                .Sum(item => item.Quantity);
-
-            model.WishlistItems = (await _shoppingCartService.GetShoppingCartAsync(customer, ShoppingCartType.Wishlist, store.Id, customWishlistId: 0))
                 .Sum(item => item.Quantity);
         }
 
@@ -403,6 +399,7 @@ public partial class CommonModelFactory : ICommonModelFactory
             TwitterLink = _storeInformationSettings.TwitterLink,
             YoutubeLink = _storeInformationSettings.YoutubeLink,
             InstagramLink = _storeInformationSettings.InstagramLink,
+            WhatsAppLink = _storeInformationSettings.WhatsAppLink,
             WorkingLanguageId = (await _workContext.GetWorkingLanguageAsync()).Id,
             NewsEnabled = _newsSettings.Enabled,
         };

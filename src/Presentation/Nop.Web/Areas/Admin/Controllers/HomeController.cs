@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
 using Nop.Core.Domain.Common;
-using Nop.Core.Domain.Customers;
 using Nop.Services.Common;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
@@ -63,11 +62,7 @@ public partial class HomeController : BaseAdminController
     public virtual async Task<IActionResult> Index()
     {
         //display a warning to a store owner if there are some error
-        var customer = await _workContext.GetCurrentCustomerAsync();
-        var hideCard = await _genericAttributeService.GetAttributeAsync<bool>(customer, NopCustomerDefaults.HideConfigurationStepsAttribute);
-        var closeCard = await _genericAttributeService.GetAttributeAsync<bool>(customer, NopCustomerDefaults.CloseConfigurationStepsAttribute);
-
-        if ((hideCard || closeCard) && await _permissionService.AuthorizeAsync(StandardPermission.System.MANAGE_MAINTENANCE))
+        if (await _permissionService.AuthorizeAsync(StandardPermission.System.MANAGE_MAINTENANCE))
         {
             var warnings = await _commonModelFactory.PrepareSystemWarningModelsAsync();
             if (warnings.Any(warning => warning.Level == SystemWarningLevel.Fail || warning.Level == SystemWarningLevel.Warning))

@@ -18,9 +18,6 @@ public partial record CheckoutBillingAddressModel : BaseNopModel
 
     public AddressModel BillingNewAddress { get; set; }
 
-    public bool ShipToSameAddress { get; set; }
-    public bool ShipToSameAddressAllowed { get; set; }
-
     /// <summary>
     /// Used on one-page checkout page
     /// </summary>

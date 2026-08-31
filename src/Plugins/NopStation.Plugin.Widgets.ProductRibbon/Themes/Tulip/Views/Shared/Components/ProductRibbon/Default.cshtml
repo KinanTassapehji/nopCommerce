@@ -1,0 +1,36 @@
+﻿@model ProductRibbonModel
+
+<div class="offer-content">
+    @if (Model.IsNew)
+    {
+        var newText = T("NopStation.ProductRibbon.RibbonText.New").Text;
+        <div class="new-product-label">
+            <span class="offer-box">
+                @newText
+            </span>
+        </div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Discount))
+    {
+        var discountText = T("NopStation.ProductRibbon.RibbonText.Discount").Text;
+        <div class="discount-info-label offer-box">
+            <span class="discount-rate">@Model.Discount</span>
+            <span class="discount-type">
+                @*@discountText*@
+            </span>
+        </div>
+    }
+</div>
+
+<div class="discount-bestseller-box">
+
+    @if (Model.IsBestSeller)
+    {
+        var bestsellText = T("NopStation.ProductRibbon.RibbonText.BestSeller").Text;
+        <div class="bestseller-label">
+            <span class="offer-box new-products">
+                @bestsellText
+            </span>
+        </div>
+    }
+</div>

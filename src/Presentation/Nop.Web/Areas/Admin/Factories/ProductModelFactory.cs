@@ -71,7 +71,6 @@ public partial class ProductModelFactory : IProductModelFactory
     protected readonly ISettingService _settingService;
     protected readonly IShipmentService _shipmentService;
     protected readonly IShoppingCartService _shoppingCartService;
-    protected readonly ISpecificationAttributeService _specificationAttributeService;
     protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
     protected readonly IStoreContext _storeContext;
     protected readonly IStoreService _storeService;
@@ -117,7 +116,6 @@ public partial class ProductModelFactory : IProductModelFactory
         ISettingService settingService,
         IShipmentService shipmentService,
         IShoppingCartService shoppingCartService,
-        ISpecificationAttributeService specificationAttributeService,
         IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
         IStoreContext storeContext,
         IStoreService storeService,
@@ -159,7 +157,6 @@ public partial class ProductModelFactory : IProductModelFactory
         _settingService = settingService;
         _shipmentService = shipmentService;
         _shoppingCartService = shoppingCartService;
-        _specificationAttributeService = specificationAttributeService;
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
         _storeContext = storeContext;
         _storeService = storeService;
@@ -176,21 +173,6 @@ public partial class ProductModelFactory : IProductModelFactory
     #endregion
 
     #region Utilities
-
-    /// <returns>A task that represents the asynchronous operation</returns>
-    protected virtual async Task<string> GetSpecificationAttributeNameAsync(SpecificationAttribute specificationAttribute)
-    {
-        var name = specificationAttribute.Name;
-
-        if (specificationAttribute.SpecificationAttributeGroupId.HasValue)
-        {
-            var group = await _specificationAttributeService.GetSpecificationAttributeGroupByIdAsync(specificationAttribute.SpecificationAttributeGroupId.Value);
-            if (group != null)
-                name = string.Format(await _localizationService.GetResourceAsync("Admin.Catalog.Products.SpecificationAttributes.NameFormat"), group.Name, name);
-        }
-
-        return name;
-    }
 
     /// <summary>
     /// Prepare copy product model
@@ -637,26 +619,6 @@ public partial class ProductModelFactory : IProductModelFactory
     }
 
     /// <summary>
-    /// Prepare product specification attribute search model
-    /// </summary>
-    /// <param name="searchModel">Product specification attribute search model</param>
-    /// <param name="product">Product</param>
-    /// <returns>Product specification attribute search model</returns>
-    protected virtual ProductSpecificationAttributeSearchModel PrepareProductSpecificationAttributeSearchModel(
-        ProductSpecificationAttributeSearchModel searchModel, Product product)
-    {
-        ArgumentNullException.ThrowIfNull(searchModel);
-        ArgumentNullException.ThrowIfNull(product);
-
-        searchModel.ProductId = product.Id;
-
-        //prepare page parameters
-        searchModel.SetGridPageSize();
-
-        return searchModel;
-    }
-
-    /// <summary>
     /// Prepare tagged products search model
     /// </summary>
     /// <param name="searchModel">Tagged products search model</param>
@@ -880,7 +842,6 @@ public partial class ProductModelFactory : IProductModelFactory
             PrepareAssociatedProductSearchModel(model.AssociatedProductSearchModel, product);
             PrepareProductPictureSearchModel(model.ProductPictureSearchModel, product);
             PrepareProductVideoSearchModel(model.ProductVideoSearchModel, product);
-            PrepareProductSpecificationAttributeSearchModel(model.ProductSpecificationAttributeSearchModel, product);
             PrepareProductOrderSearchModel(model.ProductOrderSearchModel, product);
             PrepareTierPriceSearchModel(model.TierPriceSearchModel, product);
             await PrepareStockQuantityHistorySearchModelAsync(model.StockQuantityHistorySearchModel, product);
@@ -904,18 +865,14 @@ public partial class ProductModelFactory : IProductModelFactory
         if (product == null)
         {
             model.MaximumCustomerEnteredPrice = 1000;
-            model.MaxNumberOfDownloads = 10;
-            model.RecurringCycleLength = 100;
-            model.RecurringTotalCycles = 10;
+
             model.RentalPriceLength = 1;
             model.StockQuantity = 10000;
             model.NotifyAdminForQuantityBelow = 1;
             model.OrderMinimumQuantity = 1;
             model.OrderMaximumQuantity = 10000;
             model.TaxCategoryId = _taxSettings.DefaultTaxCategoryId;
-            model.UnlimitedDownloads = true;
             model.IsShipEnabled = true;
-            model.AllowCustomerReviews = true;
             model.Published = true;
             model.VisibleIndividually = true;
         }
@@ -923,8 +880,6 @@ public partial class ProductModelFactory : IProductModelFactory
         model.PrimaryStoreCurrencyCode = (await _currencyService.GetCurrencyByIdAsync(_currencySettings.PrimaryStoreCurrencyId)).CurrencyCode;
         model.BaseWeightIn = (await _measureService.GetMeasureWeightByIdAsync(_measureSettings.BaseWeightId)).Name;
         model.BaseDimensionIn = (await _measureService.GetMeasureDimensionByIdAsync(_measureSettings.BaseDimensionId)).Name;
-        model.HasAvailableSpecificationAttributes =
-            (await _specificationAttributeService.GetSpecificationAttributesWithOptionsAsync()).Any();
 
         var currentVendor = await _workContext.GetCurrentVendorAsync();
         model.IsLoggedInAsVendor = currentVendor != null;
@@ -1012,84 +967,6 @@ public partial class ProductModelFactory : IProductModelFactory
         await _storeMappingSupportedModelFactory.PrepareModelStoresAsync(model, product, excludeProperties);
 
         await _baseAdminModelFactory.PreparePreTranslationSupportModelAsync(model);
-
-        return model;
-    }
-
-    /// <summary>
-    /// Prepare required product search model to add to the product
-    /// </summary>
-    /// <param name="searchModel">Required product search model to add to the product</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the required product search model to add to the product
-    /// </returns>
-    public virtual async Task<AddRequiredProductSearchModel> PrepareAddRequiredProductSearchModelAsync(AddRequiredProductSearchModel searchModel)
-    {
-        ArgumentNullException.ThrowIfNull(searchModel);
-
-        searchModel.IsLoggedInAsVendor = await _workContext.GetCurrentVendorAsync() != null;
-
-        //prepare available categories
-        await _baseAdminModelFactory.PrepareCategoriesAsync(searchModel.AvailableCategories);
-
-        //prepare available manufacturers
-        await _baseAdminModelFactory.PrepareManufacturersAsync(searchModel.AvailableManufacturers);
-
-        //prepare available stores
-        await _baseAdminModelFactory.PrepareStoresAsync(searchModel.AvailableStores);
-
-        //prepare available vendors
-        await _baseAdminModelFactory.PrepareVendorsAsync(searchModel.AvailableVendors);
-
-        //prepare available product types
-        await _baseAdminModelFactory.PrepareProductTypesAsync(searchModel.AvailableProductTypes);
-
-        //prepare page parameters
-        searchModel.SetPopupGridPageSize();
-
-        return searchModel;
-    }
-
-    /// <summary>
-    /// Prepare required product list model to add to the product
-    /// </summary>
-    /// <param name="searchModel">Required product search model to add to the product</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the required product list model to add to the product
-    /// </returns>
-    public virtual async Task<AddRequiredProductListModel> PrepareAddRequiredProductListModelAsync(AddRequiredProductSearchModel searchModel)
-    {
-        ArgumentNullException.ThrowIfNull(searchModel);
-
-        //a vendor should have access only to his products
-        var currentVendor = await _workContext.GetCurrentVendorAsync();
-        if (currentVendor != null)
-            searchModel.SearchVendorId = currentVendor.Id;
-
-        //get products
-        var products = await _productService.SearchProductsAsync(showHidden: true,
-            categoryIds: new List<int> { searchModel.SearchCategoryId },
-            manufacturerIds: new List<int> { searchModel.SearchManufacturerId },
-            storeId: searchModel.SearchStoreId,
-            vendorId: searchModel.SearchVendorId,
-            productType: searchModel.SearchProductTypeId > 0 ? (ProductType?)searchModel.SearchProductTypeId : null,
-            keywords: searchModel.SearchProductName,
-            pageIndex: searchModel.Page - 1, pageSize: searchModel.PageSize);
-
-        //prepare grid model
-        var model = await new AddRequiredProductListModel().PrepareToGridAsync(searchModel, products, () =>
-        {
-            return products.SelectAwait(async product =>
-            {
-                var productModel = product.ToModel<ProductModel>();
-
-                productModel.SeName = await _urlRecordService.GetSeNameAsync(product, 0, true, false);
-
-                return productModel;
-            });
-        });
 
         return model;
     }
@@ -1571,170 +1448,6 @@ public partial class ProductModelFactory : IProductModelFactory
     }
 
     /// <summary>
-    /// Prepare paged product specification attribute list model
-    /// </summary>
-    /// <param name="searchModel">Product specification attribute search model</param>
-    /// <param name="product">Product</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the product specification attribute list model
-    /// </returns>
-    public virtual async Task<ProductSpecificationAttributeListModel> PrepareProductSpecificationAttributeListModelAsync(
-        ProductSpecificationAttributeSearchModel searchModel, Product product)
-    {
-        ArgumentNullException.ThrowIfNull(searchModel);
-        ArgumentNullException.ThrowIfNull(product);
-
-        //get product specification attributes
-        var productSpecificationAttributes = (await _specificationAttributeService
-            .GetProductSpecificationAttributesAsync(product.Id)).ToPagedList(searchModel);
-
-        //prepare grid model
-        var model = await new ProductSpecificationAttributeListModel().PrepareToGridAsync(searchModel, productSpecificationAttributes, () =>
-        {
-            return productSpecificationAttributes.SelectAwait(async attribute =>
-            {
-                //fill in model values from the entity
-                var productSpecificationAttributeModel = attribute.ToModel<ProductSpecificationAttributeModel>();
-
-                var specAttributeOption = await _specificationAttributeService
-                    .GetSpecificationAttributeOptionByIdAsync(attribute.SpecificationAttributeOptionId);
-                var specAttribute = await _specificationAttributeService
-                    .GetSpecificationAttributeByIdAsync(specAttributeOption.SpecificationAttributeId);
-
-                //fill in additional values (not existing in the entity)
-                productSpecificationAttributeModel.AttributeTypeName = await _localizationService.GetLocalizedEnumAsync(attribute.AttributeType);
-
-                productSpecificationAttributeModel.AttributeId = specAttribute.Id;
-                productSpecificationAttributeModel.AttributeName = await GetSpecificationAttributeNameAsync(specAttribute);
-                var currentLanguage = await _workContext.GetWorkingLanguageAsync();
-
-                switch (attribute.AttributeType)
-                {
-                    case SpecificationAttributeType.Option:
-                        productSpecificationAttributeModel.ValueRaw = WebUtility.HtmlEncode(specAttributeOption.Name);
-                        productSpecificationAttributeModel.SpecificationAttributeOptionId = specAttributeOption.Id;
-                        break;
-                    case SpecificationAttributeType.CustomText:
-                        productSpecificationAttributeModel.ValueRaw = WebUtility.HtmlEncode(await _localizationService.GetLocalizedAsync(attribute, x => x.CustomValue, currentLanguage?.Id));
-                        break;
-                    case SpecificationAttributeType.CustomHtmlText:
-                        productSpecificationAttributeModel.ValueRaw = await _localizationService
-                            .GetLocalizedAsync(attribute, x => x.CustomValue, currentLanguage?.Id);
-                        break;
-                    case SpecificationAttributeType.Hyperlink:
-                        productSpecificationAttributeModel.ValueRaw = attribute.CustomValue;
-                        break;
-                }
-
-                return productSpecificationAttributeModel;
-            });
-        });
-
-        return model;
-    }
-
-    /// <summary>
-    /// Prepare paged product specification attribute model
-    /// </summary>
-    /// <param name="productId">Product id</param>
-    /// <param name="specificationId">Specification attribute id</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the product specification attribute model
-    /// </returns>
-    public virtual async Task<AddSpecificationAttributeModel> PrepareAddSpecificationAttributeModelAsync(int productId, int? specificationId)
-    {
-        if (!specificationId.HasValue)
-        {
-            return new AddSpecificationAttributeModel
-            {
-                AvailableAttributes = await (await _specificationAttributeService.GetSpecificationAttributesWithOptionsAsync())
-                    .SelectAwait(async attributeWithOption =>
-                    {
-                        var attributeName = await GetSpecificationAttributeNameAsync(attributeWithOption);
-
-                        return new SelectListItem(attributeName, attributeWithOption.Id.ToString());
-                    }).ToListAsync(),
-                ProductId = productId,
-                Locales = await _localizedModelFactory.PrepareLocalizedModelsAsync<AddSpecificationAttributeLocalizedModel>()
-            };
-        }
-
-        var attribute = await _specificationAttributeService.GetProductSpecificationAttributeByIdAsync(specificationId.Value) 
-                        ?? throw new ArgumentException("No specification attribute found with the specified id");
-
-        //a vendor should have access only to his products
-        var currentVendor = await _workContext.GetCurrentVendorAsync();
-        if (currentVendor != null && (await _productService.GetProductByIdAsync(attribute.ProductId)).VendorId != currentVendor.Id)
-            throw new UnauthorizedAccessException("This is not your product");
-
-        var specAttributeOption = await _specificationAttributeService.GetSpecificationAttributeOptionByIdAsync(attribute.SpecificationAttributeOptionId);
-        var specAttribute = await _specificationAttributeService.GetSpecificationAttributeByIdAsync(specAttributeOption.SpecificationAttributeId);
-
-        var model = attribute.ToModel<AddSpecificationAttributeModel>();
-        model.SpecificationId = attribute.Id;
-        model.AttributeId = specAttribute.Id;
-        model.AttributeTypeName = await _localizationService.GetLocalizedEnumAsync(attribute.AttributeType);
-        model.AttributeName = specAttribute.Name;
-
-        model.AvailableAttributes = await (await _specificationAttributeService.GetSpecificationAttributesWithOptionsAsync())
-            .SelectAwait(async attributeWithOption =>
-            {
-                var attributeName = await GetSpecificationAttributeNameAsync(attributeWithOption);
-
-                return new SelectListItem(attributeName, attributeWithOption.Id.ToString());
-            })
-            .ToListAsync();
-
-        model.AvailableOptions = (await _specificationAttributeService
-                .GetSpecificationAttributeOptionsBySpecificationAttributeAsync(model.AttributeId))
-            .Select(option => new SelectListItem { Text = option.Name, Value = option.Id.ToString() })
-            .ToList();
-
-        switch (attribute.AttributeType)
-        {
-            case SpecificationAttributeType.Option:
-                model.ValueRaw = WebUtility.HtmlEncode(specAttributeOption.Name);
-                model.SpecificationAttributeOptionId = specAttributeOption.Id;
-                break;
-            case SpecificationAttributeType.CustomText:
-                model.Value = WebUtility.HtmlDecode(attribute.CustomValue);
-                break;
-            case SpecificationAttributeType.CustomHtmlText:
-                model.ValueRaw = attribute.CustomValue;
-                break;
-            case SpecificationAttributeType.Hyperlink:
-                model.Value = attribute.CustomValue;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(attribute.AttributeType));
-        }
-
-        model.Locales = await _localizedModelFactory.PrepareLocalizedModelsAsync(
-            async (AddSpecificationAttributeLocalizedModel locale, int languageId) =>
-            {
-                switch (attribute.AttributeType)
-                {
-                    case SpecificationAttributeType.CustomHtmlText:
-                        locale.ValueRaw = await _localizationService.GetLocalizedAsync(attribute, entity => entity.CustomValue, languageId, false, false);
-                        break;
-                    case SpecificationAttributeType.CustomText:
-                        locale.Value = await _localizationService.GetLocalizedAsync(attribute, entity => entity.CustomValue, languageId, false, false);
-                        break;
-                    case SpecificationAttributeType.Option:
-                        break;
-                    case SpecificationAttributeType.Hyperlink:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            });
-
-        return model;
-    }
-
-    /// <summary>
     /// Prepare product tag search model
     /// </summary>
     /// <param name="searchModel">Product tag search model</param>
@@ -2019,7 +1732,7 @@ public partial class ProductModelFactory : IProductModelFactory
                 if (combination != null)
                 {
                     stockQuantityHistoryModel.AttributeCombination = await _productAttributeFormatter
-                        .FormatAttributesAsync(product, combination.AttributesXml, currentCustomer, currentStore, renderGiftCardAttributes: false);
+                        .FormatAttributesAsync(product, combination.AttributesXml, currentCustomer, currentStore);
                 }
 
                 stockQuantityHistoryModel.WarehouseName = historyEntry.WarehouseId.HasValue

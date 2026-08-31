@@ -1,0 +1,45 @@
+﻿.product-ribbon {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: auto;
+  text-transform: uppercase;
+  z-index: 999;
+}
+
+  .product-ribbon > div {
+    color: var(--white);
+    font-size: 12px;
+    padding: 4px;
+    border-radius: 0 10px;
+    margin-bottom: 5px;
+    background: #888;
+  }
+
+  .product-ribbon .new-product-label {
+    background: #FF9A02;
+  }
+
+  .product-ribbon .bestseller-label {
+    background: #F4EE65;
+    color: #243C03;
+    text-transform: capitalize;
+    font-weight: 700;
+  }
+
+  .product-ribbon .discount-info-label {
+    background: #F40F00;
+  }
+
+.gallery .product-ribbon {
+  z-index: 99999;
+}
+
+.product-horizontal .swiper-wrapper .product-item .picture .product-ribbon, .product-tab .swiper-wrapper .product-item .picture .product-ribbon {
+  top: 4px;
+  right: 4px;
+}

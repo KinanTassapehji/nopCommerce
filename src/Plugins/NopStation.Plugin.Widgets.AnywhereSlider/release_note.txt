@@ -1,0 +1,5 @@
+﻿4.80.1.2: Shop now button fixed
+4.80.1.1: Cache issue resolved and bug fixed
+4.80.1.0: Initial release
+4.90.1.0: Version upgraded
+4.90.1.1: Cache issue resolved

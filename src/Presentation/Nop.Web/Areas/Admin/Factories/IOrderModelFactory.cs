@@ -55,18 +55,6 @@ public partial interface IOrderModelFactory
     Task<OrderModel> PrepareOrderModelAsync(OrderModel model, Order order, bool excludeProperties = false);
 
     /// <summary>
-    /// Prepare upload license model
-    /// </summary>
-    /// <param name="model">Upload license model</param>
-    /// <param name="order">Order</param>
-    /// <param name="orderItem">Order item</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the upload license model
-    /// </returns>
-    Task<UploadLicenseModel> PrepareUploadLicenseModelAsync(UploadLicenseModel model, Order order, OrderItem orderItem);
-
-    /// <summary>
     /// Prepare product search model to add to the order
     /// </summary>
     /// <param name="searchModel">Product search model to add to the order</param>

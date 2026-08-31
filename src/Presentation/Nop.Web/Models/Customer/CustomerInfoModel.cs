@@ -13,7 +13,6 @@ public partial record CustomerInfoModel : BaseNopModel
         AvailableTimeZones = new List<SelectListItem>();
         AvailableCountries = new List<SelectListItem>();
         AvailableStates = new List<SelectListItem>();
-        AssociatedExternalAuthRecords = new List<AssociatedExternalAuthModel>();
         CustomerAttributes = new List<CustomerAttributeModel>();
         GdprConsents = new List<GdprConsentModel>();
         NewsLetterSubscriptions = new List<NewsLetterSubscriptionModel>();
@@ -136,26 +135,7 @@ public partial record CustomerInfoModel : BaseNopModel
     public bool DisplayVatNumber { get; set; }
     public bool VatNumberRequired { get; set; }
 
-    //external authentication
-    [NopResourceDisplayName("Account.AssociatedExternalAuth")]
-    public IList<AssociatedExternalAuthModel> AssociatedExternalAuthRecords { get; set; }
-    public int NumberOfExternalAuthenticationProviders { get; set; }
-    public bool AllowCustomersToRemoveAssociations { get; set; }
-
     public IList<CustomerAttributeModel> CustomerAttributes { get; set; }
 
     public IList<GdprConsentModel> GdprConsents { get; set; }
-
-    #region Nested classes
-
-    public partial record AssociatedExternalAuthModel : BaseNopEntityModel
-    {
-        public string Email { get; set; }
-
-        public string ExternalIdentifier { get; set; }
-
-        public string AuthMethodName { get; set; }
-    }
-
-    #endregion
 }

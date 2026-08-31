@@ -1,0 +1,11 @@
+﻿@model ProductDetailsModel
+
+@if (Model.EmailAFriendEnabled)
+{
+    <div class=" col-6 email-a-friend pl-0 pr-1">
+        <button type="button" class="w- btn-email-friend"
+                onclick="setLocation('@Url.RouteUrl("ProductEmailAFriend", new { productId = Model.Id })')">
+            <i class="fa fa-envelope-o pr-2" aria-hidden="true"></i>@T("Products.EmailAFriend")
+        </button>
+    </div>
+}

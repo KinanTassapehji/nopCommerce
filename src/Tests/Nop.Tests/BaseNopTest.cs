@@ -38,8 +38,6 @@ using Nop.Data.Migrations;
 using Nop.Services.Affiliates;
 using Nop.Services.ArtificialIntelligence;
 using Nop.Services.Attributes;
-using Nop.Services.Authentication.External;
-using Nop.Services.Authentication.MultiFactor;
 using Nop.Services.Blogs;
 using Nop.Services.Caching;
 using Nop.Services.Catalog;
@@ -283,7 +281,6 @@ public partial class BaseNopTest
         services.AddSingleton(new DistributedCacheLocker(memoryDistributedCache));
 
         //services
-        services.AddTransient<IBackInStockSubscriptionService, BackInStockSubscriptionService>();
         services.AddTransient<ICategoryService, CategoryService>();
         services.AddTransient<IFilterLevelValueService, FilterLevelValueService>();
         services.AddTransient<ICompareProductsService, CompareProductsService>();
@@ -296,7 +293,6 @@ public partial class BaseNopTest
         services.AddTransient<IProductService, ProductService>();
         services.AddTransient<IProductReviewService, ProductReviewService>();
         services.AddTransient<ICopyProductService, CopyProductService>();
-        services.AddTransient<ISpecificationAttributeService, SpecificationAttributeService>();
         services.AddTransient<IProductTemplateService, ProductTemplateService>();
         services.AddTransient<ICategoryTemplateService, CategoryTemplateService>();
         services.AddTransient<IManufacturerTemplateService, ManufacturerTemplateService>();
@@ -354,15 +350,12 @@ public partial class BaseNopTest
         services.AddTransient<ISmtpBuilder, TestSmtpBuilder>();
         services.AddTransient<IEmailSender, EmailSender>();
         services.AddTransient<ICheckoutAttributeFormatter, CheckoutAttributeFormatter>();
-        services.AddTransient<IGiftCardService, GiftCardService>();
         services.AddTransient<IOrderService, OrderService>();
         services.AddTransient<IOrderReportService, OrderReportService>();
         services.AddTransient<IOrderProcessingService, OrderProcessingService>();
         services.AddTransient<IOrderTotalCalculationService, OrderTotalCalculationService>();
         services.AddTransient<IReturnRequestService, ReturnRequestService>();
-        services.AddTransient<IRewardPointService, RewardPointService>();
         services.AddTransient<IShoppingCartService, ShoppingCartService>();
-        services.AddTransient<ICustomWishlistService, CustomWishlistService>();
         services.AddTransient<ICustomNumberFormatter, CustomNumberFormatter>();
         services.AddTransient<IPaymentService, PaymentService>();
         services.AddTransient<IEncryptionService, EncryptionService>();
@@ -391,7 +384,6 @@ public partial class BaseNopTest
         services.AddTransient<IPdfService, PdfService>();
         services.AddTransient<IUploadService, UploadService>();
         services.AddSingleton<IThemeProvider, ThemeProvider>();
-        services.AddTransient<IExternalAuthenticationService, ExternalAuthenticationService>();
         services.AddScoped<IBBCodeHelper, BBCodeHelper>();
         services.AddScoped<IHtmlFormatter, HtmlFormatter>();
 
@@ -404,8 +396,6 @@ public partial class BaseNopTest
 
         //plugin managers
         services.AddTransient(typeof(IPluginManager<>), typeof(PluginManager<>));
-        services.AddTransient<IAuthenticationPluginManager, AuthenticationPluginManager>();
-        services.AddTransient<IMultiFactorAuthenticationPluginManager, MultiFactorAuthenticationPluginManager>();
         services.AddTransient<IWidgetPluginManager, WidgetPluginManager>();
         services.AddTransient<IExchangeRatePluginManager, ExchangeRatePluginManager>();
         services.AddTransient<IDiscountPluginManager, DiscountPluginManager>();
@@ -428,7 +418,6 @@ public partial class BaseNopTest
         {
             services.AddTransient(setting,
                 context => context.GetRequiredService<ISettingService>().LoadSettingAsync(setting).Result);
-
 
         }
 
@@ -498,10 +487,7 @@ public partial class BaseNopTest
         services.AddTransient<ICustomerRoleModelFactory, CustomerRoleModelFactory>();
         services.AddTransient<IDiscountModelFactory, DiscountModelFactory>();
         services.AddTransient<IEmailAccountModelFactory, EmailAccountModelFactory>();
-        services
-            .AddTransient<IExternalAuthenticationMethodModelFactory, ExternalAuthenticationMethodModelFactory>();
         services.AddTransient<IForumModelFactory, ForumModelFactory>();
-        services.AddTransient<IGiftCardModelFactory, GiftCardModelFactory>();
         services.AddTransient<IHomeModelFactory, HomeModelFactory>();
         services.AddTransient<ILanguageModelFactory, LanguageModelFactory>();
         services.AddTransient<ILogModelFactory, LogModelFactory>();
@@ -520,7 +506,7 @@ public partial class BaseNopTest
         services.AddTransient<IProductReviewModelFactory, ProductReviewModelFactory>();
         services.AddTransient<IReportModelFactory, ReportModelFactory>();
         services.AddTransient<IQueuedEmailModelFactory, QueuedEmailModelFactory>();
-        services.AddTransient<IRecurringPaymentModelFactory, RecurringPaymentModelFactory>();
+
         services.AddTransient<IReturnRequestModelFactory, ReturnRequestModelFactory>();
         services.AddTransient<IReviewTypeModelFactory, ReviewTypeModelFactory>();
         services.AddTransient<IScheduleTaskModelFactory, ScheduleTaskModelFactory>();
@@ -528,9 +514,7 @@ public partial class BaseNopTest
         services.AddTransient<ISettingModelFactory, SettingModelFactory>();
         services.AddTransient<IShippingModelFactory, ShippingModelFactory>();
         services.AddTransient<IShoppingCartModelFactory, ShoppingCartModelFactory>();
-        services.AddTransient<ISpecificationAttributeModelFactory, SpecificationAttributeModelFactory>();
         services.AddTransient<IStoreModelFactory, StoreModelFactory>();
-        services.AddTransient<ITaxModelFactory, TaxModelFactory>();
         services.AddTransient<ITemplateModelFactory, TemplateModelFactory>();
         services.AddTransient<ITopicModelFactory, TopicModelFactory>();
         services.AddTransient<IVendorAttributeModelFactory, VendorAttributeModelFactory>();
@@ -546,9 +530,6 @@ public partial class BaseNopTest
         services.AddTransient<Web.Factories.ICountryModelFactory, Web.Factories.CountryModelFactory>();
         services.AddTransient<Web.Factories.ICustomerModelFactory, Web.Factories.CustomerModelFactory>();
         services.AddTransient<Web.Factories.IForumModelFactory, Web.Factories.ForumModelFactory>();
-        services
-            .AddTransient<Web.Factories.IExternalAuthenticationModelFactory,
-                Web.Factories.ExternalAuthenticationModelFactory>();
         services.AddTransient<Web.Factories.IJsonLdModelFactory, Web.Factories.JsonLdModelFactory>();
         services.AddTransient<Web.Factories.INewsModelFactory, Web.Factories.NewsModelFactory>();
         services.AddTransient<Web.Factories.INewsLetterModelFactory, Web.Factories.NewsLetterModelFactory>();

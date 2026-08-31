@@ -1,0 +1,25 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Nop.Core.Infrastructure;
+using NopStation.Plugin.Misc.Core.Infrastructure;
+using NopStation.Plugin.Widgets.ProductRibbon.Factories;
+using NopStation.Plugin.Widgets.ProductRibbon.Services;
+
+namespace NopStation.Plugin.Widgets.ProductRibbon.Infrastructure;
+
+public class PluginNopStartup : INopStartup
+{
+	public int Order => 11;
+
+	public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+	{
+		services.AddNopStationServices("NopStation.Plugin.Widgets.ProductRibbon");
+		services.AddScoped<IProductRibbonModelFactory, ProductRibbonModelFactory>();
+		services.AddScoped<IBestSellerService, BestSellerService>();
+	}
+
+	public void Configure(IApplicationBuilder application)
+	{
+	}
+}

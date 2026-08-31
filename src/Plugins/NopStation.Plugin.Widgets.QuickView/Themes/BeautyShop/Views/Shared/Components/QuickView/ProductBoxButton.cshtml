@@ -1,0 +1,14 @@
+@model NopStation.Plugin.Widgets.QuickView.Models.ProductBoxButtonModel
+@inject Nop.Services.Localization.ILocalizationService localizationService
+
+@{
+    var label = await localizationService.GetResourceAsync("NopStation.QuickView.Button.QuickView");
+}
+
+<button type="button"
+        class="button-2 quick-view-button quick-view-btn beautyShop-primary-color-bg"
+        data-productid="@Model.ProductId"
+        title="@label">
+    <i class="icon-zoom"></i>
+</button>
+

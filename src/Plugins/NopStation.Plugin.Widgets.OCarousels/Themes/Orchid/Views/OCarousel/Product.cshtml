@@ -1,0 +1,85 @@
+﻿@model OCarouselModel
+
+@if (Model.Products.Count > 0)
+{
+    @if (Model.ShowBackgroundPicture)
+    {
+        <div class="ocarousel-background" style="background:#E0E2EB url('@Model.BackgroundPictureUrl'); border-bottom-left-radius: 100px;">
+            <div class="ocarousel-grid product-carousel">
+                @if (Model.DisplayTitle)
+                {
+                    <div class="title">
+                        <i class="icon-logo-icon-left"></i>
+                        <strong>@Model.Title</strong>
+                        <i class="icon-logo-icon-right"></i>
+                    </div>
+                }
+
+                <div class="owl-carousel ocarousel @Model.CustomCssClass" id="ocarousel-@(Model.Id)">
+                    @foreach (var item in Model.Products)
+                    {
+                        <div class="item-box">
+                            @await Html.PartialAsync("_ProductBox", item)
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="ocarousel-grid product-carousel">
+            @if (Model.DisplayTitle)
+            {
+                <div class="title">
+                    <i class="icon-logo-icon-left"></i>
+                    <strong>@Model.Title</strong>
+                    <i class="icon-logo-icon-right"></i>
+                </div>
+            }
+
+            <div class="owl-carousel ocarousel @Model.CustomCssClass" id="ocarousel-@(Model.Id)">
+                @foreach (var item in Model.Products)
+                {
+                    <div class="item-box">
+                        @await Html.PartialAsync("_ProductBox", item)
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    <script>
+        $(document).ready(function () {
+            $('#ocarousel-@(Model.Id)').owlCarousel({
+                nav: @Model.Nav.ToString().ToLowerInvariant(),
+                loop: @Model.Loop.ToString().ToLowerInvariant(),
+                dots: true,
+                margin: 30,
+                autoplay: @Model.AutoPlay.ToString().ToLowerInvariant(),
+                rtl: @Model.Rtl.ToString().ToLowerInvariant(),
+                autoplayTimeout: @Model.AutoPlayTimeout,
+                autoplayHoverPause: @Model.AutoPlayHoverPause.ToString().ToLowerInvariant(),
+                lazyLoad: @Model.LazyLoad.ToString().ToLowerInvariant(),
+                lazyLoadEager: @Model.LazyLoadEager,
+                center: @Model.Center.ToString().ToLowerInvariant(),
+                startPosition: @Model.StartPosition,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    576: {
+                        items: 2
+                    },
+                    768: {
+                        items: 3
+                    },
+                    992: {
+                        items: 4
+                    }
+                }
+            });
+            $(".owl-next").html("<i class='icon-right-arrow-icon'></i>");
+            $(".owl-prev").html("<i class='icon-left-arrow-icon'></i>");
+        });
+    </script>
+}

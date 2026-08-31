@@ -16,11 +16,6 @@ public enum ExportedAdditionalProductInfoType
     ProductAttribute = 10,
 
     /// <summary>
-    /// Specification attribute
-    /// </summary>
-    SpecificationAttribute = 20,
-
-    /// <summary>
     /// Tier prices
     /// </summary>
     TierPrices = 30

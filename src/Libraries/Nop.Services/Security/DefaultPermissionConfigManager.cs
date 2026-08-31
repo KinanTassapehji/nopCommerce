@@ -12,7 +12,6 @@ public partial class DefaultPermissionConfigManager : IPermissionConfigManager
     {
         #region Security
         
-        new ("Security. Enable Multi-factor authentication", StandardPermission.Security.ENABLE_MULTI_FACTOR_AUTHENTICATION, nameof(StandardPermission.Security), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.RegisteredRoleName),
         new ("Access admin area", StandardPermission.Security.ACCESS_ADMIN_PANEL, nameof(StandardPermission.Security), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.VendorsRoleName),
 
         #endregion
@@ -44,10 +43,6 @@ public partial class DefaultPermissionConfigManager : IPermissionConfigManager
         new ("Admin area. Shipments. Create, edit, delete", StandardPermission.Orders.SHIPMENTS_CREATE_EDIT_DELETE, nameof(StandardPermission.Orders), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.VendorsRoleName),
         new ("Admin area. Return requests. View", StandardPermission.Orders.RETURN_REQUESTS_VIEW, nameof(StandardPermission.Orders), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Return requests. Create, edit, delete", StandardPermission.Orders.RETURN_REQUESTS_CREATE_EDIT_DELETE, nameof(StandardPermission.Orders), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Recurring payments. View", StandardPermission.Orders.RECURRING_PAYMENTS_VIEW, nameof(StandardPermission.Orders), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Recurring payments. Create, edit, delete", StandardPermission.Orders.RECURRING_PAYMENTS_CREATE_EDIT_DELETE, nameof(StandardPermission.Orders), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Gift cards. View", StandardPermission.Orders.GIFT_CARDS_VIEW, nameof(StandardPermission.Orders), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Gift cards. Create, edit, delete", StandardPermission.Orders.GIFT_CARDS_CREATE_EDIT_DELETE, nameof(StandardPermission.Orders), NopCustomerDefaults.AdministratorsRoleName),
 
         #endregion
 
@@ -84,8 +79,6 @@ public partial class DefaultPermissionConfigManager : IPermissionConfigManager
         new ("Admin area. Filter level values. Import and export", StandardPermission.Catalog.FILTER_LEVEL_VALUE_IMPORT_EXPORT, nameof(StandardPermission.Catalog), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.VendorsRoleName),
         new ("Admin area. Product attributes. View", StandardPermission.Catalog.PRODUCT_ATTRIBUTES_VIEW, nameof(StandardPermission.Catalog), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.VendorsRoleName),
         new ("Admin area. Product attributes. Create, edit, delete", StandardPermission.Catalog.PRODUCT_ATTRIBUTES_CREATE_EDIT_DELETE, nameof(StandardPermission.Catalog), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.VendorsRoleName),
-        new ("Admin area. Specification attributes. View", StandardPermission.Catalog.SPECIFICATION_ATTRIBUTES_VIEW, nameof(StandardPermission.Catalog), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Specification attributes. Create, edit, delete", StandardPermission.Catalog.SPECIFICATION_ATTRIBUTES_CREATE_EDIT_DELETE, nameof(StandardPermission.Catalog), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Checkout attributes. View", StandardPermission.Catalog.CHECKOUT_ATTRIBUTES_VIEW, nameof(StandardPermission.Catalog), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Checkout attributes. Create, edit, delete", StandardPermission.Catalog.CHECKOUT_ATTRIBUTES_CREATE_EDIT_DELETE, nameof(StandardPermission.Catalog), NopCustomerDefaults.AdministratorsRoleName),
 
@@ -139,8 +132,6 @@ public partial class DefaultPermissionConfigManager : IPermissionConfigManager
         new ("Admin area. Languages. Manage", StandardPermission.Configuration.MANAGE_LANGUAGES, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Settings. Manage", StandardPermission.Configuration.MANAGE_SETTINGS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Payment Methods. Manage", StandardPermission.Configuration.MANAGE_PAYMENT_METHODS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. External Authentication Methods. Manage", StandardPermission.Configuration.MANAGE_EXTERNAL_AUTHENTICATION_METHODS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Multi-factor Authentication Methods. Manage", StandardPermission.Configuration.MANAGE_MULTIFACTOR_AUTHENTICATION_METHODS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Tax Settings. Manage", StandardPermission.Configuration.MANAGE_TAX_SETTINGS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Shipping Settings. Manage", StandardPermission.Configuration.MANAGE_SHIPPING_SETTINGS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Currencies. Manage", StandardPermission.Configuration.MANAGE_CURRENCIES, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
@@ -166,7 +157,6 @@ public partial class DefaultPermissionConfigManager : IPermissionConfigManager
         
         new ("Public store. Display Prices", StandardPermission.PublicStore.DISPLAY_PRICES, nameof(StandardPermission.PublicStore), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.RegisteredRoleName, NopCustomerDefaults.GuestsRoleName, NopCustomerDefaults.ForumModeratorsRoleName),
         new ("Public store. Enable shopping cart", StandardPermission.PublicStore.ENABLE_SHOPPING_CART, nameof(StandardPermission.PublicStore), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.RegisteredRoleName, NopCustomerDefaults.GuestsRoleName, NopCustomerDefaults.ForumModeratorsRoleName),
-        new ("Public store. Enable wishlist", StandardPermission.PublicStore.ENABLE_WISHLIST, nameof(StandardPermission.PublicStore), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.RegisteredRoleName, NopCustomerDefaults.GuestsRoleName, NopCustomerDefaults.ForumModeratorsRoleName),
         new ("Public store. Allow navigation", StandardPermission.PublicStore.PUBLIC_STORE_ALLOW_NAVIGATION, nameof(StandardPermission.PublicStore), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.RegisteredRoleName, NopCustomerDefaults.GuestsRoleName, NopCustomerDefaults.ForumModeratorsRoleName),
         new ("Public store. Access a closed store", StandardPermission.PublicStore.ACCESS_CLOSED_STORE, nameof(StandardPermission.PublicStore), NopCustomerDefaults.AdministratorsRoleName),
 

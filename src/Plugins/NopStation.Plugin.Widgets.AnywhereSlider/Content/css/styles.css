@@ -1,0 +1,345 @@
+﻿.slider-grid-background {
+  padding: 20px;
+  background-size: cover;
+}
+
+.slider-grid {
+  margin-bottom: 40px;
+}
+
+.slider-caption .slider-subtitle {
+  font-weight: normal;
+  font-size: 20px;
+  color: white;
+  margin: 5px 0;
+}
+
+.slider-caption .slider-title {
+  font-size: 30px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.slider-caption {
+  text-align: left;
+  width: 100%;
+  background-color: #262424;
+  margin-top: -5px;
+  padding: 20px 10px;
+}
+
+.slider-caption-inner {
+  padding-left: 15px;
+}
+
+/*Nav buttons, matching the theme's other round controls: 44px circle (the touch-target
+  floor), the owl navText glyph hidden but left in the DOM as the accessible name, and the
+  chevron painted as a mask so it takes currentColor and needs no second asset for hover.
+  ponytail: duplicated in NopStation.Plugin.Widgets.OCarousels/Contents/css/styles.css rather than shared -
+  each plugin ships its own stylesheet and neither can load the other's.*/
+.slider-container .owl-nav {
+  direction: ltr;                 /*previous is always the left button, next the right one*/
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: var(--tm-stack-md, 16px) 0 0;
+}
+
+.slider-container .slider .owl-nav button.owl-prev,
+.slider-container .slider .owl-nav button.owl-next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0 !important;
+  margin: 0;
+  border: 1px solid var(--tm-teal-border, #b3dedc);
+  border-radius: 50%;
+  background: var(--tm-surface, #fff);
+  color: var(--tm-teal-deep, #02787e);
+  font-size: 0;
+  line-height: 0;
+  opacity: 1;
+  box-shadow: var(--tm-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
+  transition: background var(--tm-transition, 0.18s ease), border-color var(--tm-transition, 0.18s ease), color var(--tm-transition, 0.18s ease), transform var(--tm-transition, 0.18s ease);
+}
+
+.slider-container .slider .owl-nav button.owl-prev:before,
+.slider-container .slider .owl-nav button.owl-next:before {
+  content: "";
+  width: 12px;
+  height: 20px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 1.5 2.5 10l7 8.5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 1.5 2.5 10l7 8.5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/*the mask is drawn pointing left; each button turns it to face the way it travels, which
+  is mirrored on rtl pages because the items themselves run the other way*/
+.slider-container .slider .owl-nav button.owl-next:before {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .slider-container .slider .owl-nav button.owl-prev:before {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .slider-container .slider .owl-nav button.owl-next:before {
+  transform: none;
+}
+
+.slider-container .slider .owl-nav button.owl-prev:hover,
+.slider-container .slider .owl-nav button.owl-next:hover,
+.slider-container .slider .owl-nav button.owl-prev:focus,
+.slider-container .slider .owl-nav button.owl-next:focus {
+  border-color: var(--tm-teal-deep, #02787e);
+  background: var(--tm-teal-deep, #02787e);
+  color: var(--tm-white, #fff);
+  opacity: 1;
+}
+
+.slider-container .slider .owl-nav button.owl-prev:active,
+.slider-container .slider .owl-nav button.owl-next:active {
+  background: var(--tm-teal-hover, #01585c);
+  border-color: var(--tm-teal-hover, #01585c);
+  transform: scale(0.94);
+}
+
+/*owl marks the ends when the carousel does not loop*/
+.slider-container .slider .owl-nav button.owl-prev.disabled,
+.slider-container .slider .owl-nav button.owl-next.disabled {
+  opacity: 0.35;
+  cursor: default;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .slider-container .slider .owl-nav button.owl-prev,
+  .slider-container .slider .owl-nav button.owl-next {
+    transition: none;
+  }
+
+  .slider-container .slider .owl-nav button.owl-prev:active,
+  .slider-container .slider .owl-nav button.owl-next:active {
+    transform: none;
+  }
+}
+
+/*Position indicator. Owl appends nav then dots, so the carousel is turned into a column
+  flexbox purely to reorder them - the indicator belongs directly under the slide, with the
+  arrows below it.*/
+.slider-container .slider.owl-carousel {
+  display: flex;
+  flex-direction: column;
+}
+
+.slider-container .slider .owl-stage-outer {
+  order: 0;
+}
+
+/*dots float over the bottom of the slide instead of taking a row below it.
+  The shadow keeps them legible over whatever photo the slide happens to use,
+  without a visible pill behind them.*/
+.slider-container .owl-dots {
+  position: absolute;
+  inset-block-end: 16px;
+  inset-inline: 0;
+  z-index: 2;
+  width: fit-content;
+  margin-inline: auto;
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
+}
+
+.slider-container .owl-nav {
+  order: 2;
+}
+
+.slider-container .owl-dots button.owl-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+}
+
+/*the dot itself is the span; the button around it stays big enough to hit*/
+.slider-container .owl-dots button.owl-dot span {
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--tm-teal-border, #b3dedc);
+  transition: width var(--tm-transition, 0.18s ease), background var(--tm-transition, 0.18s ease);
+}
+
+.slider-container .owl-dots button.owl-dot:hover span {
+  background: var(--tm-teal, #009a95);
+}
+
+.slider-container .owl-dots button.owl-dot.active span {
+  width: 24px;
+  background: var(--tm-teal-deep, #02787e);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .slider-container .owl-dots button.owl-dot span {
+    transition: none;
+  }
+}
+
+/*The hero reads as a card like everything else on the page: same radius scale and
+  shadow token as .home-page-category-grid .item-box, one step up in radius because
+  it is the widest block. overflow clips the slide photo to the rounded corners -
+  without it the image square pokes through them.*/
+.slider-container {
+  position: relative;
+  border-radius: var(--tm-radius-lg, 20px);
+  overflow: hidden;
+  box-shadow: var(--tm-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
+}
+
+a.slider-btn {
+  padding: 10px 20px;
+  background-color: #FFF;
+  color: #248ece;
+  margin-top: 20px;
+}
+
+/**CSS Loader Starts**/
+
+.loader {
+  position: relative;
+  min-height: 300px;
+}
+
+  .loader > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+  .lds-ellipsis div {
+    position: absolute;
+    top: 33px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #4ab2f1;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+  }
+
+    .lds-ellipsis div:nth-child(1) {
+      left: 8px;
+      animation: lds-ellipsis1 0.6s infinite;
+    }
+
+    .lds-ellipsis div:nth-child(2) {
+      left: 8px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+
+    .lds-ellipsis div:nth-child(3) {
+      left: 32px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+
+    .lds-ellipsis div:nth-child(4) {
+      left: 56px;
+      animation: lds-ellipsis3 0.6s infinite;
+    }
+
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0);
+  }
+}
+
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
+/**CSS Loader Ends**/
+
+@media(max-width: 512px) {
+  .slider-caption {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) and (max-width:1001px) {
+  .slider-caption {
+    bottom: 10% !important;
+  }
+}
+
+@media(min-width: 769px) {
+  .slider-caption {
+    position: absolute;
+    bottom: 22%;
+    background-color: #262424;
+    width: auto;
+    padding: 50px;
+    left: 6%;
+    opacity: 0.8;
+  }
+}
+
+@media(min-width: 576px) {
+  .slider-caption .slider-subtitle {
+    font-size: 30px;
+  }
+
+  .slider-caption .slider-title {
+    font-size: 40px;
+    margin-bottom: 0;
+  }
+
+  a.slider-btn {
+    padding: 10px 20px;
+    background-color: #248ece;
+    color: white;
+    display: inline-block;
+  }
+}

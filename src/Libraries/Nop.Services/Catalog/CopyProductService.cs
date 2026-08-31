@@ -16,9 +16,7 @@ public partial class CopyProductService : ICopyProductService
 {
     #region Fields
 
-    protected readonly IAclService _aclService;
     protected readonly ICategoryService _categoryService;
-    protected readonly IDownloadService _downloadService;
     protected readonly ILanguageService _languageService;
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedEntityService _localizedEntityService;
@@ -28,7 +26,6 @@ public partial class CopyProductService : ICopyProductService
     protected readonly IProductAttributeService _productAttributeService;
     protected readonly IProductService _productService;
     protected readonly IProductTagService _productTagService;
-    protected readonly ISpecificationAttributeService _specificationAttributeService;
     protected readonly IStoreMappingService _storeMappingService;
     protected readonly IUrlRecordService _urlRecordService;
     protected readonly IVideoService _videoService;
@@ -37,9 +34,7 @@ public partial class CopyProductService : ICopyProductService
 
     #region Ctor
 
-    public CopyProductService(IAclService aclService,
-        ICategoryService categoryService,
-        IDownloadService downloadService,
+    public CopyProductService(ICategoryService categoryService,
         ILanguageService languageService,
         ILocalizationService localizationService,
         ILocalizedEntityService localizedEntityService,
@@ -49,14 +44,11 @@ public partial class CopyProductService : ICopyProductService
         IProductAttributeService productAttributeService,
         IProductService productService,
         IProductTagService productTagService,
-        ISpecificationAttributeService specificationAttributeService,
         IStoreMappingService storeMappingService,
         IUrlRecordService urlRecordService,
         IVideoService videoService)
     {
-        _aclService = aclService;
         _categoryService = categoryService;
-        _downloadService = downloadService;
         _languageService = languageService;
         _localizationService = localizationService;
         _localizedEntityService = localizedEntityService;
@@ -66,7 +58,6 @@ public partial class CopyProductService : ICopyProductService
         _productAttributeService = productAttributeService;
         _productService = productService;
         _productTagService = productTagService;
-        _specificationAttributeService = specificationAttributeService;
         _storeMappingService = storeMappingService;
         _urlRecordService = urlRecordService;
         _videoService = videoService;
@@ -375,40 +366,6 @@ public partial class CopyProductService : ICopyProductService
     }
 
     /// <summary>
-    /// Copy product specifications
-    /// </summary>
-    /// <param name="product">Product</param>
-    /// <param name="productCopy">New product</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    protected virtual async Task CopyProductSpecificationsAsync(Product product, Product productCopy)
-    {
-        var allLanguages = await _languageService.GetAllLanguagesAsync();
-
-        foreach (var productSpecificationAttribute in await _specificationAttributeService.GetProductSpecificationAttributesAsync(product.Id))
-        {
-            var psaCopy = new ProductSpecificationAttribute
-            {
-                ProductId = productCopy.Id,
-                AttributeTypeId = productSpecificationAttribute.AttributeTypeId,
-                SpecificationAttributeOptionId = productSpecificationAttribute.SpecificationAttributeOptionId,
-                CustomValue = productSpecificationAttribute.CustomValue,
-                AllowFiltering = productSpecificationAttribute.AllowFiltering,
-                ShowOnProductPage = productSpecificationAttribute.ShowOnProductPage,
-                DisplayOrder = productSpecificationAttribute.DisplayOrder
-            };
-
-            await _specificationAttributeService.InsertProductSpecificationAttributeAsync(psaCopy);
-
-            foreach (var language in allLanguages)
-            {
-                var customValue = await _localizationService.GetLocalizedAsync(productSpecificationAttribute, x => x.CustomValue, language.Id, false, false);
-                if (!string.IsNullOrEmpty(customValue))
-                    await _localizedEntityService.SaveLocalizedValueAsync(psaCopy, x => x.CustomValue, customValue, language.Id);
-            }
-        }
-    }
-
-    /// <summary>
     /// Copy crosssell mapping
     /// </summary>
     /// <param name="product">Product</param>
@@ -630,51 +587,6 @@ public partial class CopyProductService : ICopyProductService
     /// </returns>
     protected virtual async Task<Product> CopyBaseProductDataAsync(Product product, string newName, bool isPublished)
     {
-        //product download & sample download
-        var downloadId = product.DownloadId;
-        var sampleDownloadId = product.SampleDownloadId;
-        if (product.IsDownload)
-        {
-            var download = await _downloadService.GetDownloadByIdAsync(product.DownloadId);
-            if (download != null)
-            {
-                var downloadCopy = new Download
-                {
-                    DownloadGuid = Guid.NewGuid(),
-                    UseDownloadUrl = download.UseDownloadUrl,
-                    DownloadUrl = download.DownloadUrl,
-                    DownloadBinary = download.DownloadBinary,
-                    ContentType = download.ContentType,
-                    Filename = download.Filename,
-                    Extension = download.Extension,
-                    IsNew = download.IsNew
-                };
-                await _downloadService.InsertDownloadAsync(downloadCopy);
-                downloadId = downloadCopy.Id;
-            }
-
-            if (product.HasSampleDownload)
-            {
-                var sampleDownload = await _downloadService.GetDownloadByIdAsync(product.SampleDownloadId);
-                if (sampleDownload != null)
-                {
-                    var sampleDownloadCopy = new Download
-                    {
-                        DownloadGuid = Guid.NewGuid(),
-                        UseDownloadUrl = sampleDownload.UseDownloadUrl,
-                        DownloadUrl = sampleDownload.DownloadUrl,
-                        DownloadBinary = sampleDownload.DownloadBinary,
-                        ContentType = sampleDownload.ContentType,
-                        Filename = sampleDownload.Filename,
-                        Extension = sampleDownload.Extension,
-                        IsNew = sampleDownload.IsNew
-                    };
-                    await _downloadService.InsertDownloadAsync(sampleDownloadCopy);
-                    sampleDownloadId = sampleDownloadCopy.Id;
-                }
-            }
-        }
-
         var newSku = !string.IsNullOrWhiteSpace(product.Sku)
             ? string.Format(await _localizationService.GetResourceAsync("Admin.Catalog.Products.Copy.SKU.New"), product.Sku)
             : product.Sku;
@@ -694,32 +606,12 @@ public partial class CopyProductService : ICopyProductService
             MetaKeywords = product.MetaKeywords,
             MetaDescription = product.MetaDescription,
             MetaTitle = product.MetaTitle,
-            AllowCustomerReviews = product.AllowCustomerReviews,
             LimitedToStores = product.LimitedToStores,
-            SubjectToAcl = product.SubjectToAcl,
             Sku = newSku,
             ManufacturerPartNumber = product.ManufacturerPartNumber,
             Gtin = product.Gtin,
-            IsGiftCard = product.IsGiftCard,
-            GiftCardType = product.GiftCardType,
-            OverriddenGiftCardAmount = product.OverriddenGiftCardAmount,
-            RequireOtherProducts = product.RequireOtherProducts,
-            RequiredProductIds = product.RequiredProductIds,
-            AutomaticallyAddRequiredProducts = product.AutomaticallyAddRequiredProducts,
-            IsDownload = product.IsDownload,
-            DownloadId = downloadId,
-            UnlimitedDownloads = product.UnlimitedDownloads,
-            MaxNumberOfDownloads = product.MaxNumberOfDownloads,
-            DownloadExpirationDays = product.DownloadExpirationDays,
-            DownloadActivationType = product.DownloadActivationType,
-            HasSampleDownload = product.HasSampleDownload,
-            SampleDownloadId = sampleDownloadId,
-            HasUserAgreement = product.HasUserAgreement,
-            UserAgreementText = product.UserAgreementText,
-            IsRecurring = product.IsRecurring,
-            RecurringCycleLength = product.RecurringCycleLength,
-            RecurringCyclePeriod = product.RecurringCyclePeriod,
-            RecurringTotalCycles = product.RecurringTotalCycles,
+
+
             IsRental = product.IsRental,
             RentalPriceLength = product.RentalPriceLength,
             RentalPricePeriod = product.RentalPricePeriod,
@@ -740,15 +632,13 @@ public partial class CopyProductService : ICopyProductService
             MinStockQuantity = product.MinStockQuantity,
             LowStockActivityId = product.LowStockActivityId,
             NotifyAdminForQuantityBelow = product.NotifyAdminForQuantityBelow,
-            BackorderMode = product.BackorderMode,
-            AllowBackInStockSubscriptions = product.AllowBackInStockSubscriptions,
             OrderMinimumQuantity = product.OrderMinimumQuantity,
             OrderMaximumQuantity = product.OrderMaximumQuantity,
             AllowedQuantities = product.AllowedQuantities,
             AllowAddingOnlyExistingAttributeCombinations = product.AllowAddingOnlyExistingAttributeCombinations,
             NotReturnable = product.NotReturnable,
             DisableBuyButton = product.DisableBuyButton,
-            DisableWishlistButton = product.DisableWishlistButton,
+
             AvailableForPreOrder = product.AvailableForPreOrder,
             PreOrderAvailabilityStartDateTimeUtc = product.PreOrderAvailabilityStartDateTimeUtc,
             CallForPrice = product.CallForPrice,
@@ -776,9 +666,7 @@ public partial class CopyProductService : ICopyProductService
             Published = isPublished,
             Deleted = product.Deleted,
             CreatedOnUtc = DateTime.UtcNow,
-            UpdatedOnUtc = DateTime.UtcNow,
-            AgeVerification = product.AgeVerification,
-            MinimumAgeToPurchase = product.MinimumAgeToPurchase
+            UpdatedOnUtc = DateTime.UtcNow
         };
 
         //validate search engine name
@@ -832,9 +720,6 @@ public partial class CopyProductService : ICopyProductService
         await _productService.AddStockQuantityHistoryEntryAsync(productCopy, product.StockQuantity, product.StockQuantity, product.WarehouseId,
             string.Format(await _localizationService.GetResourceAsync("Admin.StockQuantityHistory.Messages.CopyProduct"), product.Id));
 
-        //product specifications
-        await CopyProductSpecificationsAsync(product, productCopy);
-
         //product <-> warehouses mappings
         await CopyWarehousesMappingAsync(product, productCopy);
         //product <-> categories mappings
@@ -854,12 +739,6 @@ public partial class CopyProductService : ICopyProductService
         var selectedStoreIds = await _storeMappingService.GetStoresIdsWithAccessAsync(product);
         foreach (var id in selectedStoreIds)
             await _storeMappingService.InsertStoreMappingAsync(productCopy, id);
-
-        //customer role mapping
-        var customerRoleIds = await _aclService.GetCustomerRoleIdsWithAccessAsync(product.Id, nameof(Product));
-
-        foreach (var id in customerRoleIds)
-            await _aclService.InsertAclRecordAsync(productCopy, id);
 
         //tier prices
         await CopyTierPricesAsync(product, productCopy);

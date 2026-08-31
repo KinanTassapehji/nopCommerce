@@ -28,7 +28,6 @@ namespace Nop.Web.Areas.Admin.Infrastructure;
 public partial class AclEventConsumer : IConsumer<ModelPreparedEvent<BaseNopModel>>,
     IConsumer<ModelReceivedEvent<BaseNopModel>>,
     IConsumer<EntityInsertedEvent<Manufacturer>>,
-    IConsumer<EntityInsertedEvent<Product>>,
     IConsumer<EntityInsertedEvent<Topic>>,
     IConsumer<EntityInsertedEvent<Category>>,
     IConsumer<EntityInsertedEvent<Menu>>,
@@ -44,7 +43,6 @@ public partial class AclEventConsumer : IConsumer<ModelPreparedEvent<BaseNopMode
     protected readonly ILocalizationService _localizationService;
     protected readonly IManufacturerService _manufacturerService;
     protected readonly IMenuService _menuService;
-    protected readonly IProductService _productService;
     protected readonly ITopicService _topicService;
 
     private static readonly Dictionary<string, IList<int>> _tempData = new(comparer: StringComparer.InvariantCultureIgnoreCase);
@@ -61,7 +59,6 @@ public partial class AclEventConsumer : IConsumer<ModelPreparedEvent<BaseNopMode
         ILocalizationService localizationService,
         IManufacturerService manufacturerService,
         IMenuService menuService,
-        IProductService productService,
         ITopicService topicService)
     {
         _aclService = aclService;
@@ -72,7 +69,6 @@ public partial class AclEventConsumer : IConsumer<ModelPreparedEvent<BaseNopMode
         _localizationService = localizationService;
         _manufacturerService = manufacturerService;
         _menuService = menuService;
-        _productService = productService;
         _topicService = topicService;
     }
 
@@ -127,9 +123,6 @@ public partial class AclEventConsumer : IConsumer<ModelPreparedEvent<BaseNopMode
             case PluginModel pluginModel:
                 await _aclSupportedModelFactory.PrepareModelCustomerRolesAsync(pluginModel);
                 break;
-            case ProductModel productModel:
-                await _aclSupportedModelFactory.PrepareModelCustomerRolesAsync(productModel, nameof(Product));
-                break;
             case TopicModel topicModel:
                 await _aclSupportedModelFactory.PrepareModelCustomerRolesAsync(topicModel, nameof(Topic));
                 break;
@@ -174,12 +167,6 @@ public partial class AclEventConsumer : IConsumer<ModelPreparedEvent<BaseNopMode
                 key = menuItem == null ? $"{nameof(MenuItem)}:{menuItemModel.Title}:{menuItemModel.MenuId}:{menuItemModel.MenuItemTypeId}" : string.Empty;
                 break;
 
-            case ProductModel productModel:
-                var product = await _productService.GetProductByIdAsync(productModel.Id);
-                await _aclService.SaveAclAsync(product, productModel.SelectedCustomerRoleIds);
-                key = product == null ? productModel.Name : string.Empty;
-                break;
-
             case TopicModel topicModel:
                 var topic = await _topicService.GetTopicByIdAsync(topicModel.Id);
                 await _aclService.SaveAclAsync(topic, topicModel.SelectedCustomerRoleIds);
@@ -203,17 +190,6 @@ public partial class AclEventConsumer : IConsumer<ModelPreparedEvent<BaseNopMode
     /// <param name="eventMessage">Event message</param>
     /// <returns>A task that represents the asynchronous operation</returns>
     public virtual async Task HandleEventAsync(EntityInsertedEvent<Manufacturer> eventMessage)
-    {
-        var entity = eventMessage.Entity;
-        await SaveStoredDataAsync(entity.Name, entity);
-    }
-
-    /// <summary>
-    /// Handle product inserted event
-    /// </summary>
-    /// <param name="eventMessage">Event message</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task HandleEventAsync(EntityInsertedEvent<Product> eventMessage)
     {
         var entity = eventMessage.Entity;
         await SaveStoredDataAsync(entity.Name, entity);

@@ -105,7 +105,7 @@ public class LocalizationMigration : MigrationBase
             "Admin.Configuration.Settings.GeneralCommon.DisplayDefaultMenuItemSettings.DisplayProductSearchMenuItem.Hint",
             "MainMenu.AjaxFailure",
             "Admin.Catalog.Categories.Fields.IncludeInTopMenu",
-            "Admin.Catalog.Categories.Fields.IncludeInTopMenu.Hint",
+            "Admin.Catalog.Categories.Fields.IncludeInTopMenu.Hint"
         });
 
         #endregion
@@ -120,7 +120,7 @@ public class LocalizationMigration : MigrationBase
             ["Admin.Promotions.NewsLetterSubscriptions.Fields.Email"] = "Admin.Promotions.NewsLetterSubscription.Fields.Email",
             ["Admin.Promotions.NewsLetterSubscriptions.Fields.Email.Required"] = "Admin.Promotions.NewsLetterSubscription.Fields.Email.Required",
             ["Admin.Promotions.NewsLetterSubscriptions.Fields.Language"] = "Admin.Promotions.NewsLetterSubscription.Fields.Language",
-            ["Admin.Promotions.NewsLetterSubscriptions.Fields.Store"] = "Admin.Promotions.NewsLetterSubscription.Fields.Store",
+            ["Admin.Promotions.NewsLetterSubscriptions.Fields.Store"] = "Admin.Promotions.NewsLetterSubscription.Fields.Store"
         }, languages, localizationService);
 
         localizationService.DeleteLocaleResources(new[]
@@ -141,7 +141,7 @@ public class LocalizationMigration : MigrationBase
             "Admin.Configuration.AppSettings.AzureBlob.DataProtectionKeysVaultId",
             "Admin.Configuration.AppSettings.AzureBlob.DataProtectionKeysVaultId.Hint",
             "Admin.System.SystemInfo.AzureBlobStorageEnabled",
-            "Admin.System.SystemInfo.AzureBlobStorageEnabled.Hint",
+            "Admin.System.SystemInfo.AzureBlobStorageEnabled.Hint"
         });
 
         #endregion
@@ -158,15 +158,7 @@ public class LocalizationMigration : MigrationBase
             ["Admin.ContentManagement.MessageTemplates.Description.OrderCompleted.StoreOwnerNotification"] = "This message template is used to notify a store owner that the certain order was completed. The order gets the order status Complete when it's paid and delivered, or it can be changed manually to Complete in Sales - Orders.",
 
             //#7387
-            ["Admin.Catalog.Products.Fields.AgeVerification"] = "Age verification",
-            ["Admin.Catalog.Products.Fields.AgeVerification.Hint"] = "Check to require customer registration with date of birth before placing an order.",
-            ["Admin.Catalog.Products.Fields.AgeVerification.DateOfBirthDisabled"] = "It looks like you have <a href=\"{0}\" target=\"_blank\">Date of Birth</a> setting disabled.",
-            ["Admin.Catalog.Products.Fields.MinimumAgeToPurchase"] = "Minimum age to purchase",
-            ["Admin.Catalog.Products.Fields.MinimumAgeToPurchase.Hint"] = "Enter the minimum age for purchasing this product.",
-            ["Admin.Catalog.Products.Fields.MinimumAgeToPurchase.ShouldBeGreaterThanZero"] = "The minimum age for purchasing should be greater 0",
             ["ShoppingCart.DateOfBirthRequired"] = "This product has age restrictions. Please specify your age in the account details.",
-            ["ShoppingCart.MinimumAgeToPurchase"] = "This product is available to customers who are {0} years of age or older",
-            ["Admin.Configuration.Settings.ProductEditor.AgeVerification"] = "Age verification",
 
             //#2184
             ["Admin.Catalog.Products.Multimedia.Pictures.Alert.VendorNumberPicturesLimit"] = "The maximum number of product pictures has been reached.",
@@ -214,8 +206,6 @@ public class LocalizationMigration : MigrationBase
             ["Admin.Catalog.ProductTags.Fields.MetaTitle.Hint"] = "Override the page title. The default is the name of the product tag.",
 
             //#7571
-            ["Admin.Configuration.Settings.GeneralCommon.CaptchaShowOnCheckGiftCardBalance"] = "Show on check gift card balance page",
-            ["Admin.Configuration.Settings.GeneralCommon.CaptchaShowOnCheckGiftCardBalance.Hint"] = "Check to show CAPTCHA on check gift card balance page.",
 
             //#5771
             ["Admin.Catalog.ProductTags.TaggedProducts"] = "Used by products",
@@ -297,8 +287,7 @@ public class LocalizationMigration : MigrationBase
 
             //#1266
             ["Account.CustomerOrders.Period"] = "Orders from",
-            ["Account.CustomerRecurringPayments"] = "Recurring payments",
-            ["Account.CustomerRecurringPayments.NoPayments"] = "No payments",
+
             ["Enums.Nop.Core.Domain.Orders.OrderHistoryPeriods.All"] = "all time",
             ["Enums.Nop.Core.Domain.Orders.OrderHistoryPeriods.Day"] = "the past day",
             ["Enums.Nop.Core.Domain.Orders.OrderHistoryPeriods.Week"] = "the past week",
@@ -319,12 +308,10 @@ public class LocalizationMigration : MigrationBase
             ["Admin.Configuration.Settings.Tax.HmrcClientSecret.Hint"] = "Your client secret is a unique passphrase that you generate to authorise your application.",
 
             //#7694
-            ["Account.BackInStockSubscriptions.Description"] = "You will receive an email when a particular product is back in stock.",
             ["Account.EmailUsernameErrors.EmailAlreadyExists"] = "The email address is already in use",
             ["Account.EmailUsernameErrors.EmailTooLong"] = "Email address is too long",
             ["Account.ForumSubscriptions.Description"] = "You will receive an email when a new forum topic/post is created.",
             ["Admin.ContentManagement.MessageTemplates.Fields.BccEmailAddresses.Hint"] = "The blind carbon copy (BCC) recipients for this email message.",
-            ["BackInStockSubscriptions.Tooltip"] = "You'll receive a one-time email when this product is available for ordering again. We will not send you any other emails or add you to our newsletter; you will only be emailed about this product!",
 
             //#7390
             ["ActivityLog.AddNewMenu"] = "Added a new menu ('{0}')",
@@ -428,7 +415,6 @@ public class LocalizationMigration : MigrationBase
             ["Enums.Nop.Core.Domain.Menus.MenuItemType.Product"] = "Product",
             ["Enums.Nop.Core.Domain.Menus.MenuItemType.Text"] = "Text without link",
             ["Literals.Nop.Core.Http.NopRouteNames.General.ApplyVendorAccount"] = "Apply for vendor account",
-            ["Literals.Nop.Core.Http.NopRouteNames.General.CheckGiftCardBalance"] = "Check gift card balance",
             ["Literals.Nop.Core.Http.NopRouteNames.General.Homepage"] = "Home page",
             ["Literals.Nop.Core.Http.NopRouteNames.General.CompareProducts"] = "Compare products list",
             ["Literals.Nop.Core.Http.NopRouteNames.General.CustomerAddresses"] = "Addresses",
@@ -447,7 +433,6 @@ public class LocalizationMigration : MigrationBase
             ["Literals.Nop.Core.Http.NopRouteNames.General.Vendors"] = "Vendors",
             ["Literals.Nop.Core.Http.NopRouteNames.General.Sitemap"] = "Sitemap",
             ["Literals.Nop.Core.Http.NopRouteNames.General.Cart"] = "Shopping cart",
-            ["Literals.Nop.Core.Http.NopRouteNames.General.Wishlist"] = "Wishlist",
 
             //#5199
             ["Enums.Nop.Core.Domain.Forums.EditorType.MarkdownEditor"] = "Markdown editor",
@@ -480,24 +465,6 @@ public class LocalizationMigration : MigrationBase
             ["Admin.Translation.Translated.NothingToTranslate"] = "Nothing to translate as all fields contain text",
 
             //#1921
-            ["Admin.Configuration.Settings.ShoppingCart.AllowMultipleWishlist"] = "Allow multiple wishlists",
-            ["Admin.Configuration.Settings.ShoppingCart.AllowMultipleWishlist.Hint"] = "A value indicating whether customers can use multiple wishlists.",
-            ["Admin.Configuration.Settings.ShoppingCart.MaximumNumberOfCustomWishlist"] = "Maximum number of custom wishlists",
-            ["Admin.Configuration.Settings.ShoppingCart.MaximumNumberOfCustomWishlist.Hint"] = "Specify the maximum number of custom wishlists a customer can use.",
-            ["Wishlist.AddNewWishlist"] = "Add new wishlist",
-            ["Wishlist.AddCustomWishlist"] = "Custom wishlist",
-            ["Wishlist.EnterWishlistName"] = "Enter wishlist name",
-            ["Wishlist.Default"] = "Wishlist",
-            ["Wishlist.MoveToCustomWishlist"] = "Move to wishlist",
-            ["Wishlist.NotFound"] = "Wishlist not found.",
-            ["Wishlist.DeleteWishlist"] = "Delete wishlist",
-            ["Wishlist.SelectWishlist"] = "Specify your wishlist",
-            ["Wishlist.MaximumNumberReached"] = "You cannot create more than {0} custom wishlists.",
-            ["Wishlist.NameRequired"] = "A wishlist name is required.",
-            ["Products.ProductHasBeenAddedToTheCustomWishlist.Link"] = "The product has been added to your <a href=\"{0}\">{1}</a>",
-            ["Products.ProductHasBeenAddedToTheWishlistAndMoved.Link"] = "The product has been added to your <a href=\"{0}\">wishlist</a>. Want to move it to a <a href=\"#\" onclick=\"{1}\">custom wishlist</a>?",
-            ["Wishlist.MultipleWishlistNotForGuest"] = "The multiple wishlist functionality is only available to registered customers.",
-            ["Wishlist.NotAllowMultipleWishlist"] = "Multiple wishlist functionality is disabled.",
 
             //#7739
             ["Admin.System.Maintenance.DeleteThumbFiles.FilesCount"] = "Total files: {0}",
@@ -680,7 +647,7 @@ public class LocalizationMigration : MigrationBase
             ["Admin.Catalog.Products.FilterLevelValues.AddNew"] = "Add a new filter level value",
             ["Products.CompatibleWith"] = "Compatible with",
             ["Products.CompatibleWith.Items"] = "{0} items are compatible with this product",
-            ["Search.FilterLevelValues"] = "Search by Year Make Model",
+            ["Search.FilterLevelValues"] = "Search by Year Make Model"
 
         }, languageId);
 

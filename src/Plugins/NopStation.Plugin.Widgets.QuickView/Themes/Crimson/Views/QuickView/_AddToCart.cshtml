@@ -1,0 +1,93 @@
+﻿@model ProductDetailsModel.AddToCartModel
+@using Nop.Core.Domain.Orders
+
+<div class="add-to-cart-wrapper">
+    @if (Model.UpdatedShoppingCartItemId > 0)
+    {
+        <input asp-for="UpdatedShoppingCartItemId" type="hidden" />
+    }
+    @if (!Model.DisableBuyButton || Model.CustomerEntersPrice)
+    {
+        <div class="add-to-cart">
+            @if (Model.CustomerEntersPrice)
+            {
+                <div class="customer-entered-price">
+                    <div class="price-input">
+                        <label asp-for="CustomerEnteredPrice" asp-postfix=":" class="enter-price-label"></label>
+                        @*round price*@
+                        <input asp-for="CustomerEnteredPrice" value="@Convert.ToInt32(Math.Ceiling(Model.CustomerEnteredPrice))" class="enter-price-input" />
+                    </div>
+                    <div class="price-range">
+                        @Model.CustomerEnteredPriceRange
+                    </div>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.MinimumQuantityNotification))
+            {
+                <div class="min-qty-notification">@Model.MinimumQuantityNotification</div>
+            }
+
+            @if (!Model.DisableBuyButton)
+            {
+                <div class="quantity row">
+                    @if (Model.AllowedQuantities.Count > 0)
+                    {
+                        @Html.DropDownListFor(model => model.EnteredQuantity, Model.AllowedQuantities, new { @class = "qty-dropdown form-control" })
+                    }
+                    else
+                    {
+                        <div class="col w-10">
+                            <input asp-for="EnteredQuantity" class="qty-input form-control w-100" type="number" placeholder="QTY" />
+                        </div>
+
+                        <script type="text/javascript">
+                            $(document).ready(function () {
+                                @*$("#@Html.IdFor(x => x.EnteredQuantity)").inputmask('Regex', {
+                                    regex: '^[0-9]+$'
+                                });*@
+                            });
+                        </script>
+
+                        //when a customer clicks 'Enter' button we submit the "add to cart" button (if visible)
+                        if (!Model.DisableBuyButton)
+                        {
+                            <script type="text/javascript" asp-location="Footer">
+                                $(document).ready(function () {
+                                    $("#@Html.IdFor(model => model.EnteredQuantity)").keydown(function (event) {
+                                        if (event.keyCode == 13) {
+                                            $("#add-to-cart-button-@Model.ProductId").click();
+                                            return false;
+                                        }
+                                    });
+                                });
+                            </script>
+                        }
+                    }
+                </div>
+            }
+
+            <div class="row justify-content-between">
+                @if (!Model.DisableBuyButton)
+                {
+                    <div class="add-to-cart col">
+                        @{
+                            var addToCartText = "";
+                            if (Model.UpdatedShoppingCartItemId > 0)
+                            {
+                                addToCartText = "Update";
+                            }
+                            else
+                            {
+                                addToCartText = Model.AvailableForPreOrder ? "Pre-order" : "Add To Cart";
+                            }
+                        }
+                        <a id="add-to-cart-button-@Model.ProductId" class="btn-quick-view pull-left" data-productid="@Model.ProductId" onclick="AjaxCart.addproducttocart_details('@Url.RouteUrl(NopRouteNames.Ajax.ADD_PRODUCT_TO_CART_DETAILS, new { productId = Model.ProductId, shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart })', '#product-details-form');return false;">
+                            <i class="icon-cart pr-2" aria-hidden="true"></i>
+                            @addToCartText
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

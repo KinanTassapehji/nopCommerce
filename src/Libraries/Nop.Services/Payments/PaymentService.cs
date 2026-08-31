@@ -272,69 +272,6 @@ public partial class PaymentService : IPaymentService
     }
 
     /// <summary>
-    /// Gets a recurring payment type of payment method
-    /// </summary>
-    /// <param name="paymentMethodSystemName">Payment method system name</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains a recurring payment type of payment method
-    /// </returns>
-    public virtual async Task<RecurringPaymentType> GetRecurringPaymentTypeAsync(string paymentMethodSystemName)
-    {
-        var paymentMethod = await _paymentPluginManager.LoadPluginBySystemNameAsync(paymentMethodSystemName);
-        if (paymentMethod == null)
-            return RecurringPaymentType.NotSupported;
-
-        return paymentMethod.RecurringPaymentType;
-    }
-
-    /// <summary>
-    /// Process recurring payment
-    /// </summary>
-    /// <param name="processPaymentRequest">Payment info required for an order processing</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the process payment result
-    /// </returns>
-    public virtual async Task<ProcessPaymentResult> ProcessRecurringPaymentAsync(ProcessPaymentRequest processPaymentRequest)
-    {
-        if (processPaymentRequest.OrderTotal == decimal.Zero)
-        {
-            var result = new ProcessPaymentResult
-            {
-                NewPaymentStatus = PaymentStatus.Paid
-            };
-            return result;
-        }
-
-        var customer = await _customerService.GetCustomerByIdAsync(processPaymentRequest.CustomerId);
-        var paymentMethod = await _paymentPluginManager
-                                .LoadPluginBySystemNameAsync(processPaymentRequest.PaymentMethodSystemName, customer, processPaymentRequest.StoreId)
-                            ?? throw new NopException("Payment method couldn't be loaded");
-
-        return await paymentMethod.ProcessRecurringPaymentAsync(processPaymentRequest);
-    }
-
-    /// <summary>
-    /// Cancels a recurring payment
-    /// </summary>
-    /// <param name="cancelPaymentRequest">Request</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the result
-    /// </returns>
-    public virtual async Task<CancelRecurringPaymentResult> CancelRecurringPaymentAsync(CancelRecurringPaymentRequest cancelPaymentRequest)
-    {
-        if (cancelPaymentRequest.Order.OrderTotal == decimal.Zero)
-            return new CancelRecurringPaymentResult();
-
-        var paymentMethod = await _paymentPluginManager.LoadPluginBySystemNameAsync(cancelPaymentRequest.Order.PaymentMethodSystemName)
-                            ?? throw new NopException("Payment method couldn't be loaded");
-
-        return await paymentMethod.CancelRecurringPaymentAsync(cancelPaymentRequest);
-    }
-
-    /// <summary>
     /// Gets masked credit card number
     /// </summary>
     /// <param name="creditCardNumber">Credit card number</param>

@@ -13,8 +13,6 @@ using Nop.Core.Domain.Tax;
 using Nop.Core.Domain.Vendors;
 using Nop.Core.Http;
 using Nop.Services.Attributes;
-using Nop.Services.Authentication.External;
-using Nop.Services.Authentication.MultiFactor;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
 using Nop.Services.Customers;
@@ -46,22 +44,17 @@ public partial class CustomerModelFactory : ICustomerModelFactory
     protected readonly CommonSettings _commonSettings;
     protected readonly CustomerSettings _customerSettings;
     protected readonly DateTimeSettings _dateTimeSettings;
-    protected readonly ExternalAuthenticationSettings _externalAuthenticationSettings;
     protected readonly ForumSettings _forumSettings;
     protected readonly GdprSettings _gdprSettings;
     protected readonly IAddressModelFactory _addressModelFactory;
     protected readonly IAttributeParser<CustomerAttribute, CustomerAttributeValue> _customerAttributeParser;
     protected readonly IAttributeService<CustomerAttribute, CustomerAttributeValue> _customerAttributeService;
-    protected readonly IAuthenticationPluginManager _authenticationPluginManager;
     protected readonly ICountryService _countryService;
     protected readonly ICustomerService _customerService;
     protected readonly IDateTimeHelper _dateTimeHelper;
-    protected readonly IExternalAuthenticationModelFactory _externalAuthenticationModelFactory;
-    protected readonly IExternalAuthenticationService _externalAuthenticationService;
     protected readonly IGdprService _gdprService;
     protected readonly IGenericAttributeService _genericAttributeService;
     protected readonly ILocalizationService _localizationService;
-    protected readonly IMultiFactorAuthenticationPluginManager _multiFactorAuthenticationPluginManager;
     protected readonly INewsLetterSubscriptionService _newsLetterSubscriptionService;
     protected readonly INewsLetterSubscriptionTypeService _newsLetterSubscriptionTypeService;
     protected readonly IOrderService _orderService;
@@ -76,7 +69,6 @@ public partial class CustomerModelFactory : ICustomerModelFactory
     protected readonly IWorkContext _workContext;
     protected readonly MediaSettings _mediaSettings;
     protected readonly OrderSettings _orderSettings;
-    protected readonly RewardPointsSettings _rewardPointsSettings;
     protected readonly SecuritySettings _securitySettings;
     protected readonly TaxSettings _taxSettings;
     protected readonly VendorSettings _vendorSettings;
@@ -91,22 +83,17 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         CommonSettings commonSettings,
         CustomerSettings customerSettings,
         DateTimeSettings dateTimeSettings,
-        ExternalAuthenticationSettings externalAuthenticationSettings,
         ForumSettings forumSettings,
         GdprSettings gdprSettings,
         IAddressModelFactory addressModelFactory,
         IAttributeParser<CustomerAttribute, CustomerAttributeValue> customerAttributeParser,
         IAttributeService<CustomerAttribute, CustomerAttributeValue> customerAttributeService,
-        IAuthenticationPluginManager authenticationPluginManager,
         ICountryService countryService,
         ICustomerService customerService,
         IDateTimeHelper dateTimeHelper,
-        IExternalAuthenticationModelFactory externalAuthenticationModelFactory,
-        IExternalAuthenticationService externalAuthenticationService,
         IGdprService gdprService,
         IGenericAttributeService genericAttributeService,
         ILocalizationService localizationService,
-        IMultiFactorAuthenticationPluginManager multiFactorAuthenticationPluginManager,
         INewsLetterSubscriptionService newsLetterSubscriptionService,
         INewsLetterSubscriptionTypeService newsLetterSubscriptionTypeService,
         IOrderService orderService,
@@ -121,7 +108,6 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         IWorkContext workContext,
         MediaSettings mediaSettings,
         OrderSettings orderSettings,
-        RewardPointsSettings rewardPointsSettings,
         SecuritySettings securitySettings,
         TaxSettings taxSettings,
         VendorSettings vendorSettings)
@@ -132,22 +118,17 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         _commonSettings = commonSettings;
         _customerSettings = customerSettings;
         _dateTimeSettings = dateTimeSettings;
-        _externalAuthenticationModelFactory = externalAuthenticationModelFactory;
-        _externalAuthenticationService = externalAuthenticationService;
-        _externalAuthenticationSettings = externalAuthenticationSettings;
         _forumSettings = forumSettings;
         _gdprSettings = gdprSettings;
         _addressModelFactory = addressModelFactory;
         _customerAttributeParser = customerAttributeParser;
         _customerAttributeService = customerAttributeService;
-        _authenticationPluginManager = authenticationPluginManager;
         _countryService = countryService;
         _customerService = customerService;
         _dateTimeHelper = dateTimeHelper;
         _gdprService = gdprService;
         _genericAttributeService = genericAttributeService;
         _localizationService = localizationService;
-        _multiFactorAuthenticationPluginManager = multiFactorAuthenticationPluginManager;
         _newsLetterSubscriptionService = newsLetterSubscriptionService;
         _newsLetterSubscriptionTypeService = newsLetterSubscriptionTypeService;
         _orderService = orderService;
@@ -162,7 +143,6 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         _workContext = workContext;
         _mediaSettings = mediaSettings;
         _orderSettings = orderSettings;
-        _rewardPointsSettings = rewardPointsSettings;
         _securitySettings = securitySettings;
         _taxSettings = taxSettings;
         _vendorSettings = vendorSettings;
@@ -350,28 +330,6 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         model.CheckUsernameAvailabilityEnabled = _customerSettings.CheckUsernameAvailabilityEnabled;
         model.SignatureEnabled = _forumSettings.ForumsEnabled && _forumSettings.SignaturesEnabled;
 
-        //external authentication
-        var currentCustomer = await _workContext.GetCurrentCustomerAsync();
-        model.AllowCustomersToRemoveAssociations = _externalAuthenticationSettings.AllowCustomersToRemoveAssociations;
-        var authenticationProviders = await _externalAuthenticationModelFactory.PrepareExternalMethodsModelAsync();
-        model.NumberOfExternalAuthenticationProviders = authenticationProviders.Count;
-        foreach (var record in await _externalAuthenticationService.GetCustomerExternalAuthenticationRecordsAsync(customer))
-        {
-            var authMethod = await _authenticationPluginManager
-                .LoadPluginBySystemNameAsync(record.ProviderSystemName, currentCustomer, store.Id);
-            if (!_authenticationPluginManager.IsPluginActive(authMethod))
-                continue;
-
-            model.AssociatedExternalAuthRecords.Add(new CustomerInfoModel.AssociatedExternalAuthModel
-            {
-                Id = record.Id,
-                Email = record.Email,
-                ExternalIdentifier = !string.IsNullOrEmpty(record.ExternalDisplayIdentifier)
-                    ? record.ExternalDisplayIdentifier : record.ExternalIdentifier,
-                AuthMethodName = await _localizationService.GetLocalizedFriendlyNameAsync(authMethod, currentLanguage.Id)
-            });
-        }
-
         //custom customer attributes
         var customAttributes = await PrepareCustomCustomerAttributesAsync(customer, overrideCustomCustomerAttributesXml);
         foreach (var attribute in customAttributes)
@@ -383,7 +341,7 @@ public partial class CustomerModelFactory : ICustomerModelFactory
             var consents = (await _gdprService.GetAllConsentsAsync()).Where(consent => consent.DisplayOnCustomerInfoPage).ToList();
             foreach (var consent in consents)
             {
-                var accepted = await _gdprService.IsConsentAcceptedAsync(consent.Id, currentCustomer.Id);
+                var accepted = await _gdprService.IsConsentAcceptedAsync(consent.Id, customer.Id);
                 model.GdprConsents.Add(await PrepareGdprConsentModelAsync(consent, accepted.HasValue && accepted.Value));
             }
         }
@@ -637,13 +595,6 @@ public partial class CustomerModelFactory : ICustomerModelFactory
             ItemClass = "customer-orders"
         });
 
-        model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
-        {
-            RouteName = NopRouteNames.Standard.CUSTOMER_RECURRING_PAYMENTS,
-            Title = await _localizationService.GetResourceAsync("Account.CustomerRecurringPayments"),
-            Tab = (int)CustomerNavigationEnum.RecurringPayments,
-            ItemClass = "customer-recurring-payments"
-        });
 
         var store = await _storeContext.GetCurrentStoreAsync();
         var customer = await _workContext.GetCurrentCustomerAsync();
@@ -658,39 +609,6 @@ public partial class CustomerModelFactory : ICustomerModelFactory
                 Title = await _localizationService.GetResourceAsync("Account.CustomerReturnRequests"),
                 Tab = (int)CustomerNavigationEnum.ReturnRequests,
                 ItemClass = "return-requests"
-            });
-        }
-
-        if (!_customerSettings.HideDownloadableProductsTab)
-        {
-            model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
-            {
-                RouteName = NopRouteNames.Standard.CUSTOMER_DOWNLOADABLE_PRODUCTS,
-                Title = await _localizationService.GetResourceAsync("Account.DownloadableProducts"),
-                Tab = (int)CustomerNavigationEnum.DownloadableProducts,
-                ItemClass = "downloadable-products"
-            });
-        }
-
-        if (!_customerSettings.HideBackInStockSubscriptionsTab)
-        {
-            model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
-            {
-                RouteName = NopRouteNames.Standard.CUSTOMER_BACK_IN_STOCK_SUBSCRIPTIONS,
-                Title = await _localizationService.GetResourceAsync("Account.BackInStockSubscriptions"),
-                Tab = (int)CustomerNavigationEnum.BackInStockSubscriptions,
-                ItemClass = "back-in-stock-subscriptions"
-            });
-        }
-
-        if (_rewardPointsSettings.Enabled)
-        {
-            model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
-            {
-                RouteName = NopRouteNames.Standard.CUSTOMER_REWARD_POINTS,
-                Title = await _localizationService.GetResourceAsync("Account.RewardPoints"),
-                Tab = (int)CustomerNavigationEnum.RewardPoints,
-                ItemClass = "reward-points"
             });
         }
 
@@ -723,16 +641,6 @@ public partial class CustomerModelFactory : ICustomerModelFactory
                 ItemClass = "forum-subscriptions"
             });
         }
-        if (_catalogSettings.ShowProductReviewsTabOnAccountPage)
-        {
-            model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
-            {
-                RouteName = NopRouteNames.Standard.CUSTOMER_PRODUCT_REVIEWS,
-                Title = await _localizationService.GetResourceAsync("Account.CustomerProductReviews"),
-                Tab = (int)CustomerNavigationEnum.ProductReviews,
-                ItemClass = "customer-reviews"
-            });
-        }
         if (_vendorSettings.AllowVendorsToEditInfo && await _workContext.GetCurrentVendorAsync() != null)
         {
             model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
@@ -751,29 +659,6 @@ public partial class CustomerModelFactory : ICustomerModelFactory
                 Title = await _localizationService.GetResourceAsync("Account.Gdpr"),
                 Tab = (int)CustomerNavigationEnum.GdprTools,
                 ItemClass = "customer-gdpr"
-            });
-        }
-
-        if (_customerSettings.AllowCustomersToCheckGiftCardBalance)
-        {
-            model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
-            {
-                RouteName = NopRouteNames.General.CHECK_GIFT_CARD_BALANCE,
-                Title = await _localizationService.GetResourceAsync("CheckGiftCardBalance"),
-                Tab = (int)CustomerNavigationEnum.CheckGiftCardBalance,
-                ItemClass = "customer-check-gift-card-balance"
-            });
-        }
-
-        if (await _permissionService.AuthorizeAsync(StandardPermission.Security.ENABLE_MULTI_FACTOR_AUTHENTICATION) &&
-            await _multiFactorAuthenticationPluginManager.HasActivePluginsAsync())
-        {
-            model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
-            {
-                RouteName = NopRouteNames.Standard.MULTI_FACTOR_AUTHENTICATION_SETTINGS,
-                Title = await _localizationService.GetResourceAsync("PageTitle.MultiFactorAuthentication"),
-                Tab = (int)CustomerNavigationEnum.MultiFactorAuthentication,
-                ItemClass = "customer-multiFactor-authentication"
             });
         }
 
@@ -810,70 +695,6 @@ public partial class CustomerModelFactory : ICustomerModelFactory
             model.Addresses.Add(addressModel);
         }
         return model;
-    }
-
-    /// <summary>
-    /// Prepare the customer downloadable products model
-    /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the customer downloadable products model
-    /// </returns>
-    public virtual async Task<CustomerDownloadableProductsModel> PrepareCustomerDownloadableProductsModelAsync()
-    {
-        var model = new CustomerDownloadableProductsModel();
-        var customer = await _workContext.GetCurrentCustomerAsync();
-        var items = await _orderService.GetDownloadableOrderItemsAsync(customer.Id);
-        foreach (var item in items)
-        {
-            var order = await _orderService.GetOrderByIdAsync(item.OrderId);
-            var product = await _productService.GetProductByIdAsync(item.ProductId);
-
-            var itemModel = new CustomerDownloadableProductsModel.DownloadableProductsModel
-            {
-                OrderItemGuid = item.OrderItemGuid,
-                OrderId = order.Id,
-                CustomOrderNumber = order.CustomOrderNumber,
-                CreatedOn = await _dateTimeHelper.ConvertToUserTimeAsync(order.CreatedOnUtc, DateTimeKind.Utc),
-                ProductName = await _localizationService.GetLocalizedAsync(product, x => x.Name),
-                ProductSeName = await _urlRecordService.GetSeNameAsync(product),
-                ProductAttributes = item.AttributeDescription,
-                ProductId = item.ProductId
-            };
-            model.Items.Add(itemModel);
-
-            if (await _orderService.IsDownloadAllowedAsync(item))
-                itemModel.DownloadId = product.DownloadId;
-
-            if (await _orderService.IsLicenseDownloadAllowedAsync(item))
-                itemModel.LicenseId = item.LicenseDownloadId ?? 0;
-        }
-
-        return model;
-    }
-
-    /// <summary>
-    /// Prepare the user agreement model
-    /// </summary>
-    /// <param name="orderItem">Order item</param>
-    /// <param name="product">Product</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the user agreement model
-    /// </returns>
-    public virtual Task<UserAgreementModel> PrepareUserAgreementModelAsync(OrderItem orderItem, Product product)
-    {
-        ArgumentNullException.ThrowIfNull(orderItem);
-
-        ArgumentNullException.ThrowIfNull(product);
-
-        var model = new UserAgreementModel
-        {
-            UserAgreementText = product.UserAgreementText,
-            OrderItemGuid = orderItem.OrderItemGuid
-        };
-
-        return Task.FromResult(model);
     }
 
     /// <summary>
@@ -927,79 +748,6 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         var model = new GdprToolsModel();
 
         return Task.FromResult(model);
-    }
-
-    /// <summary>
-    /// Prepare the check gift card balance madel
-    /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the check gift card balance madel
-    /// </returns>
-    public virtual Task<CheckGiftCardBalanceModel> PrepareCheckGiftCardBalanceModelAsync()
-    {
-        var model = new CheckGiftCardBalanceModel { DisplayCaptcha = _captchaSettings.Enabled && _captchaSettings.ShowOnCheckGiftCardBalance };
-
-        return Task.FromResult(model);
-    }
-
-    /// <summary>
-    /// Prepare the multi-factor authentication model
-    /// </summary>
-    /// <param name="model">Multi-factor authentication model</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the multi-factor authentication model
-    /// </returns>
-    public virtual async Task<MultiFactorAuthenticationModel> PrepareMultiFactorAuthenticationModelAsync(MultiFactorAuthenticationModel model)
-    {
-        var customer = await _workContext.GetCurrentCustomerAsync();
-
-        model.IsEnabled = !string.IsNullOrEmpty(
-            await _genericAttributeService.GetAttributeAsync<string>(customer, NopCustomerDefaults.SelectedMultiFactorAuthenticationProviderAttribute));
-
-        var store = await _storeContext.GetCurrentStoreAsync();
-        var multiFactorAuthenticationProviders = (await _multiFactorAuthenticationPluginManager.LoadActivePluginsAsync(customer, store.Id)).ToList();
-        foreach (var multiFactorAuthenticationProvider in multiFactorAuthenticationProviders)
-        {
-            var providerModel = new MultiFactorAuthenticationProviderModel();
-            var sysName = multiFactorAuthenticationProvider.PluginDescriptor.SystemName;
-            providerModel = await PrepareMultiFactorAuthenticationProviderModelAsync(providerModel, sysName);
-            model.Providers.Add(providerModel);
-        }
-
-        return model;
-    }
-
-    /// <summary>
-    /// Prepare the multi-factor authentication provider model
-    /// </summary>
-    /// <param name="providerModel">Multi-factor authentication provider model</param>
-    /// <param name="sysName">Multi-factor authentication provider system name</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the multi-factor authentication model
-    /// </returns>
-    public virtual async Task<MultiFactorAuthenticationProviderModel> PrepareMultiFactorAuthenticationProviderModelAsync(MultiFactorAuthenticationProviderModel providerModel, string sysName, bool isLogin = false)
-    {
-        var customer = await _workContext.GetCurrentCustomerAsync();
-        var selectedProvider = await _genericAttributeService.GetAttributeAsync<string>(customer, NopCustomerDefaults.SelectedMultiFactorAuthenticationProviderAttribute);
-        var store = await _storeContext.GetCurrentStoreAsync();
-
-        var multiFactorAuthenticationProvider = (await _multiFactorAuthenticationPluginManager.LoadActivePluginsAsync(customer, store.Id))
-            .FirstOrDefault(provider => provider.PluginDescriptor.SystemName == sysName);
-
-        if (multiFactorAuthenticationProvider != null)
-        {
-            providerModel.Name = await _localizationService.GetLocalizedFriendlyNameAsync(multiFactorAuthenticationProvider, (await _workContext.GetWorkingLanguageAsync()).Id);
-            providerModel.SystemName = sysName;
-            providerModel.Description = await multiFactorAuthenticationProvider.GetDescriptionAsync();
-            providerModel.LogoUrl = await _multiFactorAuthenticationPluginManager.GetPluginLogoUrlAsync(multiFactorAuthenticationProvider);
-            providerModel.ViewComponent = isLogin ? multiFactorAuthenticationProvider.GetVerificationViewComponent() : multiFactorAuthenticationProvider.GetPublicViewComponent();
-            providerModel.Selected = sysName == selectedProvider;
-        }
-
-        return providerModel;
     }
 
     /// <summary>

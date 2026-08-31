@@ -22,37 +22,6 @@ public partial class SampleProducts
     #region Nested classes
 
     /// <summary>
-    /// Represents a sample download
-    /// </summary>
-    public partial class SampleDownload
-    {
-        /// <summary>
-        /// The mime-type of the download
-        /// </summary>
-        public string ContentType { get; set; }
-
-        /// <summary>
-        /// The filename of the download
-        /// </summary>
-        public string Filename { get; set; }
-
-        /// <summary>
-        /// Gets or sets the extension
-        /// </summary>
-        public string Extension { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the download is new
-        /// </summary>
-        public bool IsNew { get; set; }
-
-        /// <summary>
-        /// Gets or sets a download file name
-        /// </summary>
-        public string DownloadFileName { get; set; }
-    }
-
-    /// <summary>
     /// Represents a related product
     /// </summary>
     public partial class SampleRelatedProduct
@@ -101,59 +70,9 @@ public partial class SampleProducts
         public bool ShowOnHomepage { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the product allows customer reviews
-        /// </summary>
-        public bool AllowCustomerReviews { get; set; }
-
-        /// <summary>
         /// Gets or sets the SKU
         /// </summary>
         public string Sku { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the product is gift card
-        /// </summary>
-        public bool IsGiftCard { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the product is downloaded
-        /// </summary>
-        public bool IsDownload { get; set; }
-
-        /// <summary>
-        /// Gets or sets the download identifier
-        /// </summary>
-        public SampleDownload Download { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this downloadable product can be downloaded unlimited number of times
-        /// </summary>
-        public bool UnlimitedDownloads { get; set; }
-
-        /// <summary>
-        /// Gets or sets the sample download identifier
-        /// </summary>
-        public SampleDownload SampleDownload { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the product has user agreement
-        /// </summary>
-        public bool HasUserAgreement { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the product is recurring
-        /// </summary>
-        public bool IsRecurring { get; set; }
-
-        /// <summary>
-        /// Gets or sets the cycle length
-        /// </summary>
-        public int RecurringCycleLength { get; set; }
-
-        /// <summary>
-        /// Gets or sets the total cycles
-        /// </summary>
-        public int RecurringTotalCycles { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the product is rental
@@ -204,11 +123,6 @@ public partial class SampleProducts
         /// Gets or sets the quantity when admin should be notified
         /// </summary>
         public int NotifyAdminForQuantityBelow { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to back in stock subscriptions are allowed
-        /// </summary>
-        public bool AllowBackInStockSubscriptions { get; set; }
 
         /// <summary>
         /// Gets or sets the order minimum quantity
@@ -282,24 +196,6 @@ public partial class SampleProducts
         public ProductType ProductType { get; set; }
 
         /// <summary>
-        /// Gets or sets the backorder mode
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public BackorderMode BackorderMode { get; set; }
-
-        /// <summary>
-        /// Gets or sets the download activation type
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public DownloadActivationType DownloadActivationType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the gift card type
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public GiftCardType GiftCardType { get; set; }
-
-        /// <summary>
         /// Gets or sets the low stock activity
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
@@ -310,12 +206,6 @@ public partial class SampleProducts
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
         public ManageInventoryMethod ManageInventoryMethod { get; set; }
-
-        /// <summary>
-        /// Gets or sets the cycle period for recurring products
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public RecurringProductCyclePeriod RecurringCyclePeriod { get; set; }
 
         /// <summary>
         /// Gets or sets the period for rental products
@@ -354,11 +244,6 @@ public partial class SampleProducts
         public string ManufacturerName { get; set; }
 
         /// <summary>
-        /// Gets or sets a list of product specification attributes
-        /// </summary>
-        public List<SampleProductSpecificationAttribute> ProductSpecificationAttribute { get; set; } = new();
-
-        /// <summary>
         /// Gets or sets the list of grouped products
         /// </summary>
         public List<SampleProduct> GroupedProducts { get; set; } = new();
@@ -383,37 +268,6 @@ public partial class SampleProducts
         /// Gets or sets the price
         /// </summary>
         public decimal Price { get; set; }
-    }
-
-    /// <summary>
-    /// Represents a sample product specification attribute
-    /// </summary>
-    public partial class SampleProductSpecificationAttribute
-    {
-        /// <summary>
-        /// Gets or sets whether the attribute can be filtered by
-        /// </summary>
-        public bool AllowFiltering { get; set; }
-
-        /// <summary>
-        /// Gets or sets whether the attribute will be shown on the product page
-        /// </summary>
-        public bool ShowOnProductPage { get; set; }
-
-        /// <summary>
-        /// Gets or sets the display order
-        /// </summary>
-        public int DisplayOrder { get; set; }
-
-        /// <summary>
-        /// Gets or sets the spec attribute name
-        /// </summary>
-        public string SpecAttributeName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the spec attribute option name
-        /// </summary>
-        public string SpecAttributeOptionName { get; set; }
     }
 
     /// <summary>

@@ -62,18 +62,6 @@ public partial record CustomerSettingsModel : BaseNopModel, ISettingsModel
     [NopResourceDisplayName("Admin.Configuration.Settings.CustomerUser.NotifyNewCustomerRegistration")]
     public bool NotifyNewCustomerRegistration { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Settings.CustomerUser.RequireRegistrationForDownloadableProducts")]
-    public bool RequireRegistrationForDownloadableProducts { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.CustomerUser.AllowCustomersToCheckGiftCardBalance")]
-    public bool AllowCustomersToCheckGiftCardBalance { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.CustomerUser.HideDownloadableProductsTab")]
-    public bool HideDownloadableProductsTab { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.CustomerUser.HideBackInStockSubscriptionsTab")]
-    public bool HideBackInStockSubscriptionsTab { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.Settings.CustomerUser.CustomerNameFormat")]
     public int CustomerNameFormat { get; set; }
 

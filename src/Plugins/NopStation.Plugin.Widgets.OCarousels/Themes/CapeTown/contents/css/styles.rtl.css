@@ -1,0 +1,224 @@
+﻿.carousel-container.carousel-category {
+  min-height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container.carousel-manufacturer {
+  min-height: 272px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container.carousel-product {
+  min-height: 392px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container .loader img {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+}
+
+.carousel-category {
+  min-height: 300px;
+  position: relative;
+}
+
+.carousel-manufacturer {
+  min-height: 272px;
+  position: relative;
+}
+
+.carousel-product {
+  min-height: 392px;
+  position: relative;
+}
+
+.ocarousel-grid {
+  margin: 0 0 50px;
+}
+
+.ocarousel-background::before {
+  content: "";
+  display: block;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  right: 0;
+  background: rgba(255,255,255,0.7);
+  z-index: 0;
+}
+
+.ocarousel-background .custom-container {
+  position: relative;
+  z-index: 1;
+}
+
+.ocarousel .item-box {
+  width: 100% !important;
+  box-shadow: none;
+  border-radius: 3px;
+}
+
+.product-carousel .ocarousel .item-box {
+  box-shadow: 0 3px 10px #eee;
+}
+
+.ocarousel-background .ocarousel .item-box {
+  box-shadow: none !important;
+}
+
+.category-item {
+  clear: both;
+  box-shadow: -2px 3px 8px 1px rgba(142, 151, 159, 0.15);
+  background: #fff;
+}
+
+.html-home-page .category-item {
+  margin-bottom: 15px;
+}
+
+.category-item::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.ocarousel .owl-nav button.owl-prev,
+.ocarousel .owl-nav button.owl-next {
+  padding: 0 10px !important;
+  font-size: 23px;
+  position: absolute;
+  margin: 0;
+  border-radius: 3px;
+  width: 28.44px;
+}
+
+.ocarousel .owl-nav button.owl-prev {
+  right: calc(100% - 62px);
+  /*94.8%;*/
+  border: 1px solid #3E70F9;
+  background: #FFFFFF;
+  color: #3E70F9;
+  margin-left: 10px;
+}
+
+.ocarousel .owl-nav button.owl-next {
+  left: 0;
+  border: 1px solid #3E70F9;
+  background: #3E70F9;
+  color: #FFFFFF;
+}
+
+.ocarousel .owl-nav {
+  position: absolute;
+  top: -80px;
+  width: 100%;
+}
+
+.ocarousel .owl-dots {
+  display: none;
+}
+
+.ocarousel-grid {
+  margin: 0 0 50px;
+  font-family: 'Fjalla One'
+}
+
+  .category-carousel .category-grid > .title,
+  .ocarousel-grid .title {
+    margin: 0 0 30px;
+    padding: 0 0 15px;
+    font-size: 30px;
+    font-weight: normal;
+    color: #444;
+    text-align: right;
+    text-transform: uppercase;
+  }
+
+    .ocarousel-grid .title strong {
+      font-weight: normal;
+    }
+
+.ocarousel .category-name,
+.ocarousel .manufacturer-name {
+  font-weight: normal;
+  font-size: 18px;
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.ocarousel .manufacturer-name {
+  font-size: 20px;
+  width: 70%;
+  margin-top: 10px;
+  background: #3E70F9;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  color: #FFFFFF;
+  position: absolute;
+  padding: 8px 10px;
+  text-transform: uppercase;
+  bottom: 0%;
+  right: 50%;
+  transform: translate(50%, 50%);
+}
+
+.ocarousel-item {
+  margin: 2px 0 20px;
+  background: #FFFFFF;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  position: relative;
+}
+
+.category-carousel .category-grid > .title::before,
+.ocarousel-grid .title::before {
+  content: "";
+  display: inline-block;
+  height: 26px;
+  border-right: 8px solid;
+  padding-left: 5px;
+}
+
+.ocarousel-background {
+  padding: 50px 0 0;
+  position: relative;
+  margin-bottom: 80px;
+}
+
+  .ocarousel-background::before {
+    content: "";
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    background: rgba(255,255,255,0.7);
+    z-index: 0;
+  }
+
+  .ocarousel-background .custom-container {
+    position: relative;
+    z-index: 1;
+  }
+
+@media (max-width: 768px) {
+  .ocarousel .manufacturer-name {
+    left: calc(100% + 3.5rem);
+  }
+}
+
+
+@media (max-width: 576px) {
+  .ocarousel .manufacturer-name {
+    left: calc(100% + 3rem);
+  }
+}

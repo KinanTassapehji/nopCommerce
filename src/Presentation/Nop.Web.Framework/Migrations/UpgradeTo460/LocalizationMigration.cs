@@ -334,7 +334,7 @@ public class LocalizationMigration : MigrationBase
             ["Admin.Catalog.Products.SpecificationAttributes.NameFormat"] = "{0} >> {1}",
 
             //#6676
-            ["RewardPoints.Expired"] = "Unused reward points from {0} have expired",
+            ["RewardPoints.Expired"] = "Unused reward points from {0} have expired"
         }, languageId);
 
         #endregion
@@ -391,8 +391,7 @@ public class LocalizationMigration : MigrationBase
             ["PDFProductCatalog.StockQuantity"] = "Pdf.Product.StockQuantity",
             ["PDFInvoice.ProductTotal"] = "Pdf.Product.Total",
             ["PDFInvoice.RewardPoints"] = "Pdf.RewardPoints",
-            ["PDFInvoice.TaxRate"] = "Pdf.TaxRate",
-            ["PDFInvoice.GiftCardInfo"] = "Pdf.GiftCardInfo"
+            ["PDFInvoice.TaxRate"] = "Pdf.TaxRate"
         }, languages, localizationService);
 
         #endregion

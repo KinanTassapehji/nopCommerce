@@ -7,18 +7,6 @@
 @inject IWorkContext workContext
 
 <footer class="footer">
-    <section class="footer-upper">
-        @await Component.InvokeAsync(typeof(FooterMenuViewComponent))
-        <div class="footer-block follow-us">
-            <div class="social">
-                <h2 class="title">
-                    @T("Footer.FollowUs")
-                </h2>
-                @await Component.InvokeAsync(typeof(SocialButtonsViewComponent))
-            </div>
-            @await Component.InvokeAsync(typeof(NewsLetterBoxViewComponent))
-        </div>
-    </section>
     <section class="footer-lower">
         <div class="footer-info">
             <span class="footer-disclaimer">@T("Content.CopyrightNotice", DateTime.Now.Year, Model.StoreName)</span>
@@ -29,6 +17,9 @@
                     @T(inclTax ? "Footer.TaxShipping.InclTax" : "Footer.TaxShipping.ExclTax", await NopUrl.RouteTopicUrlAsync("shippinginfo"))
                 </span>
             }
+        </div>
+        <div class="footer-social">
+            @await Component.InvokeAsync(typeof(SocialButtonsViewComponent))
         </div>
         @if (!Model.HidePoweredByNopCommerce)
         {

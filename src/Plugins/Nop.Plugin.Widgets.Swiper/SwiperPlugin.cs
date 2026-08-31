@@ -97,14 +97,14 @@ public class SwiperPlugin : BasePlugin, IWidgetPlugin
             {
                 PictureId = (await _pictureService.InsertPictureAsync(await _fileProvider.ReadAllBytesAsync(_fileProvider.Combine(sampleImagesPath, "banner_01.webp")), MimeTypes.ImageWebp, "banner_1")).Id,
                 TitleText = string.Empty,
-                AltText = "Sample slide name",
+                AltText = "تشكيلة الخريف وصلت",
                 LinkUrl = _webHelper.GetStoreLocation(),
             },
             new()
             {
                 PictureId = (await _pictureService.InsertPictureAsync(await _fileProvider.ReadAllBytesAsync(_fileProvider.Combine(sampleImagesPath, "banner_02.webp")), MimeTypes.ImageWebp, "banner_2")).Id,
                 TitleText = string.Empty,
-                AltText = "Sample slide name",
+                AltText = "توصيل خلال يوم إلى يومين",
                 LinkUrl = _webHelper.GetStoreLocation(),
             }
         };

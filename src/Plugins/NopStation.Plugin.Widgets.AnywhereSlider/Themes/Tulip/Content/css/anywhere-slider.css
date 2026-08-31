@@ -1,0 +1,11 @@
+.slider-container .loader img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.slider-container .owl-carousel .owl-nav button.owl-prev,
+.slider-container .owl-carousel .owl-nav button.owl-next {
+  background: var(--primary-theme-color);
+}

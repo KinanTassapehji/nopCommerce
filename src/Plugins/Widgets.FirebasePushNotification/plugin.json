@@ -1,0 +1,13 @@
+﻿{
+  "Group": "Widgets",
+  "FriendlyName": "Firebase Push Notification",
+  "SystemName": "Widgets.FirebasePushNotification",
+  "Version": "4.80.0",
+  "SupportedVersions": [
+    "4.90"
+  ],
+  "Author": "Custom",
+  "DisplayOrder": 1,
+  "FileName": "Widgets.FirebasePushNotification.dll",
+  "Description": "Firebase Cloud Messaging HTTP v1 integration for Android, iOS, and Web push notifications"
+}

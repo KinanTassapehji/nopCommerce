@@ -25,9 +25,6 @@ public partial class ManufacturerCacheEventConsumer : CacheEventConsumer<Manufac
             await RemoveByPrefixAsync(NopCatalogDefaults.ManufacturersByCategoryPrefix);
         }
 
-        if (entityEventType == EntityEventType.Delete)
-            await RemoveAsync(NopCatalogDefaults.SpecificationAttributeOptionsByManufacturerCacheKey, entity);
-
         await RemoveAsync(NopDiscountDefaults.AppliedDiscountsCacheKey, nameof(Manufacturer), entity);
 
         await base.ClearCacheAsync(entity, entityEventType);

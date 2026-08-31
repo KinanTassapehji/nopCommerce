@@ -1,4 +1,4 @@
-@using Nop.Core.Domain.Catalog
+﻿@using Nop.Core.Domain.Catalog
 @using Nop.Services.Helpers
 
 @inject CatalogSettings catalogSettings
@@ -33,6 +33,10 @@
     //TmTm brand layer - must come last so it wins the cascade.
     //Written with logical properties, so it serves LTR and RTL alike
     NopHtml.AddCssFileParts($"~/Themes/{themeName}/Content/css/brand.css");
+
+    //the shared loader - the same file the admin links, so both sides wait the
+    //same way. Last, so it wins over the forked stylesheet's gif loader.
+    NopHtml.AddCssFileParts("~/css/tm-loader.css");
 }
 
 @*

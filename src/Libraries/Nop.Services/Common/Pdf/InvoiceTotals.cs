@@ -22,11 +22,6 @@ public partial class InvoiceTotals
     public string Discount { get; set; }
 
     /// <summary>
-    /// Gets or sets the gift card text
-    /// </summary>
-    public List<string> GiftCards { get; set; } = new();
-
-    /// <summary>
     /// Gets or sets the shipping price
     /// </summary>
     [DisplayName("Pdf.Shipping")]
@@ -48,12 +43,6 @@ public partial class InvoiceTotals
     /// Gets or sets a collection of the tax rates
     /// </summary>
     public List<string> TaxRates { get; set; } = new();
-
-    /// <summary>
-    /// Gets or sets the reward points text
-    /// </summary>
-    [DisplayName("Pdf.RewardPoints")]
-    public string RewardPoints { get; set; }
 
     /// <summary>
     /// Gets or sets the order total

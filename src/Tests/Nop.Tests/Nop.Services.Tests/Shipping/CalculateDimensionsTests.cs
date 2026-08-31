@@ -22,7 +22,7 @@ public class CalculateDimensionsTests : ServiceTest
     [Test]
     public async Task ShouldReturnZeroWithAllZeroDimensions()
     {
-        var product = await _productService.GetProductBySkuAsync("VG_CR_025");
+        var product = await _productService.GetProductBySkuAsync("TM-KD-103");
         product.Length = 0;
         product.Width = 0;
         product.Height = 0;
@@ -61,7 +61,7 @@ public class CalculateDimensionsTests : ServiceTest
     [Test]
     public async Task CanCalculateWithSingleItemAndQty1ShouldIgnoreCubicMethod()
     {
-        var product = await _productService.GetProductBySkuAsync("AP_MBP_13");
+        var product = await _productService.GetProductBySkuAsync("TM-AU-401");
         product.Length = 3;
         product.Width = 2;
         product.Height = 2;
@@ -85,7 +85,7 @@ public class CalculateDimensionsTests : ServiceTest
     [Test]
     public async Task CanCalculateWithSingleItemAndQty2()
     {
-        var product = await _productService.GetProductBySkuAsync("AP_MBP_13");
+        var product = await _productService.GetProductBySkuAsync("TM-AU-401");
         product.Length = 2;
         product.Width = 4;
         product.Height = 4;
@@ -109,7 +109,7 @@ public class CalculateDimensionsTests : ServiceTest
     [Test]
     public async Task CanCalculateWithCubicItemAndMultipleQty()
     {
-        var product = await _productService.GetProductBySkuAsync("AP_MBP_13");
+        var product = await _productService.GetProductBySkuAsync("TM-AU-401");
         product.Length = 2;
         product.Width = 2;
         product.Height = 2;
@@ -133,12 +133,12 @@ public class CalculateDimensionsTests : ServiceTest
     [Test]
     public async Task CanCalculateWithMultipleItems()
     {
-        var product1 = await _productService.GetProductBySkuAsync("AP_MBP_13");
+        var product1 = await _productService.GetProductBySkuAsync("TM-AU-401");
         product1.Length = 2;
         product1.Width = 2;
         product1.Height = 2;
 
-        var product2 = await _productService.GetProductBySkuAsync("VG_CR_025");
+        var product2 = await _productService.GetProductBySkuAsync("TM-KD-103");
         product2.Length = 3;
         product2.Width = 5;
         product2.Height = 2;

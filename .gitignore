@@ -206,3 +206,6 @@ src/Presentation/Nop.Web/wwwroot/sitemaps/*
 src/packages/*
 src/Tests/Nop.Tests/Connections.resx
 claude-hematogenix-opus.bat
+
+# Firebase service-account private keys — never commit these
+*firebase-adminsdk*.json

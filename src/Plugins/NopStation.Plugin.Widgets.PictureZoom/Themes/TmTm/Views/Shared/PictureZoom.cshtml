@@ -1,0 +1,13 @@
+﻿@using Nop.Web.Models.Catalog
+@model ProductDetailsModel
+@*
+    TmTm keeps this plugin installed for its admin settings and its widget zones,
+    but not for cloud-zoom: a hover magnifier is dead weight on a touch screen and
+    it drags in two more jQuery plugins for it.
+
+    The plugin's own view-location expander replaces the whole location list for
+    Product/_ProductDetailsPictures, so this file is the only way a theme gets a
+    say. It renders the theme's gallery, which is also what the theme's own
+    _ProductDetailsPictures renders — see Themes/TmTm/Views/Shared/_TmProductGallery.cshtml.
+*@
+@await Html.PartialAsync("_TmProductGallery", Model)

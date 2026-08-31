@@ -1,0 +1,124 @@
+﻿/* 10 of 61 CSS properties converted by rtl.daskhat.ir 
+ These properties should be override originals. 
+ just load rtl css file after original css file.*/
+
+/* body {direction:rtl;} */
+.ocarousel .owl-nav {
+  position: absolute;
+  top: 40%;
+  width: 100%;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+  .ocarousel .owl-nav button.owl-prev, .ocarousel .owl-nav button.owl-next {
+    position: relative;
+    display: inline-flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 10px 10px !important;
+    background-color: #fff;
+    font-size: 13px;
+    border-radius: 3px;
+  }
+
+  .ocarousel .owl-nav button.owl-prev {
+    right: 0;
+  }
+
+  .ocarousel .owl-nav button.owl-next {
+    left: 0;
+  }
+
+.manufacturer-carousel .owl-nav button.owl-next {
+  left: 10px;
+}
+
+.manufacturer-carousel .owl-nav button.owl-prev {
+  right: 10px;
+}
+
+.category-carousel-container .ocarousel-grid .owl-nav button.owl-next {
+  left: 30px;
+}
+
+.ocarousel .owl-nav button.owl-prev:hover, .ocarousel .owl-nav button.owl-next:hover {
+  color: #fff;
+}
+
+.ocarousel .owl-dots {
+  display: none;
+}
+
+.ocarousel .item-box {
+  width: 100% !important;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.ocarousel-background {
+  margin-bottom: 70px;
+  padding: 50px 0;
+}
+
+  .ocarousel-background .ocarousel-grid {
+    margin-bottom: 0;
+  }
+
+  .ocarousel-background .title-container .title, .ocarousel-background .title-container .title i, .ocarousel-background .title-container .title h2 {
+    color: #A54F08;
+  }
+
+  .ocarousel-background .ocarousel .owl-nav {
+    position: relative;
+    top: 10px;
+    display: block;
+    text-align: center;
+  }
+
+    .ocarousel-background .ocarousel .owl-nav button.owl-prev, .ocarousel-background .ocarousel .owl-nav button.owl-next {
+      position: relative;
+      display: inline-flex;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      padding: 10px 10px !important;
+      color: #C66414;
+      font-size: 13px;
+      border-color: #C66414;
+      border-radius: 3px;
+    }
+
+    .ocarousel-background .ocarousel .owl-nav button.owl-prev {
+      margin-left: 2px;
+    }
+
+    .ocarousel-background .ocarousel .owl-nav button.owl-next {
+      margin-right: 2px;
+    }
+
+      .ocarousel-background .ocarousel .owl-nav button.owl-prev:hover, .ocarousel-background .ocarousel .owl-nav button.owl-next:hover {
+        background-color: #C66414;
+        color: #fff;
+      }
+
+.category-carousel, .product-carousel, .manufacturer-carousel {
+  margin-bottom: 70px;
+}
+
+.ocarousel .owl-nav button.owl-prev {
+  transform: rotate(180deg);
+}
+
+.ocarousel .owl-nav button.owl-next {
+  transform: rotate(180deg);
+}

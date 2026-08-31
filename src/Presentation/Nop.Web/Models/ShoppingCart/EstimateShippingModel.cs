@@ -20,6 +20,7 @@ public partial record EstimateShippingModel : BaseNopModel
     public string ZipPostalCode { get; set; }
     public bool UseCity { get; set; }
     public string City { get; set; }
+    public string Street { get; set; }
 
     public IList<SelectListItem> AvailableCountries { get; set; }
     public IList<SelectListItem> AvailableStates { get; set; }

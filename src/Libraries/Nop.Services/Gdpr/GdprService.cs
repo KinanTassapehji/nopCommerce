@@ -3,7 +3,6 @@ using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Gdpr;
 using Nop.Core.Events;
 using Nop.Data;
-using Nop.Services.Authentication.External;
 using Nop.Services.Blogs;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
@@ -23,10 +22,8 @@ public partial class GdprService : IGdprService
     #region Fields
 
     protected readonly IAddressService _addressService;
-    protected readonly IBackInStockSubscriptionService _backInStockSubscriptionService;
     protected readonly IBlogService _blogService;
     protected readonly ICustomerService _customerService;
-    protected readonly IExternalAuthenticationService _externalAuthenticationService;
     protected readonly IEventPublisher _eventPublisher;
     protected readonly IForumService _forumService;
     protected readonly IGenericAttributeService _genericAttributeService;
@@ -43,10 +40,8 @@ public partial class GdprService : IGdprService
     #region Ctor
 
     public GdprService(IAddressService addressService,
-        IBackInStockSubscriptionService backInStockSubscriptionService,
         IBlogService blogService,
         ICustomerService customerService,
-        IExternalAuthenticationService externalAuthenticationService,
         IEventPublisher eventPublisher,
         IForumService forumService,
         IGenericAttributeService genericAttributeService,
@@ -59,10 +54,8 @@ public partial class GdprService : IGdprService
         IShoppingCartService shoppingCartService)
     {
         _addressService = addressService;
-        _backInStockSubscriptionService = backInStockSubscriptionService;
         _blogService = blogService;
         _customerService = customerService;
-        _externalAuthenticationService = externalAuthenticationService;
         _eventPublisher = eventPublisher;
         _forumService = forumService;
         _genericAttributeService = genericAttributeService;
@@ -271,11 +264,6 @@ public partial class GdprService : IGdprService
         var newsComments = await _newsService.GetAllCommentsAsync(customerId: customer.Id);
         await _newsService.DeleteNewsCommentsAsync(newsComments);
 
-        //back in stock subscriptions
-        var backInStockSubscriptions = await _backInStockSubscriptionService.GetAllSubscriptionsByCustomerIdAsync(customer.Id);
-        foreach (var backInStockSubscription in backInStockSubscriptions)
-            await _backInStockSubscriptionService.DeleteSubscriptionAsync(backInStockSubscription);
-
         //product review
         var productReviews = await _productReviewService.GetAllProductReviewsAsync(customer.Id);
         var reviewedProducts = await _productService.GetProductsByIdsAsync(productReviews.Select(p => p.ProductId).Distinct().ToArray());
@@ -283,10 +271,6 @@ public partial class GdprService : IGdprService
         //update product totals
         foreach (var product in reviewedProducts)
             await _productReviewService.UpdateProductReviewTotalsAsync(product);
-
-        //external authentication record
-        foreach (var ear in await _externalAuthenticationService.GetCustomerExternalAuthenticationRecordsAsync(customer))
-            await _externalAuthenticationService.DeleteExternalAuthenticationRecordAsync(ear);
 
         //forum subscriptions
         var forumSubscriptions = await _forumService.GetAllSubscriptionsAsync(customer.Id);
@@ -329,7 +313,7 @@ public partial class GdprService : IGdprService
         //ignore Log
         //ignore PollVotingRecord
         //ignore ProductReviewHelpfulness
-        //ignore RecurringPayment 
+
         //ignore ReturnRequest
         //ignore RewardPointsHistory
         //and we do not delete orders

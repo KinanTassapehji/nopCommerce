@@ -42,7 +42,6 @@ public partial class OrderController : BaseAdminController
     protected readonly IEncryptionService _encryptionService;
     protected readonly IEventPublisher _eventPublisher;
     protected readonly IExportManager _exportManager;
-    protected readonly IGiftCardService _giftCardService;
     protected readonly IImportManager _importManager;
     protected readonly ILocalizationService _localizationService;
     protected readonly INotificationService _notificationService;
@@ -78,7 +77,6 @@ public partial class OrderController : BaseAdminController
         IEncryptionService encryptionService,
         IEventPublisher eventPublisher,
         IExportManager exportManager,
-        IGiftCardService giftCardService,
         IImportManager importManager,
         ILocalizationService localizationService,
         INotificationService notificationService,
@@ -109,7 +107,6 @@ public partial class OrderController : BaseAdminController
         _encryptionService = encryptionService;
         _eventPublisher = eventPublisher;
         _exportManager = exportManager;
-        _giftCardService = giftCardService;
         _importManager = importManager;
         _localizationService = localizationService;
         _notificationService = notificationService;
@@ -1298,205 +1295,37 @@ public partial class OrderController : BaseAdminController
         var orderItem = await _orderService.GetOrderItemByIdAsync(orderItemId)
             ?? throw new ArgumentException("No order item found with the specified id");
 
-        if ((await _giftCardService.GetGiftCardsByPurchasedWithOrderItemIdAsync(orderItem.Id)).Any())
+        var product = await _productService.GetProductByIdAsync(orderItem.ProductId);
+
+        //adjust inventory
+        await _productService.AdjustInventoryAsync(product, orderItem.Quantity, orderItem.AttributesXml,
+            string.Format(await _localizationService.GetResourceAsync("Admin.StockQuantityHistory.Messages.DeleteOrderItem"), order.Id));
+
+        //delete item
+        await _orderService.DeleteOrderItemAsync(orderItem);
+
+        //update order totals
+        var updateOrderParameters = new UpdateOrderParameters(order, orderItem);
+        await _orderProcessingService.UpdateOrderTotalsAsync(updateOrderParameters);
+
+        //add a note
+        await _orderService.InsertOrderNoteAsync(new OrderNote
         {
-            //we cannot delete an order item with associated gift cards
-            //a store owner should delete them first
+            OrderId = order.Id,
+            Note = "Order item has been deleted",
+            DisplayToCustomer = false,
+            CreatedOnUtc = DateTime.UtcNow
+        });
 
-            _notificationService.ErrorNotification(await _localizationService.GetResourceAsync("Admin.Orders.OrderItem.DeleteAssociatedGiftCardRecordError"));
-        }
-        else
-        {
-            var product = await _productService.GetProductByIdAsync(orderItem.ProductId);
+        await LogEditOrderAsync(order.Id);
 
-            //adjust inventory
-            await _productService.AdjustInventoryAsync(product, orderItem.Quantity, orderItem.AttributesXml,
-                string.Format(await _localizationService.GetResourceAsync("Admin.StockQuantityHistory.Messages.DeleteOrderItem"), order.Id));
-
-            //delete item
-            await _orderService.DeleteOrderItemAsync(orderItem);
-
-            //update order totals
-            var updateOrderParameters = new UpdateOrderParameters(order, orderItem);
-            await _orderProcessingService.UpdateOrderTotalsAsync(updateOrderParameters);
-
-            //add a note
-            await _orderService.InsertOrderNoteAsync(new OrderNote
-            {
-                OrderId = order.Id,
-                Note = "Order item has been deleted",
-                DisplayToCustomer = false,
-                CreatedOnUtc = DateTime.UtcNow
-            });
-
-            await LogEditOrderAsync(order.Id);
-
-            foreach (var warning in updateOrderParameters.Warnings)
-                _notificationService.WarningNotification(warning);
-        }
+        foreach (var warning in updateOrderParameters.Warnings)
+            _notificationService.WarningNotification(warning);
 
         //selected card
         SaveSelectedCardName("order-products");
 
         return RedirectToAction("Edit", new { id = order.Id });
-    }
-
-    [HttpPost, ActionName("Edit")]
-    [FormValueRequired(FormValueRequirement.StartsWith, "btnResetDownloadCount")]
-    [CheckPermission(StandardPermission.Orders.ORDERS_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> ResetDownloadCount(int id, IFormCollection form)
-    {
-        //try to get an order with the specified id
-        var order = await _orderService.GetOrderByIdAsync(id);
-        if (order == null)
-            return RedirectToAction("List");
-
-        //get order item identifier
-        var orderItemId = 0;
-        foreach (var formValue in form.Keys)
-            if (formValue.StartsWith("btnResetDownloadCount", StringComparison.InvariantCultureIgnoreCase))
-                orderItemId = Convert.ToInt32(formValue["btnResetDownloadCount".Length..]);
-
-        var orderItem = await _orderService.GetOrderItemByIdAsync(orderItemId)
-            ?? throw new ArgumentException("No order item found with the specified id");
-
-        //ensure a vendor has access only to his products 
-        if (await _workContext.GetCurrentVendorAsync() != null && !await HasAccessToProductAsync(orderItem))
-            return RedirectToAction("List");
-
-        orderItem.DownloadCount = 0;
-        await _orderService.UpdateOrderItemAsync(orderItem);
-        await LogEditOrderAsync(order.Id);
-
-        //selected card
-        SaveSelectedCardName("order-products");
-
-        return RedirectToAction("Edit", new { id = order.Id });
-    }
-
-    [HttpPost, ActionName("Edit")]
-    [FormValueRequired(FormValueRequirement.StartsWith, "btnPvActivateDownload")]
-    [CheckPermission(StandardPermission.Orders.ORDERS_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> ActivateDownloadItem(int id, IFormCollection form)
-    {
-        //try to get an order with the specified id
-        var order = await _orderService.GetOrderByIdAsync(id);
-        if (order == null)
-            return RedirectToAction("List");
-
-        //get order item identifier
-        var orderItemId = 0;
-        foreach (var formValue in form.Keys)
-            if (formValue.StartsWith("btnPvActivateDownload", StringComparison.InvariantCultureIgnoreCase))
-                orderItemId = Convert.ToInt32(formValue["btnPvActivateDownload".Length..]);
-
-        var orderItem = await _orderService.GetOrderItemByIdAsync(orderItemId)
-            ?? throw new ArgumentException("No order item found with the specified id");
-
-        //ensure a vendor has access only to his products 
-        if (await _workContext.GetCurrentVendorAsync() != null && !await HasAccessToProductAsync(orderItem))
-            return RedirectToAction("List");
-
-        orderItem.IsDownloadActivated = !orderItem.IsDownloadActivated;
-        await _orderService.UpdateOrderItemAsync(orderItem);
-
-        await LogEditOrderAsync(order.Id);
-
-        //selected card
-        SaveSelectedCardName("order-products");
-
-        return RedirectToAction("Edit", new { id = order.Id });
-    }
-
-    [CheckPermission(StandardPermission.Orders.ORDERS_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> UploadLicenseFilePopup(int id, int orderItemId)
-    {
-        //try to get an order with the specified id
-        var order = await _orderService.GetOrderByIdAsync(id);
-        if (order == null)
-            return RedirectToAction("List");
-
-        //try to get an order item with the specified id
-        var orderItem = await _orderService.GetOrderItemByIdAsync(orderItemId)
-            ?? throw new ArgumentException("No order item found with the specified id");
-
-        var product = await _productService.GetProductByIdAsync(orderItem.ProductId)
-            ?? throw new ArgumentException("No product found with the specified order item id");
-
-        if (!product.IsDownload)
-            throw new ArgumentException("Product is not downloadable");
-
-        //ensure a vendor has access only to his products 
-        if (await _workContext.GetCurrentVendorAsync() != null && !await HasAccessToProductAsync(orderItem))
-            return RedirectToAction("List");
-
-        //prepare model
-        var model = await _orderModelFactory.PrepareUploadLicenseModelAsync(new UploadLicenseModel(), order, orderItem);
-
-        return View(model);
-    }
-
-    [HttpPost]
-    [FormValueRequired("uploadlicense")]
-    [CheckPermission(StandardPermission.Orders.ORDERS_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> UploadLicenseFilePopup(UploadLicenseModel model)
-    {
-        //try to get an order with the specified id
-        var order = await _orderService.GetOrderByIdAsync(model.OrderId);
-        if (order == null)
-            return RedirectToAction("List");
-
-        var orderItem = await _orderService.GetOrderItemByIdAsync(model.OrderItemId)
-            ?? throw new ArgumentException("No order item found with the specified id");
-
-        //ensure a vendor has access only to his products 
-        if (await _workContext.GetCurrentVendorAsync() != null && !await HasAccessToProductAsync(orderItem))
-            return RedirectToAction("List");
-
-        //attach license
-        if (model.LicenseDownloadId > 0)
-            orderItem.LicenseDownloadId = model.LicenseDownloadId;
-        else
-            orderItem.LicenseDownloadId = null;
-
-        await _orderService.UpdateOrderItemAsync(orderItem);
-
-        await LogEditOrderAsync(order.Id);
-
-        //success
-        ViewBag.RefreshPage = true;
-
-        return View(model);
-    }
-
-    [HttpPost, ActionName("UploadLicenseFilePopup")]
-    [FormValueRequired("deletelicense")]
-    [CheckPermission(StandardPermission.Orders.ORDERS_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> DeleteLicenseFilePopup(UploadLicenseModel model)
-    {
-        //try to get an order with the specified id
-        var order = await _orderService.GetOrderByIdAsync(model.OrderId);
-        if (order == null)
-            return RedirectToAction("List");
-
-        var orderItem = await _orderService.GetOrderItemByIdAsync(model.OrderItemId)
-            ?? throw new ArgumentException("No order item found with the specified id");
-
-        //ensure a vendor has access only to his products 
-        if (await _workContext.GetCurrentVendorAsync() != null && !await HasAccessToProductAsync(orderItem))
-            return RedirectToAction("List");
-
-        //attach license
-        orderItem.LicenseDownloadId = null;
-
-        await _orderService.UpdateOrderItemAsync(orderItem);
-
-        await LogEditOrderAsync(order.Id);
-
-        //success
-        ViewBag.RefreshPage = true;
-
-        return View(model);
     }
 
     [CheckPermission(StandardPermission.Orders.ORDERS_CREATE_EDIT_DELETE)]
@@ -1587,7 +1416,6 @@ public partial class OrderController : BaseAdminController
 
         //warnings
         warnings.AddRange(await _shoppingCartService.GetShoppingCartItemAttributeWarningsAsync(customer, ShoppingCartType.ShoppingCart, product, model.Quantity, attributesXml));
-        warnings.AddRange(await _shoppingCartService.GetShoppingCartItemGiftCardWarningsAsync(ShoppingCartType.ShoppingCart, product, attributesXml));
         warnings.AddRange(await _shoppingCartService.GetRentalProductWarningsAsync(product, rentalStartDate, rentalEndDate));
         if (!warnings.Any())
         {
@@ -1616,9 +1444,6 @@ public partial class OrderController : BaseAdminController
                 Quantity = model.Quantity,
                 DiscountAmountInclTax = decimal.Zero,
                 DiscountAmountExclTax = decimal.Zero,
-                DownloadCount = 0,
-                IsDownloadActivated = false,
-                LicenseDownloadId = 0,
                 ItemWeight = itemWeight,
                 RentalStartDateUtc = rentalStartDate,
                 RentalEndDateUtc = rentalEndDate
@@ -1651,33 +1476,6 @@ public partial class OrderController : BaseAdminController
             });
 
             await LogEditOrderAsync(order.Id);
-
-            //gift cards
-            if (product.IsGiftCard)
-            {
-                _productAttributeParser.GetGiftCardAttribute(
-                    attributesXml, out var recipientName, out var recipientEmail, out var senderName, out var senderEmail, out var giftCardMessage);
-
-                for (var i = 0; i < orderItem.Quantity; i++)
-                {
-                    var gc = new GiftCard
-                    {
-                        GiftCardType = product.GiftCardType,
-                        PurchasedWithOrderItemId = orderItem.Id,
-                        Amount = model.UnitPriceExclTax,
-                        IsGiftCardActivated = false,
-                        GiftCardCouponCode = _giftCardService.GenerateGiftCardCode(),
-                        RecipientName = recipientName,
-                        RecipientEmail = recipientEmail,
-                        SenderName = senderName,
-                        SenderEmail = senderEmail,
-                        Message = giftCardMessage,
-                        IsRecipientNotified = false,
-                        CreatedOnUtc = DateTime.UtcNow
-                    };
-                    await _giftCardService.InsertGiftCardAsync(gc);
-                }
-            }
 
             //redirect to order details page
             foreach (var warning in updateOrderParameters.Warnings)

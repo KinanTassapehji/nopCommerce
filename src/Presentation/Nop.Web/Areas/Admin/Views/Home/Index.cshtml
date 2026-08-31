@@ -8,10 +8,6 @@
     var canManageProducts = await permissionService.AuthorizeAsync(StandardPermission.Catalog.PRODUCTS_VIEW);
     var canManageReturnRequests = await permissionService.AuthorizeAsync(StandardPermission.Orders.RETURN_REQUESTS_VIEW);
 
-    //close configuration steps value
-    const string closeCardAttributeName = "CloseConfigurationSteps";
-    var closeConfigurationStepsCard = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), closeCardAttributeName);
-
      //active menu item (system name)
     NopHtml.SetActiveMenuItemSystemName("Dashboard");
 }
@@ -24,30 +20,12 @@
         @T("Admin.Dashboard")
     </h1>
 </div>
-<section class="content">
+<section class="content dashboard">
     <div class="container-fluid">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    @if (!closeConfigurationStepsCard)
-                    {
-                        <div class="row">
-                            <div class="col-md-12">
-                                @await Html.PartialAsync("_ConfigurationSteps")
-                            </div>
-                        </div>
-                    }
-
                     @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.DashboardTop, additionalData = Model })
-                    @if (!Model.IsLoggedInAsVendor)
-                    {
-                        <div class="row">
-                            <div class="col-md-12">
-                                @await Component.InvokeAsync(typeof(NopCommerceNewsViewComponent))
-                            </div>
-                        </div>
-                    }
-
                     @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.DashboardNewsAfter, additionalData = Model })
                     @if (!Model.IsLoggedInAsVendor && canManageOrders && canManageCustomers && canManageProducts && canManageReturnRequests)
                     {

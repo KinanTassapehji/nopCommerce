@@ -1,0 +1,18 @@
+﻿{
+  "Group": "Nop-Station",
+  "FriendlyName": "Nop-Station Mega Menu",
+  "SupportedVersions": [
+    "4.90"
+  ],
+  "Author": "Nop-Station Team",
+  "DisplayOrder": 1,
+  "FileName": "NopStation.Plugin.Widgets.MegaMenu.dll",
+  "Description": "This plugin allows to display mega menu on top.",
+  "LimitedToStores": [],
+  "LimitedToCustomerRoles": [],
+  "DependsOnSystemNames": [
+    "NopStation.Core"
+  ],
+  "SystemName": "NopStation.Plugin.Widgets.MegaMenu",
+  "Version": "4.80.1.0"
+}

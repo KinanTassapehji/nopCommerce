@@ -1,0 +1,620 @@
+@model MarketplaceModel
+@using NopStation.Plugin.Misc.Core.Domains.Marketplace
+
+@{
+    Layout = "_AdminLayout";
+    NopHtml.SetActiveMenuItemSystemName("NopStationCore.Marketplace");
+
+    ViewBag.PageTitle = T("Admin.NopStation.Core.Marketplace").Text;
+    
+    NopHtml.AddCssFileParts("~/Plugins/NopStation.Core/contents/css/marketplace.css","");
+
+    const int CATEGORY_VISIBLE_COUNT = 5;
+}
+
+@* ─── Install Confirmation Modal ─── *@
+<div class="modal fade" id="installModal" tabindex="-1" role="dialog" aria-labelledby="installModalLabel" aria-modal="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="installModalLabel">
+                    <i class="fas fa-download text-success"></i> @T("Admin.NopStation.Core.Marketplace.Install.Title")
+                </h5>
+                <button type="button" class="close" id="installModalCloseBtn" data-dismiss="modal" aria-label="@T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Close")">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>@T("Admin.NopStation.Core.Marketplace.StoreUrlEmailShareWarning")</p>
+                <div id="installProgress" class="marketplace-progress" aria-live="polite">
+                    <div class="progress mt-2 marketplace-progress-bar">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                             role="progressbar"
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                    <small class="text-muted">@T("Admin.NopStation.Core.Marketplace.Install.Downloading")</small>
+                </div>
+                <div id="installResult" class="mt-2 marketplace-result"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="installCancelBtn" data-dismiss="modal">
+                    @T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Cancel")
+                </button>
+                <button type="button" class="btn btn-success" id="installConfirmBtn">
+                    <i class="fas fa-download"></i> @T("Admin.NopStation.Core.Marketplace.Button.Install")
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ─── Upgrade Request Confirmation Modal ─── *@
+<div class="modal fade" id="upgradeRequestModal" tabindex="-1" role="dialog" aria-labelledby="upgradeRequestModalLabel" aria-modal="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="upgradeRequestModalLabel">
+                    <i class="fas fa-arrow-up text-warning"></i> @T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Title")
+                </h5>
+                <button type="button" class="close" id="upgradeRequestCloseBtn" data-dismiss="modal" aria-label="@T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Close")">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>@T("Admin.NopStation.Core.Marketplace.StoreUrlEmailShareWarning")</p>
+                <div id="upgradeRequestProgress" class="marketplace-progress" aria-live="polite">
+                    <div class="progress mt-2 marketplace-progress-bar">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning"
+                             role="progressbar"
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                    <small class="text-muted">@T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Sending")</small>
+                </div>
+                <div id="upgradeRequestResult" class="mt-2 marketplace-result"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="upgradeRequestCancelBtn" data-dismiss="modal">
+                    @T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Cancel")
+                </button>
+                <button type="button" class="btn btn-warning" id="upgradeRequestConfirmBtn">
+                    <i class="fas fa-arrow-up"></i> @T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Confirm")
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+
+            @* ─── Sidebar ─── *@
+            <div class="col-lg-3 col-md-4 mb-4">
+                @if (!string.IsNullOrEmpty(Model.MarketplaceLogoUrl))
+                {
+                    <div class="content-header clearfix">
+                        <img src="@Model.MarketplaceLogoUrl" alt="@T("Admin.NopStation.Core.Marketplace.Logo")" class="img-fluid" />
+                    </div>
+                }
+                else
+                {
+                    <div class="content-header clearfix">
+                        <h1 class="float-left">
+                            @T("Admin.NopStation.Core.Marketplace")
+                        </h1>
+                    </div>
+                }
+
+                <div class="marketplace-sidebar">
+
+                    @* Search box *@
+                    <div class="marketplace-search-wrap">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            </div>
+                            <input type="text"
+                                   id="marketplace-search"
+                                   class="form-control"
+                                   value="@Model.ActiveSearchText"
+                                   placeholder="@T("Admin.NopStation.Core.Marketplace.Search.SearchText.Placeholder")"
+                                   aria-label="@T("Admin.NopStation.Core.Marketplace.Search.SearchText")" />
+                        </div>
+                    </div>
+
+                    @* Category filter *@
+                    <div class="marketplace-sidebar-section">
+                        <p class="marketplace-sidebar-heading">@T("Admin.NopStation.Core.Marketplace.Search.Category")</p>
+                        <ul class="marketplace-filter-list">
+                            <li>
+                                <button type="button"
+                                        class="marketplace-filter-item category-filter-item @(Model.ActiveCategoryId == 0 ? "active" : "")"
+                                        data-category-id="0"
+                                        aria-pressed="@(Model.ActiveCategoryId == 0 ? "true" : "false")">
+                                    @T("Admin.NopStation.Core.Marketplace.Search.Category.All")
+                                </button>
+                            </li>
+                            @{ var catIndex = 0; }
+                            @foreach (var cat in Model.Categories)
+                            {
+                                <li class="@(catIndex >= CATEGORY_VISIBLE_COUNT ? "category-extra" : "")">
+                                    <button type="button"
+                                            class="marketplace-filter-item category-filter-item @(Model.ActiveCategoryId == cat.Id ? "active" : "")"
+                                            data-category-id="@cat.Id"
+                                            aria-pressed="@(Model.ActiveCategoryId == cat.Id ? "true" : "false")">
+                                        <span>@cat.Name</span>
+                                        @if (cat.ProductCount > 0)
+                                        {
+                                            <span class="marketplace-filter-count">@cat.ProductCount</span>
+                                        }
+                                    </button>
+                                </li>
+                                catIndex++;
+                            }
+                        </ul>
+                        @if (Model.Categories.Count > CATEGORY_VISIBLE_COUNT)
+                        {
+                            <button type="button"
+                                    id="category-show-more-btn"
+                                    class="marketplace-show-more-btn"
+                                    aria-expanded="false">
+                                @T("Admin.NopStation.Core.Marketplace.Category.ShowMore")
+                            </button>
+                        }
+                    </div>
+
+                    @* Pricing filter *@
+                    <div class="marketplace-sidebar-section">
+                        <p class="marketplace-sidebar-heading">@T("Admin.NopStation.Core.Marketplace.Search.PaidFilter")</p>
+                        <ul class="marketplace-filter-list">
+                            <li>
+                                <button type="button"
+                                        class="marketplace-filter-item paid-filter-item @(Model.ActivePaidFilter == 0 ? "active" : "")"
+                                        data-paid-filter="0"
+                                        aria-pressed="@(Model.ActivePaidFilter == 0 ? "true" : "false")">
+                                    @T("Admin.NopStation.Core.Marketplace.Search.PaidFilter.All")
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button"
+                                        class="marketplace-filter-item paid-filter-item @(Model.ActivePaidFilter == 2 ? "active" : "")"
+                                        data-paid-filter="2"
+                                        aria-pressed="@(Model.ActivePaidFilter == 2 ? "true" : "false")">
+                                    @T("Admin.NopStation.Core.Marketplace.Search.PaidFilter.Free")
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button"
+                                        class="marketplace-filter-item paid-filter-item @(Model.ActivePaidFilter == 1 ? "active" : "")"
+                                        data-paid-filter="1"
+                                        aria-pressed="@(Model.ActivePaidFilter == 1 ? "true" : "false")">
+                                    @T("Admin.NopStation.Core.Marketplace.Search.PaidFilter.Paid")
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    @* Version filter *@
+                    <div class="marketplace-sidebar-section">
+                        <p class="marketplace-sidebar-heading">@T("Admin.NopStation.Core.Marketplace.Search.VersionFilter")</p>
+                        <ul class="marketplace-filter-list">
+                            <li>
+                                <button type="button"
+                                        class="marketplace-filter-item version-filter-item @(Model.ActiveVersionFilter == 0 ? "active" : "")"
+                                        data-version-filter="0"
+                                        aria-pressed="@(Model.ActiveVersionFilter == 0 ? "true" : "false")">
+                                    @T("Admin.NopStation.Core.Marketplace.Search.VersionFilter.All")
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button"
+                                        class="marketplace-filter-item version-filter-item @(Model.ActiveVersionFilter == 1 ? "active" : "")"
+                                        data-version-filter="1"
+                                        aria-pressed="@(Model.ActiveVersionFilter == 1 ? "true" : "false")">
+                                    @T("Admin.NopStation.Core.Marketplace.Search.VersionFilter.Current")
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            @* ─── Products area ─── *@
+            <div class="col-lg-9 col-md-8 pt-3">
+                <div id="marketplace-products-container" class="marketplace-products-container">
+                    <div id="marketplace-products-content">
+                        @await Html.PartialAsync("_ProductsList", Model)
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+    $(function () {
+        var installUrl = '@Url.Action("Install", "NopStationMarketplace")';
+        var getProductsUrl = '@Url.Action("GetProducts", "NopStationMarketplace")';
+        var upgradeRequestUrl = '@Url.Action("UpgradeRequest", "NopStationMarketplace")';
+
+        var searchDebounce;
+        var pendingUpgradeSystemName = null;
+        var pendingInstallProductId = null;
+        var pendingInstallSystemName = null;
+        var pendingInstallBtn = null;
+        var isInstalling = false;
+        var isRequestingUpgrade = false;
+
+        // ── Helpers ──────────────────────────────────────────────────────────────
+
+        function getActiveCategoryId() {
+            return parseInt($('.category-filter-item.active').data('category-id') || 0);
+        }
+
+        function getActivePaidFilter() {
+            return parseInt($('.paid-filter-item.active').data('paid-filter') || 0);
+        }
+
+        function getSearchText() {
+            return $('#marketplace-search').val() || '';
+        }
+
+        function getActiveVersionFilter() {
+            return parseInt($('.version-filter-item.active').data('version-filter') || 0);
+        }
+
+        // ── Description show more / show less ─────────────────────────────────────
+
+        function initDescriptionToggles() {
+            $('.marketplace-desc-text').each(function () {
+                var $text = $(this);
+                var $toggle = $text.next('.marketplace-desc-toggle');
+                if (this.scrollHeight > this.clientHeight) {
+                    $toggle.show();
+                } else {
+                    $toggle.hide();
+                }
+            });
+        }
+
+        $(document).on('click', '.marketplace-desc-toggle', function () {
+            var $btn = $(this);
+            var $text = $btn.prev('.marketplace-desc-text');
+            if ($text.hasClass('expanded')) {
+                $text.removeClass('expanded');
+                $btn.text('@T("Admin.NopStation.Core.Marketplace.Description.ShowMore")');
+            } else {
+                $text.addClass('expanded');
+                $btn.text('@T("Admin.NopStation.Core.Marketplace.Description.ShowLess")');
+            }
+        });
+
+        function updateSidebarState(categoryId, paidFilter, versionFilter) {
+            $('.category-filter-item')
+                .removeClass('active')
+                .attr('aria-pressed', 'false');
+            $('.category-filter-item[data-category-id="' + categoryId + '"]')
+                .addClass('active')
+                .attr('aria-pressed', 'true');
+
+            $('.paid-filter-item')
+                .removeClass('active')
+                .attr('aria-pressed', 'false');
+            $('.paid-filter-item[data-paid-filter="' + paidFilter + '"]')
+                .addClass('active')
+                .attr('aria-pressed', 'true');
+
+            $('.version-filter-item')
+                .removeClass('active')
+                .attr('aria-pressed', 'false');
+            $('.version-filter-item[data-version-filter="' + versionFilter + '"]')
+                .addClass('active')
+                .attr('aria-pressed', 'true');
+        }
+
+        function updateBrowserUrl(categoryId, paidFilter, versionFilter, searchText, pageNumber) {
+            var params = new URLSearchParams();
+            if (categoryId > 0) params.set('categoryId', categoryId);
+            if (paidFilter > 0) params.set('paidFilter', paidFilter);
+            if (versionFilter > 0) params.set('versionFilter', versionFilter);
+            if (searchText) params.set('searchText', searchText);
+            if (pageNumber > 1) params.set('pageNumber', pageNumber);
+
+            var newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+            window.history.pushState({ categoryId: categoryId, paidFilter: paidFilter, versionFilter: versionFilter, searchText: searchText, pageNumber: pageNumber }, '', newUrl);
+        }
+
+        function loadProducts(categoryId, paidFilter, versionFilter, searchText, pageNumber) {
+            updateBrowserUrl(categoryId, paidFilter, versionFilter, searchText, pageNumber);
+            updateSidebarState(categoryId, paidFilter, versionFilter);
+
+            var $container = $('#marketplace-products-container');
+            var $content = $('#marketplace-products-content');
+            $container.addClass('is-loading').attr('aria-busy', 'true');
+
+            $.get(getProductsUrl, {
+                categoryId: categoryId,
+                paidFilter: paidFilter,
+                versionFilter: versionFilter,
+                searchText: searchText,
+                pageNumber: pageNumber
+            })
+            .done(function (html) {
+                $content.html(html);
+                $container.removeClass('is-loading').attr('aria-busy', 'false');
+                initDescriptionToggles();
+            })
+            .fail(function () {
+                $content.html('<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> @T("Admin.NopStation.Core.Marketplace.NoPluginsFound")</div>');
+                $container.removeClass('is-loading').attr('aria-busy', 'false');
+            });
+        }
+
+        // ── Category show more / show less ──────────────────────────────────────
+
+        $('#category-show-more-btn').on('click', function () {
+            var $btn = $(this);
+            var expanded = $btn.attr('aria-expanded') === 'true';
+            if (expanded) {
+                $('.category-extra').removeClass('visible');
+                $btn.attr('aria-expanded', 'false')
+                    .text('@T("Admin.NopStation.Core.Marketplace.Category.ShowMore")');
+            } else {
+                $('.category-extra').addClass('visible');
+                $btn.attr('aria-expanded', 'true')
+                    .text('@T("Admin.NopStation.Core.Marketplace.Category.ShowLess")');
+            }
+        });
+
+        // ── Filter: category ─────────────────────────────────────────────────────
+
+        $(document).on('click', '.category-filter-item', function () {
+            var categoryId = parseInt($(this).data('category-id'));
+            loadProducts(categoryId, getActivePaidFilter(), getActiveVersionFilter(), getSearchText(), 1);
+        });
+
+        // ── Filter: pricing ──────────────────────────────────────────────────────
+
+        $(document).on('click', '.paid-filter-item', function () {
+            var paidFilter = parseInt($(this).data('paid-filter'));
+            loadProducts(getActiveCategoryId(), paidFilter, getActiveVersionFilter(), getSearchText(), 1);
+        });
+
+        // ── Filter: version ──────────────────────────────────────────────────────
+
+        $(document).on('click', '.version-filter-item', function () {
+            var versionFilter = parseInt($(this).data('version-filter'));
+            loadProducts(getActiveCategoryId(), getActivePaidFilter(), versionFilter, getSearchText(), 1);
+        });
+
+        // ── Filter: search (debounced) ───────────────────────────────────────────
+
+        $('#marketplace-search').on('input', function () {
+            clearTimeout(searchDebounce);
+            var val = $(this).val();
+            searchDebounce = setTimeout(function () {
+                loadProducts(getActiveCategoryId(), getActivePaidFilter(), getActiveVersionFilter(), val, 1);
+            }, 450);
+        });
+
+        // ── Pagination ───────────────────────────────────────────────────────────
+
+        $(document).on('click', '.marketplace-pagination .marketplace-page-btn', function (event) {
+            var $pageLink = $(this).find('a[data-page]');
+            if (!$pageLink.length) return;
+
+            event.preventDefault();
+            var page = parseInt($pageLink.data('page'));
+            loadProducts(getActiveCategoryId(), getActivePaidFilter(), getActiveVersionFilter(), getSearchText(), page);
+            $('html, body').animate({ scrollTop: $('#marketplace-products-container').offset().top - 20 }, 300);
+        });
+
+        // ── Install: open confirmation modal ─────────────────────────────────────
+
+        $(document).on('click', '.marketplace-install-btn', function () {
+            pendingInstallBtn = $(this);
+            pendingInstallProductId = pendingInstallBtn.data('product-id');
+            pendingInstallSystemName = pendingInstallBtn.data('system-name');
+
+            $('#installResult').hide().empty();
+            $('#installProgress').hide();
+            $('#installConfirmBtn').prop('disabled', false).show()
+                .html('<i class="fas fa-download"></i> @T("Admin.NopStation.Core.Marketplace.Button.Install")');
+            $('#installCancelBtn').prop('disabled', false);
+            $('#installModalCloseBtn').prop('disabled', false);
+            $('#installModal').modal('show');
+        });
+
+        // ── Install: prevent close while installing ───────────────────────────────
+
+        $('#installModal').on('hide.bs.modal', function (e) {
+            if (isInstalling) {
+                e.preventDefault();
+            }
+        });
+
+        // ── Install: confirm & run ────────────────────────────────────────────────
+
+        $('#installConfirmBtn').on('click', function () {
+            if (!pendingInstallProductId) return;
+
+            var $confirmBtn = $(this);
+            isInstalling = true;
+            $confirmBtn.prop('disabled', true)
+                .html('<i class="fas fa-spinner fa-spin"></i> @T("Admin.NopStation.Core.Marketplace.Install.Downloading")');
+            $('#installCancelBtn').prop('disabled', true);
+            $('#installModalCloseBtn').prop('disabled', true);
+            $('#installProgress').show();
+
+            var postData = { productId: pendingInstallProductId, systemName: pendingInstallSystemName };
+            addAntiForgeryToken(postData);
+
+            $.ajax({
+                url: installUrl,
+                type: 'POST',
+                data: postData,
+                success: function (result) {
+                    isInstalling = false;
+                    $('#installProgress').hide();
+                    $('#installCancelBtn').prop('disabled', false);
+                    $('#installModalCloseBtn').prop('disabled', false);
+
+                    if (result.success) {
+                        $('#installResult')
+                            .html('<div class="alert alert-success p-2 small mb-0"><i class="fas fa-check-circle"></i> ' + result.message + '</div>')
+                            .show();
+                        $confirmBtn.hide();
+
+                        if (pendingInstallBtn) {
+                            pendingInstallBtn
+                                .removeClass('btn-success')
+                                .addClass('btn-primary')
+                                .prop('disabled', true)
+                                .html('<i class="fas fa-check"></i> @T("Admin.NopStation.Core.Marketplace.Install.InstalledRestart")');
+                        }
+                    } else {
+                        $('#installResult')
+                            .html('<div class="alert alert-danger p-2 small mb-0"><i class="fas fa-exclamation-triangle"></i> ' + result.message + '</div>')
+                            .show();
+                        $confirmBtn.prop('disabled', false)
+                            .html('<i class="fas fa-download"></i> @T("Admin.NopStation.Core.Marketplace.Button.Install")');
+                    }
+                },
+                error: function () {
+                    isInstalling = false;
+                    $('#installProgress').hide();
+                    $('#installCancelBtn').prop('disabled', false);
+                    $('#installModalCloseBtn').prop('disabled', false);
+                    $('#installResult')
+                        .html('<div class="alert alert-danger p-2 small mb-0"><i class="fas fa-exclamation-triangle"></i> @T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Failed.Generic")</div>')
+                        .show();
+                    $confirmBtn.prop('disabled', false)
+                        .html('<i class="fas fa-download"></i> @T("Admin.NopStation.Core.Marketplace.Button.Install")');
+                }
+            });
+        });
+
+        $('#installModal').on('hidden.bs.modal', function () {
+            pendingInstallProductId = null;
+            pendingInstallSystemName = null;
+            pendingInstallBtn = null;
+            isInstalling = false;
+            $('#installResult').hide().empty();
+            $('#installProgress').hide();
+            $('#installConfirmBtn').prop('disabled', false).show()
+                .html('<i class="fas fa-download"></i> @T("Admin.NopStation.Core.Marketplace.Button.Install")');
+            $('#installCancelBtn').prop('disabled', false);
+        });
+
+        // ── Upgrade Request: open modal ───────────────────────────────────────────
+
+        $(document).on('click', '.marketplace-upgrade-request-btn', function () {
+            pendingUpgradeSystemName = $(this).data('system-name');
+            $('#upgradeRequestResult').hide().empty();
+            $('#upgradeRequestProgress').hide();
+            $('#upgradeRequestConfirmBtn').prop('disabled', false)
+                .html('<i class="fas fa-arrow-up"></i> @T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Confirm")');
+            $('#upgradeRequestCancelBtn').prop('disabled', false);
+            $('#upgradeRequestCloseBtn').prop('disabled', false);
+            $('#upgradeRequestModal').modal('show');
+        });
+
+        $('#upgradeRequestModal').on('hide.bs.modal', function (e) {
+            if (isRequestingUpgrade) {
+                e.preventDefault();
+            }
+        });
+
+        // ── Upgrade Request: confirm & send ──────────────────────────────────────
+
+        $('#upgradeRequestConfirmBtn').on('click', function () {
+            if (!pendingUpgradeSystemName) return;
+
+            var $confirmBtn = $(this);
+            isRequestingUpgrade = true;
+            $confirmBtn.prop('disabled', true)
+                .html('<i class="fas fa-spinner fa-spin"></i> @T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Sending")');
+            $('#upgradeRequestCancelBtn').prop('disabled', true);
+            $('#upgradeRequestCloseBtn').prop('disabled', true);
+            $('#upgradeRequestProgress').show();
+
+            var postData = { systemName: pendingUpgradeSystemName };
+            addAntiForgeryToken(postData);
+
+            $.ajax({
+                url: upgradeRequestUrl,
+                type: 'POST',
+                data: postData,
+                success: function (result) {
+                    isRequestingUpgrade = false;
+                    $('#upgradeRequestProgress').hide();
+                    $('#upgradeRequestCancelBtn').prop('disabled', false);
+                    $('#upgradeRequestCloseBtn').prop('disabled', false);
+                    var $result = $('#upgradeRequestResult');
+                    if (result.success) {
+                        $result.html('<div class="alert alert-success p-2 small mb-0"><i class="fas fa-check-circle"></i> ' + result.message + '</div>').show();
+                        $confirmBtn.hide();
+                    } else {
+                        $result.html('<div class="alert alert-danger p-2 small mb-0"><i class="fas fa-exclamation-triangle"></i> ' + result.message + '</div>').show();
+                        $confirmBtn.prop('disabled', false)
+                            .html('<i class="fas fa-arrow-up"></i> @T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Confirm")');
+                    }
+                },
+                error: function () {
+                    isRequestingUpgrade = false;
+                    $('#upgradeRequestProgress').hide();
+                    $('#upgradeRequestCancelBtn').prop('disabled', false);
+                    $('#upgradeRequestCloseBtn').prop('disabled', false);
+                    $('#upgradeRequestResult')
+                        .html('<div class="alert alert-danger p-2 small mb-0"><i class="fas fa-exclamation-triangle"></i> @T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Failed.Generic")</div>')
+                        .show();
+                    $confirmBtn.prop('disabled', false)
+                        .html('<i class="fas fa-arrow-up"></i> @T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Confirm")');
+                }
+            });
+        });
+
+        $('#upgradeRequestModal').on('hidden.bs.modal', function () {
+            pendingUpgradeSystemName = null;
+            isRequestingUpgrade = false;
+            $('#upgradeRequestProgress').hide();
+            $('#upgradeRequestResult').hide().empty();
+            $('#upgradeRequestConfirmBtn').prop('disabled', false).show()
+                .html('<i class="fas fa-arrow-up"></i> @T("Admin.NopStation.Core.Marketplace.UpgradeRequest.Confirm")');
+            $('#upgradeRequestCancelBtn').prop('disabled', false);
+            $('#upgradeRequestCloseBtn').prop('disabled', false);
+        });
+
+        // ── Browser back/forward ─────────────────────────────────────────────────
+
+        window.addEventListener('popstate', function (e) {
+            if (e.state) {
+                $('#marketplace-search').val(e.state.searchText || '');
+                updateSidebarState(e.state.categoryId || 0, e.state.paidFilter || 0, e.state.versionFilter || 0);
+                var $container = $('#marketplace-products-container');
+                var $content = $('#marketplace-products-content');
+                $container.addClass('is-loading').attr('aria-busy', 'true');
+                $.get(getProductsUrl, {
+                    categoryId: e.state.categoryId || 0,
+                    paidFilter: e.state.paidFilter || 0,
+                    versionFilter: e.state.versionFilter || 0,
+                    searchText: e.state.searchText || '',
+                    page: e.state.page || 1
+                }).done(function (html) {
+                    $content.html(html);
+                    $container.removeClass('is-loading').attr('aria-busy', 'false');
+                    initDescriptionToggles();
+                }).fail(function () {
+                    $container.removeClass('is-loading').attr('aria-busy', 'false');
+                });
+            }
+        });
+
+        // ── Initial description toggles ───────────────────────────────────────────
+        initDescriptionToggles();
+    });
+</script>

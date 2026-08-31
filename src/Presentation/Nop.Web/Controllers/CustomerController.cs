@@ -17,8 +17,7 @@ using Nop.Core.Http;
 using Nop.Core.Http.Extensions;
 using Nop.Services.Attributes;
 using Nop.Services.Authentication;
-using Nop.Services.Authentication.External;
-using Nop.Services.Authentication.MultiFactor;
+
 using Nop.Services.Catalog;
 using Nop.Services.Common;
 using Nop.Services.Customers;
@@ -70,13 +69,10 @@ public partial class CustomerController : BasePublicController
     protected readonly IDownloadService _downloadService;
     protected readonly IEventPublisher _eventPublisher;
     protected readonly IExportManager _exportManager;
-    protected readonly IExternalAuthenticationService _externalAuthenticationService;
     protected readonly IGdprService _gdprService;
     protected readonly IGenericAttributeService _genericAttributeService;
-    protected readonly IGiftCardService _giftCardService;
     protected readonly ILocalizationService _localizationService;
     protected readonly ILogger _logger;
-    protected readonly IMultiFactorAuthenticationPluginManager _multiFactorAuthenticationPluginManager;
     protected readonly INewsLetterSubscriptionService _newsLetterSubscriptionService;
     protected readonly INotificationService _notificationService;
     protected readonly IOrderService _orderService;
@@ -91,7 +87,6 @@ public partial class CustomerController : BasePublicController
     protected readonly IWorkflowMessageService _workflowMessageService;
     protected readonly LocalizationSettings _localizationSettings;
     protected readonly MediaSettings _mediaSettings;
-    protected readonly MultiFactorAuthenticationSettings _multiFactorAuthenticationSettings;
     protected readonly StoreInformationSettings _storeInformationSettings;
     protected readonly TaxSettings _taxSettings;
     private static readonly char[] _separator = [','];
@@ -122,13 +117,10 @@ public partial class CustomerController : BasePublicController
         IDownloadService downloadService,
         IEventPublisher eventPublisher,
         IExportManager exportManager,
-        IExternalAuthenticationService externalAuthenticationService,
         IGdprService gdprService,
         IGenericAttributeService genericAttributeService,
-        IGiftCardService giftCardService,
         ILocalizationService localizationService,
         ILogger logger,
-        IMultiFactorAuthenticationPluginManager multiFactorAuthenticationPluginManager,
         INewsLetterSubscriptionService newsLetterSubscriptionService,
         INotificationService notificationService,
         IOrderService orderService,
@@ -143,7 +135,6 @@ public partial class CustomerController : BasePublicController
         IWorkflowMessageService workflowMessageService,
         LocalizationSettings localizationSettings,
         MediaSettings mediaSettings,
-        MultiFactorAuthenticationSettings multiFactorAuthenticationSettings,
         StoreInformationSettings storeInformationSettings,
         TaxSettings taxSettings)
     {
@@ -169,13 +160,10 @@ public partial class CustomerController : BasePublicController
         _downloadService = downloadService;
         _eventPublisher = eventPublisher;
         _exportManager = exportManager;
-        _externalAuthenticationService = externalAuthenticationService;
         _gdprService = gdprService;
         _genericAttributeService = genericAttributeService;
-        _giftCardService = giftCardService;
         _localizationService = localizationService;
         _logger = logger;
-        _multiFactorAuthenticationPluginManager = multiFactorAuthenticationPluginManager;
         _newsLetterSubscriptionService = newsLetterSubscriptionService;
         _notificationService = notificationService;
         _orderService = orderService;
@@ -190,7 +178,6 @@ public partial class CustomerController : BasePublicController
         _workflowMessageService = workflowMessageService;
         _localizationSettings = localizationSettings;
         _mediaSettings = mediaSettings;
-        _multiFactorAuthenticationSettings = multiFactorAuthenticationSettings;
         _storeInformationSettings = storeInformationSettings;
         _taxSettings = taxSettings;
     }
@@ -210,28 +197,6 @@ public partial class CustomerController : BasePublicController
                 ModelState.AddModelError("", consent.RequiredMessage);
             }
         }
-    }
-
-    protected virtual async Task<string> ParseSelectedProviderAsync(IFormCollection form)
-    {
-        ArgumentNullException.ThrowIfNull(form);
-
-        if (!form.TryGetValue("mfa_provider", out var curProvider) || StringValues.IsNullOrEmpty(curProvider))
-            return string.Empty;
-
-        var selectedProvider = curProvider.ToString();
-        if (string.IsNullOrEmpty(selectedProvider))
-            return string.Empty;
-
-        var store = await _storeContext.GetCurrentStoreAsync();
-        var customer = await _workContext.GetCurrentCustomerAsync();
-        var multiFactorAuthenticationProviders = await _multiFactorAuthenticationPluginManager
-            .LoadActivePluginsAsync(customer, store.Id);
-        
-        var isValidProvider = multiFactorAuthenticationProviders
-            .Any(p => p.PluginDescriptor.SystemName.Equals(selectedProvider, StringComparison.InvariantCultureIgnoreCase));
-
-        return isValidProvider ? selectedProvider : string.Empty;
     }
 
     protected virtual async Task<string> ParseCustomCustomerAttributesAsync(IFormCollection form)
@@ -464,19 +429,6 @@ public partial class CustomerController : BasePublicController
 
                     return await _customerRegistrationService.SignInCustomerAsync(customer, returnUrl, model.RememberMe);
                 }
-                case CustomerLoginResults.MultiFactorAuthenticationRequired:
-                {
-                    var customerMultiFactorAuthenticationInfo = new CustomerMultiFactorAuthenticationInfo
-                    {
-                        UserName = userNameOrEmail,
-                        RememberMe = model.RememberMe,
-                        ReturnUrl = returnUrl
-                    };
-                    await HttpContext.Session.SetAsync(
-                        NopCustomerDefaults.CustomerMultiFactorAuthenticationInfo,
-                        customerMultiFactorAuthenticationInfo);
-                    return RedirectToRoute(NopRouteNames.Standard.MULTIFACTOR_VERIFICATION);
-                }
                 case CustomerLoginResults.CustomerNotExist:
                     ModelState.AddModelError("", await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.CustomerNotExist"));
                     break;
@@ -513,43 +465,6 @@ public partial class CustomerController : BasePublicController
 
         //If we got this far, something failed, redisplay form
         model = await _customerModelFactory.PrepareLoginModelAsync(model.CheckoutAsGuest);
-        return View(model);
-    }
-
-    /// <summary>
-    /// The entry point for injecting a plugin component of type "MultiFactorAuth"
-    /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the user verification page for Multi-factor authentication. Served by an authentication provider.
-    /// </returns>
-    [CheckAccessClosedStore(ignore: true)]
-    [CheckAccessPublicStore(ignore: true)]
-    public virtual async Task<IActionResult> MultiFactorVerification()
-    {
-        if (!await _multiFactorAuthenticationPluginManager.HasActivePluginsAsync())
-            return RedirectToRoute(NopRouteNames.General.LOGIN);
-
-        var customerMultiFactorAuthenticationInfo = await HttpContext.Session.GetAsync<CustomerMultiFactorAuthenticationInfo>(
-            NopCustomerDefaults.CustomerMultiFactorAuthenticationInfo);
-        var userName = customerMultiFactorAuthenticationInfo?.UserName;
-        if (string.IsNullOrEmpty(userName))
-            return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
-
-        var customer = _customerSettings.UsernamesEnabled ? await _customerService.GetCustomerByUsernameAsync(userName) : await _customerService.GetCustomerByEmailAsync(userName);
-        if (customer == null)
-            return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
-
-        if (!await _permissionService.AuthorizeAsync(StandardPermission.Security.ENABLE_MULTI_FACTOR_AUTHENTICATION, customer))
-            return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
-
-        var selectedProvider = await _genericAttributeService.GetAttributeAsync<string>(customer, NopCustomerDefaults.SelectedMultiFactorAuthenticationProviderAttribute);
-        if (string.IsNullOrEmpty(selectedProvider))
-            return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
-
-        var model = new MultiFactorAuthenticationProviderModel();
-        model = await _customerModelFactory.PrepareMultiFactorAuthenticationProviderModelAsync(model, selectedProvider, true);
-
         return View(model);
     }
 
@@ -1400,28 +1315,6 @@ public partial class CustomerController : BasePublicController
         return View(model);
     }
 
-    [HttpPost]
-    public virtual async Task<IActionResult> RemoveExternalAssociation(int id)
-    {
-        var currentCustomer = await _workContext.GetCurrentCustomerAsync();
-
-        if (!await _customerService.IsRegisteredAsync(currentCustomer))
-            return Challenge();
-        
-        var ear = await _externalAuthenticationService.GetExternalAuthenticationRecordByIdAsync(id);
-
-        if (ear == null)
-            return Json(new { redirect = Url.RouteUrl(NopRouteNames.General.CUSTOMER_INFO) });
-
-        //ensure it's our record
-        if (ear.CustomerId != currentCustomer.Id)
-            return Challenge();
-
-        await _externalAuthenticationService.DeleteExternalAuthenticationRecordAsync(ear);
-
-        return Json(new { redirect = Url.RouteUrl(NopRouteNames.General.CUSTOMER_INFO) });
-    }
-
     //available even when navigation is not allowed
     [CheckAccessPublicStore(ignore: true)]
     public virtual async Task<IActionResult> EmailRevalidation(string token, string email, Guid guid)
@@ -1639,41 +1532,6 @@ public partial class CustomerController : BasePublicController
 
     #endregion
 
-    #region My account / Downloadable products
-
-    public virtual async Task<IActionResult> DownloadableProducts()
-    {
-        if (!await _customerService.IsRegisteredAsync(await _workContext.GetCurrentCustomerAsync()))
-            return Challenge();
-
-        if (_customerSettings.HideDownloadableProductsTab)
-            return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
-
-        var model = await _customerModelFactory.PrepareCustomerDownloadableProductsModelAsync();
-
-        return View(model);
-    }
-
-    //ignore SEO friendly URLs checks
-    [CheckLanguageSeoCode(ignore: true)]
-    public virtual async Task<IActionResult> UserAgreement(Guid orderItemId)
-    {
-        var orderItem = await _orderService.GetOrderItemByGuidAsync(orderItemId);
-        if (orderItem == null)
-            return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
-
-        var product = await _productService.GetProductByIdAsync(orderItem.ProductId);
-
-        if (product == null || !product.HasUserAgreement)
-            return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
-
-        var model = await _customerModelFactory.PrepareUserAgreementModelAsync(orderItem, product);
-
-        return View(model);
-    }
-
-    #endregion
-
     #region My account / Change password
 
     public virtual async Task<IActionResult> ChangePassword()
@@ -1882,151 +1740,6 @@ public partial class CustomerController : BasePublicController
 
         var model = await _customerModelFactory.PrepareGdprToolsModelAsync();
         model.Result = await _localizationService.GetResourceAsync("Gdpr.DeleteRequested.Success");
-
-        return View(model);
-    }
-
-    #endregion
-
-    #region Check gift card balance
-
-    //check gift card balance page
-    //available even when a store is closed
-    [CheckAccessClosedStore(ignore: true)]
-    public virtual async Task<IActionResult> CheckGiftCardBalance()
-    {
-        if (!_customerSettings.AllowCustomersToCheckGiftCardBalance)
-            return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
-
-        var model = await _customerModelFactory.PrepareCheckGiftCardBalanceModelAsync();
-
-        return View(model);
-    }
-
-    [HttpPost, ActionName("CheckGiftCardBalance")]
-    [FormValueRequired("checkbalancegiftcard")]
-    [ValidateCaptcha]
-    public virtual async Task<IActionResult> CheckBalance(CheckGiftCardBalanceModel model, bool captchaValid)
-    {
-        if (!_customerSettings.AllowCustomersToCheckGiftCardBalance)
-            return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
-
-        //validate CAPTCHA
-        if (_captchaSettings.Enabled && _captchaSettings.ShowOnCheckGiftCardBalance && !captchaValid)
-            ModelState.AddModelError("", await _localizationService.GetResourceAsync("Common.WrongCaptchaMessage"));
-
-        if (ModelState.IsValid)
-        {
-            var giftCard = (await _giftCardService.GetAllGiftCardsAsync(giftCardCouponCode: model.GiftCardCode)).FirstOrDefault();
-            if (giftCard != null && await _giftCardService.IsGiftCardValidAsync(giftCard))
-            {
-                var remainingAmount = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(await _giftCardService.GetGiftCardRemainingAmountAsync(giftCard), await _workContext.GetWorkingCurrencyAsync());
-                model.Result = await _priceFormatter.FormatPriceAsync(remainingAmount, true, false);
-            }
-            else
-            {
-                model.Message = await _localizationService.GetResourceAsync("CheckGiftCardBalance.GiftCardCouponCode.Invalid");
-            }
-        }
-
-        return View(model);
-    }
-
-    #endregion
-
-    #region Multi-factor Authentication
-
-    //available even when a store is closed
-    [CheckAccessClosedStore(ignore: true)]
-    public virtual async Task<IActionResult> MultiFactorAuthentication()
-    {
-        if (!await _multiFactorAuthenticationPluginManager.HasActivePluginsAsync())
-        {
-            return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
-        }
-
-        if (!await _permissionService.AuthorizeAsync(StandardPermission.Security.ENABLE_MULTI_FACTOR_AUTHENTICATION))
-            return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
-
-        var model = new MultiFactorAuthenticationModel();
-        model = await _customerModelFactory.PrepareMultiFactorAuthenticationModelAsync(model);
-        return View(model);
-    }
-
-    [HttpPost]
-    public virtual async Task<IActionResult> MultiFactorAuthentication(MultiFactorAuthenticationModel model, IFormCollection form)
-    {
-        var customer = await _workContext.GetCurrentCustomerAsync();
-        if (!await _customerService.IsRegisteredAsync(customer))
-            return Challenge();
-
-        if (!await _permissionService.AuthorizeAsync(StandardPermission.Security.ENABLE_MULTI_FACTOR_AUTHENTICATION))
-            return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
-
-        try
-        {
-            if (ModelState.IsValid)
-            {
-                //save MultiFactorIsEnabledAttribute
-                if (!model.IsEnabled)
-                {
-                    if (!_multiFactorAuthenticationSettings.ForceMultifactorAuthentication)
-                    {
-                        await _genericAttributeService
-                            .SaveAttributeAsync(customer, NopCustomerDefaults.SelectedMultiFactorAuthenticationProviderAttribute, string.Empty);
-
-                        //raise change multi-factor authentication provider event       
-                        await _eventPublisher.PublishAsync(new CustomerChangeMultiFactorAuthenticationProviderEvent(customer));
-                    }
-                    else
-                    {
-                        model = await _customerModelFactory.PrepareMultiFactorAuthenticationModelAsync(model);
-                        model.Message = await _localizationService.GetResourceAsync("Account.MultiFactorAuthentication.Warning.ForceActivation");
-                        return View(model);
-                    }
-                }
-                else
-                {
-                    //save selected multi-factor authentication provider
-                    var selectedProvider = await ParseSelectedProviderAsync(form);
-                    var lastSavedProvider = await _genericAttributeService.GetAttributeAsync<string>(customer, NopCustomerDefaults.SelectedMultiFactorAuthenticationProviderAttribute);
-                    if (string.IsNullOrEmpty(selectedProvider) && !string.IsNullOrEmpty(lastSavedProvider))
-                    {
-                        selectedProvider = lastSavedProvider;
-                    }
-
-                    if (selectedProvider != lastSavedProvider)
-                    {
-                        await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.SelectedMultiFactorAuthenticationProviderAttribute, selectedProvider);
-
-                        //raise change multi-factor authentication provider event       
-                        await _eventPublisher.PublishAsync(new CustomerChangeMultiFactorAuthenticationProviderEvent(customer));
-                    }
-                }
-
-                return RedirectToRoute(NopRouteNames.Standard.MULTI_FACTOR_AUTHENTICATION_SETTINGS);
-            }
-        }
-        catch (Exception exc)
-        {
-            ModelState.AddModelError("", exc.Message);
-        }
-
-        //If we got this far, something failed, redisplay form
-        model = await _customerModelFactory.PrepareMultiFactorAuthenticationModelAsync(model);
-        return View(model);
-    }
-
-    public virtual async Task<IActionResult> ConfigureMultiFactorAuthenticationProvider(string providerSysName)
-    {
-        if (!await _customerService.IsRegisteredAsync(await _workContext.GetCurrentCustomerAsync()))
-            return Challenge();
-
-        if (!await _permissionService.AuthorizeAsync(StandardPermission.Security.ENABLE_MULTI_FACTOR_AUTHENTICATION))
-            return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
-
-        var model = new MultiFactorAuthenticationProviderModel();
-        model = await _customerModelFactory.PrepareMultiFactorAuthenticationProviderModelAsync(model, providerSysName);
 
         return View(model);
     }

@@ -6,7 +6,6 @@ using Nop.Core.Domain.Customers;
 using Nop.Core.Events;
 using Nop.Core.Http;
 using Nop.Services.Authentication;
-using Nop.Services.Authentication.MultiFactor;
 using Nop.Services.Common;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
@@ -32,17 +31,11 @@ public partial class CustomerRegistrationService : ICustomerRegistrationService
     protected readonly IEventPublisher _eventPublisher;
     protected readonly IGenericAttributeService _genericAttributeService;
     protected readonly ILocalizationService _localizationService;
-    protected readonly IMultiFactorAuthenticationPluginManager _multiFactorAuthenticationPluginManager;
     protected readonly INewsLetterSubscriptionService _newsLetterSubscriptionService;
-    protected readonly INotificationService _notificationService;
-    protected readonly IPermissionService _permissionService;
-    protected readonly IRewardPointService _rewardPointService;
     protected readonly IShoppingCartService _shoppingCartService;
-    protected readonly IStoreContext _storeContext;
     protected readonly IUrlHelperFactory _urlHelperFactory;
     protected readonly IWorkContext _workContext;
     protected readonly IWorkflowMessageService _workflowMessageService;
-    protected readonly RewardPointsSettings _rewardPointsSettings;
 
     #endregion
 
@@ -57,17 +50,11 @@ public partial class CustomerRegistrationService : ICustomerRegistrationService
         IEventPublisher eventPublisher,
         IGenericAttributeService genericAttributeService,
         ILocalizationService localizationService,
-        IMultiFactorAuthenticationPluginManager multiFactorAuthenticationPluginManager,
         INewsLetterSubscriptionService newsLetterSubscriptionService,
-        INotificationService notificationService,
-        IPermissionService permissionService,
-        IRewardPointService rewardPointService,
         IShoppingCartService shoppingCartService,
-        IStoreContext storeContext,
         IUrlHelperFactory urlHelperFactory,
         IWorkContext workContext,
-        IWorkflowMessageService workflowMessageService,
-        RewardPointsSettings rewardPointsSettings)
+        IWorkflowMessageService workflowMessageService)
     {
         _customerSettings = customerSettings;
         _actionContextAccessor = actionContextAccessor;
@@ -78,17 +65,11 @@ public partial class CustomerRegistrationService : ICustomerRegistrationService
         _eventPublisher = eventPublisher;
         _genericAttributeService = genericAttributeService;
         _localizationService = localizationService;
-        _multiFactorAuthenticationPluginManager = multiFactorAuthenticationPluginManager;
         _newsLetterSubscriptionService = newsLetterSubscriptionService;
-        _notificationService = notificationService;
-        _permissionService = permissionService;
-        _rewardPointService = rewardPointService;
         _shoppingCartService = shoppingCartService;
-        _storeContext = storeContext;
         _urlHelperFactory = urlHelperFactory;
         _workContext = workContext;
         _workflowMessageService = workflowMessageService;
-        _rewardPointsSettings = rewardPointsSettings;
     }
 
     #endregion
@@ -175,17 +156,6 @@ public partial class CustomerRegistrationService : ICustomerRegistrationService
 
             return CustomerLoginResults.WrongPassword;
         }
-
-        var selectedProvider = await _permissionService.AuthorizeAsync(StandardPermission.Security.ENABLE_MULTI_FACTOR_AUTHENTICATION, customer)
-            ? await _genericAttributeService.GetAttributeAsync<string>(customer, NopCustomerDefaults.SelectedMultiFactorAuthenticationProviderAttribute)
-            : null;
-        var store = await _storeContext.GetCurrentStoreAsync();
-        var methodIsActive = await _multiFactorAuthenticationPluginManager.IsPluginActiveAsync(selectedProvider, customer, store.Id);
-        if (methodIsActive)
-            return CustomerLoginResults.MultiFactorAuthenticationRequired;
-
-        if (!string.IsNullOrEmpty(selectedProvider))
-            _notificationService.WarningNotification(await _localizationService.GetResourceAsync("MultiFactorAuthentication.Notification.SelectedMethodIsNotActive"));
 
         //update login details
         customer.FailedLoginAttempts = 0;
@@ -307,15 +277,6 @@ public partial class CustomerRegistrationService : ICustomerRegistrationService
         {
             var guestRole = await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.GuestsRoleName);
             await _customerService.RemoveCustomerRoleMappingAsync(request.Customer, guestRole);
-        }
-
-        //add reward points for customer registration (if enabled)
-        if (_rewardPointsSettings.Enabled && _rewardPointsSettings.PointsForRegistration > 0)
-        {
-            var endDate = _rewardPointsSettings.RegistrationPointsValidity > 0
-                ? (DateTime?)DateTime.UtcNow.AddDays(_rewardPointsSettings.RegistrationPointsValidity.Value) : null;
-            await _rewardPointService.AddRewardPointsHistoryEntryAsync(request.Customer, _rewardPointsSettings.PointsForRegistration,
-                request.StoreId, await _localizationService.GetResourceAsync("RewardPoints.Message.EarnedForRegistration"), endDate: endDate);
         }
 
         await _customerService.UpdateCustomerAsync(request.Customer);

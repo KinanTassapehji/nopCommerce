@@ -85,12 +85,8 @@ public static partial class PublicWidgetZones
     public static string CustomerAddressesTop => "customer_addresses_top";
     public static string CustomerAvatarBottom => "customer_avatar_bottom";
     public static string CustomerAvatarTop => "customer_avatar_top";
-    public static string CustomerBackInStockSubscriptionsBottom => "customer_back_in_stock_subscriptions_bottom";
-    public static string CustomerBackInStockSubscriptionsTop => "customer_back_in_stock_subscriptions_top";
     public static string CustomerChangePasswordBottom => "customer_change_password_bottom";
     public static string CustomerChangePasswordTop => "customer_change_password_top";
-    public static string CustomerCheckGiftCardBalanceBottom => "customer_check_gift_card_balance_bottom";
-    public static string CustomerCheckGiftCardBalanceTop => "customer_check_gift_card_balance_top";
     public static string CustomerDownloadableProductsBottom => "customer_downloadable_products_bottom";
     public static string CustomerDownloadableProductsTop => "customer_downloadable_products_top";
     public static string CustomerForumSubscriptionsBottom => "customer_forum_subscriptions_bottom";
@@ -99,16 +95,12 @@ public static partial class PublicWidgetZones
     public static string CustomerGdprToolsTop => "customer_gdpr_tools_top";
     public static string CustomerInfoBottom => "customer_info_bottom";
     public static string CustomerInfoTop => "customer_info_top";
-    public static string CustomerMultiFactorAuthenticationBottom => "customer_multi_factor_authentication_bottom";
-    public static string CustomerMultiFactorAuthenticationTop => "customer_multi_factor_authentication_top";
     public static string CustomerOrdersBottom => "customer_orders_bottom";
     public static string CustomerOrdersTop => "customer_orders_top";
     public static string CustomerProductReviewsBottom => "customer_product_reviews_bottom";
     public static string CustomerProductReviewsTop => "customer_product_reviews_top";
     public static string CustomerReturnRequestsBottom => "customer_return_requests_bottom";
     public static string CustomerReturnRequestsTop => "customer_return_requests_top";
-    public static string CustomerRewardPointsBottom => "customer_reward_points_bottom";
-    public static string CustomerRewardPointsTop => "customer_reward_points_top";
     public static string CustomerTopicDetailsBottom => "customer_topic_details_bottom";
     public static string CustomerTopicDetailsTop => "customer_topic_details_top";
     public static string Footer => "footer";
@@ -231,6 +223,4 @@ public static partial class PublicWidgetZones
     public static string VendorDetailsTop => "vendordetails_top";
     public static string VendorInfoBottom => "vendor_info_bottom";
     public static string VendorInfoTop => "vendor_info_top";
-    public static string WishlistBottom => "wishlist_bottom";
-    public static string WishlistTop => "wishlist_top";
 }

@@ -1,0 +1,33 @@
+﻿@inject Nop.Core.IWorkContext workContext
+
+@{
+    var supportRtl = (await workContext.GetWorkingLanguageAsync()).Rtl;
+    @*<script  asp-exclude-from-bundle="true" asp-location="Footer" src= "~/Plugins/NopStation.Plugin.Widgets.AnywhereSlider/Content/js/owl.carousel.min.js" ></script>
+     NopHtml.AppendCssFileParts("~/Plugins/NopStation.Plugin.Widgets.AnywhereSlider/Content/css/rtl/owl.theme.green.min.css", string.Empty);
+    <script  asp-exclude-from-bundle="true" asp-location="Footer" src= "~/Plugins/NopStation.Plugin.Widgets.AnywhereSlider/Content/js/nopstation.anywhereslider.js" ></script>*@
+
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, "~/Plugins/NopStation.Plugin.Widgets.AnywhereSlider/Content/js/owl.carousel.min.js", string.Empty, true);
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, "~/Plugins/NopStation.Plugin.Widgets.AnywhereSlider/Content/js/nopstation.anywhereslider.js", string.Empty, true);
+
+    if (supportRtl)
+    {
+        NopHtml.AppendCssFileParts("~/Plugins/NopStation.Plugin.Widgets.AnywhereSlider/Themes/Tulip/Content/css/owl.carousel.rtl.css", string.Empty);
+        NopHtml.AppendCssFileParts("~/Plugins/NopStation.Plugin.Widgets.AnywhereSlider/Themes/Tulip/Content/css/animate.rtl.css", string.Empty);
+        NopHtml.AppendCssFileParts("~/Plugins/NopStation.Plugin.Widgets.AnywhereSlider/Themes/Tulip/Content/css/anywhere-slider.rtl.css", string.Empty);
+    }
+    else
+    {       
+        NopHtml.AppendCssFileParts("~/Plugins/NopStation.Plugin.Widgets.AnywhereSlider/Themes/Tulip/Content/css/owl.carousel.css", string.Empty);
+        NopHtml.AppendCssFileParts("~/Plugins/NopStation.Plugin.Widgets.AnywhereSlider/Themes/Tulip/Content/css/animate.css", string.Empty);
+        NopHtml.AppendCssFileParts("~/Plugins/NopStation.Plugin.Widgets.AnywhereSlider/Themes/Tulip/Content/css/anywhere-slider.css", string.Empty);
+    }
+}
+
+<script asp-location="Footer" asp-exclude-from-bundle="true">
+    var sliderdata = {};
+    sliderdata.AnywereSliderFailure = '@T("NopStation.AnywhereSlider.LoadingFailed")';
+
+    $(document).ready(function () {
+        AnywereSlider.init('@Url.RouteUrl("AnywhereSlider")', '.slider-container', '.v .loader', sliderdata);
+    });
+</script>

@@ -12,21 +12,18 @@ namespace Nop.Web.Components;
 public partial class RecentlyViewedProductsBlockViewComponent : NopViewComponent
 {
     protected readonly CatalogSettings _catalogSettings;
-    protected readonly IAclService _aclService;
     protected readonly IProductModelFactory _productModelFactory;
     protected readonly IProductService _productService;
     protected readonly IRecentlyViewedProductsService _recentlyViewedProductsService;
     protected readonly IStoreMappingService _storeMappingService;
 
     public RecentlyViewedProductsBlockViewComponent(CatalogSettings catalogSettings,
-        IAclService aclService,
         IProductModelFactory productModelFactory,
         IProductService productService,
         IRecentlyViewedProductsService recentlyViewedProductsService,
         IStoreMappingService storeMappingService)
     {
         _catalogSettings = catalogSettings;
-        _aclService = aclService;
         _productModelFactory = productModelFactory;
         _productService = productService;
         _recentlyViewedProductsService = recentlyViewedProductsService;
@@ -40,8 +37,8 @@ public partial class RecentlyViewedProductsBlockViewComponent : NopViewComponent
 
         var preparePictureModel = productThumbPictureSize.HasValue;
         var products = await (await _recentlyViewedProductsService.GetRecentlyViewedProductsAsync(_catalogSettings.RecentlyViewedProductsNumber))
-            //ACL and store mapping
-            .WhereAwait(async p => await _aclService.AuthorizeAsync(p) && await _storeMappingService.AuthorizeAsync(p))
+            //store mapping
+            .WhereAwait(async p => await _storeMappingService.AuthorizeAsync(p))
             //availability dates
             .Where(p => _productService.ProductIsAvailable(p)).ToListAsync();
 

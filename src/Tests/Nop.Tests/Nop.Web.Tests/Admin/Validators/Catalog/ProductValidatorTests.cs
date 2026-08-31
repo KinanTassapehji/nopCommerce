@@ -173,58 +173,6 @@ public class ProductValidatorTests : BaseNopTest
 
     #endregion
 
-    #region MinimumAgeToPurchase Validation Tests
-
-    [Test]
-    public void ShouldHaveErrorWhenMinimumAgeToPurchaseIsZeroAndAgeVerificationIsEnabled()
-    {
-        var model = new ProductModel
-        {
-            Name = "Valid Product",
-            AgeVerification = true,
-            MinimumAgeToPurchase = 0
-        };
-        _validator.TestValidate(model).ShouldHaveValidationErrorFor(x => x.MinimumAgeToPurchase);
-    }
-
-    [Test]
-    public void ShouldHaveErrorWhenMinimumAgeToPurchaseIsNegativeAndAgeVerificationIsEnabled()
-    {
-        var model = new ProductModel
-        {
-            Name = "Valid Product",
-            AgeVerification = true,
-            MinimumAgeToPurchase = -1
-        };
-        _validator.TestValidate(model).ShouldHaveValidationErrorFor(x => x.MinimumAgeToPurchase);
-    }
-
-    [Test]
-    public void ShouldNotHaveErrorWhenMinimumAgeToPurchaseIsPositiveAndAgeVerificationIsEnabled()
-    {
-        var model = new ProductModel
-        {
-            Name = "Valid Product",
-            AgeVerification = true,
-            MinimumAgeToPurchase = 18
-        };
-        _validator.TestValidate(model).ShouldNotHaveValidationErrorFor(x => x.MinimumAgeToPurchase);
-    }
-
-    [Test]
-    public void ShouldNotHaveErrorWhenMinimumAgeToPurchaseIsZeroAndAgeVerificationIsDisabled()
-    {
-        var model = new ProductModel
-        {
-            Name = "Valid Product",
-            AgeVerification = false,
-            MinimumAgeToPurchase = 0
-        };
-        _validator.TestValidate(model).ShouldNotHaveValidationErrorFor(x => x.MinimumAgeToPurchase);
-    }
-
-    #endregion
-
     #region Combined Validation Tests
 
     [Test]
@@ -235,16 +183,13 @@ public class ProductValidatorTests : BaseNopTest
             Name = null, // Invalid
             SeName = new string('a', NopSeoDefaults.SearchEngineNameLength + 1), // Invalid
             IsRental = true,
-            RentalPriceLength = 0, // Invalid
-            AgeVerification = true,
-            MinimumAgeToPurchase = 0 // Invalid
+            RentalPriceLength = 0 // Invalid
         };
 
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Name);
         result.ShouldHaveValidationErrorFor(x => x.SeName);
         result.ShouldHaveValidationErrorFor(x => x.RentalPriceLength);
-        result.ShouldHaveValidationErrorFor(x => x.MinimumAgeToPurchase);
     }
 
     [Test]
@@ -255,16 +200,13 @@ public class ProductValidatorTests : BaseNopTest
             Name = "Premium Product",
             SeName = "premium-product",
             IsRental = true,
-            RentalPriceLength = 30,
-            AgeVerification = true,
-            MinimumAgeToPurchase = 21
+            RentalPriceLength = 30
         };
 
         var result = _validator.TestValidate(model);
         result.ShouldNotHaveValidationErrorFor(x => x.Name);
         result.ShouldNotHaveValidationErrorFor(x => x.SeName);
         result.ShouldNotHaveValidationErrorFor(x => x.RentalPriceLength);
-        result.ShouldNotHaveValidationErrorFor(x => x.MinimumAgeToPurchase);
     }
 
     [Test]
@@ -275,16 +217,13 @@ public class ProductValidatorTests : BaseNopTest
             Name = "Standard Product",
             SeName = "standard-product",
             IsRental = false, // Rental validation disabled
-            RentalPriceLength = 0,
-            AgeVerification = false, // Age verification disabled
-            MinimumAgeToPurchase = 0
+            RentalPriceLength = 0
         };
 
         var result = _validator.TestValidate(model);
         result.ShouldNotHaveValidationErrorFor(x => x.Name);
         result.ShouldNotHaveValidationErrorFor(x => x.SeName);
         result.ShouldNotHaveValidationErrorFor(x => x.RentalPriceLength);
-        result.ShouldNotHaveValidationErrorFor(x => x.MinimumAgeToPurchase);
     }
 
     #endregion

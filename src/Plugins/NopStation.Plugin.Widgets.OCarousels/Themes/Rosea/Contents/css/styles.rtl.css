@@ -1,0 +1,145 @@
+﻿/* 6 of 63 CSS properties converted by rtl.daskhat.ir 
+ These properties should be override originals. 
+ just load rtl css file after original css file.*/
+
+/* body {direction:rtl;} */
+
+.carousel-product {
+  min-height: 425px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-category {
+  position: relative;
+}
+
+.carousel-manufacturer {
+  min-height: 162px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container .loader img {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  height: auto;
+}
+
+.ocarousel .item-box {
+  width: 100% !important;
+}
+
+.ocarousel .owl-nav button.owl-prev {
+  right: 0;
+}
+
+.ocarousel .owl-nav button.owl-next {
+  left: 0;
+}
+
+.ocarousel .owl-nav {
+  position: absolute;
+  left: 25px;
+  bottom: 0;
+  right: auto;
+}
+
+.ocarousel .owl-dots {
+  display: none;
+}
+
+.ocarousel-grid {
+  margin: 0px;
+  padding: 35px 70px;
+}
+
+  .ocarousel-grid .title {
+    margin: 0 0 30px;
+    padding: 0 0 15px;
+    font-size: 30px;
+    font-weight: normal;
+    color: #000;
+    text-transform: uppercase;
+  }
+
+    .ocarousel-grid .title strong {
+      font-weight: bold;
+    }
+
+.ocarousel .category-name, .ocarousel .manufacturer-name {
+  font-weight: normal;
+  font-size: 18px;
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.ocarousel-item {
+  margin: 0 0 10px;
+}
+
+.ocarousel-background {
+  padding: 50px 0 0;
+  position: relative;
+  margin-bottom: 80px;
+}
+
+  .ocarousel-background::before {
+    content: "";
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    background: rgba(255,255,255,0.7);
+    z-index: 0;
+  }
+
+  .ocarousel-background .custom-container {
+    position: relative;
+    z-index: 1;
+  }
+
+.custom-container.category-carousel .title {
+  display: none;
+}
+
+.custom-container.category-carousel .ocarousel-grid {
+  padding: 0;
+}
+
+.custom-container.category-carousel .ocarousel-item {
+  overflow: hidden;
+}
+
+  .custom-container.category-carousel .ocarousel-item img {
+    transition: all .4s;
+  }
+
+  .custom-container.category-carousel .ocarousel-item:hover img {
+    transform: scale(1.1);
+    transition: all .4s;
+  }
+
+  .custom-container.category-carousel .ocarousel-item:hover .category-name {
+    background: color-mix(in srgb, var(--primary-color) 80%, transparent);
+    transition: all .4s;
+  }
+
+@media (max-width: 575px) {
+  .owl-carousel .owl-nav {
+    left: unset;
+    display: contents;
+  }
+}
+
+@media (min-width: 767px) {
+  .carousel-category {
+    min-height: 360px;
+  }
+}

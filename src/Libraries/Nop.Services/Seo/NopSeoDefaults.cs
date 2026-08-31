@@ -37,7 +37,7 @@ public static partial class NopSeoDefaults
     "clearcomparelist",
     "compareproducts",
     "contactus",
-    "emailwishlist",
+
     "install",
     "login",
     "logout",
@@ -54,7 +54,7 @@ public static partial class NopSeoDefaults
     "search",
     "sitemap",
     "storeclosed",
-    "wishlist",
+
     ];
 
     #region Sitemap

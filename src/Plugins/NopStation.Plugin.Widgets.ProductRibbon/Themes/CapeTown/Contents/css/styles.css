@@ -1,0 +1,280 @@
+﻿.product-item .offer-content,
+.product-details-page .offer-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: auto;
+}
+
+  .product-item .offer-content .new-product-label,
+  .product-details-page .offer-content .new-product-label {
+    padding: 5px;
+    color: white;
+    background-color: #19D7B1;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 1px;
+  }
+
+  .product-item .offer-content .bestseller-label,
+  .product-details-page .offer-content .bestseller-label {
+    padding: 5px;
+    color: white;
+    background-color: #F5B814;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 1px;
+  }
+
+  .product-item .offer-content .discount-info-label,
+  .product-details-page .offer-content .discount-info-label {
+    padding: 5px;
+    color: white;
+    background: #FD5E2B;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 6px;
+  }
+
+.product-details-page .offer-content {
+  margin-top: 3px;
+  z-index: 10000;
+}
+
+.product-item .offer-content {
+  margin-top: 0;
+  z-index: 999;
+}
+.product-item .offer-content,
+.product-details-page .offer-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: auto;
+}
+
+  .product-item .offer-content .new-product-label,
+  .product-details-page .offer-content .new-product-label {
+    padding: 5px;
+    color: white;
+    background-color: #19D7B1;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 1px;
+  }
+
+  .product-item .offer-content .bestseller-label,
+  .product-details-page .offer-content .bestseller-label {
+    padding: 5px;
+    color: white;
+    background-color: #F5B814;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 1px;
+  }
+
+  .product-item .offer-content .discount-info-label,
+  .product-details-page .offer-content .discount-info-label {
+    padding: 5px;
+    color: white;
+    background: #FD5E2B;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 6px;
+  }
+
+.product-details-page .offer-content {
+  margin-top: 3px;
+  z-index: 10000;
+}
+
+.product-item .offer-content {
+  margin-top: 0;
+  z-index: 999;
+}
+.product-item .offer-content,
+.product-details-page .offer-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: auto;
+}
+
+  .product-item .offer-content .new-product-label,
+  .product-details-page .offer-content .new-product-label {
+    padding: 5px;
+    color: white;
+    background-color: #19D7B1;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 1px;
+  }
+
+  .product-item .offer-content .bestseller-label,
+  .product-details-page .offer-content .bestseller-label {
+    padding: 5px;
+    color: white;
+    background-color: #F5B814;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 1px;
+  }
+
+  .product-item .offer-content .discount-info-label,
+  .product-details-page .offer-content .discount-info-label {
+    padding: 5px;
+    color: white;
+    background: #FD5E2B;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 6px;
+  }
+
+.product-details-page .offer-content {
+  margin-top: 3px;
+  z-index: 10000;
+}
+
+.product-item .offer-content {
+  margin-top: 0;
+  z-index: 999;
+}
+.product-item .offer-content,
+.product-details-page .offer-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: auto;
+}
+
+  .product-item .offer-content .new-product-label,
+  .product-details-page .offer-content .new-product-label {
+    padding: 5px;
+    color: white;
+    background-color: #19D7B1;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 1px;
+  }
+
+  .product-item .offer-content .bestseller-label,
+  .product-details-page .offer-content .bestseller-label {
+    padding: 5px;
+    color: white;
+    background-color: #F5B814;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 1px;
+  }
+
+  .product-item .offer-content .discount-info-label,
+  .product-details-page .offer-content .discount-info-label {
+    padding: 5px;
+    color: white;
+    background: #FD5E2B;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 6px;
+  }
+
+.product-details-page .offer-content {
+  margin-top: 3px;
+  z-index: 10000;
+}
+
+.product-item .offer-content {
+  margin-top: 0;
+  z-index: 999;
+}
+.product-item .offer-content,
+.product-details-page .offer-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: auto;
+}
+
+  .product-item .offer-content .new-product-label,
+  .product-details-page .offer-content .new-product-label {
+    padding: 5px;
+    color: white;
+    background-color: #19D7B1;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 1px;
+  }
+
+  .product-item .offer-content .bestseller-label,
+  .product-details-page .offer-content .bestseller-label {
+    padding: 5px;
+    color: white;
+    background-color: #F5B814;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 1px;
+  }
+
+  .product-item .offer-content .discount-info-label,
+  .product-details-page .offer-content .discount-info-label {
+    padding: 5px;
+    color: white;
+    background: #FD5E2B;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Lato';
+    font-size: 12px;
+    margin-left: 6px;
+    margin-top: 6px;
+  }
+
+.product-details-page .offer-content {
+  margin-top: 3px;
+  z-index: 10000;
+}
+
+.product-item .offer-content {
+  margin-top: 0;
+  z-index: 999;
+}

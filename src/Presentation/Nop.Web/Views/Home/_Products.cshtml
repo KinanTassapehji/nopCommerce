@@ -1,0 +1,8 @@
+﻿@model IList<ProductOverviewModel>
+
+@foreach (var item in Model)
+{
+    <div class="item-box">
+        @await Html.PartialAsync("_ProductBox", item)
+    </div>
+}

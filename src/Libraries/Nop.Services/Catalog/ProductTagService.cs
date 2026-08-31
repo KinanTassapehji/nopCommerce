@@ -285,9 +285,6 @@ public partial class ProductTagService : IProductTagService
             if (!showHidden)
             {
                 productsQuery = productsQuery.Where(p => p.Published);
-
-                //apply ACL constraints
-                productsQuery = await _aclService.ApplyAcl(productsQuery, customerRoleIds);
             }
 
             query = query.Where(pc => productsQuery.Any(p => pc.ProductId == p.Id));

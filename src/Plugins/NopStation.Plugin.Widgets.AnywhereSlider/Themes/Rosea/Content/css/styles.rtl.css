@@ -1,0 +1,177 @@
+﻿/* 7 of 79 CSS properties converted by rtl.daskhat.ir 
+ These properties should be override originals. 
+ just load rtl css file after original css file.*/
+
+/* body {direction:rtl;} */
+
+.home-slider-top-left * {
+  height: 100%;
+}
+
+.slider-caption .slider-subtitle {
+  font-weight: normal;
+  font-size: 20px;
+  color: white;
+  margin: 5px 0;
+}
+
+.slider-caption .slider-title {
+  font-size: 12px;
+  color: white;
+  text-transform: uppercase;
+}
+
+.slider-caption {
+  text-align: right;
+  width: 100%;
+  background: rgba(0, 0, 0, .7);
+  margin-top: -89px;
+  padding: 12px 10px;
+  position: absolute;
+  display: block;
+  height: auto;
+}
+
+.slider-caption-inner {
+  padding-right: 15px;
+}
+
+.slider-container .slider .owl-nav button.owl-prev, .slider-container .slider .owl-nav button.owl-next {
+  padding: 0 5px 5px !important;
+  font-size: 18px;
+  margin: 0;
+  opacity: 1;
+}
+
+  .slider-container .slider .owl-nav button.owl-prev:hover, .slider-container .slider .owl-nav button.owl-next:hover {
+    opacity: 1;
+  }
+
+.slider-container button.owl-prev {
+  right: 0;
+}
+
+.slider-container button.owl-next {
+  left: 0;
+}
+
+.slider-container .owl-nav {
+  position: absolute;
+  top: 40%;
+  right: 10%;
+  color: white;
+}
+
+.slider-container .owl-dots {
+  display: none;
+}
+
+.slider-container {
+  margin-bottom: 40px;
+  position: relative;
+  min-height: 230px;
+}
+
+.loader img {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  height: auto;
+}
+
+a.slider-btn {
+  padding: 10px 20px;
+  background-color: #FFF;
+  color: #248ece;
+  margin-top: 20px;
+}
+
+.anywhere-slider-item img, .anywhere-slider-item slider-caption {
+  transition: all .4s;
+}
+
+.anywhere-slider-item:hover .slider-caption {
+  background: var(--primary-color); 
+  background: color-mix(in srgb, var(--primary-color) 80%, transparent);
+  transition: all .4s;
+}
+
+.anywhere-slider-item:hover img {
+  transform: scale(1.1);
+  transition: all .4s;
+}
+
+@media(max-width: 512px) {
+  .slider-caption {
+    position: absolute;
+    height: auto;
+    display: block;
+    bottom: 35px;
+    text-align: center;
+  }
+}
+
+@media(min-width: 576px) {
+  .slider-caption .slider-subtitle {
+    font-size: 30px;
+  }
+
+  .slider-caption .slider-title {
+    margin-bottom: 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+    transition: all 0.4s;
+  }
+
+  a.slider-btn {
+    padding: 10px 20px;
+    background-color: #248ece;
+    color: white;
+    display: inline-block;
+  }
+
+  .slider-container .owl-nav {
+    top: calc(98% - 25px);
+    right: 45px;
+    color: #fff;
+    height: auto;
+  }
+}
+
+@media(min-width: 769px) {
+  .slider-caption {
+    position: absolute;
+    bottom: 50px;
+    background: rgba(0, 0, 0, .7);
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    opacity: 1;
+    height: auto;
+    transition: all 0.4s;
+  }
+
+  .slider-container {
+    min-height: 360px;
+  }
+}
+
+@media (min-width: 769px) and (max-width:1001px) {
+  .slider-caption {
+    bottom: 14% !important;
+  }
+}
+
+@media(max-width: 575px) {
+  .home-slider-top-left .owl-nav {
+    display: none;
+  }
+}
+
+.owl-nav {
+  direction: rtl;
+}

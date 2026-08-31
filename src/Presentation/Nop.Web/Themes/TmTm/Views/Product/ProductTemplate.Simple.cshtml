@@ -1,0 +1,284 @@
+﻿@model ProductDetailsModel
+
+@using Nop.Core
+@using Nop.Core.Domain.Catalog
+@using Nop.Core.Domain.Seo
+@using Nop.Services.Html
+
+@inject IHtmlFormatter htmlFormatter
+@inject IWebHelper webHelper
+@inject SeoSettings seoSettings
+
+@*
+    TmTm product page.
+
+    The core template stacks twenty partials down one column with a hairline rule
+    between each, then drops the full description and the specification table
+    below them at full width. On a phone that is roughly six screens
+    before the "add to cart" button and eleven after it, all of it weighted the
+    same.
+
+    Three changes, in order of what they buy:
+
+      1. The buy box. Name, rating, price, options and the button are one card at
+         the top of the reading column; everything that only reassures — SKU,
+         vendor, delivery, share, compare — sits around it at label size. Nothing
+         is dropped, so no admin setting silently stops working.
+
+      2. The tail is folded. Description and specifications become
+         <details> panels. Native ones: keyboard, screen readers and browser
+         find-in-page work on them with no script and no ARIA of ours. They render
+         open and a few lines of script fold all but the first on a phone, so a reader
+         without script still gets the whole page.
+
+      3. A sticky buy bar on phones, appearing once the real button scrolls away.
+         It takes the tab bar's place rather than stacking on top of it — 120px of
+         permanent chrome was why the earlier pass left it out (brand.css).
+
+    Every widget zone the core template fires is fired here, in the same relative
+    place: ProductTabs, ProductRibbon and PictureZoom are all installed
+    and all hang off them.
+*@
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(!string.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
+    //meta
+    NopHtml.AddMetaDescriptionParts(Model.MetaDescription);
+    NopHtml.AddMetaKeywordParts(Model.MetaKeywords);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-product-details-page");
+
+    //canonical URL
+    if (seoSettings.CanonicalUrlsEnabled)
+    {
+        var productUrl = (await NopUrl.RouteGenericUrlAsync<Product>(new { SeName = Model.SeName }, webHelper.GetCurrentRequestProtocol())).ToLowerInvariant();
+        NopHtml.AddCanonicalUrlParts(productUrl, seoSettings.QueryStringInCanonicalUrlsEnabled);
+    }
+
+    //open graph META tags
+    if (seoSettings.OpenGraphMetaTags)
+    {
+        NopHtml.AddHeadCustomParts("<meta property=\"og:type\" content=\"product\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:description\" content=\"" + Html.Encode(htmlFormatter.StripTags(Model.MetaDescription)) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:image:url\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:url\" content=\"" + webHelper.GetThisPageUrl(false) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:site_name\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+    }
+
+    //Twitter META tags
+    if (seoSettings.TwitterMetaTags)
+    {
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:card\" content=\"summary\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:site\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:description\" content=\"" + Html.Encode(htmlFormatter.StripTags(Model.MetaDescription)) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:url\" content=\"" + webHelper.GetThisPageUrl(false) + "\" />");
+    }
+
+    NopHtml.AddJsonLdParts(Model.JsonLd);
+
+    var hasDescription = !string.IsNullOrEmpty(Model.FullDescription);
+
+    //The sticky bar is a second trigger for one button, so it only earns its space
+    //where that button exists and carries a price the shopper can act on.
+    var showBuyBar = !Model.AddToCart.DisableBuyButton
+        && !Model.AddToCart.CustomerEntersPrice
+        && !Model.ProductPrice.CallForPrice;
+    var buyBarPrice = string.IsNullOrWhiteSpace(Model.ProductPrice.PriceWithDiscount)
+        ? Model.ProductPrice.Price
+        : Model.ProductPrice.PriceWithDiscount;
+}
+<!--product breadcrumb-->
+@section Breadcrumb
+{
+    @await Html.PartialAsync("_ProductBreadcrumb", Model.Breadcrumb)
+}
+@await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsAfterBreadcrumb, additionalData = Model })
+<div class="page product-details-page">
+    <div class="page-body">
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsTop, additionalData = Model })
+        <form asp-route="Product" asp-route-sename="@Model.SeName" method="post" id="product-details-form">
+            <article data-productid="@Model.Id">
+                <div class="product-essential">
+                    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsEssentialTop, additionalData = Model })
+                    <div class="gallery">
+                        <!--product pictures-->
+                        @await Html.PartialAsync("_ProductDetailsPictures", Model)
+                        <!--product videos-->
+                        @await Html.PartialAsync("_ProductDetailsVideos", Model)
+                    </div>
+                    <div class="overview">
+                        @await Html.PartialAsync("_Discontinued", Model)
+                        <div class="product-name">
+                            <h1>
+                                @Model.Name
+                            </h1>
+                        </div>
+                        @*Identity line: who made it and what to quote when asking about
+                            it. One label-sized row, not several stacked ones.*@
+                        <div class="tm-identity">
+                            <!--manufacturers-->
+                            @await Html.PartialAsync("_ProductManufacturers", Model.ProductManufacturers)
+                            <!--SKU, MAN, GTIN, vendor-->
+                            @await Html.PartialAsync("_SKU_Man_GTIN_Ven", Model)
+                        </div>
+                        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsOverviewTop, additionalData = Model })
+
+                        @*The buy box — everything between the price and the button,
+                            and nothing else. It is the card the page is built around.*@
+                        <div class="tm-buybox">
+                            <!--price & add to cart & estimate shipping-->
+                            @{
+                                var dataDictPrice = new ViewDataDictionary(ViewData);
+                                dataDictPrice.TemplateInfo.HtmlFieldPrefix = $"price_{Model.Id}";
+                                @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductPriceTop, additionalData = Model })
+                                @await Html.PartialAsync("_ProductPrice", Model.ProductPrice, dataDictPrice)
+                                @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductPriceBottom, additionalData = Model })
+
+                                @await Html.PartialAsync("_ProductTierPrices", Model.TierPrices)
+                            }
+                            @if (!string.IsNullOrEmpty(Model.ShortDescription))
+                            {
+                                <div class="short-description">
+                                    @Html.Raw(Model.ShortDescription)
+                                </div>
+                            }
+                            <!--availability-->
+                            @await Html.PartialAsync("_Availability", Model)
+                            <!--attributes-->
+                            @{
+                                var dataDictAttributes = new ViewDataDictionary(ViewData);
+                                dataDictAttributes.TemplateInfo.HtmlFieldPrefix = $"attributes_{Model.Id}";
+                                @await Html.PartialAsync("_ProductAttributes", Model, dataDictAttributes)
+                            }
+                            <!--rental info-->
+                            @{
+                                var dataDictRental = new ViewDataDictionary(ViewData);
+                                dataDictRental.TemplateInfo.HtmlFieldPrefix = $"rental_{Model.Id}";
+                                @await Html.PartialAsync("_RentalInfo", Model, dataDictRental)
+                            }
+                            @{
+                                var dataDictAddToCart = new ViewDataDictionary(ViewData);
+                                dataDictAddToCart.TemplateInfo.HtmlFieldPrefix = $"addtocart_{Model.Id}";
+                                @await Html.PartialAsync("_AddToCart", Model.AddToCart, dataDictAddToCart)
+                            }
+                        </div>
+
+                        @*Reassurance, below the button where it answers "will it get
+                            here in time" rather than competing with the price.*@
+                        <div class="tm-assurances">
+                            <!--delivery-->
+                            @await Html.PartialAsync("_DeliveryInfo", Model)
+                            @await Html.PartialAsync("_ProductEstimateShipping", Model.ProductEstimateShipping)
+                        </div>
+
+                        <div class="tm-overview-foot">
+                            <!--compare-->
+                            <div class="overview-buttons">
+                                @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsBefore, additionalData = Model })
+                                @await Html.PartialAsync("_CompareProductsButton", Model)
+                                @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsAfter, additionalData = Model })
+                            </div>
+                            @await Html.PartialAsync("_ShareButton", Model)
+                        </div>
+                        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsOverviewBottom, additionalData = Model })
+                    </div>
+                    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsEssentialBottom, additionalData = Model })
+                </div>
+            </article>
+        </form>
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBeforeCollateral, additionalData = Model })
+
+        <section class="product-collateral tm-panels">
+            @if (hasDescription)
+            {
+                <details class="tm-panel" id="tm-panel-description" open>
+                    <summary>@T("Products.Description")</summary>
+                    <div class="tm-panel-body">
+                        <div class="full-description">
+                            @Html.Raw(Model.FullDescription)
+                        </div>
+                    </div>
+                </details>
+            }
+            @await Html.PartialAsync("_ProductTags", Model.ProductTags)
+        </section>
+
+        @await Component.InvokeAsync(typeof(ProductsAlsoPurchasedViewComponent), new { productId = Model.Id })
+        @await Component.InvokeAsync(typeof(RelatedProductsViewComponent), new { productId = Model.Id })
+        @await Component.InvokeAsync(typeof(CompatibleWithFilterLevelValuesViewComponent), new { productId = Model.Id })
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBottom, additionalData = Model })
+    </div>
+</div>
+
+@if (showBuyBar)
+{
+    @*Phones only — brand.css never shows it from 1001px up, where the buy box
+        stays on screen next to a sticky gallery. The button is a second trigger
+        for the real one, so attribute validation, minimum quantities and the
+        AJAX cart all run exactly once and exactly as they do above.*@
+    <div class="tm-buybar" hidden>
+        <span class="tm-buybar-price price-value-@Model.Id">@Html.Raw(buyBarPrice)</span>
+        <button type="button" class="button-1 tm-buybar-cta" data-target="add-to-cart-button-@Model.Id">
+            @T("ShoppingCart.AddToCart")
+        </button>
+    </div>
+}
+
+<script asp-location="Footer">
+    (function () {
+        //Panels ship open so a reader without script — and a crawler — gets the
+        //whole page. On a phone that is a long scroll, so all but the first fold.
+        if (window.matchMedia('(max-width: 1000px)').matches) {
+            Array.prototype.slice.call(document.querySelectorAll('.tm-panels .tm-panel'))
+                .slice(1)
+                .forEach(function (panel) { panel.open = false; });
+        }
+
+        //A link into a folded panel has to open it, or the browser scrolls to a
+        //summary and the shopper sees nothing. Targets may be marked with
+        //<a name> rather than an id, so both lookups are needed.
+        function revealHash() {
+            var hash = window.location.hash;
+            if (!hash || hash.length < 2)
+                return;
+            var name = hash.slice(1);
+            var target = document.getElementById(name) || document.getElementsByName(name)[0];
+            if (!target)
+                return;
+            var panel = target.closest('.tm-panel');
+            if (panel && !panel.open) {
+                panel.open = true;
+                target.scrollIntoView({ block: 'start', behavior: 'smooth' });
+            }
+        }
+        window.addEventListener('hashchange', revealHash);
+        revealHash();
+
+        var bar = document.querySelector('.tm-buybar');
+        var panel = document.querySelector('.tm-buybox .add-to-cart-panel');
+        if (!bar || !panel || !('IntersectionObserver' in window))
+            return;
+
+        bar.querySelector('.tm-buybar-cta').addEventListener('click', function (event) {
+            var target = document.getElementById(event.currentTarget.dataset.target);
+            if (target)
+                target.click();
+        });
+
+        //Shown once the real panel has left the viewport, hidden the moment it is
+        //back — two states, no scroll maths. body carries the class so the tab bar
+        //can step aside for it instead of stacking with it.
+        new IntersectionObserver(function (entries) {
+            var gone = !entries[0].isIntersecting;
+            bar.hidden = !gone;
+            document.body.classList.toggle('tm-buybar-on', gone);
+        }, { rootMargin: '0px 0px -20px 0px' }).observe(panel);
+    })();
+</script>

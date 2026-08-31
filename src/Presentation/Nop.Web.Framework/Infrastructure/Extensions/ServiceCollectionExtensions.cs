@@ -20,7 +20,7 @@ using Nop.Core.Security;
 using Nop.Data;
 using Nop.Services.ArtificialIntelligence;
 using Nop.Services.Authentication;
-using Nop.Services.Authentication.External;
+
 using Nop.Services.Common;
 using Nop.Web.Framework.Mvc.ModelBinding;
 using Nop.Web.Framework.Mvc.ModelBinding.Binders;
@@ -258,7 +258,6 @@ public static class ServiceCollectionExtensions
         {
             options.DefaultChallengeScheme = NopAuthenticationDefaults.AuthenticationScheme;
             options.DefaultScheme = NopAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultSignInScheme = NopAuthenticationDefaults.ExternalAuthenticationScheme;
         });
 
         //add main cookie authentication
@@ -271,26 +270,6 @@ public static class ServiceCollectionExtensions
             options.AccessDeniedPath = NopAuthenticationDefaults.AccessDeniedPath;
             options.ReturnUrlParameter = NopAuthenticationDefaults.ReturnUrlParameter;
         });
-
-        //add external authentication
-        authenticationBuilder.AddCookie(NopAuthenticationDefaults.ExternalAuthenticationScheme, options =>
-        {
-            options.Cookie.Name = $"{NopCookieDefaults.Prefix}{NopCookieDefaults.ExternalAuthenticationCookie}";
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            options.LoginPath = NopAuthenticationDefaults.LoginPath;
-            options.AccessDeniedPath = NopAuthenticationDefaults.AccessDeniedPath;
-            options.ReturnUrlParameter = NopAuthenticationDefaults.ReturnUrlParameter;
-        });
-
-        //register and configure external authentication plugins now
-        var typeFinder = Singleton<ITypeFinder>.Instance;
-        var externalAuthConfigurations = typeFinder.FindClassesOfType<IExternalAuthenticationRegistrar>();
-        var externalAuthInstances = externalAuthConfigurations
-            .Select(x => (IExternalAuthenticationRegistrar)Activator.CreateInstance(x));
-
-        foreach (var instance in externalAuthInstances)
-            instance.Configure(authenticationBuilder);
     }
 
     /// <summary>

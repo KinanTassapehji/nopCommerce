@@ -1,0 +1,102 @@
+﻿/* 2 of 37 CSS properties converted by rtl.daskhat.ir 
+ These properties should be override originals. 
+ just load rtl css file after original css file.*/
+
+/* body {direction:rtl;} */
+
+.product-item:hover .quick-view-btn {
+  opacity: 1;
+}
+
+.qv-modal .loader img {
+  position: absolute;
+  top: 50%;
+  right: 40%;
+  transform: translate(-50%, -50%);
+}
+
+@media only screen and (max-width: 767px) {
+  .quick-view-btn {
+    display: none !important;
+  }
+}
+
+.qv-modal {
+  width: 100%;
+  max-width: 900px;
+  min-height: 380px;
+  background-color: white;
+  margin: 100px auto 50px;
+  padding: 20px;
+  position: relative;
+  display: none;
+  top: 50%;
+  text-align: center;
+}
+
+
+.qvclick-button {
+  display: none;
+}
+
+.qv-modal .mfp-close {
+  border: 1px solid #bbb;
+  background: #ccc;
+}
+
+.qv-modal .product-details-page {
+  padding-top: 0;
+}
+
+.mfp-ready ~ .bar-notification-container {
+  z-index: 100000;
+}
+
+.mfp-ready ~ .ajax-loading-block-window {
+  z-index: 100001;
+}
+
+.mfp-content .product-essential {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.mfp-content .product-collateral {
+  margin: 0;
+}
+
+.mfp-content .overview {
+  margin: 0;
+}
+
+.mfp-content .gallery {
+  margin: 0;
+}
+
+.add-to-cart-wishlist {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  justify-content: space-between;
+}
+
+.add-to-cart-btn {
+  width: 100%;
+  margin-left: 15px;
+}
+
+.wishlist-btn {
+  width: 100%;
+}
+
+.qv-quantity {
+  display: block;
+}
+
+.overview .manufacturers span.label {
+  font-weight: bold;
+}
+
+.overview .delivery-date span.label {
+  font-weight: bold;
+}

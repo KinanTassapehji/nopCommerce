@@ -316,7 +316,7 @@ public class OmnisendService
                 case ManageInventoryMethod.ManageStock:
                     stockQuantity = await _productService.GetTotalStockQuantityAsync(product);
 
-                    if (stockQuantity > 0 || product.BackorderMode == BackorderMode.AllowQtyBelow0)
+                    if (stockQuantity > 0)
                         status = "inStock";
                     else
                         status = "outOfStock";

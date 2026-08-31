@@ -1,0 +1,61 @@
+﻿.product-item .offer-content,
+.product-details-page .offer-content,
+.qv-modal .offer-content {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: auto;
+  text-transform: uppercase;
+  font-family: 'NunitoExtraBold';
+  font-size: 11px;
+}
+
+  .product-item .offer-content .new-product-label,
+  .product-details-page .offer-content .new-product-label,
+  .qv-modal .offer-content .new-product-label {
+    padding: 3px 10px;
+    background-color: #36CE15;
+    color: #fff;
+    text-align: center;
+    border-radius: 100px;
+  }
+
+  .product-item .offer-content .bestseller-label,
+  .product-details-page .offer-content .bestseller-label,
+  .product-item .offer-content .new-product-label,
+  .product-details-page .offer-content .new-product-label,
+  .qv-modal .offer-content .new-product-label {
+    font-family: Arial;
+    font-weight: bold;
+  }
+
+  .product-item .offer-content .bestseller-label,
+  .product-details-page .offer-content .bestseller-label,
+  .qv-modal .offer-content .bestseller-label {
+    padding: 3px 10px;
+    background-color: #FFC350;
+    color: #fff;
+    text-align: center;
+    border-radius: 100px;
+  }
+
+  .product-item .offer-content .discount-info-label,
+  .product-details-page .offer-content .discount-info-label,
+  .qv-modal .offer-content .discount-info-label {
+    padding: 3px 10px;
+    background-color: #ED008C;
+    color: #fff;
+    text-align: center;
+    border-radius: 100px;
+    margin-top:5px;
+  }
+
+.product-details-page .offer-content,
+.qv-modal .offer-content {
+  z-index: 999 !important;
+}
+
+.product-essential .gallery,
+.product-essential .picture {
+  position: relative;
+}

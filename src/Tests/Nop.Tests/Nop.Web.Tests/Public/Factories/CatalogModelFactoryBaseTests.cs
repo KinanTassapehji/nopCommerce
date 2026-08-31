@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Vendors;
 using Nop.Services.Catalog;
+using Nop.Services.Localization;
 using Nop.Services.Vendors;
 using Nop.Web.Factories;
 using Nop.Web.Models.Catalog;
@@ -20,6 +21,7 @@ public class CatalogModelFactoryBaseTests : WebTest
     private Manufacturer _manufacturer;
     private Vendor _vendor;
     private IHttpContextAccessor _httpContextAccessor;
+    private ILocalizationService _localizationService;
     private ProductTag _productTag;
     private CatalogSettings _catalogSettings;
 
@@ -34,6 +36,7 @@ public class CatalogModelFactoryBaseTests : WebTest
         _manufacturer = await GetService<IManufacturerService>().GetManufacturerByIdAsync(1);
         _vendor = await GetService<IVendorService>().GetVendorByIdAsync(1);
         _httpContextAccessor = GetService<IHttpContextAccessor>();
+        _localizationService = GetService<ILocalizationService>();
 
         _productTag = await GetService<IProductTagService>().GetProductTagByIdAsync(1);
     }
@@ -43,10 +46,10 @@ public class CatalogModelFactoryBaseTests : WebTest
     {
         var model = await _catalogModelFactory.PrepareSearchModelAsync(new SearchModel(), new CatalogProductsCommand());
         model.AvailableCategories.Any().Should().BeTrue();
-        model.AvailableCategories.Count.Should().Be(17);
+        model.AvailableCategories.Count.Should().Be(19);
 
         model.AvailableManufacturers.Any().Should().BeTrue();
-        model.AvailableManufacturers.Count.Should().Be(4);
+        model.AvailableManufacturers.Count.Should().Be(7);
 
         model.AvailableVendors.Any().Should().BeFalse();
 
@@ -58,15 +61,17 @@ public class CatalogModelFactoryBaseTests : WebTest
 
         _httpContextAccessor.HttpContext.Request.QueryString = queryString;
 
-        model.CatalogProductsModel.WarningMessage.Should()
-            .Be($"Search term minimum length is {_catalogSettings.ProductSearchTermMinimumLength} characters");
+        //localized: the store answers in its own language
+        model.CatalogProductsModel.WarningMessage.Should().Be(string.Format(
+            await _localizationService.GetResourceAsync("Search.SearchTermMinimumLengthIsNCharacters"),
+            _catalogSettings.ProductSearchTermMinimumLength));
         model.CatalogProductsModel.Products.Count.Should().Be(0);
 
-        _httpContextAccessor.HttpContext.Request.QueryString = new QueryString("?q=Lenovo");
+        _httpContextAccessor.HttpContext.Request.QueryString = new QueryString("?q=ألتو");
 
         model = await _catalogModelFactory.PrepareSearchModelAsync(new SearchModel
         {
-            q = "Lenovo"
+            q = "ألتو"
         }, new CatalogProductsCommand());
         _httpContextAccessor.HttpContext.Request.QueryString = queryString;
 
@@ -86,7 +91,7 @@ public class CatalogModelFactoryBaseTests : WebTest
         model.MetaTitle.Should().Be(_category.MetaTitle);
 
         model.CategoryBreadcrumb.Any().Should().BeTrue();
-        model.CategoryBreadcrumb.FirstOrDefault()?.Name.Should().Be("Computers");
+        model.CategoryBreadcrumb.FirstOrDefault()?.Name.Should().Be("المنزل والمعيشة");
         model.SubCategories.Count.Should().Be(3);
     }
 
@@ -115,17 +120,17 @@ public class CatalogModelFactoryBaseTests : WebTest
     {
         var model = await _catalogModelFactory.PrepareCategoryNavigationModelAsync(_category.Id, 0);
 
-        model.Categories.Count.Should().Be(7);
+        model.Categories.Count.Should().Be(6);
         model.CurrentCategoryId.Should().Be(_category.Id);
 
         model = await _catalogModelFactory.PrepareCategoryNavigationModelAsync(0, _product.Id);
-        model.Categories.Count.Should().Be(7);
+        model.Categories.Count.Should().Be(6);
         var productCategories = await _categoryService.GetProductCategoriesByProductIdAsync(_product.Id);
         model.CurrentCategoryId.Should().Be(productCategories.FirstOrDefault()?.CategoryId ?? 0);
 
         model = await _catalogModelFactory.PrepareCategoryNavigationModelAsync(_category.Id, _product.Id);
 
-        model.Categories.Count.Should().Be(7);
+        model.Categories.Count.Should().Be(6);
         model.CurrentCategoryId.Should().Be(_category.Id);
     }
 
@@ -135,9 +140,9 @@ public class CatalogModelFactoryBaseTests : WebTest
         var model = await _catalogModelFactory.PrepareHomepageCategoryModelsAsync();
 
         model.Any().Should().BeTrue();
-        model.Count.Should().Be(3);
+        model.Count.Should().Be(4);
 
-        var categories = new[] { "Electronics", "Apparel", "Digital downloads" };
+        var categories = new[] { "المنزل والمعيشة", "التقنية والإكسسوارات", "الملابس", "الجمال والعناية" };
 
         foreach (var categoryModel in model)
             categoryModel.Name.Should().BeOneOf(categories);
@@ -180,8 +185,8 @@ public class CatalogModelFactoryBaseTests : WebTest
     {
         var model = await _catalogModelFactory.PrepareManufacturerAllModelsAsync();
         model.Any().Should().BeTrue();
-        model.Count.Should().Be(3);
-        var manufacturers = new[] { "Apple", "HP", "Nike" };
+        model.Count.Should().Be(6);
+        var manufacturers = new[] { "بيت الشمال", "ضياء", "أطلس", "نول", "مرمر", "أريا" };
 
         foreach (var manufacturerModel in model)
             manufacturerModel.Name.Should().BeOneOf(manufacturers);
@@ -191,11 +196,11 @@ public class CatalogModelFactoryBaseTests : WebTest
     public async Task CanPrepareManufacturerNavigationModel()
     {
         var model = await _catalogModelFactory.PrepareManufacturerNavigationModelAsync(_manufacturer.Id);
-        model.TotalManufacturers.Should().Be(3);
+        model.TotalManufacturers.Should().Be(6);
         model.Manufacturers.Any().Should().BeTrue();
         model.Manufacturers.Count.Should().Be(2);
 
-        var manufacturers = new[] { "Apple", "HP" };
+        var manufacturers = new[] { "بيت الشمال", "ضياء" };
 
         foreach (var manufacturerModel in model.Manufacturers)
             manufacturerModel.Name.Should().BeOneOf(manufacturers);
@@ -231,7 +236,7 @@ public class CatalogModelFactoryBaseTests : WebTest
 
         model.Any().Should().BeTrue();
         model.Count.Should().Be(2);
-        var vendors = new[] { "Vendor 1", "Vendor 2" };
+        var vendors = new[] { "استوديو سرو", "بضائع المرفأ" };
 
         foreach (var manufacturerModel in model)
             manufacturerModel.Name.Should().BeOneOf(vendors);
@@ -244,7 +249,7 @@ public class CatalogModelFactoryBaseTests : WebTest
 
         model.Id.Should().Be(_productTag.Id);
         model.TagName.Should().Be(_productTag.Name);
-        model.CatalogProductsModel.Products.Count.Should().Be(6);
+        model.CatalogProductsModel.Products.Count.Should().Be(2);
     }
 
     [Test]
@@ -261,7 +266,7 @@ public class CatalogModelFactoryBaseTests : WebTest
     public async Task CanPrepareProductTagsAllModel()
     {
         var model = await _catalogModelFactory.PreparePopularProductTagsModelAsync();
-        model.Tags.Count.Should().Be(16);
+        model.Tags.Count.Should().Be(68);
     }
 
     [Test]
@@ -358,16 +363,14 @@ public class CatalogModelFactoryBaseTests : WebTest
     [Test]
     public async Task CanPrepareCategoryProductsModelAsync()
     {
-        var model = await _catalogModelFactory.PrepareCategoryProductsModelAsync((await _categoryService.GetAllCategoriesAsync("Notebooks")).First(), new CatalogProductsCommand());
+        var model = await _catalogModelFactory.PrepareCategoryProductsModelAsync((await _categoryService.GetAllCategoriesAsync("المطبخ والطعام")).First(), new CatalogProductsCommand());
         model.UseAjaxLoading.Should().Be(_catalogSettings.UseAjaxCatalogProductsLoading);
         model.AvailableSortOptions.Should().NotBeEmpty();
         model.AvailableViewModes.Should().NotBeEmpty();
         model.Products.Should().NotBeEmpty();
-        model.Products.Count.Should().Be(6);
+        model.Products.Count.Should().Be(5);
         model.ManufacturerFilter.Manufacturers.Should().NotBeEmpty();
         model.ManufacturerFilter.Manufacturers.Count.Should().Be(2);
-        model.SpecificationFilter.Attributes.Should().NotBeEmpty();
-        model.SpecificationFilter.Attributes.Count.Should().Be(2);
         model.TotalItems.Should().Be(model.Products.Count);
     }
 
@@ -376,7 +379,7 @@ public class CatalogModelFactoryBaseTests : WebTest
     {
         var model = await _catalogModelFactory.PrepareNewProductsModelAsync(new CatalogProductsCommand());
         model.Products.Any().Should().BeTrue();
-        model.Products.Count.Should().Be(6);
+        model.Products.Count.Should().Be(4);
         model.UseAjaxLoading.Should().Be(_catalogSettings.UseAjaxCatalogProductsLoading);
     }
 }

@@ -1,0 +1,107 @@
+﻿.ocarousel .item-box {
+  width: 100% !important;
+}
+
+.ocarousel .owl-nav button.owl-prev,
+.ocarousel .owl-nav button.owl-next {
+  border: 1px solid #ccc;
+  padding: 0 10px !important;
+  background-color: #eee;
+  font-size: 23px;
+  position: absolute;
+  margin: 0;
+}
+
+.ocarousel .owl-nav button.owl-prev {
+  left: 0;
+}
+
+.ocarousel .owl-nav button.owl-next {
+  right: 0;
+}
+
+.ocarousel .owl-nav {
+  position: absolute;
+  top: 30%;
+  width: 100%;
+}
+
+.ocarousel .owl-dots {
+  display: none;
+}
+
+.ocarousel-grid {
+  margin: 0 0 50px;
+}
+
+  .ocarousel-grid .title {
+    margin: 0 0 30px;
+    /*border-bottom: 1px solid #ddd;*/
+    padding: 0 0 15px;
+    font-size: 30px;
+    font-weight: normal;
+    color: #444;
+  }
+
+    .ocarousel-grid .title strong {
+      /*font-weight: normal;*/
+    }
+
+.ocarousel .category-name,
+.ocarousel .manufacturer-name {
+  font-weight: normal;
+  font-size: 18px;
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.ocarousel-item {
+  margin: 0 0 80px;
+}
+
+
+
+@media (min-width: 992px) {
+  .product-tab-wrapper {
+      margin: 40px auto;
+  }
+  .product-tab-wrapper.have-add {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .product-tab-wrapper.have-add .product-tab-container {
+     max-width: calc(70% - 15px);
+     margin: 0;
+  }
+  .product-tab-wrapper.have-add .advertisement-image-container {
+    width: calc(30% - 15px);
+    position: relative;
+    background-size: cover;
+    background-position: center center;
+  }
+
+  .tab-add-caption {
+      text-align: center;
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+  }
+  .product-tab-advertisement-title {
+    font-size: 24px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .tab-add-caption a {
+    display: inline-block;
+    background: #3E70F9;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+  }
+}

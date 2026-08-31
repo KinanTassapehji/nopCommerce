@@ -1,0 +1,83 @@
+﻿@model Widgets.FirebasePushNotification.Models.ConfigurationModel
+@{
+    Layout = "_AdminLayout";
+    ViewBag.PageTitle = T("Plugins.Widgets.FirebasePushNotification.Broadcast.PageTitle").Text;
+    NopHtml.SetActiveMenuItemSystemName("Widgets.FirebasePushNotification.Menu.SendBroadcast");
+}
+
+<form asp-controller="FirebasePushNotification" asp-action="SendBroadcast" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.PageTitle")</h1>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card card-default">
+                <div class="card-header"><strong>@T("Plugins.Widgets.FirebasePushNotification.Broadcast.Custom")</strong></div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-3">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.Target")</div>
+                        <div class="col-md-9">
+                            <div class="custom-control custom-checkbox" style="margin-bottom:10px;">
+                                <input id="SendToAllUsers" name="SendToAllUsers" class="custom-control-input" type="checkbox" value="true" />
+                                <label class="custom-control-label" for="SendToAllUsers">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.SendToAll")</label>
+                            </div>
+                            <input type="hidden" name="SendToAllUsers" value="false" />
+                            <select id="CustomerId" name="CustomerId" class="form-control" style="width:100%;"></select>
+                            <small class="form-text text-muted">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.SearchHint")</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group row"><div class="col-md-3">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.Platform")</div><div class="col-md-9"><select name="Platform" class="form-control" asp-items="Model.AvailablePlatforms"></select></div></div>
+
+                    <div class="form-group row"><div class="col-md-3">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.TitleEn")</div><div class="col-md-9"><input name="TitleEn" class="form-control" required /></div></div>
+                    <div class="form-group row"><div class="col-md-3">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.BodyEn")</div><div class="col-md-9"><textarea name="BodyEn" class="form-control" rows="2" required></textarea></div></div>
+
+                    <div class="form-group row"><div class="col-md-3">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.TitleAr")</div><div class="col-md-9"><input name="TitleAr" class="form-control" required /></div></div>
+                    <div class="form-group row"><div class="col-md-3">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.BodyAr")</div><div class="col-md-9"><textarea name="BodyAr" class="form-control" rows="2" required></textarea></div></div>
+
+                    <div class="form-group row"><div class="col-md-3">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.DataJson")</div><div class="col-md-9"><textarea name="DataJson" class="form-control" rows="4"></textarea></div></div>
+                    <button type="submit" class="btn btn-warning">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.Send")</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+<script asp-location="Footer">
+    $(function () {
+        var $customerSelect = $('#CustomerId');
+        var $sendToAll = $('#SendToAllUsers');
+
+        $customerSelect.select2({
+            placeholder: '@T("Plugins.Widgets.FirebasePushNotification.Broadcast.SearchPlaceholder")',
+            allowClear: true,
+            minimumInputLength: 2,
+            ajax: {
+                url: '@Url.Action("SearchCustomers", "FirebasePushNotification", new { area = "Admin" })',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { term: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+
+        function toggleCustomerSelectState() {
+            var disabled = $sendToAll.is(':checked');
+            $customerSelect.prop('disabled', disabled);
+
+            if (disabled) {
+                $customerSelect.val(null).trigger('change');
+            }
+        }
+
+        $sendToAll.on('change', toggleCustomerSelectState);
+        toggleCustomerSelectState();
+    });
+</script>

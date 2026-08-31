@@ -63,14 +63,6 @@ public partial interface IMessageTokenProvider
     Task AddOrderNoteTokensAsync(IList<Token> tokens, OrderNote orderNote);
 
     /// <summary>
-    /// Add recurring payment tokens
-    /// </summary>
-    /// <param name="tokens">List of already added tokens</param>
-    /// <param name="recurringPayment">Recurring payment</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    Task AddRecurringPaymentTokensAsync(IList<Token> tokens, RecurringPayment recurringPayment);
-
-    /// <summary>
     /// Add return request tokens
     /// </summary>
     /// <param name="tokens">List of already added tokens</param>
@@ -79,15 +71,6 @@ public partial interface IMessageTokenProvider
     /// <param name="languageId">Language identifier</param>
     /// <returns>A task that represents the asynchronous operation</returns>
     Task AddReturnRequestTokensAsync(IList<Token> tokens, ReturnRequest returnRequest, OrderItem orderItem, int languageId);
-
-    /// <summary>
-    /// Add gift card tokens
-    /// </summary>
-    /// <param name="tokens">List of already added tokens</param>
-    /// <param name="giftCard">Gift card</param>
-    /// <param name="languageId">Language identifier</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    Task AddGiftCardTokensAsync(IList<Token> tokens, GiftCard giftCard, int languageId);
 
     /// <summary>
     /// Add customer tokens
@@ -197,14 +180,6 @@ public partial interface IMessageTokenProvider
     /// <param name="privateMessage">Private message</param>
     /// <returns>A task that represents the asynchronous operation</returns>
     Task AddPrivateMessageTokensAsync(IList<Token> tokens, PrivateMessage privateMessage);
-
-    /// <summary>
-    /// Add tokens of BackInStock subscription
-    /// </summary>
-    /// <param name="tokens">List of already added tokens</param>
-    /// <param name="subscription">BackInStock subscription</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    Task AddBackInStockTokensAsync(IList<Token> tokens, BackInStockSubscription subscription);
 
     /// <summary>
     /// Get collection of allowed (supported) message tokens for campaigns

@@ -21,15 +21,6 @@ public partial interface IOrderModelFactory
     Task<CustomerOrderListModel> PrepareCustomerOrderListModelAsync(int? page, OrderHistoryPeriods limit);
 
     /// <summary>
-    /// Prepare the customer recurring payment list model
-    /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the customer recurring payment list model
-    /// </returns>
-    Task<CustomerRecurringPaymentListModel> PrepareCustomerRecurringPaymentListModelAsync();
-
-    /// <summary>
     /// Prepare the order details model
     /// </summary>
     /// <param name="order">Order</param>
@@ -57,5 +48,4 @@ public partial interface IOrderModelFactory
     /// A task that represents the asynchronous operation
     /// The task result contains the customer reward points model
     /// </returns>
-    Task<CustomerRewardPointsModel> PrepareCustomerRewardPointsAsync(int? page);
 }

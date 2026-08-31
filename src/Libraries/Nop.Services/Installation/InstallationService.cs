@@ -124,7 +124,11 @@ public partial class InstallationService : IInstallationService
         foreach (var c in seName.ToCharArray())
         {
             var c2 = c.ToString();
-            if (okChars.Contains(c2))
+            //match UrlRecordService.GetSeNameAsync, which keeps any letter or digit when
+            //SeoSettings.AllowUnicodeCharsInUrls is on (it is, by default). Without this a
+            //non-Latin catalogue ends up with slugs made only of its punctuation, and every
+            //product collides on the same url.
+            if (okChars.Contains(c2) || char.IsLetterOrDigit(c))
                 sb.Append(c2);
         }
 
@@ -220,7 +224,6 @@ public partial class InstallationService : IInstallationService
 
         await InstallSampleCustomersAsync(sampleData.Customers);
         await InstallCheckoutAttributesAsync(sampleData.CheckoutAttributes);
-        await InstallSpecificationAttributesAsync(sampleData.SpecificationAttributes);
         await InstallProductAttributesAsync(sampleData.ProductAttributes);
         await InstallCategoriesAsync(sampleData.Categories);
         await InstallManufacturersAsync(sampleData.Manufacturers);

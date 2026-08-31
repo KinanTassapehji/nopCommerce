@@ -1,0 +1,85 @@
+﻿.ocarousel .item-box {
+  width: 100% !important;
+}
+
+.ocarousel .owl-nav button.owl-prev,
+.ocarousel .owl-nav button.owl-next {
+  border: 1px solid #ccc;
+  padding: 0 10px !important;
+  background-color: #eee;
+  font-size: 23px;
+  position: absolute;
+  margin: 0;
+}
+
+.ocarousel .owl-nav button.owl-prev {
+  left: 0;
+}
+
+.ocarousel .owl-nav button.owl-next {
+  right: 0;
+}
+
+.ocarousel .owl-nav {
+  position: absolute;
+  top: 30%;
+  width: 100%;
+}
+
+.ocarousel .owl-dots {
+  display: none;
+}
+
+.ocarousel-grid {
+  margin: 0 0 50px;
+}
+
+  .ocarousel-grid .title {
+    margin: 20px 0 20px;
+    /*border-bottom: 1px solid #ddd;*/
+    padding: 10px 0 10px;
+    font-size: 30px;
+    font-weight: normal;
+    color: #444;
+  }
+
+.ocarousel-grid .title strong {
+  /*font-weight: normal;*/
+}
+
+.ocarousel .category-name,
+.ocarousel .manufacturer-name {
+  font-weight: normal;
+  font-size: 18px;
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.ocarousel-item {
+  margin: 0 0 80px;
+}
+.ocarousel-background {
+    padding: 50px 0 0;
+    position: relative;
+    margin-bottom: 80px;
+}
+.ocarousel-background::before {
+  content: "";
+  display: block;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(255,255,255,0.7);
+  z-index: 0;
+}
+.ocarousel-background .custom-container {
+  position: relative;
+  z-index: 1;
+}
+
+.text-white{
+    color: #fff !important;
+}

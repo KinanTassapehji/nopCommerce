@@ -1,0 +1,96 @@
+@model ReminderModel
+
+<div class="card-body">
+    <!-- Tokens Info Section -->
+    <div class="form-group row" id="available-tokens-section-template" style="display: none;">
+        <div class="col-md-3">
+            <strong>@T("NopStation.Plugins.CustomerReminders.Admin.Reminders.Fields.AvailableTokens")</strong>
+        </div>
+        <div class="col-md-9">
+            <div>
+                <i class="fas fa-info-circle"></i>
+                <strong>@T("NopStation.Plugins.CustomerReminders.Admin.Reminders.Fields.AvailableTokens.Hint")</strong>
+                <br />
+                <div id="available-tokens-display-template" style="margin-top: 10px;"></div>
+                <br />
+                <div>For conditional expressions use the token %if (your conditions) ... endif%</div>
+                <br />
+                <div id="tokens-loading-template" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i> Loading tokens...
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <!-- Standard Fields -->
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MessageTemplateName" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MessageTemplateName" asp-required="true" />
+            <span asp-validation-for="MessageTemplateName"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MessageTemplateBcc" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MessageTemplateBcc" asp-required="true" />
+            <span asp-validation-for="MessageTemplateBcc"></span>
+        </div>
+    </div>
+
+    <!-- Subject Field -->
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MessageTemplateSubject" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MessageTemplateSubject" asp-required="true" />
+            <span asp-validation-for="MessageTemplateSubject"></span>
+        </div>
+    </div>
+
+    <!-- Body Field (Summernote) -->
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MessageTemplateBody" />
+        </div>
+        <div class="col-md-9">
+            <!-- This renders the textarea and the script to init Summernote -->
+            <nop-editor asp-for="MessageTemplateBody" asp-template="RichEditor" />
+            <span asp-validation-for="MessageTemplateBody"></span>
+        </div>
+    </div>
+
+    <!-- Token Validation Warning -->
+    <div class="form-group row">
+        <div class="col-md-3">
+
+        </div>
+        <div class="col-md-9">
+            <div id="token-warning-container" class="alert alert-warning alert-dismissible" style="display:none;">
+                <button type="button" class="close token-warning-close" aria-label="Close">
+                    &times;
+                </button>
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Warning:</strong>
+                <span id="token-warning-text"></span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="EmailAccountId" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="EmailAccountId" asp-items="Model.AvailableEmailAccounts" />
+            <span asp-validation-for="EmailAccountId"></span>
+        </div>
+    </div>
+</div>

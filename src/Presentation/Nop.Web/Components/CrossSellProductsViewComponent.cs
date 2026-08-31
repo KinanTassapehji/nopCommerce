@@ -12,7 +12,6 @@ namespace Nop.Web.Components;
 
 public partial class CrossSellProductsViewComponent : NopViewComponent
 {
-    protected readonly IAclService _aclService;
     protected readonly IProductModelFactory _productModelFactory;
     protected readonly IProductService _productService;
     protected readonly IShoppingCartService _shoppingCartService;
@@ -21,8 +20,7 @@ public partial class CrossSellProductsViewComponent : NopViewComponent
     protected readonly IWorkContext _workContext;
     protected readonly ShoppingCartSettings _shoppingCartSettings;
 
-    public CrossSellProductsViewComponent(IAclService aclService,
-        IProductModelFactory productModelFactory,
+    public CrossSellProductsViewComponent(        IProductModelFactory productModelFactory,
         IProductService productService,
         IShoppingCartService shoppingCartService,
         IStoreContext storeContext,
@@ -30,7 +28,6 @@ public partial class CrossSellProductsViewComponent : NopViewComponent
         IWorkContext workContext,
         ShoppingCartSettings shoppingCartSettings)
     {
-        _aclService = aclService;
         _productModelFactory = productModelFactory;
         _productService = productService;
         _shoppingCartService = shoppingCartService;
@@ -46,8 +43,8 @@ public partial class CrossSellProductsViewComponent : NopViewComponent
         var cart = await _shoppingCartService.GetShoppingCartAsync(await _workContext.GetCurrentCustomerAsync(), ShoppingCartType.ShoppingCart, store.Id);
 
         var products = await (await _productService.GetCrossSellProductsByShoppingCartAsync(cart, _shoppingCartSettings.CrossSellsNumber))
-            //ACL and store mapping
-            .WhereAwait(async p => await _aclService.AuthorizeAsync(p) && await _storeMappingService.AuthorizeAsync(p))
+            //store mapping
+            .WhereAwait(async p => await _storeMappingService.AuthorizeAsync(p))
             //availability dates
             .Where(p => _productService.ProductIsAvailable(p))
             //visible individually

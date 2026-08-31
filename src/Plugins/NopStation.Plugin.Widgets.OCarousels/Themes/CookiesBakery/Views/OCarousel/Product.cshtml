@@ -1,0 +1,100 @@
+﻿@model OCarouselModel
+
+@if (Model.Products.Count > 0)
+{
+    @if (Model.ShowBackgroundPicture)
+    {
+        <div class="ocarousel-background" style="background:url('@Model.BackgroundPictureUrl') no-repeat center; background-size: cover;">
+            <div class="container">
+                <div class="ocarousel-grid product-carousel">
+                    @if (Model.DisplayTitle)
+                    {
+                        <div class="title-container">
+                            <div class="d-flex justify-content-center align-items-center title mb-0 pb-0">
+                                <i class="icon-leaf-left"></i>
+                                <h2>@Model.Title</h2>
+                                <i class="icon-leaf-right"></i>
+                            </div>
+                            <div class="subtitle">
+                                ( @Model.Products.Count @T("NopStation.OCarousels.Items") )
+                            </div>
+                        </div>
+                    }
+
+                    <div class="owl-carousel ocarousel @Model.CustomCssClass" id="ocarousel-@(Model.Id)">
+                        @foreach (var item in Model.Products)
+                        {
+                            <div class="item-box">
+                                @await Html.PartialAsync("_ProductBox", item)
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="ocarousel-grid product-carousel">
+                @if (Model.DisplayTitle)
+                {
+                    <div class="title-container">
+                        <div class="d-flex justify-content-center align-items-center title mb-0 pb-0">
+                            <i class="icon-leaf-left"></i>
+                            <h2>@Model.Title</h2>
+                            <i class="icon-leaf-right"></i>
+                        </div>
+                        <div class="subtitle">
+                            ( @Model.Products.Count @T("NopStation.OCarousels.Items") )
+                        </div>
+                    </div>
+                }
+
+                <div class="owl-carousel ocarousel @Model.CustomCssClass" id="ocarousel-@(Model.Id)">
+                    @foreach (var item in Model.Products)
+                    {
+                        <div class="item-box">
+                            @await Html.PartialAsync("_ProductBox", item)
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    <script>
+        $(document).ready(function () {
+            $('#ocarousel-@(Model.Id)').owlCarousel({
+                nav: @Model.Nav.ToString().ToLower(),
+                loop: @Model.Loop.ToString().ToLower(),
+                dots: true,
+                margin: 10,
+                autoplay: @Model.AutoPlay.ToString().ToLower(),
+                rtl: @Model.Rtl.ToString().ToLower(),
+                autoplayTimeout: @Model.AutoPlayTimeout,
+                autoplayHoverPause: @Model.AutoPlayHoverPause.ToString().ToLower(),
+                lazyLoad: @Model.LazyLoad.ToString().ToLower(),
+                lazyLoadEager: @Model.LazyLoadEager,
+                center: @Model.Center.ToString().ToLower(),
+                startPosition: @Model.StartPosition,
+                responsive: {
+                    0: {
+                        items: 2
+                    },
+                    576: {
+                        items: 2
+                    },
+                    992: {
+                        items: 4
+                    },
+                    1500: {
+                        items: 5
+                    }
+                }
+            });
+            $(".owl-next").html("<i class='icon-arrow-right'></i>");
+            $(".owl-prev").html("<i class='icon-arrow-left'></i>");
+        });
+    </script>
+}
+@NopHtml.GenerateInlineScripts(ResourceLocation.Footer)

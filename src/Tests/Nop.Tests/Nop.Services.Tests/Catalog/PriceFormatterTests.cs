@@ -140,7 +140,7 @@ public class PriceFormatterTests : ServiceTest
         //assert that the formatted rental price contains the expected details
         formattedRentalPrice.Should().Contain("50"); 
         formattedRentalPrice.Should().Contain("5"); 
-        formattedRentalPrice.Should().Contain("day");
+        formattedRentalPrice.Should().Contain("يوم");
     }
 
     [Test]

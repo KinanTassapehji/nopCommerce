@@ -153,7 +153,6 @@ public partial interface IProductService
     /// <param name="searchSku">A value indicating whether to search by a specified "keyword" in product SKU</param>
     /// <param name="searchProductTags">A value indicating whether to search by a specified "keyword" in product tags</param>
     /// <param name="languageId">Language identifier (search for text searching)</param>
-    /// <param name="filteredSpecOptions">Specification options list to filter products; null to load all records</param>
     /// <param name="orderBy">Order by</param>
     /// <param name="showHidden">A value indicating whether to show hidden records</param>
     /// <param name="overridePublished">
@@ -185,7 +184,6 @@ public partial interface IProductService
         bool searchSku = true,
         bool searchProductTags = false,
         int languageId = 0,
-        IList<SpecificationAttributeOption> filteredSpecOptions = null,
         ProductSortingEnum orderBy = ProductSortingEnum.Position,
         bool showHidden = false,
         bool? overridePublished = null);
@@ -277,13 +275,6 @@ public partial interface IProductService
     /// The task result contains the number of products
     /// </returns>
     Task<int> GetNumberOfProductsByVendorIdAsync(int vendorId);
-
-    /// <summary>
-    /// Parse "required product Ids" property
-    /// </summary>
-    /// <param name="product">Product</param>
-    /// <returns>A list of required product IDs</returns>
-    int[] ParseRequiredProductIds(Product product);
 
     /// <summary>
     /// Get a value indicating whether a product is available now (availability dates)
@@ -378,36 +369,6 @@ public partial interface IProductService
     /// <param name="date">Date</param>
     /// <returns>Formatted date</returns>
     string FormatRentalDate(Product product, DateTime date);
-
-    /// <summary>
-    /// Gets the value whether the sequence contains downloadable products
-    /// </summary>
-    /// <param name="productIds">Product identifiers</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the result
-    /// </returns>
-    Task<bool> HasAnyDownloadableProductAsync(int[] productIds);
-
-    /// <summary>
-    /// Gets the value whether the sequence contains gift card products
-    /// </summary>
-    /// <param name="productIds">Product identifiers</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the result
-    /// </returns>
-    Task<bool> HasAnyGiftCardProductAsync(int[] productIds);
-
-    /// <summary>
-    /// Gets the value whether the sequence contains recurring products
-    /// </summary>
-    /// <param name="productIds">Product identifiers</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the result
-    /// </returns>
-    Task<bool> HasAnyRecurringProductAsync(int[] productIds);
 
     /// <summary>
     /// Returns a list of sku of not existing products

@@ -7,7 +7,6 @@ public partial record OrderTotalsModel : BaseNopModel
     public OrderTotalsModel()
     {
         TaxRates = new List<TaxRate>();
-        GiftCards = new List<GiftCard>();
     }
     public bool IsEditable { get; set; }
 
@@ -27,13 +26,8 @@ public partial record OrderTotalsModel : BaseNopModel
     public bool DisplayTax { get; set; }
     public bool DisplayTaxRates { get; set; }
 
-    public IList<GiftCard> GiftCards { get; set; }
-
     public string OrderTotalDiscount { get; set; }
-    public int RedeemedRewardPoints { get; set; }
-    public string RedeemedRewardPointsAmount { get; set; }
 
-    public int WillEarnRewardPoints { get; set; }
 
     public string OrderTotal { get; set; }
 
@@ -43,13 +37,6 @@ public partial record OrderTotalsModel : BaseNopModel
     {
         public string Rate { get; set; }
         public string Value { get; set; }
-    }
-
-    public partial record GiftCard : BaseNopEntityModel
-    {
-        public string CouponCode { get; set; }
-        public string Amount { get; set; }
-        public string Remaining { get; set; }
     }
 
     #endregion

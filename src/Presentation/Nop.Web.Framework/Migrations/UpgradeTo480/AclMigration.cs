@@ -107,14 +107,13 @@ public class AclMigration : Migration
         insertMappings("ManageManufacturers", StandardPermission.Catalog.MANUFACTURER_CREATE_EDIT_DELETE, StandardPermission.Catalog.MANUFACTURER_IMPORT_EXPORT, StandardPermission.Catalog.MANUFACTURER_VIEW);
         insertMappings("ManageProductReviews", StandardPermission.Catalog.PRODUCT_REVIEWS_CREATE_EDIT_DELETE, StandardPermission.Catalog.PRODUCT_REVIEWS_VIEW);
         insertMappings("ManageProductTags", StandardPermission.Catalog.PRODUCT_TAGS_CREATE_EDIT_DELETE, StandardPermission.Catalog.PRODUCT_TAGS_VIEW);
-        insertMappings("ManageAttributes", StandardPermission.Catalog.PRODUCT_ATTRIBUTES_CREATE_EDIT_DELETE, StandardPermission.Catalog.PRODUCT_ATTRIBUTES_VIEW, StandardPermission.Catalog.CHECKOUT_ATTRIBUTES_CREATE_EDIT_DELETE, StandardPermission.Catalog.CHECKOUT_ATTRIBUTES_VIEW, StandardPermission.Catalog.SPECIFICATION_ATTRIBUTES_CREATE_EDIT_DELETE, StandardPermission.Catalog.SPECIFICATION_ATTRIBUTES_VIEW);
+        insertMappings("ManageAttributes", StandardPermission.Catalog.PRODUCT_ATTRIBUTES_CREATE_EDIT_DELETE, StandardPermission.Catalog.PRODUCT_ATTRIBUTES_VIEW, StandardPermission.Catalog.CHECKOUT_ATTRIBUTES_CREATE_EDIT_DELETE, StandardPermission.Catalog.CHECKOUT_ATTRIBUTES_VIEW);
         insertMappings("ManageCustomers", StandardPermission.Customers.CUSTOMERS_CREATE_EDIT_DELETE, StandardPermission.Customers.CUSTOMERS_IMPORT_EXPORT, StandardPermission.Customers.CUSTOMERS_VIEW, StandardPermission.Customers.CUSTOMER_ROLES_VIEW, StandardPermission.Customers.CUSTOMER_ROLES_CREATE_EDIT_DELETE, StandardPermission.Customers.GDPR_MANAGE, StandardPermission.Reports.REGISTERED_CUSTOMERS, StandardPermission.Reports.CUSTOMERS_BY_NUMBER_OF_ORDERS, StandardPermission.Reports.CUSTOMERS_BY_ORDER_TOTAL);
         insertMappings("ManageVendors", StandardPermission.Customers.VENDORS_CREATE_EDIT_DELETE, StandardPermission.Customers.VENDORS_VIEW);
         insertMappings("ManageCurrentCarts", StandardPermission.Orders.CURRENT_CARTS_MANAGE);
         insertMappings("ManageOrders", StandardPermission.Orders.ORDERS_VIEW, StandardPermission.Orders.ORDERS_CREATE_EDIT_DELETE, StandardPermission.Orders.ORDERS_IMPORT_EXPORT, StandardPermission.Orders.SHIPMENTS_CREATE_EDIT_DELETE, StandardPermission.Orders.SHIPMENTS_VIEW, StandardPermission.Reports.BESTSELLERS, StandardPermission.Reports.PRODUCTS_NEVER_PURCHASED);
         insertMappings("SalesSummaryReport", StandardPermission.Reports.SALES_SUMMARY);
-        insertMappings("ManageRecurringPayments", StandardPermission.Orders.RECURRING_PAYMENTS_CREATE_EDIT_DELETE, StandardPermission.Orders.RECURRING_PAYMENTS_VIEW);
-        insertMappings("ManageGiftCards", StandardPermission.Orders.GIFT_CARDS_CREATE_EDIT_DELETE, StandardPermission.Orders.GIFT_CARDS_VIEW);
+
         insertMappings("ManageReturnRequests", StandardPermission.Orders.RETURN_REQUESTS_CREATE_EDIT_DELETE, StandardPermission.Orders.RETURN_REQUESTS_VIEW);
         insertMappings("OrderCountryReport", StandardPermission.Reports.COUNTRY_SALES);
         insertMappings("ManageAffiliates", StandardPermission.Promotions.AFFILIATES_CREATE_EDIT_DELETE, StandardPermission.Promotions.AFFILIATES_VIEW);
@@ -132,8 +131,6 @@ public class AclMigration : Migration
         insertMappings("ManageLanguages", StandardPermission.Configuration.MANAGE_LANGUAGES);
         insertMappings("ManageSettings", StandardPermission.Configuration.MANAGE_SETTINGS);
         insertMappings("ManagePaymentMethods", StandardPermission.Configuration.MANAGE_PAYMENT_METHODS);
-        insertMappings("ManageExternalAuthenticationMethods", StandardPermission.Configuration.MANAGE_EXTERNAL_AUTHENTICATION_METHODS);
-        insertMappings("ManageMultifactorAuthenticationMethods", StandardPermission.Configuration.MANAGE_MULTIFACTOR_AUTHENTICATION_METHODS);
         insertMappings("ManageTaxSettings", StandardPermission.Configuration.MANAGE_TAX_SETTINGS);
         insertMappings("ManageShippingSettings", StandardPermission.Configuration.MANAGE_SHIPPING_SETTINGS);
         insertMappings("ManageCurrencies", StandardPermission.Configuration.MANAGE_CURRENCIES);
@@ -151,11 +148,8 @@ public class AclMigration : Migration
 
         insertMappings("DisplayPrices", StandardPermission.PublicStore.DISPLAY_PRICES);
         insertMappings("EnableShoppingCart", StandardPermission.PublicStore.ENABLE_SHOPPING_CART);
-        insertMappings("EnableWishlist", StandardPermission.PublicStore.ENABLE_WISHLIST);
         insertMappings("PublicStoreAllowNavigation", StandardPermission.PublicStore.PUBLIC_STORE_ALLOW_NAVIGATION);
         insertMappings("AccessClosedStore", StandardPermission.PublicStore.ACCESS_CLOSED_STORE);
-
-        insertMappings("EnableMultiFactorAuthentication", StandardPermission.Security.ENABLE_MULTI_FACTOR_AUTHENTICATION);
 
         //add new permissions for vendors
         var vendorRole = _customerRoleRepository.Table

@@ -163,21 +163,6 @@ public partial class CustomerSettings : ISettings
     public bool NotifyNewCustomerRegistration { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether to hide 'Downloadable products' tab on 'My account' page
-    /// </summary>
-    public bool HideDownloadableProductsTab { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to hide 'Back in stock subscriptions' tab on 'My account' page
-    /// </summary>
-    public bool HideBackInStockSubscriptionsTab { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to validate user when downloading products
-    /// </summary>
-    public bool DownloadableProductsValidateUser { get; set; }
-
-    /// <summary>
     /// Customer name formatting
     /// </summary>
     public CustomerNameFormat CustomerNameFormat { get; set; }
@@ -226,16 +211,6 @@ public partial class CustomerSettings : ISettings
     /// Gets or sets a value indicating whether to force entering email twice
     /// </summary>
     public bool EnteringEmailTwice { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether registration is required for downloadable products
-    /// </summary>
-    public bool RequireRegistrationForDownloadableProducts { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to check gift card balance
-    /// </summary>
-    public bool AllowCustomersToCheckGiftCardBalance { get; set; }
 
     /// <summary>
     /// Gets or sets interval (in minutes) with which the Delete Guest Task runs

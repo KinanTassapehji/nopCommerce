@@ -1,0 +1,178 @@
+﻿@model ProductDetailsModel
+@using NopStation.Plugin.Misc.Core.Helpers
+
+@{
+    var settings = NopInstance.Load<PictureZoomSettings>();
+    var position = ((PictureZoomPosition)((await workContext.GetWorkingLanguageAsync()).Rtl ? settings.RtlPositionTypeId : settings.LtrPositionTypeId)).ToString().ToLower();
+
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, "~/Plugins/NopStation.Plugin.Widgets.PictureZoom/Contents/js/jquery.imagesloaded.js");
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, "~/Plugins/NopStation.Plugin.Widgets.PictureZoom/Contents/js/cloud-zoom.1.0.2.js");
+    NopHtml.AppendCssFileParts("~/Plugins/NopStation.Plugin.Widgets.PictureZoom/Contents/css/cloud-zoom.css", string.Empty);
+    NopHtml.AppendCssFileParts("~/Plugins/NopStation.Plugin.Widgets.PictureZoom/Contents/css/styles.css", string.Empty);
+    var defaultPictureCount = 1;
+    var thumbPictureCount = 1;
+}
+
+<div class="gallery" data-popup="#dialogForImgPopUp" style="float:left">
+    <div class="details_picture-slider">
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBeforePictures, additionalData = Model })
+        <div class="cloud-zoom" href="@Model.DefaultPictureModel.FullSizeImageUrl">
+            @if(Model.PictureModels.Count() > 0)
+            {
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        @foreach (var picture in Model.PictureModels)
+                        {
+                            <div class="swiper-slide" data-fullimage="@picture.FullSizeImageUrl">
+                                <a href="@picture.FullSizeImageUrl" class="" id="main-product-img-lightbox-anchor-@defaultPictureCount">
+                                    <img alt="@picture.AlternateText" src="@picture.ImageUrl" title="@picture.Title" style="height:auto; width:100%; border-width: 0px;" class="cloud-zoom-image cloud-zoom-image-size" width="400" id="main-product-img-@Model.Id" />
+                                </a>
+                            </div>
+
+                            defaultPictureCount++;
+                        }
+                    </div>
+                </div>
+
+            } else
+            {
+                <a href="@Model.DefaultPictureModel.FullSizeImageUrl" class="cloud-zoom">
+                    <img alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" style="height:auto; width:100%; border-width: 0px;" class="cloud-zoom-image cloud-zoom-image-size" width="400" id="main-product-img-lightbox-anchor-@Model.Id" />
+                </a>
+            }
+        </div>
+        @if (Model.PictureModels.Count > 1)
+        {
+            <!-- If we need pagination -->
+            <div class="swiper-pagination"></div>
+
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        }
+    </div>
+
+    @if (Model.PictureModels.Count > 1)
+    {
+        var thumbCount = 0;
+        var thumbIndex = 0;
+        <div class="cloud-zoom-thumb-container">
+            <div thumbsSlider="" class="swiper thumbSlider">
+                <div class="swiper-wrapper">
+                    @foreach (var picture in Model.PictureModels)
+                    {
+                        <div class="swiper-slide" data-index="@(thumbIndex++)" data-fullsizeimage="@picture.FullSizeImageUrl" data-index="@thumbCount">
+                            <img src="@picture.ImageUrl" alt="@picture.AlternateText" title="@picture.Title" class="src-zoom-image" />
+                        </div>
+
+                        thumbPictureCount++;
+                        thumbCount++;
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (Model.PictureModels.Count > 1)
+{
+    <script asp-location="Footer" class="picture-zoom-script">
+        $(document).ready(function(){
+              const thumbSlider = new Swiper(".thumbSlider", {
+                spaceBetween: 10,
+                direction: "vertical",
+                slidesPerView: "auto",
+                watchSlidesProgress: true,
+            });
+
+            var detailsPictureSliderEffect = "slide";
+            if ($(window).width() > 991) {
+                detailsPictureSliderEffect = "fade";
+            }
+            const productDetailsSlider = new Swiper(".details_picture-slider .swiper", {
+                effect: detailsPictureSliderEffect,
+                pagination: {
+                    el: ".details_picture-slider .swiper-pagination",
+                },
+                navigation: {
+                    nextEl: ".details_picture-slider .swiper-button-next",
+                    prevEl: ".details_picture-slider .swiper-button-prev",
+                },
+                thumbs: {
+                    swiper: thumbSlider,
+                }
+            });
+
+             /* thumb click change slider on web view */
+            productDetailsSlider.on('slideChangeTransitionEnd', function () {
+                var thisChildSlide = $(".details_picture-slider .swiper").find(".swiper-slide-active").attr("data-fullimage");
+                $(".cloud-zoom").attr("href", thisChildSlide);
+                initZoom();
+            });
+              /* popup integrated with zoom plugin on web view */
+            $('.not-qv .details_picture-slider .swiper-slide a').magnificPopup({
+                type: 'image',
+                gallery: {
+                    enabled: true
+                }
+            });
+            $(document).on("click", ".not-qv  #wrap", function () {
+                $(".not-qv  .details_picture-slider  .swiper-slide-active a").trigger('click');
+            });
+            if ($(window).width() > 991) {
+              
+            } else {
+                $('.details_picture-slider .swiper-slide a').on("click", function (e) {
+                    e.preventDefault();
+                })
+            }
+
+            $(document).on("product_attributes_changed", function (data) {
+                if (data.changedData.pictureFullSizeUrl) {
+                    var thumb = $('.cloud-zoom-thumb-container .swiper-slide[data-fullsizeimage="' + data.changedData.pictureFullSizeUrl + '"]');
+                    var thumbIndex = thumb.data('index');
+                    productDetailsSlider.slideTo(thumbIndex)
+                }
+                else {
+                }
+            });
+        })
+    </script>
+} else
+{
+    <script asp-location="Footer">
+        $(document).ready(function(){
+            $('.details_picture-slider .swiper-slide a').magnificPopup({
+                type: 'image',
+                gallery: {
+                    enabled: true
+                }
+            });
+
+            $(document).on("click", ".not-qv #wrap", function () {
+                $(".not-qv .details_picture-slider  .swiper-slide a").trigger('click');
+            });
+        })
+    </script>
+}
+<script type="text/javascript" asp-location="Footer" class="picture-zoom-script">
+    $(document).ready(function () {
+        initZoom();
+    });
+
+    $(window).resize(function () {
+        initZoom();
+    });
+
+    $(".overview .attributes").on("click", function () {
+        setTimeout(function () {
+            initZoom();
+        }, 200);
+    });
+
+</script>
+
+@if (Model.CustomProperties.TryGetValue("AjaxLoad", out string ajaxLoad) && bool.Parse(ajaxLoad.ToString()))
+{
+    @NopHtml.GenerateInlineScripts(ResourceLocation.Footer)
+}

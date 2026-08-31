@@ -1,0 +1,13 @@
+﻿@model ProductDetailsModel
+@if (!string.IsNullOrWhiteSpace(Model.StockAvailability))
+{
+    <div class="availability">
+        @if (!string.IsNullOrWhiteSpace(Model.StockAvailability))
+        {
+            <div class="stock">
+                <span class="label font-weight-bold">@T("Products.Availability"):</span>
+                <span class="value stock text-warning" id="stock-availability-value-@Model.Id">@Model.StockAvailability</span>
+            </div>
+        }
+    </div>
+}

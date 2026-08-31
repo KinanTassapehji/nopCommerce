@@ -129,21 +129,6 @@ public partial class OrderSettings : ISettings
     public int NumberOfDaysReturnRequestAvailable { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether to activate related gift cards after completing the order
-    /// </summary>
-    public bool ActivateGiftCardsAfterCompletingOrder { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to deactivate related gift cards after cancelling the order
-    /// </summary>
-    public bool DeactivateGiftCardsAfterCancellingOrder { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to deactivate related gift cards after deleting the order
-    /// </summary>
-    public bool DeactivateGiftCardsAfterDeletingOrder { get; set; }
-
-    /// <summary>
     /// Gets or sets an order placement interval in minutes (prevent 2 orders being placed within an X minutes time frame).
     /// </summary>
     public int MinimumOrderPlacementInterval { get; set; }
@@ -172,11 +157,6 @@ public partial class OrderSettings : ISettings
     /// Gets or sets a value indicating whether to show product thumbnail in order details page"
     /// </summary>
     public bool ShowProductThumbnailInOrderDetailsPage { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the gift card usage history have to delete when an order is cancelled
-    /// </summary>
-    public bool DeleteGiftCardUsageHistory { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether to display order amounts in customer's currency on the order details page in the admin area

@@ -24,6 +24,8 @@
 
     //avatar
     var currentCustomer = await workContext.GetCurrentCustomerAsync();
+    var isRegistered = await customerService.IsRegisteredAsync(currentCustomer);
+    var canViewCustomers = await permissionService.AuthorizeAsync(StandardPermission.Customers.CUSTOMERS_VIEW);
 
     //event
     await eventPublisher.PublishAsync(new PageRenderingEvent(NopHtml));
@@ -88,30 +90,35 @@
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav ml-auto pl-2">
                         <li class="nav-item">
+                            <a asp-controller="Home" asp-action="Index" asp-area="" class="nav-link" target="_blank">@T("Admin.Header.PublicStore") <i class="fas fa-arrow-up-right-from-square mx-1"></i></a>
+                        </li>
+                        <li class="nav-item dropdown language-switcher">
                             @await Component.InvokeAsync(typeof(AdminLanguageSelectorViewComponent))
                         </li>
-                        @if (await customerService.IsRegisteredAsync(currentCustomer))
-                        {
-                            <li class="nav-item">
-                                <a href="#" class="nav-link disabled">@await customerService.GetCustomerFullNameAsync(currentCustomer)</a>
-                            </li>
-                            <li class="nav-item">
-                                <a asp-controller="Customer" asp-action="Logout" asp-area="" class="nav-link">@T("Admin.Header.Logout")</a>
-                            </li>
-                        }
                         <li class="nav-item">
                             @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.HeaderMiddle })
                         </li>
-                        <li class="nav-item">
-                            <a asp-controller="Home" asp-action="Index" asp-area="" class="nav-link">@T("Admin.Header.PublicStore")</a>
-                        </li>
-                        @if (canManageMaintenance)
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link" href="#" data-toggle="dropdown">
-                                    <i class="fas fa-gears"></i>
-                                </a>
-                                <ul class="maintenance-menu dropdown-menu dropdown-menu-right" role="menu">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" href="#" data-toggle="dropdown">
+                                <i class="fas fa-gears"></i>
+                            </a>
+                            <ul class="maintenance-menu dropdown-menu dropdown-menu-right" role="menu">
+                                @if (isRegistered)
+                                {
+                                    <li class="dropdown-item text-center">
+                                        @if (canViewCustomers)
+                                        {
+                                            <a asp-controller="Customer" asp-action="Edit" asp-area="@AreaNames.ADMIN" asp-route-id="@currentCustomer.Id">@await customerService.GetCustomerFullNameAsync(currentCustomer)</a>
+                                        }
+                                        else
+                                        {
+                                            <span>@await customerService.GetCustomerFullNameAsync(currentCustomer)</span>
+                                        }
+                                    </li>
+                                    <li class="dropdown-divider"></li>
+                                }
+                                @if (canManageMaintenance)
+                                {
                                     <li class="dropdown-item">
                                         <form asp-controller="Common" asp-action="ClearCache" asp-area="@AreaNames.ADMIN">
                                             <input name="returnurl" type="hidden" value="@returnUrl">
@@ -137,9 +144,15 @@
                                             </script>
                                         </form>
                                     </li>
-                                </ul>
-                            </li>
-                        }
+                                }
+                                @if (isRegistered)
+                                {
+                                    <li class="dropdown-item text-center">
+                                        <a asp-controller="Customer" asp-action="Logout" asp-area=""><i class="fas fa-right-from-bracket"></i> @T("Admin.Header.Logout")</a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
                     </ul>
                 </div>
                 @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.HeaderNavbarAfter })
@@ -162,7 +175,7 @@
                 <div class="sidebar">
                     <div class="sidebar-form">
                         <div id="search-box">
-                            <input type="text" class="form-control admin-search-box typeahead" placeholder="@T("Admin.Menu.Search")">
+                            <input type="text" class="form-control admin-search-box typeahead" dir="@Html.GetUIDirection(localizationSettings.IgnoreRtlPropertyForAdminArea)" placeholder="@T("Admin.Menu.Search")">
                         </div>
                     </div>
                     <nav class="mt-2">
@@ -201,7 +214,7 @@
                             <div class="col-md-4 col-xs-12"></div>
                         }
                         <div class="col-md-4 col-xs-12 text-center">
-                            @((await dateTimeHelper.ConvertToUserTimeAsync(DateTime.Now)).ToString("f", CultureInfo.CurrentCulture))
+                            @((await dateTimeHelper.ConvertToUserTimeAsync(DateTime.Now)).ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture))
                         </div>
                         <div class="col-md-4 col-xs-12 text-md-right text-center">
                             <b>nopCommerce version @NopVersion.FULL_VERSION</b>

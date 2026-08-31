@@ -66,7 +66,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
     protected readonly IDateTimeHelper _dateTimeHelper;
     protected readonly IEventPublisher _eventPublisher;
     protected readonly IGenericAttributeService _genericAttributeService;
-    protected readonly IGiftCardService _giftCardService;
     protected readonly IHtmlFormatter _htmlFormatter;
     protected readonly ILanguageService _languageService;
     protected readonly ILocalizationService _localizationService;
@@ -77,7 +76,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
     protected readonly IPaymentService _paymentService;
     protected readonly IPriceFormatter _priceFormatter;
     protected readonly IProductService _productService;
-    protected readonly IRewardPointService _rewardPointService;
     protected readonly IShipmentService _shipmentService;
     protected readonly IStateProvinceService _stateProvinceService;
     protected readonly IStoreContext _storeContext;
@@ -110,7 +108,7 @@ public partial class MessageTokenProvider : IMessageTokenProvider
         IDateTimeHelper dateTimeHelper,
         IEventPublisher eventPublisher,
         IGenericAttributeService genericAttributeService,
-        IGiftCardService giftCardService,
+
         IHtmlFormatter htmlFormatter,
         ILanguageService languageService,
         ILocalizationService localizationService,
@@ -121,7 +119,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
         IPaymentService paymentService,
         IPriceFormatter priceFormatter,
         IProductService productService,
-        IRewardPointService rewardPointService,
         IShipmentService shipmentService,
         IStateProvinceService stateProvinceService,
         IStoreContext storeContext,
@@ -148,7 +145,7 @@ public partial class MessageTokenProvider : IMessageTokenProvider
         _dateTimeHelper = dateTimeHelper;
         _eventPublisher = eventPublisher;
         _genericAttributeService = genericAttributeService;
-        _giftCardService = giftCardService;
+
         _htmlFormatter = htmlFormatter;
         _languageService = languageService;
         _localizationService = localizationService;
@@ -159,7 +156,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
         _paymentService = paymentService;
         _priceFormatter = priceFormatter;
         _productService = productService;
-        _rewardPointService = rewardPointService;
         _shipmentService = shipmentService;
         _stateProvinceService = stateProvinceService;
         _storeContext = storeContext;
@@ -223,8 +219,7 @@ public partial class MessageTokenProvider : IMessageTokenProvider
                         "%Customer.CustomAttributes%",
                         "%Customer.PasswordRecoveryURL%",
                         "%Customer.AccountActivationURL%",
-                        "%Customer.EmailRevalidationURL%",
-                        "%Wishlist.URLForCustomer%"
+                        "%Customer.EmailRevalidationURL%"
                     }
                 },
 
@@ -311,17 +306,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
                     {
                         "%Order.NewNoteText%",
                         "%Order.OrderNoteAttachmentUrl%"
-                    }
-                },
-
-                //recurring payment tokens
-                {
-                    TokenGroupNames.RecurringPaymentTokens,
-                    new[]
-                    {
-                        "%RecurringPayment.ID%",
-                        "%RecurringPayment.CancelAfterFailedPayment%",
-                        "%RecurringPayment.RecurringPaymentType%"
                     }
                 },
 
@@ -418,20 +402,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
                     }
                 },
 
-                //gift card tokens
-                {
-                    TokenGroupNames.GiftCardTokens,
-                    new[]
-                    {
-                        "%GiftCard.SenderName%",
-                        "%GiftCard.SenderEmail%",
-                        "%GiftCard.RecipientName%",
-                        "%GiftCard.RecipientEmail%",
-                        "%GiftCard.Amount%",
-                        "%GiftCard.CouponCode%",
-                        "%GiftCard.Message%"
-                    }
-                },
 
                 //product review tokens
                 {
@@ -475,16 +445,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
                     }
                 },
 
-                //product back in stock tokens
-                {
-                    TokenGroupNames.ProductBackInStockTokens,
-                    new[]
-                    {
-                        "%BackInStockSubscription.ProductName%",
-                        "%BackInStockSubscription.ProductUrl%"
-                    }
-                },
-
                 //email a friend tokens
                 {
                     TokenGroupNames.EmailAFriendTokens,
@@ -495,15 +455,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
                     }
                 },
 
-                //wishlist to friend tokens
-                {
-                    TokenGroupNames.WishlistToFriendTokens,
-                    new[]
-                    {
-                        "%Wishlist.PersonalMessage%",
-                        "%Wishlist.Email%"
-                    }
-                },
 
                 //VAT validation tokens
                 {
@@ -586,22 +537,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
 
             sb.AppendLine("<td style=\"padding: 0.6em 0.4em;text-align: left;\">" + WebUtility.HtmlEncode(productName));
 
-            //add download link
-            if (await _orderService.IsDownloadAllowedAsync(orderItem))
-            {
-                var downloadUrl = await RouteUrlAsync(order.StoreId, NopRouteNames.Standard.GET_DOWNLOAD, new { orderItemId = orderItem.OrderItemGuid });
-                var downloadLink = $"<a class=\"link\" href=\"{downloadUrl}\">{await _localizationService.GetResourceAsync("Messages.Order.Product(s).Download", languageId)}</a>";
-                sb.AppendLine("<br />");
-                sb.AppendLine(downloadLink);
-            }
-            //add download link
-            if (await _orderService.IsLicenseDownloadAllowedAsync(orderItem))
-            {
-                var licenseUrl = await RouteUrlAsync(order.StoreId, NopRouteNames.Standard.GET_LICENSE, new { orderItemId = orderItem.OrderItemGuid });
-                var licenseLink = $"<a class=\"link\" href=\"{licenseUrl}\">{await _localizationService.GetResourceAsync("Messages.Order.Product(s).License", languageId)}</a>";
-                sb.AppendLine("<br />");
-                sb.AppendLine(licenseLink);
-            }
             //attributes
             if (!string.IsNullOrEmpty(orderItem.AttributeDescription))
             {
@@ -859,25 +794,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
             sb.AppendLine($"<tr style=\"text-align:right;\"><td>&nbsp;</td><td colspan=\"2\" style=\"background-color: {_templatesSettings.Color3};padding:0.6em 0.4em;\"><strong>{await _localizationService.GetResourceAsync("Messages.Order.TotalDiscount", languageId)}</strong></td> <td style=\"background-color: {_templatesSettings.Color3};padding:0.6em 0.4em;\"><strong>{cusDiscount}</strong></td></tr>");
         }
 
-        //gift cards
-        foreach (var gcuh in await _giftCardService.GetGiftCardUsageHistoryAsync(order))
-        {
-            var giftCardText = string.Format(await _localizationService.GetResourceAsync("Messages.Order.GiftCardInfo", languageId),
-                WebUtility.HtmlEncode((await _giftCardService.GetGiftCardByIdAsync(gcuh.GiftCardId))?.GiftCardCouponCode));
-            var giftCardAmount = await _priceFormatter.FormatPriceAsync(-_currencyService.ConvertCurrency(gcuh.UsedValue, order.CurrencyRate), true, order.CustomerCurrencyCode,
-                false, languageId);
-            sb.AppendLine($"<tr style=\"text-align:right;\"><td>&nbsp;</td><td colspan=\"2\" style=\"background-color: {_templatesSettings.Color3};padding:0.6em 0.4em;\"><strong>{giftCardText}</strong></td> <td style=\"background-color: {_templatesSettings.Color3};padding:0.6em 0.4em;\"><strong>{giftCardAmount}</strong></td></tr>");
-        }
-
-        //reward points
-        if (order.RedeemedRewardPointsEntryId.HasValue && await _rewardPointService.GetRewardPointsHistoryEntryByIdAsync(order.RedeemedRewardPointsEntryId.Value) is RewardPointsHistory redeemedRewardPointsEntry)
-        {
-            var rpTitle = string.Format(await _localizationService.GetResourceAsync("Messages.Order.RewardPoints", languageId),
-                -redeemedRewardPointsEntry.Points);
-            var rpAmount = await _priceFormatter.FormatPriceAsync(-_currencyService.ConvertCurrency(redeemedRewardPointsEntry.UsedAmount, order.CurrencyRate), true,
-                order.CustomerCurrencyCode, false, languageId);
-            sb.AppendLine($"<tr style=\"text-align:right;\"><td>&nbsp;</td><td colspan=\"2\" style=\"background-color: {_templatesSettings.Color3};padding:0.6em 0.4em;\"><strong>{rpTitle}</strong></td> <td style=\"background-color: {_templatesSettings.Color3};padding:0.6em 0.4em;\"><strong>{rpAmount}</strong></td></tr>");
-        }
 
         //total
         sb.AppendLine($"<tr style=\"text-align:right;\"><td>&nbsp;</td><td colspan=\"2\" style=\"background-color: {_templatesSettings.Color3};padding:0.6em 0.4em;\"><strong>{await _localizationService.GetResourceAsync("Messages.Order.OrderTotal", languageId)}</strong></td> <td style=\"background-color: {_templatesSettings.Color3};padding:0.6em 0.4em;\"><strong>{cusTotal}</strong></td></tr>");
@@ -1204,24 +1120,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
     }
 
     /// <summary>
-    /// Add recurring payment tokens
-    /// </summary>
-    /// <param name="tokens">List of already added tokens</param>
-    /// <param name="recurringPayment">Recurring payment</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task AddRecurringPaymentTokensAsync(IList<Token> tokens, RecurringPayment recurringPayment)
-    {
-        tokens.Add(new Token("RecurringPayment.ID", recurringPayment.Id));
-        tokens.Add(new Token("RecurringPayment.CancelAfterFailedPayment",
-            recurringPayment.LastPaymentFailed && _paymentSettings.CancelRecurringPaymentsAfterFailedPayment));
-        if (await _orderService.GetOrderByIdAsync(recurringPayment.InitialOrderId) is Order order)
-            tokens.Add(new Token("RecurringPayment.RecurringPaymentType", (await _paymentService.GetRecurringPaymentTypeAsync(order.PaymentMethodSystemName)).ToString()));
-
-        //event notification
-        await _eventPublisher.EntityTokensAddedAsync(recurringPayment, tokens);
-    }
-
-    /// <summary>
     /// Add return request tokens
     /// </summary>
     /// <param name="tokens">List of already added tokens</param>
@@ -1245,33 +1143,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
 
         //event notification
         await _eventPublisher.EntityTokensAddedAsync(returnRequest, tokens);
-    }
-
-    /// <summary>
-    /// Add gift card tokens
-    /// </summary>
-    /// <param name="tokens">List of already added tokens</param>
-    /// <param name="giftCard">Gift card</param>
-    /// <param name="languageId">Language identifier</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task AddGiftCardTokensAsync(IList<Token> tokens, GiftCard giftCard, int languageId)
-    {
-        tokens.Add(new Token("GiftCard.SenderName", giftCard.SenderName));
-        tokens.Add(new Token("GiftCard.SenderEmail", giftCard.SenderEmail));
-        tokens.Add(new Token("GiftCard.RecipientName", giftCard.RecipientName));
-        tokens.Add(new Token("GiftCard.RecipientEmail", giftCard.RecipientEmail));
-
-        var primaryStoreCurrency = await _currencyService.GetCurrencyByIdAsync(_currencySettings.PrimaryStoreCurrencyId);
-        tokens.Add(new Token("GiftCard.Amount", await _priceFormatter.FormatPriceAsync(giftCard.Amount, true, primaryStoreCurrency.CurrencyCode, false, languageId)));
-        tokens.Add(new Token("GiftCard.CouponCode", giftCard.GiftCardCouponCode));
-
-        var giftCardMessage = !string.IsNullOrWhiteSpace(giftCard.Message) ?
-            _htmlFormatter.FormatText(giftCard.Message, false, true, false, false, false, false) : string.Empty;
-
-        tokens.Add(new Token("GiftCard.Message", giftCardMessage, true));
-
-        //event notification
-        await _eventPublisher.EntityTokensAddedAsync(giftCard, tokens);
     }
 
     /// <summary>
@@ -1560,24 +1431,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
     }
 
     /// <summary>
-    /// Add tokens of BackInStock subscription
-    /// </summary>
-    /// <param name="tokens">List of already added tokens</param>
-    /// <param name="subscription">BackInStock subscription</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task AddBackInStockTokensAsync(IList<Token> tokens, BackInStockSubscription subscription)
-    {
-        var product = await _productService.GetProductByIdAsync(subscription.ProductId);
-
-        tokens.Add(new Token("BackInStockSubscription.ProductName", product.Name));
-        var productUrl = await RouteUrlAsync(subscription.StoreId, "ProductDetails", new { SeName = await _urlRecordService.GetSeNameAsync(product) });
-        tokens.Add(new Token("BackInStockSubscription.ProductUrl", productUrl, true));
-
-        //event notification
-        await _eventPublisher.EntityTokensAddedAsync(subscription, tokens);
-    }
-
-    /// <summary>
     /// Get collection of allowed (supported) message tokens for campaigns
     /// </summary>
     /// <returns>
@@ -1660,15 +1513,10 @@ public partial class MessageTokenProvider : IMessageTokenProvider
 
             MessageTemplateSystemNames.NEW_ORDER_NOTE_ADDED_CUSTOMER_NOTIFICATION => [TokenGroupNames.StoreTokens, TokenGroupNames.OrderNoteTokens, TokenGroupNames.OrderTokens, TokenGroupNames.CustomerTokens],
 
-            MessageTemplateSystemNames.RECURRING_PAYMENT_CANCELLED_STORE_OWNER_NOTIFICATION or
-            MessageTemplateSystemNames.RECURRING_PAYMENT_CANCELLED_CUSTOMER_NOTIFICATION or
-            MessageTemplateSystemNames.RECURRING_PAYMENT_FAILED_CUSTOMER_NOTIFICATION => [TokenGroupNames.StoreTokens, TokenGroupNames.OrderTokens, TokenGroupNames.CustomerTokens, TokenGroupNames.RecurringPaymentTokens],
-
             MessageTemplateSystemNames.NEWSLETTER_SUBSCRIPTION_ACTIVATION_MESSAGE or
             MessageTemplateSystemNames.NEWSLETTER_SUBSCRIPTION_DEACTIVATION_MESSAGE => [TokenGroupNames.StoreTokens, TokenGroupNames.SubscriptionTokens],
 
             MessageTemplateSystemNames.EMAIL_A_FRIEND_MESSAGE => [TokenGroupNames.StoreTokens, TokenGroupNames.CustomerTokens, TokenGroupNames.ProductTokens, TokenGroupNames.EmailAFriendTokens],
-            MessageTemplateSystemNames.WISHLIST_TO_FRIEND_MESSAGE => [TokenGroupNames.StoreTokens, TokenGroupNames.CustomerTokens, TokenGroupNames.WishlistToFriendTokens],
 
             MessageTemplateSystemNames.NEW_RETURN_REQUEST_STORE_OWNER_NOTIFICATION or
             MessageTemplateSystemNames.NEW_RETURN_REQUEST_CUSTOMER_NOTIFICATION or
@@ -1679,7 +1527,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
             MessageTemplateSystemNames.PRIVATE_MESSAGE_NOTIFICATION => [TokenGroupNames.StoreTokens, TokenGroupNames.PrivateMessageTokens, TokenGroupNames.CustomerTokens],
             MessageTemplateSystemNames.NEW_VENDOR_ACCOUNT_APPLY_STORE_OWNER_NOTIFICATION => [TokenGroupNames.StoreTokens, TokenGroupNames.CustomerTokens, TokenGroupNames.VendorTokens],
             MessageTemplateSystemNames.VENDOR_INFORMATION_CHANGE_STORE_OWNER_NOTIFICATION => [TokenGroupNames.StoreTokens, TokenGroupNames.VendorTokens],
-            MessageTemplateSystemNames.GIFT_CARD_NOTIFICATION => [TokenGroupNames.StoreTokens, TokenGroupNames.GiftCardTokens],
 
             MessageTemplateSystemNames.PRODUCT_REVIEW_STORE_OWNER_NOTIFICATION or
             MessageTemplateSystemNames.PRODUCT_REVIEW_REPLY_CUSTOMER_NOTIFICATION => [TokenGroupNames.StoreTokens, TokenGroupNames.ProductReviewTokens, TokenGroupNames.CustomerTokens],
@@ -1691,7 +1538,6 @@ public partial class MessageTokenProvider : IMessageTokenProvider
             MessageTemplateSystemNames.NEW_VAT_SUBMITTED_STORE_OWNER_NOTIFICATION => [TokenGroupNames.StoreTokens, TokenGroupNames.CustomerTokens, TokenGroupNames.VatValidation],
             MessageTemplateSystemNames.BLOG_COMMENT_STORE_OWNER_NOTIFICATION => [TokenGroupNames.StoreTokens, TokenGroupNames.BlogCommentTokens, TokenGroupNames.CustomerTokens],
             MessageTemplateSystemNames.NEWS_COMMENT_STORE_OWNER_NOTIFICATION => [TokenGroupNames.StoreTokens, TokenGroupNames.NewsCommentTokens, TokenGroupNames.CustomerTokens],
-            MessageTemplateSystemNames.BACK_IN_STOCK_NOTIFICATION => [TokenGroupNames.StoreTokens, TokenGroupNames.CustomerTokens, TokenGroupNames.ProductBackInStockTokens],
             MessageTemplateSystemNames.CONTACT_US_MESSAGE => [TokenGroupNames.StoreTokens, TokenGroupNames.ContactUs],
             MessageTemplateSystemNames.CONTACT_VENDOR_MESSAGE => [TokenGroupNames.StoreTokens, TokenGroupNames.ContactVendor],
             _ => [],

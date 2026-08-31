@@ -54,13 +54,6 @@ public class AddIndexesMigration : ForwardOnlyMigration
                 .OnColumn(nameof(CustomerPassword.CustomerId)).Ascending()
                 .WithOptions().NonClustered();
 
-        if (!Schema.Table(nameof(ExternalAuthenticationRecord)).Index("IX_ExternalAuthenticationRecord_CustomerId")
-                .Exists())
-            IfDatabase(databaseType).Create.Index("IX_ExternalAuthenticationRecord_CustomerId")
-                .OnTable(nameof(ExternalAuthenticationRecord))
-                .OnColumn(nameof(ExternalAuthenticationRecord.CustomerId)).Ascending()
-                .WithOptions().NonClustered();
-
         if (!Schema.Table(NameCompatibilityManager.GetTableName(typeof(PrivateMessage)))
                 .Index("IX_PrivateMessage_FromCustomerId").Exists())
             IfDatabase(databaseType).Create.Index("IX_PrivateMessage_FromCustomerId")
@@ -103,21 +96,9 @@ public class AddIndexesMigration : ForwardOnlyMigration
                 .OnColumn(nameof(BlogComment.CustomerId)).Ascending()
                 .WithOptions().NonClustered();
 
-        if (!Schema.Table(nameof(BackInStockSubscription)).Index("IX_BackInStockSubscription_CustomerId").Exists())
-            IfDatabase(databaseType).Create.Index("IX_BackInStockSubscription_CustomerId")
-                .OnTable(nameof(BackInStockSubscription))
-                .OnColumn(nameof(BackInStockSubscription.CustomerId)).Ascending()
-                .WithOptions().NonClustered();
-
         if (!Schema.Table(nameof(ReturnRequest)).Index("IX_ReturnRequest_CustomerId").Exists())
             IfDatabase(databaseType).Create.Index("IX_ReturnRequest_CustomerId").OnTable(nameof(ReturnRequest))
                 .OnColumn(nameof(ReturnRequest.CustomerId)).Ascending()
-                .WithOptions().NonClustered();
-
-        if (!Schema.Table(nameof(RewardPointsHistory)).Index("IX_RewardPointsHistory_CustomerId").Exists())
-            IfDatabase(databaseType).Create.Index("IX_RewardPointsHistory_CustomerId")
-                .OnTable(nameof(RewardPointsHistory))
-                .OnColumn(nameof(RewardPointsHistory.CustomerId)).Ascending()
                 .WithOptions().NonClustered();
 
         if (!Schema.Table(nameof(NewsComment)).Index("IX_NewsComment_CustomerId").Exists())

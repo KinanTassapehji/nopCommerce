@@ -31,10 +31,7 @@ public partial class StandardPermission
         public const string SHIPMENTS_CREATE_EDIT_DELETE = $"{nameof(Orders)}.ShipmentsCreateEditDelete";
         public const string RETURN_REQUESTS_VIEW = $"{nameof(Orders)}.ReturnRequestsView";
         public const string RETURN_REQUESTS_CREATE_EDIT_DELETE = $"{nameof(Orders)}.ReturnRequestsCreateEditDelete";
-        public const string RECURRING_PAYMENTS_VIEW = $"{nameof(Orders)}.RecurringPaymentsView";
-        public const string RECURRING_PAYMENTS_CREATE_EDIT_DELETE = $"{nameof(Orders)}.RecurringPaymentsCreateEditDelete";
-        public const string GIFT_CARDS_VIEW = $"{nameof(Orders)}.GiftCardsView";
-        public const string GIFT_CARDS_CREATE_EDIT_DELETE = $"{nameof(Orders)}.GiftCardsCreateEditDelete";
+
     }
 
     public partial class Reports
@@ -69,8 +66,6 @@ public partial class StandardPermission
         public const string FILTER_LEVEL_VALUE_IMPORT_EXPORT = $"{nameof(Catalog)}.FilterLevelValueImportExport";
         public const string PRODUCT_ATTRIBUTES_VIEW = $"{nameof(Catalog)}.ProductAttributesView";
         public const string PRODUCT_ATTRIBUTES_CREATE_EDIT_DELETE = $"{nameof(Catalog)}.ProductAttributesCreateEditDelete";
-        public const string SPECIFICATION_ATTRIBUTES_VIEW = $"{nameof(Catalog)}.SpecificationAttributesView";
-        public const string SPECIFICATION_ATTRIBUTES_CREATE_EDIT_DELETE = $"{nameof(Catalog)}.SpecificationAttributesCreateEditDelete";
         public const string CHECKOUT_ATTRIBUTES_VIEW = $"{nameof(Catalog)}.CheckoutAttributesView";
         public const string CHECKOUT_ATTRIBUTES_CREATE_EDIT_DELETE = $"{nameof(Catalog)}.CheckoutAttributesCreateEditDelete";
     }
@@ -121,8 +116,6 @@ public partial class StandardPermission
         public const string MANAGE_LANGUAGES = $"{nameof(Configuration)}.ManageLanguages";
         public const string MANAGE_SETTINGS = $"{nameof(Configuration)}.ManageSettings";
         public const string MANAGE_PAYMENT_METHODS = $"{nameof(Configuration)}.ManagePaymentMethods";
-        public const string MANAGE_EXTERNAL_AUTHENTICATION_METHODS = $"{nameof(Configuration)}.ManageExternalAuthenticationMethods";
-        public const string MANAGE_MULTIFACTOR_AUTHENTICATION_METHODS = $"{nameof(Configuration)}.ManageMultifactorAuthenticationMethods";
         public const string MANAGE_TAX_SETTINGS = $"{nameof(Configuration)}.ManageTaxSettings";
         public const string MANAGE_SHIPPING_SETTINGS = $"{nameof(Configuration)}.ManageShippingSettings";
         public const string MANAGE_CURRENCIES = $"{nameof(Configuration)}.ManageCurrencies";
@@ -144,7 +137,6 @@ public partial class StandardPermission
 
     public partial class Security
     {
-        public const string ENABLE_MULTI_FACTOR_AUTHENTICATION = $"{nameof(Security)}.EnableMultiFactorAuthentication";
         public const string ACCESS_ADMIN_PANEL = $"{nameof(Security)}.AccessAdminPanel";
     }
 
@@ -152,7 +144,6 @@ public partial class StandardPermission
     {
         public const string DISPLAY_PRICES = $"{nameof(PublicStore)}.DisplayPrices";
         public const string ENABLE_SHOPPING_CART = $"{nameof(PublicStore)}.EnableShoppingCart";
-        public const string ENABLE_WISHLIST = $"{nameof(PublicStore)}.EnableWishlist";
         public const string PUBLIC_STORE_ALLOW_NAVIGATION = $"{nameof(PublicStore)}.PublicStoreAllowNavigation";
         public const string ACCESS_CLOSED_STORE = $"{nameof(PublicStore)}.AccessClosedStore";
     }

@@ -1,7 +1,10 @@
-@model OrderModel
+﻿@model OrderModel
 
 @{
     var canShipmentsView = await permissionService.AuthorizeAsync(StandardPermission.Orders.SHIPMENTS_VIEW);
+
+    //this store collects a single, shipping-only address - prefer the shipping clone, which is what shipments use
+    var orderAddress = !Model.PickupInStore && Model.ShippingAddress != null ? Model.ShippingAddress : Model.BillingAddress;
 }
 
 <div class="card-body">
@@ -9,7 +12,7 @@
         <div class="col-md-6 card-group">
             <div class="card mb-3">
                 <div class="card-header clearfix">
-                    @T("Admin.Orders.Fields.BillingAddress")
+                    @T("Admin.Orders.Fields.ShippingAddress")
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
@@ -22,7 +25,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-text-row">
-                                @Model.BillingAddress.FirstName @Model.BillingAddress.LastName
+                                @orderAddress.FirstName @orderAddress.LastName
                             </div>
                         </div>
                     </div>
@@ -36,7 +39,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-text-row">
-                                @Model.BillingAddress.Email
+                                @orderAddress.Email
                             </div>
                         </div>
                     </div>
@@ -50,7 +53,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-text-row">
-                                @Model.BillingAddress.PhoneNumber
+                                @orderAddress.PhoneNumber
                             </div>
                         </div>
                     </div>
@@ -64,7 +67,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-text-row">
-                                @Model.BillingAddress.FaxNumber
+                                @orderAddress.FaxNumber
                             </div>
                         </div>
                     </div>
@@ -78,7 +81,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-text-row">
-                                @Model.BillingAddress.Company
+                                @orderAddress.Company
                             </div>
                         </div>
                     </div>
@@ -92,7 +95,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-text-row">
-                                @Model.BillingAddress.Address1
+                                @orderAddress.Address1
                             </div>
                         </div>
                     </div>
@@ -106,7 +109,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-text-row">
-                                @Model.BillingAddress.Address2
+                                @orderAddress.Address2
                             </div>
                         </div>
                     </div>
@@ -120,7 +123,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-text-row">
-                                @Model.BillingAddress.City
+                                @orderAddress.City
                             </div>
                         </div>
                     </div>
@@ -134,7 +137,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-text-row">
-                                @Model.BillingAddress.County
+                                @orderAddress.County
                             </div>
                         </div>
                     </div>
@@ -148,7 +151,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-text-row">
-                                @Model.BillingAddress.StateProvinceName
+                                @orderAddress.StateProvinceName
                             </div>
                         </div>
                     </div>
@@ -162,7 +165,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-text-row">
-                                @Model.BillingAddress.ZipPostalCode
+                                @orderAddress.ZipPostalCode
                             </div>
                         </div>
                     </div>
@@ -176,12 +179,12 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-text-row">
-                                @Model.BillingAddress.CountryName
+                                @orderAddress.CountryName
                             </div>
                         </div>
                     </div>
 
-                    @if (!string.IsNullOrEmpty(Model.BillingAddress.FormattedCustomAddressAttributes))
+                    @if (!string.IsNullOrEmpty(orderAddress.FormattedCustomAddressAttributes))
                     {
                         <div class="form-group row">
                             <div class="col-md-4">
@@ -191,7 +194,7 @@
                             </div>
                             <div class="col-md-8">
                                 <div class="form-text-row">
-                                    @Html.Raw(Model.BillingAddress.FormattedCustomAddressAttributes)
+                                    @Html.Raw(orderAddress.FormattedCustomAddressAttributes)
                                 </div>
                             </div>
                         </div>
@@ -202,9 +205,18 @@
                 @if (!Model.IsLoggedInAsVendor)
                 {
                     <div class="card-footer">
-                        <div class="form-group row justify-content-end">
-                            <div class="col-auto">
-                                <a asp-action="AddressEdit" asp-route-addressId="@Model.BillingAddress.Id" asp-route-orderId="@Model.Id" class="btn btn-primary">@T("Admin.Common.Edit")</a>
+                        <div class="form-group row">
+                            @if (!string.IsNullOrEmpty(Model.ShippingAddressGoogleMapsUrl))
+                            {
+                                <div class="col-auto mr-auto">
+                                    <div class="form-text-row mb-2">
+                                        <img alt="google maps" src="@Url.Content("~/css/admin/images/gmaps.ico")" />
+                                        <a href="@Html.Raw(Model.ShippingAddressGoogleMapsUrl)" style="margin-bottom: 10px;" target="_blank">@T("Admin.Orders.Fields.ShippingAddress.ViewOnGoogleMaps")</a>
+                                    </div>
+                                </div>
+                            }
+                            <div class="col-auto ml-auto">
+                                <a asp-action="AddressEdit" asp-route-addressId="@orderAddress.Id" asp-route-orderId="@Model.Id" class="btn btn-primary">@T("Admin.Common.Edit")</a>
                             </div>
                         </div>
                     </div>
@@ -215,222 +227,6 @@
         <div class="col-md-6 card-group">
             @if (Model.IsShippable)
             {
-                if (!Model.PickupInStore && Model.ShippingAddress != null)
-                {
-                    <div class="card mb-3">
-                        <div class="card-header clearfix">
-                            @T("Admin.Orders.Fields.ShippingAddress")
-                        </div>
-                        <div class="card-body">
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <div class="label-wrapper">
-                                        <label class="col-form-label">
-                                            @T("Admin.Orders.Address.FullName")
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-text-row">
-                                        @Model.ShippingAddress.FirstName @Model.ShippingAddress.LastName
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <div class="label-wrapper">
-                                        <label class="col-form-label">
-                                            @T("Admin.Orders.Address.Email")
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-text-row">
-                                        @Model.ShippingAddress.Email
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <div class="label-wrapper">
-                                        <label class="col-form-label">
-                                            @T("Admin.Orders.Address.Phone")
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-text-row">
-                                        @Model.ShippingAddress.PhoneNumber
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <div class="label-wrapper">
-                                        <label class="col-form-label">
-                                            @T("Admin.Orders.Address.Fax")
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-text-row">
-                                        @Model.ShippingAddress.FaxNumber
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <div class="label-wrapper">
-                                        <label class="col-form-label">
-                                            @T("Admin.Orders.Address.Company")
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-text-row">
-                                        @Model.ShippingAddress.Company
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <div class="label-wrapper">
-                                        <label class="col-form-label">
-                                            @T("Admin.Orders.Address.Address1")
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-text-row">
-                                        @Model.ShippingAddress.Address1
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <div class="label-wrapper">
-                                        <label class="col-form-label">
-                                            @T("Admin.Orders.Address.Address2")
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-text-row">
-                                        @Model.ShippingAddress.Address2
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <div class="label-wrapper">
-                                        <label class="col-form-label">
-                                            @T("Admin.Orders.Address.City")
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-text-row">
-                                        @Model.ShippingAddress.City
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <div class="label-wrapper">
-                                        <label class="col-form-label">
-                                            @T("Admin.Orders.Address.County")
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-text-row">
-                                        @Model.ShippingAddress.County
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <div class="label-wrapper">
-                                        <label class="col-form-label">
-                                            @T("Admin.Orders.Address.StateProvince")
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-text-row">
-                                        @Model.ShippingAddress.StateProvinceName
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <div class="label-wrapper">
-                                        <label class="col-form-label">
-                                            @T("Admin.Orders.Address.ZipPostalCode")
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-text-row">
-                                        @Model.ShippingAddress.ZipPostalCode
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <div class="label-wrapper">
-                                        <label class="col-form-label">
-                                            @T("Admin.Orders.Address.Country")
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-text-row">
-                                        @Model.ShippingAddress.CountryName
-                                    </div>
-                                </div>
-                            </div>
-
-                            @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = AdminWidgetZones.OrderShippingAddressDetailsBottom, additionalData = Model })
-
-                            @if (!string.IsNullOrEmpty(Model.ShippingAddress.FormattedCustomAddressAttributes))
-                            {
-                                <div class="form-group row">
-                                    <div class="col-md-4">
-                                        <div class="label-wrapper">
-                                            <label class="col-form-label">@T("Admin.Orders.Address.CustomAttributes")</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="form-text-row">
-                                            @Html.Raw(Model.ShippingAddress.FormattedCustomAddressAttributes)
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-
-                        </div>
-
-                        <div class="card-footer">
-                            <div class="form-group row">
-                                <div class="col-auto mr-auto">
-                                    <div class="form-text-row mb-2">
-                                        <img alt="google maps" src="@Url.Content("~/css/admin/images/gmaps.ico")" />
-                                        <a href="@Html.Raw(Model.ShippingAddressGoogleMapsUrl)" style="margin-bottom: 10px;" target="_blank">@T("Admin.Orders.Fields.ShippingAddress.ViewOnGoogleMaps")</a>
-                                    </div>
-                                </div>
-                                @if (!Model.IsLoggedInAsVendor)
-                                {
-                                    <div class="col-auto">
-                                        <a asp-action="AddressEdit" asp-route-addressId="@Model.ShippingAddress.Id" asp-route-orderId="@Model.Id" class="btn btn-primary">@T("Admin.Common.Edit")</a>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                }
-
                 if (Model.PickupInStore && Model.PickupAddress != null)
                 {
 

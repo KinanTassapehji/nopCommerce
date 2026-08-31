@@ -1,0 +1,17 @@
+﻿@model OCarouselListModel
+
+@foreach (var carousel in Model.OCarousels)
+{
+    if (carousel.CarouselType == CarouselType.Product)
+    {
+        @await Html.PartialAsync("_ProductCarousel.cshtml", carousel)
+    }
+    else if (carousel.CarouselType == CarouselType.Manufacturer)
+    {
+        @await Html.PartialAsync("_ManufacturerCarousel.cshtml", carousel)
+    }
+    else if (carousel.CarouselType == CarouselType.Category)
+    {
+        @await Html.PartialAsync("_CategoryCarousel.cshtml", carousel)
+    }
+}

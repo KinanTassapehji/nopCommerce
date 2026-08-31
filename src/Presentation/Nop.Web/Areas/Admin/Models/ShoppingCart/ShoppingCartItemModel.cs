@@ -19,7 +19,6 @@ public partial record ShoppingCartItemModel : BaseNopEntityModel
     [NopResourceDisplayName("Admin.CurrentCarts.Product")]
     public string ProductName { get; set; }
 
-    public string CustomWishlistName { get; set; }    
 
     public string AttributeInfo { get; set; }
 

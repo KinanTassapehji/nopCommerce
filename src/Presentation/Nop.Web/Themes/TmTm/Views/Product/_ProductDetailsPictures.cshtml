@@ -1,0 +1,4 @@
+﻿@model ProductDetailsModel
+@*Shim. The gallery itself lives in Views/Shared/_TmProductGallery.cshtml, which
+    the PictureZoom override renders too — see the comment at the top of it.*@
+@await Html.PartialAsync("_TmProductGallery", Model)

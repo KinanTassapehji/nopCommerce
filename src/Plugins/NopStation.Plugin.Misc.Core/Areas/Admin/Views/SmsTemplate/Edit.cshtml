@@ -1,0 +1,39 @@
+@model SmsTemplateModel
+
+@{
+    ViewBag.PageTitle = T("Admin.NopStation.Core.SmsTemplates.EditDetails").Text;
+    NopHtml.SetActiveMenuItemSystemName("SmsActions.SmsTemplates");
+}
+
+<form asp-controller="SmsTemplate" asp-action="Edit" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.NopStation.Core.SmsTemplates.EditDetails") - @Model.Name
+            <small>
+                <i class="fas fa-arrow-circle-left"></i>
+                <a asp-action="List">@T("Admin.NopStation.Core.SmsTemplates.BackToList")</a>
+            </small>
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.SaveContinue")
+            </button>
+            <button type="submit" id="sms-template-copy" name="sms-template-copy" class="btn btn-success">
+                <i class="far fa-clone"></i>
+                @T("Admin.NopStation.Core.SmsTemplates.Copy")
+            </button>
+            <span id="sms-template-delete" class="btn btn-danger">
+                <i class="far fa-trash-alt"></i>
+                @T("Admin.Common.Delete")
+            </span>
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdate", Model)
+</form>
+<nop-delete-confirmation asp-model-id="@Model.Id" asp-button-id="sms-template-delete" />
+<nop-action-confirmation asp-button-id="sms-template-copy" />

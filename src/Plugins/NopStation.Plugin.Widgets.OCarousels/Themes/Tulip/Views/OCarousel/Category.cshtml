@@ -1,0 +1,87 @@
+﻿@model OCarouselModel
+
+@if (Model.Categories.Count > 0)
+{
+    <div class="OCarousel-container custom-container-fluid OCarousel-category-slider pb-3 pb-sm-5 py-4">
+        <div class="">
+            <div class="row no-gutters">
+
+                @if (Model.DisplayTitle)
+                {
+                    if (Model.ShowBackgroundPicture)
+                    {
+                        <style>
+                            .title-color-white {
+                                color: #fff;
+                            }
+                        </style>
+                        <div class="title title-container text-white">
+                            <h2> <strong>@Model.Title</strong> </h2>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="title title-container">
+                            <h2> <strong>@Model.Title</strong> </h2>
+                        </div>
+                    }
+                }
+
+                <div class="col-md-12">
+                    <div class="owl-carousel OCarousel OCarousel-@(Model.Id) @Model.CustomCssClass" id="OCarousel-@(Model.Id)">
+                        @foreach (var categoryModel in Model.Categories)
+                        {
+                            <div class="OCarousel-item">
+                                <a class="category-list-img" href="@Url.RouteUrl("Category", new { SeName = categoryModel.SeName })" title="@categoryModel.PictureModel.Title">
+                                    <img alt="@categoryModel.PictureModel.AlternateText" src="@categoryModel.PictureModel.ImageUrl" title="@categoryModel.PictureModel.Title" />
+                                    <div class="category-add-text p-2 text-center text-uppercase">@categoryModel.Name  </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script asp-exclude-from-bundle="true" asp-location="Footer">
+        $(function () {
+            $('#OCarousel-@(Model.Id)').owlCarousel({
+                nav: @Model.Nav.ToString().ToLower(),
+                loop: @Model.Loop.ToString().ToLower(),
+                dots: true,
+                margin: 10,
+                autoplay: @Model.AutoPlay.ToString().ToLower(),
+                rtl: @Model.Rtl.ToString().ToLower(),
+                autoplayTimeout: @Model.AutoPlayTimeout,
+                autoplayHoverPause: @Model.AutoPlayHoverPause.ToString().ToLower(),
+                lazyLoad: @Model.LazyLoad.ToString().ToLower(),
+                lazyLoadEager: @Model.LazyLoadEager,
+                center: @Model.Center.ToString().ToLower(),
+                startPosition: @Model.StartPosition,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    575: {
+                        items: 2
+                    },
+                    768: {
+                        items: 2
+                    },
+                    992: {
+                        items: 3
+                    },
+                    1200: {
+                        items: 4
+                    },
+                    1500: {
+                        items: 5
+                    }
+                }
+            });
+        })
+    </script>
+}
+
+@NopHtml.GenerateInlineScripts(ResourceLocation.Footer)

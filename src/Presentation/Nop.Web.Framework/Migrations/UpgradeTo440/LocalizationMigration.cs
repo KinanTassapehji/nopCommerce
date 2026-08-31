@@ -155,7 +155,7 @@ public class LocalizationMigration : MigrationBase
             "Filtering.PriceRangeFilter.Remove",
             "Filtering.SpecificationFilter.CurrentlyFilteredBy",
             "Filtering.SpecificationFilter.Remove",
-            "Filtering.SpecificationFilter.Separator",
+            "Filtering.SpecificationFilter.Separator"
         });
 
         var (languageId, languages) = this.GetLanguageData();
@@ -528,9 +528,7 @@ public class LocalizationMigration : MigrationBase
             ["Admin.Documentation.Reference.Orders"] = "Learn more about <a target=\"_blank\" href=\"{0}\">orders</a>",
             ["Admin.Documentation.Reference.ShippingManagement"] = "Learn more about <a target=\"_blank\" href=\"{0}\">shipping management</a>",
             ["Admin.Documentation.Reference.ReturnRequests"] = "Learn more about <a target=\"_blank\" href=\"{0}\">return requests</a>",
-            ["Admin.Documentation.Reference.RecurringPayments"] = "Learn more about <a target=\"_blank\" href=\"{0}\">recurring products</a>",
-            ["Admin.Documentation.Reference.ShoppingCartsAndWishlists"] = "Learn more about <a target=\"_blank\" href=\"{0}\">shopping carts and wishlists</a>",
-            ["Admin.Documentation.Reference.GiftCards"] = "Learn more about <a target=\"_blank\" href=\"{0}\">gift cards</a>",
+
             ["Admin.Documentation.Reference.Customers"] = "Learn more about <a target=\"_blank\" href=\"{0}\">customers</a>",
             ["Admin.Documentation.Reference.CustomerRoles"] = "Learn more about <a target=\"_blank\" href=\"{0}\">customer roles</a>",
             ["Admin.Documentation.Reference.OnlineCustomers"] = "Learn more about <a target=\"_blank\" href=\"{0}\">online customers</a>",
@@ -599,7 +597,6 @@ public class LocalizationMigration : MigrationBase
             ["Admin.Configuration.LanguagePackProgressMessage"] = "The localization pack downloaded when installing the store has been translated by {0}%. If you would like to contribute to localization, please visit our <a href=\"{1}\" target=\"_blank\">translations page.</a>",
 
             //#5144
-            ["Admin.GiftCards.RecipientNotified"] = "The recipient has been successfully notified.",
 
             //#5319
             ["Plugins.Tax.FixedOrByCountryStateZip.TaxCategoriesCanNotLoaded"] = "No tax categories can be loaded. You may manage tax categories by <a href='{0}'>this link</a>",
@@ -665,7 +662,6 @@ public class LocalizationMigration : MigrationBase
             ["Admin.ShoppingCartType.EndDate.Hint"] = "The end date for the search (when a product was added to the cart).",
 
             //#5206
-            ["Admin.GiftCards.Fields.IsRecipientNotified.Hint"] = "Indicates whether the gift card recipient is notified by email. Click the \"Notify recipient\" button to send an email notification.",
 
             //#4939
             ["Admin.Configuration.Settings.GeneralCommon.Captcha.Instructions"] = "CAPTCHA is a program that can tell whether it is a human or a computer is trying to access your web site. nopCommerce uses <a href=\"http://www.google.com/recaptcha\" target=\"_blank\">reCAPTCHA</a> by Google. reCAPTCHA is a free service that protects your website from spam and abuse. reCAPTCHA uses an advanced risk analysis engine and adaptive challenges to keep automated software from engaging in abusive activities on your site. It does this while letting your valid users pass through with ease.",
@@ -707,7 +703,7 @@ public class LocalizationMigration : MigrationBase
             ["Admin.Configuration.Settings.Catalog.SearchPageManuallyPriceRange"] = "Search page. Enter price range manually",
             ["Admin.Configuration.Settings.Catalog.SearchPageManuallyPriceRange.Hint"] = "Check to enter price range manually, otherwise the automatic calculation of price range is enabled on the 'Search' page (based on prices of available products). Set price range manually if you have complex discount rules.",
             ["Admin.Configuration.Settings.Catalog.ProductsByTagManuallyPriceRange"] = "'Products by tag' page. Enter price range manually",
-            ["Admin.Configuration.Settings.Catalog.ProductsByTagManuallyPriceRange.Hint"] = "Check to enter price range manually, otherwise the automatic calculation of price range is enabled on the 'Products by tag' page (based on prices of available products). Set price range manually if you have complex discount rules.",
+            ["Admin.Configuration.Settings.Catalog.ProductsByTagManuallyPriceRange.Hint"] = "Check to enter price range manually, otherwise the automatic calculation of price range is enabled on the 'Products by tag' page (based on prices of available products). Set price range manually if you have complex discount rules."
         }, languageId);
 
         // rename locales

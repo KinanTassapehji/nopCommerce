@@ -1,92 +1,252 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>You're offline | tmtm</title>
+<title>لا يوجد اتصال بالإنترنت | تمتم</title>
 <meta name="theme-color" content="#02787e">
+<meta name="robots" content="noindex">
 <link rel="icon" href="/icons/icons_0/favicon-32x32.png" sizes="32x32">
 <style>
+  /* Palette mirrors Themes/TmTm/Content/css/tokens.css. Duplicated on purpose:
+     this page must render with zero network requests, so it links nothing and
+     inlines the logo — a <link> or <img> that missed the cache would leave the
+     offline page broken exactly when it is needed. */
   :root {
     --teal-deep: #02787e;
     --teal: #009a95;
     --teal-bright: #00d9cc;
     --ink: #10201f;
     --muted: #5c6b6a;
+    --line: #dfe5e5;
     --surface: #ffffff;
-    --surface-alt: #f6f9f9;
+    --surface-alt: #f4f8f8;
+    --mark: #aebebd;            /* the logo, drained of brand colour */
+    --ring: rgba(2, 120, 126, .18);
   }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #eaf3f2; --muted: #9bb0ae; --line: #24403e;
+      --surface: #12201f; --surface-alt: #0a1413;
+      --mark: #405a58; --ring: rgba(0, 217, 204, .18);
+    }
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
   body {
     min-height: 100svh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px calc(24px + env(safe-area-inset-left, 0px));
-    font-family: "Segoe UI", "Noto Sans Arabic", Tahoma, Arial, sans-serif;
+    padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right))
+             max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+    font-family: "Noto Sans Arabic", "Dubai", "Segoe UI", Tahoma, Arial, sans-serif;
     color: var(--ink);
     background: var(--surface-alt);
   }
+
   .card {
-    background: var(--surface);
-    border: 1px solid #dfe5e5;
-    border-radius: 20px;
-    box-shadow: 0 14px 38px rgba(2, 120, 126, 0.16);
-    max-width: 420px;
-    width: 100%;
-    padding: 40px 28px 32px;
-    text-align: center;
     position: relative;
+    width: 100%;
+    max-width: 400px;
+    padding: 40px 24px 28px;
+    text-align: center;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    box-shadow: 0 16px 40px rgba(2, 120, 126, .13);
     overflow: hidden;
   }
-  .card:before {
+
+  /* The brand rule that runs under the site header, unbroken. It used to have a
+     gap masked out of the middle to stand for the lost connection; at this size
+     that read as a rendering fault rather than as a metaphor, and the logo and
+     the copy already carry the message. */
+  .card::before {
     content: "";
     position: absolute;
     inset-inline: 0;
     top: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--teal-deep) 0%, var(--teal) 55%, var(--teal-bright) 100%);
+    background: linear-gradient(to left, var(--teal-deep) 0%, var(--teal) 55%, var(--teal-bright) 100%);
   }
-  .mark { width: 72px; height: 72px; margin: 0 auto 20px; display: block; }
-  h1 { font-size: 22px; color: var(--teal-deep); margin-bottom: 10px; }
-  p { color: var(--muted); line-height: 1.6; font-size: 15px; }
-  .actions { margin-top: 26px; }
+
+  /* --- Logo -------------------------------------------------------------
+     The mark is the tmtm cart. Offline it sits in neutral grey and its two
+     wheels blink in turn — the store's own logo doubling as the "searching
+     for a signal" indicator, so no spinner is needed. Signal rings pulse out
+     from behind it and stop the moment we are back online. */
+  .mark {
+    position: relative;
+    width: 132px;
+    height: 132px;
+    margin: 4px auto 22px;
+    display: grid;
+    place-items: center;
+  }
+  .mark span {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--ring);
+    animation: ripple 2.6s ease-out infinite;
+  }
+  .mark span:nth-child(2) { animation-delay: .85s; }
+  .mark span:nth-child(3) { animation-delay: 1.7s; }
+  @keyframes ripple {
+    0%   { transform: scale(.55); opacity: 0; }
+    25%  { opacity: 1; }
+    100% { transform: scale(1); opacity: 0; }
+  }
+
+  /* Positioned so it paints above the rings, which are absolute siblings. */
+  svg.logo { position: relative; width: 96px; height: 96px; display: block; }
+  svg.logo path { fill: var(--mark); transition: fill .4s ease; }
+  .wheel { animation: blink 1.4s ease-in-out infinite; }
+  .wheel-2 { animation-delay: .35s; }
+  @keyframes blink {
+    0%, 100% { opacity: .35; }
+    50%      { opacity: 1; }
+  }
+
+  /* Back online: the logo takes its brand colour again, everything settles. */
+  body.online svg.logo path { fill: var(--teal-deep); }
+  body.online .wheel { animation: none; opacity: 1; }
+  body.online .mark span { animation: none; opacity: 0; }
+
+  h1 { font-size: 22px; line-height: 1.5; }
+  p.lead { margin-top: 12px; font-size: 15px; line-height: 1.9; color: var(--muted); }
+
   button {
     font: inherit;
     font-weight: 600;
-    min-height: 44px;
+    margin-top: 26px;
+    min-height: 48px;
+    width: 100%;
+    max-width: 260px;
     padding: 0 22px;
     border: 0;
-    border-radius: 12px;
+    border-radius: 14px;
     background: var(--teal-deep);
     color: #fff;
     cursor: pointer;
+    transition: background .2s ease, opacity .2s ease;
   }
   button:hover { background: #01585c; }
-  button:focus-visible { outline: 2px solid var(--teal-deep); outline-offset: 2px; }
-  .hint { margin-top: 18px; font-size: 13px; color: var(--muted); }
-  @media (prefers-color-scheme: dark) {
-    :root { --surface: #12201f; --surface-alt: #0b1514; --ink: #eaf3f2; --muted: #9bb0ae; }
-    .card { border-color: #24403e; }
-    h1 { color: var(--teal-bright); }
+  button:active { background: #014a4e; }
+  button:disabled { opacity: .6; cursor: default; }
+  button:focus-visible { outline: 2px solid var(--teal-deep); outline-offset: 3px; }
+
+  .status {
+    margin-top: 16px;
+    min-height: 20px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .status b { color: var(--teal-deep); font-weight: 600; }
+
+  .tips {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    line-height: 2;
+    color: var(--muted);
+    text-align: start;
+    list-style: none;
+  }
+  .tips li::before { content: "•"; color: var(--teal); margin-inline-end: 8px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mark span, .wheel { animation: none; }
+    .mark span { opacity: .6; }
+    * { transition: none !important; }
   }
 </style>
 </head>
 <body>
   <main class="card">
-    <img class="mark" src="/Themes/TmTm/Content/images/brand-mark.svg" alt="tmtm" width="72" height="72">
-    <h1>You're offline</h1>
-    <p>We couldn't reach the store. Check your connection and try again — your cart is safe and will be waiting.</p>
-    <div class="actions">
-      <button type="button" onclick="location.reload()">Try again</button>
+    <div class="mark" aria-hidden="true">
+      <span></span><span></span><span></span>
+      <svg class="logo" viewBox="0 0 249.71 249.71" role="img" aria-label="tmtm">
+        <path fill-rule="evenodd" d="M247.57 189.36C246.52 182.21 235.86 176.04 224.0 176.04L96.67 176.09C84.31 176.09 74.62 182.32 73.87 189.35L247.57 189.36Z"/>
+        <path class="wheel" d="M127.77 209.3C127.77 218.01 120.71 225.07 112.0 225.07C103.29 225.07 96.22 218.01 96.22 209.3C96.22 200.59 103.29 193.52 112.0 193.52C120.71 193.52 127.77 200.59 127.77 209.3Z"/>
+        <path class="wheel wheel-2" d="M223.14 209.28C223.14 217.99 216.08 225.05 207.38 225.05C198.67 225.05 191.61 217.99 191.61 209.28C191.61 200.58 198.67 193.52 207.38 193.52C216.08 193.52 223.14 200.58 223.14 209.28Z"/>
+        <path fill-rule="evenodd" d="M191.7 104.23L191.33 133.76L191.05 167.52L167.92 167.47L168.26 134.4L168.21 103.96C168.2 98.3 164.12 93.75 158.76 92.55C153.97 91.48 149.25 91.57 144.43 92.26C136.93 93.33 133.53 98.69 133.35 106.33L137.44 167.48L114.31 167.49L111.84 130.11L110.45 108.59C109.35 91.57 115.69 75.3 132.86 70.62C138.81 68.99 144.73 68.56 150.95 68.72C162.19 68.42 173.64 70.96 180.02 81.05C186.72 70.68 198.39 68.43 210.36 68.71C223.87 68.45 237.27 71.5 244.39 83.54C247.66 89.05 249.57 95.18 249.63 101.59L249.71 109.44L240.5 167.51L217.38 167.48L226.42 109.05C227.36 101.0 224.28 93.82 216.32 92.4C211.56 91.54 206.78 91.5 201.97 92.38C196.26 93.43 191.78 98.1 191.7 104.23Z"/>
+        <path fill-rule="evenodd" d="M87.35 143.33L103.4 143.49L104.74 167.54L86.13 167.38C78.38 167.32 71.26 163.97 66.05 158.34C61.39 153.06 59.01 146.85 57.87 139.85L43.74 52.97C43.17 49.47 39.31 47.7 36.48 47.69L11.79 47.58C4.65 47.54 0.0 40.48 1.46 33.69C2.5 28.9 6.2 24.66 11.48 24.65L39.92 24.64C49.52 24.64 57.8 30.19 62.6 38.22C65.11 42.46 66.26 46.92 67.04 51.77L69.79 68.68L100.04 68.69L100.98 91.79L73.48 91.91L80.92 137.53C81.42 140.59 84.34 143.3 87.35 143.33Z"/>
+      </svg>
     </div>
-    <p class="hint" id="hint"></p>
+
+    <h1>لا يوجد اتصال بالإنترنت</h1>
+    <p class="lead">تعذّر الوصول إلى المتجر. سلّتك محفوظة — وستُحدَّث هذه الصفحة تلقائيًا فور عودة الاتصال.</p>
+
+    <button type="button" id="retry">إعادة المحاولة</button>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+
+    <ul class="tips">
+      <li>تأكّد من إيقاف وضع الطيران</li>
+      <li>تحقّق من الواي فاي أو بيانات الجوال</li>
+      <li>انتقل إلى مكان بتغطية أفضل</li>
+    </ul>
   </main>
-  <script>
-    // Reload automatically the moment connectivity returns.
-    window.addEventListener('online', function () { location.reload(); });
-    var hint = document.getElementById('hint');
-    if (!navigator.onLine) { hint.textContent = 'Waiting for a connection…'; }
-  </script>
+
+<script>
+(function () {
+  var btn = document.getElementById('retry');
+  var status = document.getElementById('status');
+  var probing = false;
+
+  function say(html) { status.innerHTML = html; }
+
+  /* navigator.onLine lies (captive portals, "connected" with no route), so the
+     only trustworthy signal is a request that actually completes. HEAD on the
+     favicon: tiny, and the service worker leaves root-level files alone. */
+  function probe() {
+    if (probing) return Promise.resolve(false);
+    probing = true;
+    return fetch('/favicon.ico?p=' + Date.now(), { method: 'HEAD', cache: 'no-store' })
+      .then(function (r) { return r.ok; })
+      .catch(function () { return false; })
+      .then(function (ok) { probing = false; return ok; });
+  }
+
+  function reconnected() {
+    document.body.classList.add('online');
+    say('<b>عاد الاتصال</b> — جارٍ تحديث الصفحة…');
+    setTimeout(function () { location.reload(); }, 500);
+  }
+
+  btn.addEventListener('click', function () {
+    btn.disabled = true;
+    say('جارٍ التحقق من الاتصال…');
+    probe().then(function (ok) {
+      if (ok) return reconnected();
+      btn.disabled = false;
+      say('لا يزال الاتصال منقطعًا.');
+    });
+  });
+
+  /* Quiet background polling, backing off 4s → 30s so a phone left on this
+     page in a tunnel is not draining its battery on retries. */
+  var delay = 4000;
+  (function poll() {
+    setTimeout(function () {
+      probe().then(function (ok) {
+        if (ok) return reconnected();
+        delay = Math.min(delay * 1.5, 30000);
+        poll();
+      });
+    }, delay);
+  })();
+
+  window.addEventListener('online', function () {
+    probe().then(function (ok) { if (ok) reconnected(); });
+  });
+
+  if (!navigator.onLine) say('في انتظار الاتصال…');
+})();
+</script>
 </body>
 </html>

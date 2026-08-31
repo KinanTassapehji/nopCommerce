@@ -91,7 +91,7 @@ public class LocalizationMigration : MigrationBase
             "Permission.ManageProductReviews",
             "Permission.ManageProducts",
             "Permission.ManageProductTags",
-            "Permission.ManageRecurringPayments",
+
             "Permission.ManageReturnRequests",
             "Permission.ManageScheduleTasks",
             "Permission.ManageSettings",
@@ -209,13 +209,10 @@ public class LocalizationMigration : MigrationBase
             ["Security.Permission.Customers.VendorsCreateEditDelete"] = "Admin area. Vendors. Create, edit, delete",
             ["Security.Permission.Customers.VendorsView"] = "Admin area. Vendors. View",
             ["Security.Permission.Orders.CurrentCartsManage"] = "Admin area. Current Carts. Manage",
-            ["Security.Permission.Orders.GiftCardsCreateEditDelete"] = "Admin area. Gift cards. Create, edit, delete",
-            ["Security.Permission.Orders.GiftCardsView"] = "Admin area. Gift cards. View",
             ["Security.Permission.Orders.OrdersCreateEditDelete"] = "Admin area. Orders. Create, edit, delete",
             ["Security.Permission.Orders.OrdersImportExport"] = "Admin area. Orders. Import and export",
             ["Security.Permission.Orders.OrdersView"] = "Admin area. Orders. View",
-            ["Security.Permission.Orders.RecurringPaymentsCreateEditDelete"] = "Admin area. Recurring payments. Create, edit, delete",
-            ["Security.Permission.Orders.RecurringPaymentsView"] = "Admin area. Recurring payments. View",
+
             ["Security.Permission.Orders.ReturnRequestsCreateEditDelete"] = "Admin area. Return requests. Create, edit, delete",
             ["Security.Permission.Orders.ReturnRequestsView"] = "Admin area. Return requests. View",
             ["Security.Permission.Orders.ShipmentsCreateEditDelete"] = "Admin area. Shipments. Create, edit, delete",
@@ -234,7 +231,6 @@ public class LocalizationMigration : MigrationBase
             ["Security.Permission.PublicStore.AccessClosedStore"] = "Public store. Access a closed store",
             ["Security.Permission.PublicStore.DisplayPrices"] = "Public store. Display Prices",
             ["Security.Permission.PublicStore.EnableShoppingCart"] = "Public store. Enable shopping cart",
-            ["Security.Permission.PublicStore.EnableWishlist"] = "Public store. Enable wishlist",
             ["Security.Permission.PublicStore.PublicStoreAllowNavigation"] = "Public store. Allow navigation",
             ["Security.Permission.Reports.Bestsellers"] = "Admin area. Reports. Bestsellers",
             ["Security.Permission.Reports.CountrySales"] = "Admin area. Reports. Country sales",
@@ -263,7 +259,6 @@ public class LocalizationMigration : MigrationBase
             ["Admin.Customers.Customers.Fields.MustChangePassword.Hint"] = "Check to require the customer to change their password.",
 
             //#7318
-            ["ShoppingCart.GiftCardCouponCode.DontWorkWithGiftCards"] = "You cannot use gift cards with other gift cards.",
             //#7265
             ["Admin.Configuration.Settings.Tax.EuVatRequired"] = "VAT number required",
             ["Admin.Configuration.Settings.Tax.EuVatRequired.Hint"] = "Check if 'EU VAT number' is required.",
@@ -322,7 +317,7 @@ public class LocalizationMigration : MigrationBase
             ["Admin.ConfigurationSteps.PaymentPayPal.Credentials.Text"] = "After you create and set up your application in your <b>PayPal</b> account, you need to copy the <b>Client ID</b>, <b>Secret</b> and <b>Merchant ID</b>, and paste them into these fields.",
 
             //#7618
-            ["Admin.Orders.Address.CustomAttributes"] = "Custom Attributes",
+            ["Admin.Orders.Address.CustomAttributes"] = "Custom Attributes"
 
         }, languageId);
 

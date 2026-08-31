@@ -1,0 +1,139 @@
+﻿/* 2 of 60 CSS properties converted by rtl.daskhat.ir 
+ These properties should be override originals. 
+ just load rtl css file after original css file.*/
+
+/* body {direction:rtl;} */
+
+.product-item:hover .quick-view-btn {
+  opacity: 1;
+}
+
+.qv-modal .loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media only screen and (max-width: 767px) {
+  .quick-view-btn {
+    display: none !important;
+  }
+}
+
+.qv-modal {
+  width: 100%;
+  max-width: 900px;
+  min-height: 380px;
+  background-color: white;
+  margin: 100px auto 50px;
+  padding: 20px;
+  position: relative;
+  display: none;
+  top: 50%;
+  text-align: center;
+}
+
+.qvclick-button {
+  display: none;
+}
+
+.mfp-ready ~ .bar-notification-container {
+  z-index: 100000;
+}
+
+.mfp-ready ~ .ajax-loading-block-window {
+  z-index: 100001;
+}
+
+.mfp-content .product-essential {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.mfp-content .product-collateral {
+  margin: 0;
+}
+
+.mfp-content .overview {
+  margin: 0;
+}
+
+.mfp-content .gallery {
+  margin: 0;
+}
+
+.quick-view-btn {
+  top: 25%;
+  width: 40px;
+  text-align: center;
+  background-color: #fff;
+  font-size: 24px;
+}
+
+.product-list .quick-view-btn {
+  display: inline-block;
+  margin-left: 4px;
+}
+
+.quick-view-btn button {
+  width: 100%;
+  padding: 10px;
+  font-size: 0;
+  background-color: #fff;
+}
+
+.product-list .quick-view-btn button {
+  background-color: var(--theme-color);
+}
+
+.quick-view-btn button i {
+  font-size: 24px;
+  color: #2B2E43;
+}
+
+.product-list .quick-view-btn button i {
+  color: #FFF;
+}
+
+#qv-modal {
+  width: 100%;
+  max-width: 900px;
+  background-color: white;
+  margin: 30px auto;
+  padding: 20px;
+  position: relative;
+  top: 50%;
+  text-align: center;
+}
+
+  #qv-modal .product-variant-line {
+    margin: 0 0 30px;
+    display: block;
+    width: 100%;
+  }
+
+  #qv-modal .owl-item .item-box {
+    width: 100% !important;
+    background: #ffffff;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.10);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  #qv-modal .page product-details-page {
+    padding-top: 0;
+  }
+
+.qv-modal .product-tags-box {
+  margin-bottom: 24px;
+}
+
+.qv-modal .full-description p {
+  padding-top: 24px !important;
+}
+
+.qv-modal .download-sample .button-2.download-sample-button {
+  background-image: none !important;
+  font-size: 16px;
+}

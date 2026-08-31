@@ -33,11 +33,6 @@ public partial class CaptchaSettings : ISettings
     public bool ShowOnContactUsPage { get; set; }
 
     /// <summary>
-    /// A value indicating whether CAPTCHA should be displayed on the wishlist page
-    /// </summary>
-    public bool ShowOnEmailWishlistToFriendPage { get; set; }
-
-    /// <summary>
     /// A value indicating whether CAPTCHA should be displayed on the "email a friend" page
     /// </summary>
     public bool ShowOnEmailProductToFriendPage { get; set; }
@@ -81,11 +76,6 @@ public partial class CaptchaSettings : ISettings
     /// A value indicating whether CAPTCHA should be displayed on the checkout page for guest customers
     /// </summary>
     public bool ShowOnCheckoutPageForGuests { get; set; }
-
-    /// <summary>
-    /// A value indicating whether CAPTCHA should be displayed on the check gift card balance page
-    /// </summary>
-    public bool ShowOnCheckGiftCardBalance { get; set; }
 
     /// <summary>
     /// The base reCAPTCHA API URL

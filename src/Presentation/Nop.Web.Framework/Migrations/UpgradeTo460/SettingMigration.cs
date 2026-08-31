@@ -248,7 +248,7 @@ public class SettingMigration : MigrationBase
                 "/customer/info",
                 "/customer/productreviews",
                 "/deletepm",
-                "/emailwishlist",
+
                 "/eucookielawaccept",
                 "/inboxupdate",
                 "/newsletter/subscriptionactivation",
@@ -273,7 +273,6 @@ public class SettingMigration : MigrationBase
                 "/uploadfilecheckoutattribute",
                 "/uploadfileproductattribute",
                 "/uploadfilereturnrequest",
-                "/wishlist"
             });
 
             settingService.SaveSetting(robotsTxtSettings, settings => settings.LocalizableDisallowPaths);

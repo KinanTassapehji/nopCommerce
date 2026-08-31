@@ -272,6 +272,17 @@ public static class ApplicationBuilderExtensions
 
         void staticFileResponse(StaticFileResponseContext context)
         {
+            //The service worker script is the one static file that must never be
+            //cached: StaticFilesCacheControl is "public,max-age=31536000", which
+            //pins the installed worker - and the offline page it precached - in
+            //the browser for up to a day (Chrome caps SW script freshness at 24h),
+            //so a deployed sw.js is simply not picked up. Revalidate it every load.
+            if (string.Equals(context.Context.Request.Path.Value, "/sw.js", StringComparison.OrdinalIgnoreCase))
+            {
+                context.Context.Response.Headers[HeaderNames.CacheControl] = "no-cache";
+                return;
+            }
+
             if (!string.IsNullOrEmpty(appSettings.Get<CommonConfig>().StaticFilesCacheControl))
                 context.Context.Response.Headers.Append(HeaderNames.CacheControl, appSettings.Get<CommonConfig>().StaticFilesCacheControl);
         }

@@ -1,0 +1,45 @@
+﻿@model ProductDetailsModel
+@using System.Globalization
+@using Nop.Core.Domain.Catalog
+@{
+    var ratingPercent = 0;
+    if (Model.ProductReviewOverview.TotalReviews != 0)
+    {
+        ratingPercent = ((Model.ProductReviewOverview.RatingSum * 100) / Model.ProductReviewOverview.TotalReviews) / 5;
+    }
+}
+@if (Model.ProductReviewOverview != null)
+{
+    var productUrl = await NopUrl.RouteGenericUrlAsync<Product>(new { SeName = Model.SeName });
+
+    <div class="product-reviews-overview" @if (Model.ProductReviewOverview.TotalReviews > 0) { <text>itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating"</text>}>
+        <div class="product-review-box">
+            <div class="rating">
+                <div style="width: @(ratingPercent)%">
+                </div>
+            </div>
+        </div>
+
+        @if (Model.ProductReviewOverview.TotalReviews > 0)
+        {
+            <div class="product-review-links">
+                    <a href="@(productUrl)#productreviews">@Model.ProductReviewOverview.TotalReviews
+                            @T("Reviews.Overview.Reviews")</a> <span class="separator">|</span> <a href="@(productUrl)#review-form">@T("Reviews.Overview.AddNew")</a>
+            </div>
+            @*hidden microdata info*@
+            var ratingValue = ratingPercent / (decimal)20;
+            <span itemprop="ratingValue" style="display: none;">@ratingValue.ToString("0.0", new CultureInfo("en-US"))</span>
+                <span itemprop="reviewCount" style="display: none;">@Model.ProductReviewOverview.TotalReviews</span>
+        }
+        else
+        {
+            <div class="product-no-reviews">
+                    @if (Model.ProductReviewOverview.CanAddNewReview && Model.ProductReviewOverview.CanCurrentCustomerLeaveReview)
+                    {
+                            <a href="@(productUrl)#review-form">@T("Reviews.Overview.First")</a>
+                    }
+
+            </div>
+        }
+    </div>
+}

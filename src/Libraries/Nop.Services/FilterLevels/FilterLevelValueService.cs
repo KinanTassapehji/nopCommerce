@@ -218,7 +218,6 @@ public partial class FilterLevelValueService : IFilterLevelValueService
         if (filterLevelValueId == 0)
             return new PagedList<Product>(new List<Product>(), pageIndex, pageSize);
 
-        var customer = await _workContext.GetCurrentCustomerAsync();
 
         var query = from pc in _filterLevelValueProductMappingRepository.Table
                     join p in _productRepository.Table on pc.ProductId equals p.Id
@@ -228,9 +227,6 @@ public partial class FilterLevelValueService : IFilterLevelValueService
 
         //apply store mapping constraints
         query = await _storeMappingService.ApplyStoreMapping(query, storeId);
-
-        //apply ACL constraints
-        query = await _aclService.ApplyAcl(query, customer);
 
         return await query.OrderBy(_localizedPropertyRepository, await _workContext.GetWorkingLanguageAsync(), orderBy).ToPagedListAsync(pageIndex, pageSize);
     }

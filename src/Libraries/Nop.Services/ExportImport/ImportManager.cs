@@ -49,7 +49,6 @@ public partial class ImportManager : IImportManager
 
     protected readonly CatalogSettings _catalogSettings;
     protected readonly IAddressService _addressService;
-    protected readonly IBackInStockSubscriptionService _backInStockSubscriptionService;
     protected readonly ICategoryService _categoryService;
     protected readonly ICountryService _countryService;
     protected readonly ICustomerActivityService _customerActivityService;
@@ -76,7 +75,6 @@ public partial class ImportManager : IImportManager
     protected readonly IProductTagService _productTagService;
     protected readonly IProductTemplateService _productTemplateService;
     protected readonly IServiceScopeFactory _serviceScopeFactory;
-    protected readonly ISpecificationAttributeService _specificationAttributeService;
     protected readonly IStateProvinceService _stateProvinceService;
     protected readonly IStoreContext _storeContext;
     protected readonly IStoreMappingService _storeMappingService;
@@ -98,7 +96,6 @@ public partial class ImportManager : IImportManager
 
     public ImportManager(CatalogSettings catalogSettings,
         IAddressService addressService,
-        IBackInStockSubscriptionService backInStockSubscriptionService,
         ICategoryService categoryService,
         ICountryService countryService,
         ICustomerActivityService customerActivityService,
@@ -125,7 +122,6 @@ public partial class ImportManager : IImportManager
         IProductTagService productTagService,
         IProductTemplateService productTemplateService,
         IServiceScopeFactory serviceScopeFactory,
-        ISpecificationAttributeService specificationAttributeService,
         IStateProvinceService stateProvinceService,
         IStoreContext storeContext,
         IStoreMappingService storeMappingService,
@@ -141,7 +137,6 @@ public partial class ImportManager : IImportManager
         VendorSettings vendorSettings)
     {
         _addressService = addressService;
-        _backInStockSubscriptionService = backInStockSubscriptionService;
         _catalogSettings = catalogSettings;
         _categoryService = categoryService;
         _countryService = countryService;
@@ -169,7 +164,6 @@ public partial class ImportManager : IImportManager
         _productTagService = productTagService;
         _productTemplateService = productTemplateService;
         _serviceScopeFactory = serviceScopeFactory;
-        _specificationAttributeService = specificationAttributeService;
         _stateProvinceService = stateProvinceService;
         _storeContext = storeContext;
         _storeMappingService = storeMappingService;
@@ -189,7 +183,7 @@ public partial class ImportManager : IImportManager
 
     #region Utilities
 
-    protected virtual ExportedAdditionalProductInfoType GetTypeOfExportedAdditionalProductInfo(IXLWorksheet defaultWorksheet, List<IXLWorksheet> localizedWorksheets, PropertyManager<ExportProductAttribute> productAttributeManager, PropertyManager<ExportSpecificationAttribute> specificationAttributeManager, PropertyManager<ExportTierPrice> tierPriceManager, int iRow)
+    protected virtual ExportedAdditionalProductInfoType GetTypeOfExportedAdditionalProductInfo(IXLWorksheet defaultWorksheet, List<IXLWorksheet> localizedWorksheets, PropertyManager<ExportProductAttribute> productAttributeManager, PropertyManager<ExportTierPrice> tierPriceManager, int iRow)
     {
         productAttributeManager.ReadDefaultFromXlsx(defaultWorksheet, iRow, ExportImportDefaults.ProductAdditionalInfoCellOffset);
 
@@ -201,41 +195,12 @@ public partial class ImportManager : IImportManager
             return ExportedAdditionalProductInfoType.ProductAttribute;
         }
 
-        specificationAttributeManager.ReadDefaultFromXlsx(defaultWorksheet, iRow, ExportImportDefaults.ProductAdditionalInfoCellOffset);
-
-        if (specificationAttributeManager.IsCaption)
-        {
-            foreach (var worksheet in localizedWorksheets)
-                specificationAttributeManager.ReadLocalizedFromXlsx(worksheet, iRow, ExportImportDefaults.ProductAdditionalInfoCellOffset);
-
-            return ExportedAdditionalProductInfoType.SpecificationAttribute;
-        }
-
         tierPriceManager.ReadDefaultFromXlsx(defaultWorksheet, iRow, ExportImportDefaults.ProductAdditionalInfoCellOffset);
 
         if (tierPriceManager.IsCaption)
             return ExportedAdditionalProductInfoType.TierPrices;
 
         return ExportedAdditionalProductInfoType.NotSpecified;
-    }
-
-    /// <returns>A task that represents the asynchronous operation</returns>
-    protected virtual async Task SetOutLineForSpecificationAttributeRowAsync(object cellValue, IXLWorksheet worksheet, int endRow)
-    {
-        var attributeType = (cellValue ?? string.Empty).ToString();
-
-        if (attributeType.Equals("AttributeType", StringComparison.InvariantCultureIgnoreCase))
-        {
-            worksheet.Row(endRow).OutlineLevel = 1;
-        }
-        else
-        {
-            if ((await SpecificationAttributeType.Option.ToSelectListAsync(useLocalization: false))
-                .Any(p => p.Text.Equals(attributeType, StringComparison.InvariantCultureIgnoreCase)))
-                worksheet.Row(endRow).OutlineLevel = 1;
-            else if (int.TryParse(attributeType, out var attributeTypeId) && Enum.IsDefined(typeof(SpecificationAttributeType), attributeTypeId))
-                worksheet.Row(endRow).OutlineLevel = 1;
-        }
     }
 
     protected virtual void CopyDataToNewFile(ImportProductMetadata metadata, IXLWorksheet worksheet, string filePath, int startRow, int endRow, int endCell)
@@ -979,79 +944,6 @@ public partial class ImportManager : IImportManager
 
     /// <returns>A task that represents the asynchronous operation</returns>
 
-
-    /// <returns>A task that represents the asynchronous operation</returns>
-    protected virtual async Task ImportSpecificationAttributeAsync(ImportProductMetadata metadata, Product lastLoadedProduct, IList<Language> languages, int iRow)
-    {
-        var specificationAttributeManager = metadata.SpecificationAttributeManager;
-        if (!_catalogSettings.ExportImportProductSpecificationAttributes || lastLoadedProduct == null || specificationAttributeManager.IsCaption)
-            return;
-
-        var attributeTypeId = specificationAttributeManager.GetDefaultProperty("AttributeType").IntValue;
-        var allowFiltering = specificationAttributeManager.GetDefaultProperty("AllowFiltering").BooleanValue;
-        var specificationAttributeOptionId = specificationAttributeManager.GetDefaultProperty("SpecificationAttributeOptionId").IntValue;
-        var productId = lastLoadedProduct.Id;
-        var customValue = specificationAttributeManager.GetDefaultProperty("CustomValue").StringValue;
-        var displayOrder = specificationAttributeManager.GetDefaultProperty("DisplayOrder").IntValue;
-        var showOnProductPage = specificationAttributeManager.GetDefaultProperty("ShowOnProductPage").BooleanValue;
-
-        //if specification attribute option isn't set, try to get first of possible specification attribute option for current specification attribute
-        if (specificationAttributeOptionId == 0)
-        {
-            var specificationAttribute = specificationAttributeManager.GetDefaultProperty("SpecificationAttribute").IntValue;
-            specificationAttributeOptionId =
-                (await _specificationAttributeService.GetSpecificationAttributeOptionsBySpecificationAttributeAsync(
-                    specificationAttribute))
-                .FirstOrDefault()?.Id ?? specificationAttributeOptionId;
-        }
-
-        var productSpecificationAttribute = specificationAttributeOptionId == 0
-            ? null
-            : (await _specificationAttributeService.GetProductSpecificationAttributesAsync(productId, specificationAttributeOptionId)).FirstOrDefault();
-
-        var isNew = productSpecificationAttribute == null;
-
-        if (isNew)
-            productSpecificationAttribute = new ProductSpecificationAttribute();
-
-        if (attributeTypeId != (int)SpecificationAttributeType.Option)
-            //we allow filtering only for "Option" attribute type
-            allowFiltering = false;
-
-        //we don't allow CustomValue for "Option" attribute type
-        if (attributeTypeId == (int)SpecificationAttributeType.Option)
-            customValue = null;
-
-        productSpecificationAttribute.AttributeTypeId = attributeTypeId;
-        productSpecificationAttribute.SpecificationAttributeOptionId = specificationAttributeOptionId;
-        productSpecificationAttribute.ProductId = productId;
-        productSpecificationAttribute.CustomValue = customValue;
-        productSpecificationAttribute.AllowFiltering = allowFiltering;
-        productSpecificationAttribute.ShowOnProductPage = showOnProductPage;
-        productSpecificationAttribute.DisplayOrder = displayOrder;
-
-        if (isNew)
-            await _specificationAttributeService.InsertProductSpecificationAttributeAsync(productSpecificationAttribute);
-        else
-            await _specificationAttributeService.UpdateProductSpecificationAttributeAsync(productSpecificationAttribute);
-
-        if (!metadata.LocalizedWorksheets.Any())
-            return;
-
-        foreach (var language in languages)
-        {
-            var lWorksheet = metadata.LocalizedWorksheets.FirstOrDefault(ws => ws.Name.Equals(language.UniqueSeoCode, StringComparison.InvariantCultureIgnoreCase));
-            if (lWorksheet == null)
-                continue;
-
-            specificationAttributeManager.CurrentLanguage = language;
-            specificationAttributeManager.ReadLocalizedFromXlsx(lWorksheet, iRow, ExportImportDefaults.ProductAdditionalInfoCellOffset);
-
-            customValue = specificationAttributeManager.GetLocalizedProperty("CustomValue").StringValue;
-            await _localizedEntityService.SaveLocalizedValueAsync(productSpecificationAttribute, p => p.CustomValue, customValue, language.Id);
-        }
-    }
-
     /// <returns>A task that represents the asynchronous operation</returns>
     protected virtual async Task ImportTierPriceAsync(ImportProductMetadata metadata, Product lastLoadedProduct, IList<Language> languages, int iRow)
     {
@@ -1188,24 +1080,6 @@ public partial class ImportManager : IImportManager
 
         var productAttributeManager = new PropertyManager<ExportProductAttribute>(productAttributeProperties, _catalogSettings, productAttributeLocalizedProperties, languages);
 
-        var specificationAttributeProperties = new[]
-        {
-            new PropertyByName<ExportSpecificationAttribute>("AttributeType", (p, l) => p.AttributeTypeId),
-            new PropertyByName<ExportSpecificationAttribute>("SpecificationAttribute", (p, l) => p.SpecificationAttributeId),
-            new PropertyByName<ExportSpecificationAttribute>("CustomValue", (p, l) => p.CustomValue),
-            new PropertyByName<ExportSpecificationAttribute>("SpecificationAttributeOptionId", (p, l) => p.SpecificationAttributeOptionId),
-            new PropertyByName<ExportSpecificationAttribute>("AllowFiltering", (p, l) => p.AllowFiltering),
-            new PropertyByName<ExportSpecificationAttribute>("ShowOnProductPage", (p, l) => p.ShowOnProductPage),
-            new PropertyByName<ExportSpecificationAttribute>("DisplayOrder", (p, l) => p.DisplayOrder)
-        };
-
-        var specificationAttributeLocalizedProperties = new[]
-        {
-            new PropertyByName<ExportSpecificationAttribute>("CustomValue")
-        };
-
-        var specificationAttributeManager = new PropertyManager<ExportSpecificationAttribute>(specificationAttributeProperties, _catalogSettings, specificationAttributeLocalizedProperties, languages);
-
         var tierPriceProperties = new[]
         {
             new PropertyByName<ExportTierPrice>("TierPriceId"),
@@ -1245,23 +1119,13 @@ public partial class ImportManager : IImportManager
             productAttributeManager.SetSelectList("AttributeControlType", await AttributeControlType.TextBox.ToSelectListAsync(useLocalization: false));
             productAttributeManager.SetSelectList("AttributeValueType", await AttributeValueType.Simple.ToSelectListAsync(useLocalization: false));
 
-            specificationAttributeManager.SetSelectList("AttributeType", await SpecificationAttributeType.Option.ToSelectListAsync(useLocalization: false));
-            specificationAttributeManager.SetSelectList("SpecificationAttribute", (await _specificationAttributeService
-                    .GetAllSpecificationAttributesAsync())
-                .Select(sa => sa as BaseEntity)
-                .ToSelectList(p => (p as SpecificationAttribute)?.Name ?? string.Empty));
-
             manager.SetSelectList("ProductType", await ProductType.SimpleProduct.ToSelectListAsync(useLocalization: false));
-            manager.SetSelectList("GiftCardType", await GiftCardType.Virtual.ToSelectListAsync(useLocalization: false));
-            manager.SetSelectList("DownloadActivationType",
-                await DownloadActivationType.Manually.ToSelectListAsync(useLocalization: false));
+
             manager.SetSelectList("ManageInventoryMethod",
                 await ManageInventoryMethod.DontManageStock.ToSelectListAsync(useLocalization: false));
             manager.SetSelectList("LowStockActivity",
                 await LowStockActivity.Nothing.ToSelectListAsync(useLocalization: false));
-            manager.SetSelectList("BackorderMode", await BackorderMode.NoBackorders.ToSelectListAsync(useLocalization: false));
-            manager.SetSelectList("RecurringCyclePeriod",
-                await RecurringProductCyclePeriod.Days.ToSelectListAsync(useLocalization: false));
+
             manager.SetSelectList("RentalPricePeriod", await RentalPricePeriod.Days.ToSelectListAsync(useLocalization: false));
 
             manager.SetSelectList("Vendor",
@@ -1288,13 +1152,8 @@ public partial class ImportManager : IImportManager
         }
 
         var allAttributeIds = new List<int>();
-        var allSpecificationAttributeOptionIds = new List<int>();
 
         var attributeIdCellNum = 1 + ExportImportDefaults.ProductAdditionalInfoCellOffset;
-        var specificationAttributeOptionIdCellNum =
-            specificationAttributeManager.GetIndex("SpecificationAttributeOptionId") +
-            ExportImportDefaults.ProductAdditionalInfoCellOffset;
-
         var productsInFile = new List<int>();
 
         //find end of data
@@ -1314,12 +1173,11 @@ public partial class ImportManager : IImportManager
             {
                 var cellValue = defaultWorksheet.Row(endRow).Cell(attributeIdCellNum).Value;
                 await SetOutLineForProductAttributeRowAsync(cellValue, defaultWorksheet, endRow);
-                await SetOutLineForSpecificationAttributeRowAsync(cellValue, defaultWorksheet, endRow);
             }
 
             if (defaultWorksheet.Row(endRow).OutlineLevel != 0)
             {
-                var newTypeOfExportedAttribute = GetTypeOfExportedAdditionalProductInfo(defaultWorksheet, metadata.LocalizedWorksheets, productAttributeManager, specificationAttributeManager, tierPriceManager, endRow);
+                var newTypeOfExportedAttribute = GetTypeOfExportedAdditionalProductInfo(defaultWorksheet, metadata.LocalizedWorksheets, productAttributeManager, tierPriceManager, endRow);
 
                 //skip caption row
                 if (newTypeOfExportedAttribute != ExportedAdditionalProductInfoType.NotSpecified && newTypeOfExportedAttribute != typeOfExportedAttribute)
@@ -1336,13 +1194,6 @@ public partial class ImportManager : IImportManager
                             ExportImportDefaults.ProductAdditionalInfoCellOffset);
                         if (int.TryParse(defaultWorksheet.Row(endRow).Cell(attributeIdCellNum).Value.ToString(), out var aid))
                             allAttributeIds.Add(aid);
-
-                        break;
-                    case ExportedAdditionalProductInfoType.SpecificationAttribute:
-                        specificationAttributeManager.ReadDefaultFromXlsx(defaultWorksheet, endRow, ExportImportDefaults.ProductAdditionalInfoCellOffset);
-
-                        if (int.TryParse(defaultWorksheet.Row(endRow).Cell(specificationAttributeOptionIdCellNum).Value.ToString(), out var saoid))
-                            allSpecificationAttributeOptionIds.Add(saoid);
 
                         break;
                 }
@@ -1414,13 +1265,6 @@ public partial class ImportManager : IImportManager
             throw new ArgumentException(string.Format(await _localizationService.GetResourceAsync("Admin.Catalog.Products.Import.ProductAttributesDontExist"), string.Join(", ", notExistingProductAttributes)));
         }
 
-        //performance optimization, the check for the existence of the specification attribute options in one SQL request
-        var notExistingSpecificationAttributeOptions = await _specificationAttributeService.GetNotExistingSpecificationAttributeOptionsAsync(allSpecificationAttributeOptionIds.Where(saoId => saoId != 0).ToArray());
-        if (notExistingSpecificationAttributeOptions.Any())
-        {
-            throw new ArgumentException($"The following specification attribute option ID(s) don't exist - {string.Join(", ", notExistingSpecificationAttributeOptions)}");
-        }
-
         //performance optimization, the check for the existence of the stores in one SQL request
         var notExistingStores = await _storeService.GetNotExistingStoresAsync(allStores.ToArray());
         if (notExistingStores.Any())
@@ -1435,7 +1279,6 @@ public partial class ImportManager : IImportManager
             ProductAttributeManager = productAttributeManager,
             DefaultWorksheet = defaultWorksheet,
             LocalizedWorksheets = metadata.LocalizedWorksheets,
-            SpecificationAttributeManager = specificationAttributeManager,
             TierPriceManager = tierPriceManager,
             SkuCellNum = skuCellNum,
             AllSku = allSku
@@ -2123,7 +1966,7 @@ public partial class ImportManager : IImportManager
                 if (lastLoadedProduct == null)
                     continue;
 
-                var newTypeOfExportedAttribute = GetTypeOfExportedAdditionalProductInfo(defaultWorksheet, metadata.LocalizedWorksheets, metadata.ProductAttributeManager, metadata.SpecificationAttributeManager, metadata.TierPriceManager, iRow);
+                var newTypeOfExportedAttribute = GetTypeOfExportedAdditionalProductInfo(defaultWorksheet, metadata.LocalizedWorksheets, metadata.ProductAttributeManager, metadata.TierPriceManager, iRow);
 
                 //skip caption row
                 if (newTypeOfExportedAttribute != ExportedAdditionalProductInfoType.NotSpecified &&
@@ -2137,9 +1980,6 @@ public partial class ImportManager : IImportManager
                 {
                     case ExportedAdditionalProductInfoType.ProductAttribute:
                         await ImportProductAttributeAsync(metadata, lastLoadedProduct, languages, iRow);
-                        break;
-                    case ExportedAdditionalProductInfoType.SpecificationAttribute:
-                        await ImportSpecificationAttributeAsync(metadata, lastLoadedProduct, languages, iRow);
                         break;
                     case ExportedAdditionalProductInfoType.TierPrices:
                         await ImportTierPriceAsync(metadata, lastLoadedProduct, languages, iRow);
@@ -2217,9 +2057,6 @@ public partial class ImportManager : IImportManager
                     case "MetaTitle":
                         product.MetaTitle = property.StringValue;
                         break;
-                    case "AllowCustomerReviews":
-                        product.AllowCustomerReviews = property.BooleanValue;
-                        break;
                     case "Published":
                         product.Published = property.BooleanValue;
                         break;
@@ -2232,63 +2069,8 @@ public partial class ImportManager : IImportManager
                     case "Gtin":
                         product.Gtin = property.StringValue;
                         break;
-                    case "IsGiftCard":
-                        product.IsGiftCard = property.BooleanValue;
-                        break;
-                    case "GiftCardType":
-                        product.GiftCardTypeId = property.IntValue;
-                        break;
-                    case "OverriddenGiftCardAmount":
-                        product.OverriddenGiftCardAmount = property.DecimalValue;
-                        break;
-                    case "RequireOtherProducts":
-                        product.RequireOtherProducts = property.BooleanValue;
-                        break;
-                    case "RequiredProductIds":
-                        product.RequiredProductIds = property.StringValue;
-                        break;
-                    case "AutomaticallyAddRequiredProducts":
-                        product.AutomaticallyAddRequiredProducts = property.BooleanValue;
-                        break;
-                    case "IsDownload":
-                        product.IsDownload = property.BooleanValue;
-                        break;
-                    case "DownloadId":
-                        product.DownloadId = property.IntValue;
-                        break;
-                    case "UnlimitedDownloads":
-                        product.UnlimitedDownloads = property.BooleanValue;
-                        break;
-                    case "MaxNumberOfDownloads":
-                        product.MaxNumberOfDownloads = property.IntValue;
-                        break;
-                    case "DownloadActivationType":
-                        product.DownloadActivationTypeId = property.IntValue;
-                        break;
-                    case "HasSampleDownload":
-                        product.HasSampleDownload = property.BooleanValue;
-                        break;
-                    case "SampleDownloadId":
-                        product.SampleDownloadId = property.IntValue;
-                        break;
-                    case "HasUserAgreement":
-                        product.HasUserAgreement = property.BooleanValue;
-                        break;
-                    case "UserAgreementText":
-                        product.UserAgreementText = property.StringValue;
-                        break;
-                    case "IsRecurring":
-                        product.IsRecurring = property.BooleanValue;
-                        break;
-                    case "RecurringCycleLength":
-                        product.RecurringCycleLength = property.IntValue;
-                        break;
-                    case "RecurringCyclePeriod":
-                        product.RecurringCyclePeriodId = property.IntValue;
-                        break;
-                    case "RecurringTotalCycles":
-                        product.RecurringTotalCycles = property.IntValue;
-                        break;
+
+
                     case "IsRental":
                         product.IsRental = property.BooleanValue;
                         break;
@@ -2349,12 +2131,6 @@ public partial class ImportManager : IImportManager
                     case "NotifyAdminForQuantityBelow":
                         product.NotifyAdminForQuantityBelow = property.IntValue;
                         break;
-                    case "BackorderMode":
-                        product.BackorderModeId = property.IntValue;
-                        break;
-                    case "AllowBackInStockSubscriptions":
-                        product.AllowBackInStockSubscriptions = property.BooleanValue;
-                        break;
                     case "OrderMinimumQuantity":
                         product.OrderMinimumQuantity = property.IntValue;
                         break;
@@ -2373,9 +2149,7 @@ public partial class ImportManager : IImportManager
                     case "DisableBuyButton":
                         product.DisableBuyButton = property.BooleanValue;
                         break;
-                    case "DisableWishlistButton":
-                        product.DisableWishlistButton = property.BooleanValue;
-                        break;
+
                     case "AvailableForPreOrder":
                         product.AvailableForPreOrder = property.BooleanValue;
                         break;
@@ -2445,12 +2219,6 @@ public partial class ImportManager : IImportManager
                     case "DisplayAttributeCombinationImagesOnly":
                         product.DisplayAttributeCombinationImagesOnly = property.BooleanValue;
                         break;
-                    case "AgeVerification":
-                        product.AgeVerification = property.BooleanValue;
-                        break;
-                    case "MinimumAgeToPurchase":
-                        product.MinimumAgeToPurchase = property.IntValue;
-                        break;
                 }
             }
 
@@ -2504,18 +2272,6 @@ public partial class ImportManager : IImportManager
                 //record history
                 await _productService.AddStockQuantityHistoryEntryAsync(product, -previousStockQuantity, 0, previousWarehouseId, message);
                 await _productService.AddStockQuantityHistoryEntryAsync(product, product.StockQuantity, product.StockQuantity, product.WarehouseId, message);
-            }
-
-            if (!isNew &&
-                product.ManageInventoryMethod == ManageInventoryMethod.ManageStock &&
-                product.BackorderMode == BackorderMode.NoBackorders &&
-                product.AllowBackInStockSubscriptions &&
-                await _productService.GetTotalStockQuantityAsync(product) > 0 &&
-                prevTotalStockQuantity <= 0 &&
-                product.Published &&
-                !product.Deleted)
-            {
-                await _backInStockSubscriptionService.SendNotificationsToSubscribersAsync(product);
             }
 
             var tempProperty = metadata.Manager.GetDefaultProperty("SeName");

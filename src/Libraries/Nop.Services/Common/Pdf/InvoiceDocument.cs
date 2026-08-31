@@ -15,17 +15,11 @@ public partial class InvoiceDocument : PdfDocument<ProductItem>
 
     protected virtual PdfGrid CreateAdressesInfo()
     {
-        var hasShipping = !string.IsNullOrEmpty(ShippingAddress.ShippingMethod);
-        var addressesTable = PdfDocumentHelper.BuildPdfGrid(numColumns: hasShipping ? 2 : 1, DocumentRunDirection);
+        //this store collects a single, shipping-only address - both clones hold it, so print it once
+        var addressesTable = PdfDocumentHelper.BuildPdfGrid(numColumns: 1, DocumentRunDirection);
 
-        var billingInfo = PdfDocumentHelper.BuildPdfPCell(BuildAddressTable<InvoiceDocument>(source => BillingAddress, BillingAddress), DocumentRunDirection);
-        addressesTable.AddCell(billingInfo);
-
-        if (hasShipping)
-        {
-            var shippingInfo = PdfDocumentHelper.BuildPdfPCell(BuildAddressTable<InvoiceDocument>(source => ShippingAddress, ShippingAddress), DocumentRunDirection);
-            addressesTable.AddCell(shippingInfo);
-        }
+        BillingAddress.ShippingMethod = ShippingAddress?.ShippingMethod;
+        addressesTable.AddCell(PdfDocumentHelper.BuildPdfPCell(BuildAddressTable<InvoiceDocument>(source => BillingAddress, BillingAddress), DocumentRunDirection));
 
         return addressesTable;
     }
@@ -110,11 +104,6 @@ public partial class InvoiceDocument : PdfDocument<ProductItem>
         foreach (var rate in Totals.TaxRates)
             summaryData.AddCell(BuildPdfPCell(rate));
 
-        foreach (var card in Totals.GiftCards)
-            summaryData.AddCell(BuildPdfPCell(card));
-
-        if (!string.IsNullOrEmpty(Totals.RewardPoints))
-            summaryData.AddCell(BuildTextCell<InvoiceTotals>(totals => totals.RewardPoints, Totals.RewardPoints));
         if (!string.IsNullOrEmpty(Totals.OrderTotal))
             summaryData.AddCell(BuildTextCell<InvoiceTotals>(totals => totals.OrderTotal, Totals.OrderTotal));
 
@@ -253,9 +242,9 @@ public partial class InvoiceDocument : PdfDocument<ProductItem>
     public string StoreUrl { get; init; }
 
     /// <summary>
-    /// Gets or sets the billing address
+    /// Gets or sets the order address
     /// </summary>
-    [DisplayName("Pdf.BillingInformation")]
+    [DisplayName("Pdf.ShippingInformation")]
     public required AddressItem BillingAddress { get; init; }
 
     /// <summary>

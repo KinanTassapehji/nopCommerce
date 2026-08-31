@@ -12,8 +12,7 @@ using Nop.Services.Affiliates;
 using Nop.Services.ArtificialIntelligence;
 using Nop.Services.Attributes;
 using Nop.Services.Authentication;
-using Nop.Services.Authentication.External;
-using Nop.Services.Authentication.MultiFactor;
+
 using Nop.Services.Blogs;
 using Nop.Services.Caching;
 using Nop.Services.Catalog;
@@ -138,7 +137,6 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IStoreContext, WebStoreContext>();
 
         //services
-        services.AddScoped<IBackInStockSubscriptionService, BackInStockSubscriptionService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IFilterLevelValueService, FilterLevelValueService>();
         services.AddScoped<ICompareProductsService, CompareProductsService>();
@@ -151,7 +149,6 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IProductReviewService, ProductReviewService>();
         services.AddScoped<ICopyProductService, CopyProductService>();
-        services.AddScoped<ISpecificationAttributeService, SpecificationAttributeService>();
         services.AddScoped<IProductTemplateService, ProductTemplateService>();
         services.AddScoped<ICategoryTemplateService, CategoryTemplateService>();
         services.AddScoped<IManufacturerTemplateService, ManufacturerTemplateService>();
@@ -195,15 +192,14 @@ public partial class NopStartup : INopStartup
         services.AddScoped<ISmtpBuilder, SmtpBuilder>();
         services.AddScoped<IEmailSender, EmailSender>();
         services.AddScoped<ICheckoutAttributeFormatter, CheckoutAttributeFormatter>();
-        services.AddScoped<IGiftCardService, GiftCardService>();
+
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IOrderReportService, OrderReportService>();
         services.AddScoped<IOrderProcessingService, OrderProcessingService>();
         services.AddScoped<IOrderTotalCalculationService, OrderTotalCalculationService>();
         services.AddScoped<IReturnRequestService, ReturnRequestService>();
-        services.AddScoped<IRewardPointService, RewardPointService>();
         services.AddScoped<IShoppingCartService, ShoppingCartService>();
-        services.AddScoped<ICustomWishlistService, CustomWishlistService>();
+
         services.AddScoped<ICustomNumberFormatter, CustomNumberFormatter>();
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IEncryptionService, EncryptionService>();
@@ -234,7 +230,6 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IUploadService, UploadService>();
         services.AddSingleton<IThemeProvider, ThemeProvider>();
         services.AddScoped<IThemeContext, ThemeContext>();
-        services.AddScoped<IExternalAuthenticationService, ExternalAuthenticationService>();
         services.AddSingleton<IRoutePublisher, RoutePublisher>();
         services.AddScoped<IReviewTypeService, ReviewTypeService>();
         services.AddSingleton<IEventPublisher, EventPublisher>();
@@ -257,8 +252,6 @@ public partial class NopStartup : INopStartup
 
         //plugin managers
         services.AddScoped(typeof(IPluginManager<>), typeof(PluginManager<>));
-        services.AddScoped<IAuthenticationPluginManager, AuthenticationPluginManager>();
-        services.AddScoped<IMultiFactorAuthenticationPluginManager, MultiFactorAuthenticationPluginManager>();
         services.AddScoped<IWidgetPluginManager, WidgetPluginManager>();
         services.AddScoped<IExchangeRatePluginManager, ExchangeRatePluginManager>();
         services.AddScoped<IDiscountPluginManager, DiscountPluginManager>();

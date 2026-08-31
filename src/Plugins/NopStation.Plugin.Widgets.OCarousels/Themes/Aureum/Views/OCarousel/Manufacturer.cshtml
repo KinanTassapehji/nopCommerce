@@ -1,0 +1,73 @@
+﻿@model OCarouselModel
+@using Nop.Core.Domain.Catalog
+
+@if (Model.Manufacturers.Count > 0)
+{
+    <div class="manufacturers-bg" style="background-image: url('@Model.BackgroundPictureUrl');">
+        <div class="OCarousel-container container manufactures-area">
+            @if (Model.DisplayTitle)
+            {
+                <div class="title">
+                    <h3 class="font-weight-bold text-center text-uppercase py-4">@Model.Title</h3>
+                </div>
+            }
+
+            <div class="owl-carousel OCarousel OCarousel-@(Model.Id)" id="OCarousel-@(Model.Id)">
+                @foreach (var manufacturerModel in Model.Manufacturers)
+                {
+                    <div class="OCarousel-item">
+                        <div class="picture">
+                            <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { SeName = manufacturerModel.SeName }))" title="@manufacturerModel.PictureModel.Title">
+                                <img alt="@manufacturerModel.PictureModel.AlternateText" src="@manufacturerModel.PictureModel.ImageUrl" title="@manufacturerModel.PictureModel.Title" />
+                            </a>
+                        </div>
+                        <div class="details">
+                            <h2 class="manufacturer-name">
+                                <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { SeName = manufacturerModel.SeName }))"></a>
+                            </h2>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#OCarousel-@(Model.Id)').owlCarousel({
+                nav: @Model.Nav.ToString().ToLower(),
+                loop: @Model.Loop.ToString().ToLower(),
+                dots: false,
+                margin: 15,
+                autoplay: @Model.AutoPlay.ToString().ToLower(),
+                rtl: @Model.Rtl.ToString().ToLower(),
+                autoplayTimeout: @Model.AutoPlayTimeout,
+                autoplayHoverPause: @Model.AutoPlayHoverPause.ToString().ToLower(),
+                lazyLoad: @Model.LazyLoad.ToString().ToLower(),
+                lazyLoadEager: @Model.LazyLoadEager,
+                center: @Model.Center.ToString().ToLower(),
+                startPosition: @Model.StartPosition,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    576: {
+                        items: 3
+                    },
+                    768: {
+                        items: 3
+                    },
+                    992: {
+                        items: 4
+                    },
+                    1200: {
+                        items: 4
+                    },
+                    1500: {
+                        items: 4
+                    }
+                }
+            });
+        });
+    </script>
+}

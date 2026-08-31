@@ -24,7 +24,7 @@ public partial class CatalogSettings : ISettings
     public bool DisplayDiscontinuedMessageForUnpublishedProducts { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether "Published" or "Disable buy/wishlist buttons" flags should be updated after order cancellation (deletion).
+    /// Gets or sets a value indicating whether "Published" or "Disable buy button" flags should be updated after order cancellation (deletion).
     /// Of course, when qty > configured minimum stock level
     /// </summary>
     public bool PublishBackProductWhenCancellingOrders { get; set; }
@@ -360,11 +360,6 @@ public partial class CatalogSettings : ISettings
     public bool IncludeFeaturedProductsInNormalLists { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether to render link to required products in "Require other products added to the cart" warning
-    /// </summary>
-    public bool UseLinksInRequiredProductWarnings { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether tier prices should be displayed with applied discounts (if available)
     /// </summary>
     public bool DisplayTierPricesWithDiscounts { get; set; }
@@ -395,11 +390,6 @@ public partial class CatalogSettings : ISettings
     public bool CacheProductPrices { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating maximum number of 'back in stock' subscription
-    /// </summary>
-    public int MaximumBackInStockSubscriptions { get; set; }
-
-    /// <summary>
     /// Gets or sets the value indicating how many manufacturers to display in manufacturers block
     /// </summary>
     public int ManufacturersBlockItemsToDisplay { get; set; }
@@ -423,11 +413,6 @@ public partial class CatalogSettings : ISettings
     /// Gets or sets a value indicating whether to display information about shipping and tax on shopping cart page (used in Germany)
     /// </summary>
     public bool DisplayTaxShippingInfoShoppingCart { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to display information about shipping and tax on wishlist page (used in Germany)
-    /// </summary>
-    public bool DisplayTaxShippingInfoWishlist { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether to display information about shipping and tax on order details page (used in Germany)
@@ -480,11 +465,6 @@ public partial class CatalogSettings : ISettings
     public bool ExportImportCategoryUseLimitedToStores { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the products need to be exported/imported with their specification attributes
-    /// </summary>
-    public bool ExportImportProductSpecificationAttributes { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether the products need to be exported/imported with their tier prices
     /// </summary>
     public bool ExportImportTierPrices { get; set; }
@@ -520,11 +500,6 @@ public partial class CatalogSettings : ISettings
     public int ExportImportProductsCountInOneFile { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether to remove required products from the cart if the main one is removed
-    /// </summary>
-    public bool RemoveRequiredProducts { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether the related entities need to be exported/imported using name
     /// </summary>
     public bool ExportImportRelatedEntitiesByName { get; set; }
@@ -553,11 +528,6 @@ public partial class CatalogSettings : ISettings
     /// Get or set a value indicating whether the price range filtering is enabled on catalog pages
     /// </summary>
     public bool EnablePriceRangeFiltering { get; set; }
-
-    /// <summary>
-    /// Get or set a value indicating whether the specification attribute filtering is enabled on catalog pages
-    /// </summary>
-    public bool EnableSpecificationAttributeFiltering { get; set; }
 
     /// <summary>
     /// Get or set a value indicating whether the "From" prices (based on price adjustments of combinations and attributes) are displayed on catalog pages

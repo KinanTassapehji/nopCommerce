@@ -11,9 +11,7 @@ public partial record ProductOverviewModel : BaseNopEntityModel
     {
         ProductPrice = new ProductPriceModel();
         PictureModels = new List<PictureModel>();
-        ProductSpecificationModel = new ProductSpecificationModel();
         ReviewOverviewModel = new ProductReviewOverviewModel();
-        ProductToWishlist = new ProductToWishlistModel();
     }
 
     public string Name { get; set; }
@@ -31,10 +29,6 @@ public partial record ProductOverviewModel : BaseNopEntityModel
     public ProductPriceModel ProductPrice { get; set; }
     //pictures
     public IList<PictureModel> PictureModels { get; set; }
-    //specification attributes
-    public ProductSpecificationModel ProductSpecificationModel { get; set; }
     //price
     public ProductReviewOverviewModel ReviewOverviewModel { get; set; }
-
-    public ProductToWishlistModel ProductToWishlist { get; set; }
 }

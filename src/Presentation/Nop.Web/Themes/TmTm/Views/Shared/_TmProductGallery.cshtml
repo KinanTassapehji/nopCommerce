@@ -1,0 +1,226 @@
+﻿@model ProductDetailsModel
+@*
+    TmTm product gallery — one component, three entry points.
+
+    The store runs NopStation.PictureZoom, whose view-location expander does not
+    add a location, it REPLACES the list: while it is active every request for
+    Product/_ProductDetailsPictures resolves to its own PictureZoom.cshtml and
+    nothing a theme puts in Views/Product is ever read. So the gallery lives here
+    in Views/Shared, and two shims point at it:
+
+      Themes/TmTm/Views/Product/_ProductDetailsPictures.cshtml          plugin off
+      Plugins/…PictureZoom/Themes/TmTm/Views/Shared/PictureZoom.cshtml  plugin on
+
+    Either way the shopper gets this gallery, and no core or vendor file is edited.
+
+    What it replaces: cloud-zoom, a hover magnifier that drags in two more jQuery
+    plugins and does nothing at all on a touch screen — where most of this store
+    is read. In its place one scroll-snap track: swipe on a phone, arrows on a
+    desktop, tap for a full-screen <dialog>. No library.
+
+    Contract with the core scripts, which must keep working:
+      #main-product-img-{id}                  _ProductAttributes rewrites its src
+                                              when a combination has its own
+                                              picture — it is slide one.
+      #main-product-img-lightbox-anchor-{id}  the same script writes the full-size
+                                              URL into its href.
+      .thumb-item[data-pictureid]             shown and hidden when the product is
+                                              set to display combination images
+                                              only. Both the slide and its
+                                              thumbnail carry it, so they go
+                                              together.
+*@
+@{
+    //a product with no pictures of its own still has the placeholder here
+    var pictures = Model.PictureModels.Count > 0
+        ? Model.PictureModels
+        : new List<PictureModel> { Model.DefaultPictureModel };
+    var hasMany = pictures.Count > 1;
+    var galleryId = $"tm-gallery-{Model.Id}";
+}
+<div class="tm-gallery @(hasMany ? "tm-gallery-many" : null)" id="@galleryId">
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBeforePictures, additionalData = Model })
+
+    @*Carries the full-size URL for social scrapers, and is the element the core
+        attribute-change script writes a combination picture's URL into.*@
+    <link id="main-product-img-lightbox-anchor-@Model.Id" rel="image_src" href="@pictures[0].FullSizeImageUrl" />
+
+    <div class="tm-gallery-stage">
+        @*A list, so the count is announced. tabindex makes the track focusable and
+            with that the arrow keys scroll it — a scroll container is keyboard
+            scrollable as soon as it can hold focus, so no key handler ships here.*@
+        <ul class="tm-gallery-track" tabindex="0" aria-label="@T("Products.Gallery.Label")">
+            @for (var i = 0; i < pictures.Count; i++)
+            {
+                var picture = pictures[i];
+                <li class="tm-slide thumb-item" data-pictureid="@picture.Id">
+                    <img src="@picture.ImageUrl"
+                         data-full="@picture.FullSizeImageUrl"
+                         alt="@picture.AlternateText"
+                         title="@picture.Title"
+                         id="@(i == 0 ? $"main-product-img-{Model.Id}" : null)"
+                         loading="@(i == 0 ? "eager" : "lazy")"
+                         fetchpriority="@(i == 0 ? "high" : null)"
+                         decoding="async" />
+                </li>
+            }
+        </ul>
+
+        @*A button, not a link: there is no URL to fall back to. It covers the
+            picture, so a tap anywhere on it opens the full-screen view.*@
+        <button type="button" class="tm-gallery-open" aria-label="@T("Products.Gallery.FullScreen")" aria-haspopup="dialog">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M14.5 4.5H19v4.5M9.5 19.5H5V15M19.5 4.5 14 10M4.5 19.5 10 14" />
+            </svg>
+        </button>
+
+        @if (hasMany)
+        {
+            <button type="button" class="tm-gallery-arrow tm-gallery-prev" data-step="-1" aria-label="@T("Media.MagnificPopup.Previous")" aria-controls="@galleryId">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m15 5-7 7 7 7" /></svg>
+            </button>
+            <button type="button" class="tm-gallery-arrow tm-gallery-next" data-step="1" aria-label="@T("Media.MagnificPopup.Next")" aria-controls="@galleryId">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7" /></svg>
+            </button>
+            @*One text node the script rewrites, rather than a dot per picture with
+                its own state to keep in step with the thumbnails.*@
+            <p class="tm-gallery-counter">@T("Products.Gallery.Position", 1, pictures.Count)</p>
+        }
+    </div>
+
+    @if (hasMany)
+    {
+        <ul class="tm-gallery-thumbs">
+            @for (var i = 0; i < pictures.Count; i++)
+            {
+                var picture = pictures[i];
+                <li class="thumb-item" data-pictureid="@picture.Id">
+                    <button type="button" class="tm-thumb @(i == 0 ? "active" : null)" data-index="@i" aria-label="@T("Products.Gallery.Position", i + 1, pictures.Count)">
+                        <img src="@picture.ThumbImageUrl" alt="@picture.AlternateText" title="@picture.Title" loading="lazy" decoding="async" />
+                    </button>
+                </li>
+            }
+        </ul>
+    }
+
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsAfterPictures, additionalData = Model })
+</div>
+
+@*Native dialog: top layer, Esc, backdrop and focus containment are the browser's
+    job. It is filled by moving the stage into it rather than by cloning the
+    pictures, so there is one set of <img> elements and no second download.*@
+<dialog class="tm-lightbox" id="tm-lightbox-@Model.Id" aria-label="@T("Products.Gallery.Label")">
+    <button type="button" class="tm-lightbox-close" aria-label="@T("Media.MagnificPopup.Close")">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18" /></svg>
+    </button>
+</dialog>
+
+<script asp-location="Footer">
+    (function () {
+        var gallery = document.getElementById('@galleryId');
+        if (!gallery)
+            return;
+
+        var stage = gallery.querySelector('.tm-gallery-stage');
+        var slot = stage.nextElementSibling;      //where the stage returns to
+        var track = gallery.querySelector('.tm-gallery-track');
+        var slides = Array.prototype.slice.call(track.children);
+        var thumbs = Array.prototype.slice.call(gallery.querySelectorAll('.tm-thumb'));
+        var counter = gallery.querySelector('.tm-gallery-counter');
+        var dialog = document.getElementById('tm-lightbox-@Model.Id');
+        var counterFormat = @Html.Raw(Json.Serialize(T("Products.Gallery.Position", "{0}", "{1}").Text));
+        var current = 0;
+
+        //Scrolling by the measured gap between the two boxes rather than by
+        //assigning scrollLeft: the origin of scrollLeft flips with writing
+        //direction, a delta does not, so one line serves LTR and RTL alike.
+        //Wrapping rather than clamping, so the arrows keep going in one
+        //direction round the whole set. The wrap itself jumps rather than
+        //animating: sliding the full width of the track back to the first
+        //picture reads as the gallery being yanked, not as one step.
+        function goTo(index) {
+            var wrapped = index < 0 || index > slides.length - 1;
+            index = (index % slides.length + slides.length) % slides.length;
+            var delta = slides[index].getBoundingClientRect().left - track.getBoundingClientRect().left;
+            track.scrollBy({ left: delta, behavior: wrapped ? 'auto' : 'smooth' });
+        }
+
+        function setCurrent(index) {
+            current = index;
+            thumbs.forEach(function (thumb, i) {
+                thumb.classList.toggle('active', i === index);
+                thumb.setAttribute('aria-current', i === index ? 'true' : 'false');
+            });
+            if (counter)
+                counter.textContent = counterFormat.replace('{0}', index + 1).replace('{1}', slides.length);
+        }
+
+        //Which slide is showing is a question the browser can answer; a scroll
+        //handler would have to re-measure every frame to guess at the same thing.
+        if (slides.length > 1 && 'IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting)
+                        setCurrent(slides.indexOf(entry.target));
+                });
+            }, { root: track, threshold: 0.6 });
+            slides.forEach(function (slide) { observer.observe(slide); });
+        }
+
+        thumbs.forEach(function (thumb) {
+            thumb.addEventListener('click', function () {
+                goTo(parseInt(thumb.dataset.index, 10));
+            });
+        });
+
+        Array.prototype.forEach.call(gallery.querySelectorAll('.tm-gallery-arrow'), function (arrow) {
+            arrow.addEventListener('click', function () {
+                goTo(current + parseInt(arrow.dataset.step, 10));
+            });
+        });
+
+        //Full screen. The stage moves in and back out again, so the lightbox opens
+        //with pictures the browser has already decoded.
+        var upgraded = false;
+        function openLightbox() {
+            if (!upgraded) {
+                slides.forEach(function (slide) {
+                    var img = slide.firstElementChild;
+                    if (img.dataset.full)
+                        img.src = img.dataset.full;
+                });
+                upgraded = true;
+            }
+            dialog.appendChild(stage);
+            dialog.showModal();
+            goTo(current);
+        }
+
+        gallery.querySelector('.tm-gallery-open').addEventListener('click', openLightbox);
+        dialog.querySelector('.tm-lightbox-close').addEventListener('click', function () { dialog.close(); });
+        //A click on the backdrop lands on the dialog itself, never on a child
+        dialog.addEventListener('click', function (event) {
+            if (event.target === dialog)
+                dialog.close();
+        });
+        dialog.addEventListener('close', function () {
+            gallery.insertBefore(stage, slot);
+            goTo(current);
+        });
+
+        //A combination picture replaces slide one; if the shopper had swiped past
+        //it, the swap would otherwise happen off screen.
+        $(document).on('product_attributes_changed', function (event) {
+            var data = event.changedData || {};
+            if (!data.pictureDefaultSizeUrl)
+                return;
+            var first = slides[0].firstElementChild;
+            if (data.pictureFullSizeUrl) {
+                first.dataset.full = data.pictureFullSizeUrl;
+                if (upgraded)
+                    first.src = data.pictureFullSizeUrl;
+            }
+            goTo(0);
+        });
+    })();
+</script>

@@ -18,7 +18,6 @@ public partial record OrderModel : BaseNopEntityModel
     {
         CustomValues = new CustomValues();
         TaxRates = new List<TaxRate>();
-        GiftCards = new List<GiftCard>();
         Items = new List<OrderItemModel>();
         UsedDiscounts = new List<UsedDiscountModel>();
         OrderShipmentSearchModel = new OrderShipmentSearchModel();
@@ -94,10 +93,6 @@ public partial record OrderModel : BaseNopEntityModel
     public bool DisplayTaxRates { get; set; }
     [NopResourceDisplayName("Admin.Orders.Fields.OrderTotalDiscount")]
     public string OrderTotalDiscount { get; set; }
-    [NopResourceDisplayName("Admin.Orders.Fields.RedeemedRewardPoints")]
-    public int RedeemedRewardPoints { get; set; }
-    [NopResourceDisplayName("Admin.Orders.Fields.RedeemedRewardPoints")]
-    public string RedeemedRewardPointsAmount { get; set; }
     [NopResourceDisplayName("Admin.Orders.Fields.OrderTotal")]
     public string OrderTotal { get; set; }
     [NopResourceDisplayName("Admin.Orders.Fields.RefundedAmount")]
@@ -130,10 +125,6 @@ public partial record OrderModel : BaseNopEntityModel
     public decimal OrderTotalDiscountValue { get; set; }
     [NopResourceDisplayName("Admin.Orders.Fields.Edit.OrderTotal")]
     public decimal OrderTotalValue { get; set; }
-
-    //associated recurring payment id
-    [NopResourceDisplayName("Admin.Orders.Fields.RecurringPayment")]
-    public int RecurringPaymentId { get; set; }
 
     //order status
     [NopResourceDisplayName("Admin.Orders.Fields.OrderStatus")]
@@ -194,12 +185,6 @@ public partial record OrderModel : BaseNopEntityModel
     public AddressModel BillingAddress { get; set; }
     [NopResourceDisplayName("Admin.Orders.Fields.VatNumber")]
     public string VatNumber { get; set; }
-
-    //gift cards
-    public IList<GiftCard> GiftCards { get; set; }
-
-    //items
-    public bool HasDownloadableProducts { get; set; }
     public IList<OrderItemModel> Items { get; set; }
 
     //creation date
@@ -248,13 +233,6 @@ public partial record OrderModel : BaseNopEntityModel
     {
         public string Rate { get; set; }
         public string Value { get; set; }
-    }
-
-    public partial record GiftCard : BaseNopModel
-    {
-        [NopResourceDisplayName("Admin.Orders.Fields.GiftCardInfo")]
-        public string CouponCode { get; set; }
-        public string Amount { get; set; }
     }
 
     public partial record UsedDiscountModel : BaseNopModel

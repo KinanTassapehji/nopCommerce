@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Core;
 using Nop.Core.Caching;
-using Nop.Services.Authentication.External;
-using Nop.Services.Authentication.MultiFactor;
 using Nop.Services.Catalog;
 using Nop.Services.Cms;
 using Nop.Services.Common;
@@ -28,11 +26,9 @@ public partial class PluginModelFactory : IPluginModelFactory
 {
     #region Fields
 
-    protected readonly IAuthenticationPluginManager _authenticationPluginManager;
     protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedModelFactory _localizedModelFactory;
-    protected readonly IMultiFactorAuthenticationPluginManager _multiFactorAuthenticationPluginManager;
     protected readonly IPaymentPluginManager _paymentPluginManager;
     protected readonly IPickupPluginManager _pickupPluginManager;
     protected readonly IPluginService _pluginService;
@@ -49,10 +45,8 @@ public partial class PluginModelFactory : IPluginModelFactory
 
     #region Ctor
 
-    public PluginModelFactory(IAuthenticationPluginManager authenticationPluginManager,
-        IBaseAdminModelFactory baseAdminModelFactory,
+    public PluginModelFactory(IBaseAdminModelFactory baseAdminModelFactory,
         ILocalizationService localizationService,
-        IMultiFactorAuthenticationPluginManager multiFactorAuthenticationPluginManager,
         ILocalizedModelFactory localizedModelFactory,
         IPaymentPluginManager paymentPluginManager,
         IPickupPluginManager pickupPluginManager,
@@ -66,11 +60,9 @@ public partial class PluginModelFactory : IPluginModelFactory
         IWorkContext workContext,
         OfficialFeedManager officialFeedManager)
     {
-        _authenticationPluginManager = authenticationPluginManager;
         _baseAdminModelFactory = baseAdminModelFactory;
         _localizationService = localizationService;
         _localizedModelFactory = localizedModelFactory;
-        _multiFactorAuthenticationPluginManager = multiFactorAuthenticationPluginManager;
         _paymentPluginManager = paymentPluginManager;
         _pickupPluginManager = pickupPluginManager;
         _pluginService = pluginService;
@@ -124,14 +116,6 @@ public partial class PluginModelFactory : IPluginModelFactory
 
             case ITaxProvider taxProvider:
                 model.IsEnabled = _taxPluginManager.IsPluginActive(taxProvider);
-                break;
-
-            case IExternalAuthenticationMethod externalAuthenticationMethod:
-                model.IsEnabled = _authenticationPluginManager.IsPluginActive(externalAuthenticationMethod);
-                break;
-
-            case IMultiFactorAuthenticationMethod multiFactorAuthenticationMethod:
-                model.IsEnabled = _multiFactorAuthenticationPluginManager.IsPluginActive(multiFactorAuthenticationMethod);
                 break;
 
             case ISearchProvider searchProvider:

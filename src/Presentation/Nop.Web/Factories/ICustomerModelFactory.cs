@@ -89,26 +89,6 @@ public partial interface ICustomerModelFactory
     Task<CustomerAddressListModel> PrepareCustomerAddressListModelAsync();
 
     /// <summary>
-    /// Prepare the customer downloadable products model
-    /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the customer downloadable products model
-    /// </returns>
-    Task<CustomerDownloadableProductsModel> PrepareCustomerDownloadableProductsModelAsync();
-
-    /// <summary>
-    /// Prepare the user agreement model
-    /// </summary>
-    /// <param name="orderItem">Order item</param>
-    /// <param name="product">Product</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the user agreement model
-    /// </returns>
-    Task<UserAgreementModel> PrepareUserAgreementModelAsync(OrderItem orderItem, Product product);
-
-    /// <summary>
     /// Prepare the change password model
     /// </summary>
     /// <param name="customer">Customer</param>
@@ -137,36 +117,6 @@ public partial interface ICustomerModelFactory
     /// </returns>
     Task<GdprToolsModel> PrepareGdprToolsModelAsync();
 
-    /// <summary>
-    /// Prepare the check gift card balance model
-    /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the check gift card balance model
-    /// </returns>
-    Task<CheckGiftCardBalanceModel> PrepareCheckGiftCardBalanceModelAsync();
-
-    /// <summary>
-    /// Prepare the multi-factor authentication model
-    /// </summary>
-    /// <param name="model">Multi-factor authentication model</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the multi-factor authentication model
-    /// </returns>
-    Task<MultiFactorAuthenticationModel> PrepareMultiFactorAuthenticationModelAsync(MultiFactorAuthenticationModel model);
-
-    /// <summary>
-    /// Prepare the multi-factor provider model
-    /// </summary>
-    /// <param name="providerModel">Multi-factor provider model</param>
-    /// <param name="sysName">Multi-factor provider system name</param>
-    /// <param name="isLogin">Is login page</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the multi-factor authentication model
-    /// </returns>
-    Task<MultiFactorAuthenticationProviderModel> PrepareMultiFactorAuthenticationProviderModelAsync(MultiFactorAuthenticationProviderModel providerModel, string sysName, bool isLogin = false);
 
     /// <summary>
     /// Prepare the custom customer attribute models

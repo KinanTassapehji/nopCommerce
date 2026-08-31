@@ -1,0 +1,12 @@
+{
+  "Group": "Nop-Station",
+  "FriendlyName": "Total Spent Discount Rule",
+  "SystemName": "NopStation.Plugin.DiscountRules.TotalSpent",
+  "Version": "4.90.1.0",
+  "SupportedVersions": [ "4.90" ],
+  "Author": "Nop-Station Team",
+  "DisplayOrder": 1,
+  "FileName": "NopStation.Plugin.DiscountRules.TotalSpent.dll",
+  "Description": "This plugin allows you to configure discounts based on a customer's total spent amount.",
+  "DependsOnSystemNames": [ "NopStation.Core" ]
+}

@@ -1,0 +1,26 @@
+﻿@inject Nop.Core.IWorkContext workContext
+
+@{ var supportRtl = (await workContext.GetWorkingLanguageAsync()).Rtl;
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, $"~/Plugins/NopStation.Plugin.Widgets.ProductTabs/Contents/script/owl.carousel.min.js");
+
+    if (supportRtl)
+    {
+        //Html.AppendCssFileParts($"~/Plugins/NopStation.ProductTabs/Contents/css/rtl/owl.theme.green.min.css");
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.ProductTabs/Themes/Tulip/Contents/css/rtl/owl.carousel.css");
+        //Html.AppendCssFileParts($"~/Plugins/NopStation.ProductTabs/Contents/css/rtl/styles.rtl.css");
+    }
+    else
+    {
+        //Html.AppendCssFileParts($"~/Plugins/NopStation.ProductTabs/Contents/css/owl.theme.green.min.css");
+        NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.ProductTabs/Themes/Tulip/Contents/css/owl.carousel.css");
+    }
+    NopHtml.AppendCssFileParts($"~/Plugins/NopStation.Plugin.Widgets.ProductTabs/Themes/Tulip/Contents/css/styles.css");
+
+    }
+
+
+<script asp-location="Footer">
+    $(function () {
+        $(".ns-product-tab").tabs();
+    });
+</script>

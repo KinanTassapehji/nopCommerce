@@ -12,8 +12,6 @@ public partial record HeaderLinksModel : BaseNopModel
     public bool UsePopupNotifications { get; set; }
     public int ShoppingCartItems { get; set; }
 
-    public bool WishlistEnabled { get; set; }
-    public int WishlistItems { get; set; }
 
     public bool AllowPrivateMessages { get; set; }
     public string UnreadPrivateMessages { get; set; }

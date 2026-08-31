@@ -48,11 +48,6 @@ public partial class ProductEditorSettings : ISettings
     public bool ShowOnHomepage { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether 'Allow customer reviews' field is shown
-    /// </summary>
-    public bool AllowCustomerReviews { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether 'Product tags' field is shown
     /// </summary>
     public bool ProductTags { get; set; }
@@ -88,11 +83,6 @@ public partial class ProductEditorSettings : ISettings
     public bool DisableBuyButton { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether 'Disable wishlist button' field is shown
-    /// </summary>
-    public bool DisableWishlistButton { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether 'Available for pre-order' field is shown
     /// </summary>
     public bool AvailableForPreOrder { get; set; }
@@ -116,26 +106,6 @@ public partial class ProductEditorSettings : ISettings
     /// Gets or sets a value indicating whether 'PAngV' field is shown
     /// </summary>
     public bool PAngV { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether 'Require other products added to the cart' field is shown
-    /// </summary>
-    public bool RequireOtherProductsAddedToCart { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether 'Is gift card' field is shown
-    /// </summary>
-    public bool IsGiftCard { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether 'Downloadable product' field is shown
-    /// </summary>
-    public bool DownloadableProduct { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether 'Recurring product' field is shown
-    /// </summary>
-    public bool RecurringProduct { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether 'Is rental' field is shown
@@ -196,16 +166,6 @@ public partial class ProductEditorSettings : ISettings
     /// Gets or sets a value indicating whether 'Notify admin for quantity below' field is shown
     /// </summary>
     public bool NotifyAdminForQuantityBelow { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether 'Backorders' field is shown
-    /// </summary>
-    public bool Backorders { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether 'Allow back in stock subscriptions' field is shown
-    /// </summary>
-    public bool AllowBackInStockSubscriptions { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether 'Minimum cart quantity' field is shown
@@ -293,9 +253,6 @@ public partial class ProductEditorSettings : ISettings
     public bool ProductAttributes { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether 'Specification attributes' tab is shown
-    /// </summary>
-    public bool SpecificationAttributes { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether 'Manufacturers' field is shown
@@ -306,9 +263,4 @@ public partial class ProductEditorSettings : ISettings
     /// Gets or sets a value indicating whether 'Stock quantity history' tab is shown
     /// </summary>
     public bool StockQuantityHistory { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether 'Age verification' field is shown
-    /// </summary>
-    public bool AgeVerification { get; set; }
 }

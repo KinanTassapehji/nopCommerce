@@ -29,10 +29,6 @@ public partial record CaptchaSettingsModel : BaseNopModel, ISettingsModel
     public bool ShowOnContactUsPage { get; set; }
     public bool ShowOnContactUsPage_OverrideForStore { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.CaptchaShowOnEmailWishlistToFriendPage")]
-    public bool ShowOnEmailWishlistToFriendPage { get; set; }
-    public bool ShowOnEmailWishlistToFriendPage_OverrideForStore { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.CaptchaShowOnEmailProductToFriendPage")]
     public bool ShowOnEmailProductToFriendPage { get; set; }
     public bool ShowOnEmailProductToFriendPage_OverrideForStore { get; set; }
@@ -68,10 +64,6 @@ public partial record CaptchaSettingsModel : BaseNopModel, ISettingsModel
     [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.CaptchaShowOnCheckoutPageForGuests")]
     public bool ShowOnCheckoutPageForGuests { get; set; }
     public bool ShowOnCheckoutPageForGuests_OverrideForStore { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.CaptchaShowOnCheckGiftCardBalance")]
-    public bool ShowOnCheckGiftCardBalance { get; set; }
-    public bool ShowOnCheckGiftCardBalance_OverrideForStore { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.reCaptchaPublicKey")]
     public string ReCaptchaPublicKey { get; set; }

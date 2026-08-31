@@ -1,0 +1,330 @@
+﻿/* 17 of 167 CSS properties converted by rtl.daskhat.ir 
+ These properties should be override originals. 
+ just load rtl css file after original css file.*/
+
+/* body {direction:rtl;} */
+
+.mfp-close-btn-in .mfp-close {
+  top: 0;
+  opacity: 1;
+  width: 36px;
+  height: 36px;
+  color: #ccc;
+  left: 0;
+  transition: 1s;
+  cursor: pointer;
+  font-size: 30px;
+  line-height: 36px;
+  background: transparent;
+  font-weight: bold;
+  position: absolute;
+  border: 0;
+}
+
+.btn {
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;
+  transition: all .15s ease-in-out;
+}
+
+.quick-view-btn {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  bottom: 5px;
+  right: 5px;
+  color: var(--primary-color);
+  font-size: 28px;
+  background: rgba(255, 255, 255, 0.7);
+  opacity: 0;
+  transition: all 0.3s;
+  border-radius: 0;
+  width: calc(100% - 10px);
+}
+
+.item-box:hover .quick-view-btn {
+  opacity: 1;
+}
+
+.quick-view-details .btn-cart {
+  background: var(--primary-color);
+  width: 100%;
+  color: #fff;
+}
+
+  .quick-view-details .btn-cart:hover {
+    background: #27272b;
+  }
+
+.quick-view-details .btn-wishlist {
+  background: #ddd;
+  width: 100%;
+}
+
+.quick-view-details i {
+  font-weight: 600;
+}
+
+  .quick-view-details i.fa-exchange {
+    font-weight: normal;
+  }
+
+.quick-view-details .btn-wishlist:hover {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.quick-view-details .btn-email-friend, .quick-view-details .btn-compare-product {
+  margin-left: 15px;
+  margin-right: 15px;
+  width: 100%;
+  background: #ddd;
+}
+
+  .quick-view-details .btn-email-friend:hover, .quick-view-details .btn-compare-product:hover {
+    background: var(--primary-color);
+    color: #fff;
+  }
+
+@media(max-width:991px) {
+  .quick-view-btn {
+    display: none;
+  }
+}
+
+.mfp-content #quick-view-modal {
+  top: 0;
+  right: 0;
+  width: 65%;
+  z-index: 1005;
+  background: #FFF;
+  margin: 10px auto;
+  padding: 25px;
+  position: relative;
+  border-radius: 3px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .4);
+}
+
+#quick-view-btn {
+  display: none;
+}
+
+#quick-view-modal .mfp-close {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.quick-view-details .old-product-price span {
+  text-decoration: line-through;
+}
+
+.quick-view-details .text-info strong {
+  display: block;
+  padding-top: 12px;
+  font-family: "Gotham";
+  font-weight: 300;
+}
+
+.quick-view-details .product-essential {
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.quick-view-details .product-price span {
+  color: #000;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 20px;
+}
+
+.quick-view-details .product-specs-box {
+  padding: 15px 0px;
+}
+
+.quick-view-details .share-item {
+  border-top: 0;
+  padding-top: 0;
+  text-align: right;
+  margin: 10px auto;
+}
+
+  .quick-view-details .share-item > * {
+    font-size: 12px;
+    margin-right: 0px;
+  }
+
+  .quick-view-details .share-item .icon-icon-g-plus {
+    width: 11px;
+    height: 16px;
+    background-size: cover;
+    margin-top: -3px !important;
+  }
+
+.quick-view-details .bs-giftcard {
+  margin-bottom: 20px;
+}
+
+.quick-view-details .overview {
+  margin-bottom: 0;
+  max-width: 50%;
+}
+
+  .quick-view-details .overview .quantity {
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  .quick-view-details .overview input[type="text"].qty-input {
+    width: 45px !important;
+    height: 45px;
+  }
+
+.quick-view-details .buttonAddToCart {
+  width: 55%;
+  float: left;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.quick-view-details .product-box-add-to-cart-button {
+  width: 100%;
+  color: #fff;
+  height: 45px;
+  transition: 0.5s;
+  -o-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -webkit-transition: 0.5s;
+  max-width: 160px;
+  font-weight: bold;
+  border-radius: 2px;
+  text-align: center;
+  background: #22B392;
+  padding: 13px 10px;
+  border: 1px solid #22B392;
+  text-transform: capitalize;
+}
+
+  .quick-view-details .product-box-add-to-cart-button i {
+    margin-left: 9px;
+    margin-top: -4px;
+  }
+
+  .quick-view-details .product-box-add-to-cart-button:hover {
+    background: #0A436F;
+    border-color: #0A436F;
+  }
+
+.quick-view-details div.divPictureThumb {
+  padding-left: 0px;
+}
+
+.quick-view-details .divPictureThumb .slick-slider-main {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.quick-view-details .thumbnails {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 62.5rem;
+  clear: both;
+  padding: 1rem 0;
+}
+
+  .quick-view-details .thumbnails img.active, .quick-view-details .thumbnails img.active:hover {
+    outline: 4px solid #4ac2be;
+  }
+
+  .quick-view-details .thumbnails img:hover {
+    outline: 4px solid #ccc;
+  }
+
+  .quick-view-details .thumbnails img {
+    outline: 1px solid #ccc;
+  }
+
+  .quick-view-details .thumbnails .columns {
+    float: right !important;
+  }
+
+.quick-view-details .email-compare-area {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px -15px 15px;
+}
+
+.quick-view-details .attributes dt, .quick-view-details .attribute-label {
+  position: absolute;
+}
+
+.quick-view-details .overview .manufacturers, .quick-view-details .overview .additional-details, .quick-view-details .overview .tabs-product-details, .quick-view-details .overview .availability {
+  margin: 0 0 15px;
+  font-size: 16px;
+  font-weight: normal;
+  font-family: "Gotham";
+  line-height: 20px;
+}
+
+  .quick-view-details .overview .additional-details div, .quick-view-details .variant-overview .additional-details div {
+    margin-bottom: 0;
+  }
+
+.quick-view-details .overview .product-reviews-overview {
+  margin-bottom: 0;
+}
+
+.quick-view-details .overview .add-to-cart {
+  margin: 0;
+}
+
+.quick-view-details .qty-input {
+  width: 100%;
+  margin-top: 15px;
+  border: 1px solid #ddd;
+}
+
+.quick-view-details .bs-giftcard input, .quick-view-details .bs-giftcard textarea, .quick-view-details .price-input input {
+  width: 100%;
+  margin-top: 15px;
+  border: 1px solid #ddd;
+}
+
+.quick-view-details .cart-wistlist-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+  .quick-view-details .cart-wistlist-buttons div {
+    width: 50%;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+.quick-view-details .ui-tabs-nav {
+  border-bottom: none;
+}
+
+.quick-view-details .prices-variant {
+  display: flex;
+  align-items: center;
+}
+
+  .quick-view-details .prices-variant .product-price {
+    margin-left: 5px;
+  }

@@ -1,0 +1,144 @@
+﻿@model IEnumerable<ProductTabModel>
+@using NopStation.Plugin.Widgets.ProductTabs.Models
+
+@if (Model.Any())
+{
+    foreach (var productTab in Model)
+    {
+        var items = productTab.Items.Where(p => p.Products.Any());
+        <div class="product-tab-container-wrapper">
+        <div class="carousel-skeleton product-tab-skeleton"></div>
+
+        <div class="product-tab-container product-tab-loading">
+            <div class="product-tab-container-mobile-title">
+                @if (productTab.DisplayTitle)
+                {
+                    <div class="title">
+                        <strong>@productTab.Title</strong>
+                    </div>
+                }
+            </div>
+
+            <div class="product-tab-body ns-product-tab">
+                <div class="product-tab-picture">
+                    <img src="@productTab.Picture.ImageUrl" alt="@productTab.Title" title="@productTab.Title" />
+                </div>
+                <div class="product-tab-item-wrapper">
+                    <div class="product-tab-item-header">
+                        <div class="product-tab-container-desktop-title">
+                            @if (productTab.DisplayTitle)
+                            {
+                                <div class="title">
+                                    <strong>@productTab.Title</strong>
+                                </div>
+                            }
+                        </div>
+                        <ul class="nav nav-tabs">
+                            @foreach (var item in items)
+                            {
+                                <li><a href="#product-tab-@item.Id">@item.Name</a></li>
+                            }
+                        </ul>
+                    </div>
+                    @foreach (var item in items)
+                    {
+                        <div class="product-tab-items" id="product-tab-@item.Id">
+                            <div class="carousel-container">
+                                <div class="swiper product-tab-swiper">
+                                    <div class="swiper-wrapper">
+                                        @foreach (var product in item.Products)
+                                        {
+                                            <div class="swiper-slide product-tab-item item-box">
+                                                @await Html.PartialAsync("_ProductBox", product)
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
+                            </div>
+                        </div>
+
+                        <script asp-location="Footer">
+                            new Swiper("#product-tab-@item.Id .product-tab-swiper", {
+                                slidesPerView: 2,
+                                slidesPerGroup: 1,
+                                loop: @productTab.Loop.ToString().ToLower(),
+                                loopFillGroupWithBlank: @productTab.Loop.ToString().ToLower(),
+                                @if (productTab.AutoPlay)
+                                {
+                                        <text>autoplay: { delay: @productTab.AutoPlayTimeout, pauseOnMouseEnter: @(productTab.AutoPlayHoverPause ? "true" : "false") },</text>
+                                }
+                                else
+                                {
+                                        <text>autoplay: false,</text>
+                                }
+                                rtl: @productTab.RTL.ToString().ToLower(),
+                                centeredSlides: @productTab.Center.ToString().ToLower(),
+                                initialSlide: @productTab.StartPosition,
+                                watchOverflow: true,
+                                navigation: {
+                                    nextEl: "#product-tab-@item.Id .swiper-button-next",
+                                    prevEl: "#product-tab-@item.Id .swiper-button-prev",
+                                },
+                                breakpoints: {
+                                    0: { slidesPerView: 2, spaceBetween: 15 },
+                                    576: { slidesPerView: 2, spaceBetween: 15 },
+                                    768: { slidesPerView: 2, spaceBetween: 15 },
+                                    1001: { slidesPerView: 4, spaceBetween: 20 }
+                                }
+                            });
+
+                            const prevTabButton@(item.Id) = document.querySelector(
+                                "#product-tab-@item.Id .swiper-button-prev"
+                            );
+                            const nextTabButton@(item.Id) = document.querySelector(
+                                "#product-tab-@item.Id .swiper-button-next"
+                            );
+
+                            if (prevTabButton@(item.Id) && nextTabButton@(item.Id)) {
+                                prevTabButton@(item.Id).style.display = "none";
+
+                                let hasMovedForward@(item.Id) = false;
+
+                                nextTabButton@(item.Id).addEventListener("click", () => {
+                                    if (!hasMovedForward@(item.Id)) {
+                                        prevTabButton@(item.Id).style.display = "flex";
+                                        hasMovedForward@(item.Id) = true;
+                                    }
+                                });
+                            }
+                        </script>
+                    }
+                </div>
+            </div>
+        </div>
+        </div>
+    }
+
+    <script asp-location="Footer">
+        (function () {
+            if (document.querySelector('.product-tab-items')) {
+                document.querySelectorAll('.product-tab-items .item-box .picture').forEach(function (picture) {
+                    picture.addEventListener('mouseenter', function () {
+                        var buttons = this.querySelector('.buttons');
+                        if (buttons) buttons.classList.add('show');
+                    });
+                    picture.addEventListener('mouseleave', function () {
+                        var buttons = this.querySelector('.buttons');
+                        if (buttons) buttons.classList.remove('show');
+                    });
+                });
+            }
+        })();
+
+        window.addEventListener("load", () => {
+            document.querySelectorAll(".product-tab-container").forEach(container => {
+                container.classList.remove("product-tab-loading");
+
+                const skeleton = container.previousElementSibling;
+                if (skeleton) skeleton.remove();
+            });
+        });
+    </script>
+}

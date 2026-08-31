@@ -1,0 +1,74 @@
+@model Widgets.FirebasePushNotification.Models.ConfigurationModel
+@{
+    Layout = "_ConfigurePlugin";
+}
+
+<form asp-controller="FirebasePushNotification" asp-action="Configure" method="post">
+    <div class="card card-default">
+        <div class="card-header">
+            Firebase Web Configuration
+        </div>
+        <div class="card-body">
+            <p class="text-muted">These values are from your Firebase project console (Project settings &gt; General &gt; Your apps &gt; Web app). They are used by the client-side Firebase SDK for push notifications.</p>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="ApiKey" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="ApiKey" />
+                    <span asp-validation-for="ApiKey"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="AuthDomain" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="AuthDomain" />
+                    <span asp-validation-for="AuthDomain"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="ProjectId" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="ProjectId" />
+                    <span asp-validation-for="ProjectId"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="MessagingSenderId" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="MessagingSenderId" />
+                    <span asp-validation-for="MessagingSenderId"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="AppId" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="AppId" />
+                    <span asp-validation-for="AppId"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="VapidKey" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="VapidKey" />
+                    <span asp-validation-for="VapidKey"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-9 offset-md-3">
+                    <button type="submit" name="save" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

@@ -242,7 +242,7 @@ public class ExportManagerTests : ServiceTest
             "CardNumber", "MaskedCreditCardNumber", "CardCvv2", "CardExpirationMonth", "CardExpirationYear",
             "AuthorizationTransactionId", "AuthorizationTransactionCode", "AuthorizationTransactionResult",
             "CaptureTransactionId", "CaptureTransactionResult", "SubscriptionTransactionId", "PaidDateUtc",
-            "Deleted", "PickupAddress", "RedeemedRewardPointsEntryId", "DiscountUsageHistory", "GiftCardUsageHistory",
+            "Deleted", "PickupAddress", "RedeemedRewardPointsEntryId", "DiscountUsageHistory",
             "OrderNotes", "OrderItems", "Shipments", "OrderStatus", "PaymentStatus", "ShippingStatus",
             "CustomerTaxDisplayType", "CustomOrderNumber"
         });
@@ -338,7 +338,7 @@ public class ExportManagerTests : ServiceTest
 
         var customer = customers.First();
 
-        var ignore = new List<string> { "Id", "ExternalAuthenticationRecords", "ShoppingCartItems",
+        var ignore = new List<string> { "Id", "ShoppingCartItems",
             "ReturnRequests", "BillingAddress", "ShippingAddress", "Addresses", "AdminComment",
             "EmailToRevalidate", "HasShoppingCartItems", "RequireReLogin", "FailedLoginAttempts",
             "CannotLoginUntilDateUtc", "Deleted", "IsSystemAccount", "SystemName", "LastIpAddress",
@@ -422,7 +422,6 @@ public class ExportManagerTests : ServiceTest
         {
             { "ProductId", "Id" },
             { "ProductType", "ProductTypeId" },
-            { "GiftCardType", "GiftCardTypeId" },
             { "Vendor", "VendorId" },
             { "ProductTemplate", "ProductTemplateId" },
             { "DeliveryDate", "DeliveryDateId" },
@@ -435,14 +434,14 @@ public class ExportManagerTests : ServiceTest
             { "BasepriceBaseUnit", "BasepriceBaseUnitId" },
             { "SKU", "Sku" },
             { "DownloadActivationType", "DownloadActivationTypeId" },
-            { "RecurringCyclePeriod", "RecurringCyclePeriodId" },
+
             { "RentalPricePeriod", "RentalPricePeriodId" }
         };
 
         var ignore = new List<string> { "Categories", "Manufacturers", "AdminComment",
-            "ProductType", "BackorderMode", "DownloadActivationType", "GiftCardType", "LowStockActivity",
-            "ManageInventoryMethod", "RecurringCyclePeriod", "RentalPricePeriod", "ProductCategories",
-            "ProductManufacturers", "ProductPictures", "ProductReviews", "ProductSpecificationAttributes",
+            "ProductType", "BackorderMode", "DownloadActivationType", "LowStockActivity",
+            "ManageInventoryMethod", "RentalPricePeriod", "ProductCategories",
+            "ProductManufacturers", "ProductPictures", "ProductReviews",
             "ProductTags", "ProductAttributeMappings", "ProductAttributeCombinations", "TierPrices",
             "AppliedDiscounts", "ProductWarehouseInventory", "ApprovedRatingSum", "NotApprovedRatingSum",
             "ApprovedTotalReviews", "NotApprovedTotalReviews", "SubjectToAcl", "LimitedToStores", "Deleted",
@@ -463,12 +462,9 @@ public class ExportManagerTests : ServiceTest
                         ?? throw new NopException("No worksheet found");
 
         manager.SetSelectList("ProductType", await ProductType.SimpleProduct.ToSelectListAsync(useLocalization: false));
-        manager.SetSelectList("GiftCardType", await GiftCardType.Virtual.ToSelectListAsync(useLocalization: false));
-        manager.SetSelectList("DownloadActivationType", await DownloadActivationType.Manually.ToSelectListAsync(useLocalization: false));
         manager.SetSelectList("ManageInventoryMethod", await ManageInventoryMethod.DontManageStock.ToSelectListAsync(useLocalization: false));
         manager.SetSelectList("LowStockActivity", await LowStockActivity.Nothing.ToSelectListAsync(useLocalization: false));
-        manager.SetSelectList("BackorderMode", await BackorderMode.NoBackorders.ToSelectListAsync(useLocalization: false));
-        manager.SetSelectList("RecurringCyclePeriod", await RecurringProductCyclePeriod.Days.ToSelectListAsync(useLocalization: false));
+
         manager.SetSelectList("RentalPricePeriod", await RentalPricePeriod.Days.ToSelectListAsync(useLocalization: false));
 
         var vendors = await _vendorService.GetAllVendorsAsync(showHidden: true);

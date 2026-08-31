@@ -1,0 +1,42 @@
+﻿@model OCarouselListModel.OCarouselOverviewModel
+
+@if (Model.ShowBackgroundPicture)
+{
+    <div class="ocarousel-background" style="background:url('@Model.BackgroundPictureUrl') no-repeat center; background-size: cover;">
+        <div class="custom-container">
+            <div class="ocarousel-grid product-carousel">
+                @if (Model.DisplayTitle)
+                {
+                    <div class="title beautyShop-secondery-color-text beautyShop-big-title">
+                        <strong>@Model.Title</strong>
+                    </div>
+                }
+
+                <div class="carousel-container carousel-product" data-carouselid="@Model.Id">
+                    <div class="loader">
+                        <div class="lds-ripple"><div class="beautyShop-primary-color-border"></div><div class="beautyShop-primary-color-border"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="custom-container">
+        <div class="ocarousel-grid product-carousel">
+            @if (Model.DisplayTitle)
+            {
+                <div class="title beautyShop-secondery-color-text beautyShop-big-title">
+                    <strong>@Model.Title</strong>
+                </div>
+            }
+
+            <div class="carousel-container carousel-product" data-carouselid="@Model.Id">
+                <div class="loader">
+                    <div class="lds-ripple"><div class="beautyShop-primary-color-border"></div><div class="beautyShop-primary-color-border"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

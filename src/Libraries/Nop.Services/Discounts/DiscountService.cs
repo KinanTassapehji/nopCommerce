@@ -522,26 +522,6 @@ public partial class DiscountService : IDiscountService
                 return result;
         }
 
-        //Do not allow discounts applied to order subtotal or total when a customer has gift cards in the cart.
-        //Otherwise, this customer can purchase gift cards with discount and get more than paid ("free money").
-        if (discount.DiscountType == DiscountType.AssignedToOrderSubTotal ||
-            discount.DiscountType == DiscountType.AssignedToOrderTotal)
-        {
-            var store = await _storeContext.GetCurrentStoreAsync();
-
-            //do not inject IShoppingCartService via constructor because it'll cause circular references
-            var shoppingCartService = EngineContext.Current.Resolve<IShoppingCartService>();
-            var cart = await shoppingCartService.GetShoppingCartAsync(customer,
-                ShoppingCartType.ShoppingCart, storeId: store.Id);
-
-            var cartProductIds = cart.Select(ci => ci.ProductId).ToArray();
-
-            if (await _productService.HasAnyGiftCardProductAsync(cartProductIds))
-            {
-                result.Errors = new List<string> { await _localizationService.GetResourceAsync("ShoppingCart.Discount.CannotBeUsedWithGiftCards") };
-                return result;
-            }
-        }
 
         //check date range
         var now = DateTime.UtcNow;

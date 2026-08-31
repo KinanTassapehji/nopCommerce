@@ -31,19 +31,16 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
     protected readonly ICustomerService _customerService;
     protected readonly IDiscountService _discountService;
     protected readonly IGenericAttributeService _genericAttributeService;
-    protected readonly IGiftCardService _giftCardService;
     protected readonly IOrderService _orderService;
     protected readonly IPaymentService _paymentService;
     protected readonly IPriceCalculationService _priceCalculationService;
     protected readonly IProductService _productService;
-    protected readonly IRewardPointService _rewardPointService;
     protected readonly IShippingPluginManager _shippingPluginManager;
     protected readonly IShippingService _shippingService;
     protected readonly IShoppingCartService _shoppingCartService;
     protected readonly IStoreContext _storeContext;
     protected readonly ITaxService _taxService;
     protected readonly IWorkContext _workContext;
-    protected readonly RewardPointsSettings _rewardPointsSettings;
     protected readonly ShippingSettings _shippingSettings;
     protected readonly ShoppingCartSettings _shoppingCartSettings;
     protected readonly TaxSettings _taxSettings;
@@ -58,19 +55,17 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
         ICustomerService customerService,
         IDiscountService discountService,
         IGenericAttributeService genericAttributeService,
-        IGiftCardService giftCardService,
+
         IOrderService orderService,
         IPaymentService paymentService,
         IPriceCalculationService priceCalculationService,
         IProductService productService,
-        IRewardPointService rewardPointService,
         IShippingPluginManager shippingPluginManager,
         IShippingService shippingService,
         IShoppingCartService shoppingCartService,
         IStoreContext storeContext,
         ITaxService taxService,
         IWorkContext workContext,
-        RewardPointsSettings rewardPointsSettings,
         ShippingSettings shippingSettings,
         ShoppingCartSettings shoppingCartSettings,
         TaxSettings taxSettings)
@@ -81,19 +76,17 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
         _customerService = customerService;
         _discountService = discountService;
         _genericAttributeService = genericAttributeService;
-        _giftCardService = giftCardService;
+
         _orderService = orderService;
         _paymentService = paymentService;
         _priceCalculationService = priceCalculationService;
         _productService = productService;
-        _rewardPointService = rewardPointService;
         _shippingPluginManager = shippingPluginManager;
         _shippingService = shippingService;
         _shoppingCartService = shoppingCartService;
         _storeContext = storeContext;
         _taxService = taxService;
         _workContext = workContext;
-        _rewardPointsSettings = rewardPointsSettings;
         _shippingSettings = shippingSettings;
         _shoppingCartSettings = shoppingCartSettings;
         _taxSettings = taxSettings;
@@ -245,44 +238,6 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
             discountAmountTotal = total;
         total -= discountAmountTotal;
 
-        //applied giftcards
-        foreach (var giftCard in await _giftCardService.GetAllGiftCardsAsync(usedWithOrderId: updatedOrder.Id))
-        {
-            if (total <= decimal.Zero)
-                continue;
-
-            var remainingAmount = (await _giftCardService.GetGiftCardUsageHistoryAsync(giftCard))
-                .Where(history => history.UsedWithOrderId == updatedOrder.Id).Sum(history => history.UsedValue);
-            var amountCanBeUsed = total > remainingAmount ? remainingAmount : total;
-            total -= amountCanBeUsed;
-        }
-
-        //reward points
-        var rewardPointsOfOrder = await _rewardPointService.GetRewardPointsHistoryEntryByIdAsync(updatedOrder.RedeemedRewardPointsEntryId ?? 0);
-        if (rewardPointsOfOrder != null)
-        {
-            var rewardPoints = -rewardPointsOfOrder.Points;
-            var rewardPointsAmount = await ConvertRewardPointsToAmountAsync(rewardPoints);
-            if (total < rewardPointsAmount)
-            {
-                rewardPoints = ConvertAmountToRewardPoints(total);
-                rewardPointsAmount = total;
-            }
-
-            if (total > decimal.Zero)
-                total -= rewardPointsAmount;
-
-            //uncomment here for the return unused reward points if new order total less redeemed reward points amount
-            //if (rewardPoints < -rewardPointsOfOrder.Points)
-            //    _rewardPointService.AddRewardPointsHistoryEntry(customer, -rewardPointsOfOrder.Points - rewardPoints, store.Id, "Return unused reward points");
-
-            if (rewardPointsAmount != rewardPointsOfOrder.UsedAmount)
-            {
-                rewardPointsOfOrder.UsedAmount = rewardPointsAmount;
-                rewardPointsOfOrder.Points = -rewardPoints;
-                await _rewardPointService.UpdateRewardPointsHistoryEntryAsync(rewardPointsOfOrder);
-            }
-        }
 
         //rounding
         if (total < decimal.Zero)
@@ -664,102 +619,6 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
     }
 
     /// <summary>
-    /// Set reward points
-    /// </summary>
-    /// <param name="redeemedRewardPoints">Redeemed reward points</param>
-    /// <param name="redeemedRewardPointsAmount">Redeemed reward points amount</param>
-    /// <param name="useRewardPoints">A value indicating whether to use reward points</param>
-    /// <param name="customer">Customer</param>
-    /// <param name="orderTotal">Order total</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    protected virtual async Task<(int redeemedRewardPoints, decimal redeemedRewardPointsAmount)> SetRewardPointsAsync(int redeemedRewardPoints, decimal redeemedRewardPointsAmount,
-        bool? useRewardPoints, Customer customer, decimal orderTotal)
-    {
-        if (!_rewardPointsSettings.Enabled)
-            return (redeemedRewardPoints, redeemedRewardPointsAmount);
-
-        var store = await _storeContext.GetCurrentStoreAsync();
-        if (!useRewardPoints.HasValue)
-            useRewardPoints = await _genericAttributeService.GetAttributeAsync<bool>(customer, NopCustomerDefaults.UseRewardPointsDuringCheckoutAttribute, store.Id);
-
-        if (!useRewardPoints.Value)
-            return (redeemedRewardPoints, redeemedRewardPointsAmount);
-
-        if (orderTotal <= decimal.Zero)
-            return (redeemedRewardPoints, redeemedRewardPointsAmount);
-
-        var rewardPointsBalance = await _rewardPointService.GetRewardPointsBalanceAsync(customer.Id, store.Id);
-
-        if (_rewardPointsSettings.MaximumRewardPointsToUsePerOrder > 0 && rewardPointsBalance > _rewardPointsSettings.MaximumRewardPointsToUsePerOrder)
-            rewardPointsBalance = _rewardPointsSettings.MaximumRewardPointsToUsePerOrder;
-
-        var rewardPointsBalanceAmount = await ConvertRewardPointsToAmountAsync(rewardPointsBalance);
-
-        if (_rewardPointsSettings.MaximumRedeemedRate > 0 && _rewardPointsSettings.MaximumRedeemedRate < rewardPointsBalanceAmount / orderTotal)
-        {
-            rewardPointsBalance = ConvertAmountToRewardPoints(orderTotal * _rewardPointsSettings.MaximumRedeemedRate);
-            rewardPointsBalanceAmount = await ConvertRewardPointsToAmountAsync(rewardPointsBalance);
-        }
-
-        if (!CheckMinimumRewardPointsToUseRequirement(rewardPointsBalance))
-            return (redeemedRewardPoints, redeemedRewardPointsAmount);
-
-        if (orderTotal > rewardPointsBalanceAmount)
-        {
-            redeemedRewardPoints = rewardPointsBalance;
-            redeemedRewardPointsAmount = rewardPointsBalanceAmount;
-        }
-        else
-        {
-            redeemedRewardPointsAmount = orderTotal;
-            redeemedRewardPoints = ConvertAmountToRewardPoints(redeemedRewardPointsAmount);
-        }
-
-        return (redeemedRewardPoints, redeemedRewardPointsAmount);
-    }
-
-    /// <summary>
-    /// Apply gift cards
-    /// </summary>
-    /// <param name="cart">Cart</param>
-    /// <param name="appliedGiftCards">Applied gift cards</param>
-    /// <param name="customer">Customer</param>
-    /// <param name="resultTemp"></param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    protected virtual async Task<decimal> AppliedGiftCardsAsync(IList<ShoppingCartItem> cart, List<AppliedGiftCard> appliedGiftCards,
-        Customer customer, decimal resultTemp)
-    {
-        if (await _shoppingCartService.ShoppingCartIsRecurringAsync(cart))
-            return resultTemp;
-
-        //we don't apply gift cards for recurring products
-        var giftCards = await _giftCardService.GetActiveGiftCardsAppliedByCustomerAsync(customer);
-        if (giftCards == null)
-            return resultTemp;
-
-        foreach (var gc in giftCards)
-        {
-            if (resultTemp <= decimal.Zero)
-                continue;
-
-            var remainingAmount = await _giftCardService.GetGiftCardRemainingAmountAsync(gc);
-            var amountCanBeUsed = resultTemp > remainingAmount ? remainingAmount : resultTemp;
-
-            //reduce subtotal
-            resultTemp -= amountCanBeUsed;
-
-            var appliedGiftCard = new AppliedGiftCard
-            {
-                GiftCard = gc,
-                AmountCanBeUsed = amountCanBeUsed
-            };
-            appliedGiftCards.Add(appliedGiftCard);
-        }
-
-        return resultTemp;
-    }
-
-    /// <summary>
     /// Gets shopping cart additional shipping charge
     /// </summary>
     /// <param name="cart">Cart</param>
@@ -770,22 +629,6 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
     protected virtual async Task<decimal> GetShoppingCartAdditionalShippingChargeAsync(IList<ShoppingCartItem> cart)
     {
         return await cart.SumAwaitAsync(async shoppingCartItem => await _shippingService.GetAdditionalShippingChargeAsync(shoppingCartItem));
-    }
-
-    /// <summary>
-    /// Converts an amount to reward points
-    /// </summary>
-    /// <param name="amount">Amount</param>
-    /// <returns>Converted value</returns>
-    protected virtual int ConvertAmountToRewardPoints(decimal amount)
-    {
-        var result = 0;
-        if (amount <= 0)
-            return 0;
-
-        if (_rewardPointsSettings.ExchangeRate > 0)
-            result = (int)Math.Ceiling(amount / _rewardPointsSettings.ExchangeRate);
-        return result;
     }
 
     #endregion
@@ -1080,7 +923,6 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
         return (await GetShoppingCartShippingTotalAsync(cart, includingTax)).shippingTotal;
     }
 
-
     /// <summary>
     /// Gets shopping cart shipping total
     /// </summary>
@@ -1304,18 +1146,14 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
     /// Gets shopping cart total
     /// </summary>
     /// <param name="cart">Cart</param>
-    /// <param name="useRewardPoints">A value indicating reward points should be used; null to detect current choice of the customer</param>
     /// <param name="usePaymentMethodAdditionalFee">A value indicating whether we should use payment method additional fee when calculating order total</param>
     /// <returns>
     /// A task that represents the asynchronous operation
-    /// The task result contains the shopping cart total;Null if shopping cart total couldn't be calculated now. Applied gift cards. Applied discount amount. Applied discounts. Reward points to redeem. Reward points amount in primary store currency to redeem
+    /// The task result contains the shopping cart total;Null if shopping cart total couldn't be calculated now. Applied discount amount. Applied discounts.
     /// </returns>
-    public virtual async Task<(decimal? shoppingCartTotal, decimal discountAmount, List<Discount> appliedDiscounts, List<AppliedGiftCard> appliedGiftCards, int redeemedRewardPoints, decimal redeemedRewardPointsAmount)> GetShoppingCartTotalAsync(IList<ShoppingCartItem> cart,
-        bool? useRewardPoints = null, bool usePaymentMethodAdditionalFee = true)
+    public virtual async Task<(decimal? shoppingCartTotal, decimal discountAmount, List<Discount> appliedDiscounts)> GetShoppingCartTotalAsync(IList<ShoppingCartItem> cart,
+        bool usePaymentMethodAdditionalFee = true)
     {
-        var redeemedRewardPoints = 0;
-        var redeemedRewardPointsAmount = decimal.Zero;
-
         var customer = await _customerService.GetShoppingCartCustomerAsync(cart);
         var store = await _storeContext.GetCurrentStoreAsync();
         var paymentMethodSystemName = string.Empty;
@@ -1376,31 +1214,18 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
         if (_shoppingCartSettings.RoundPricesDuringCalculation)
             resultTemp = await _priceCalculationService.RoundPriceAsync(resultTemp);
 
-        //let's apply gift cards now (gift cards that can be used)
-        var appliedGiftCards = new List<AppliedGiftCard>();
-        resultTemp = await AppliedGiftCardsAsync(cart, appliedGiftCards, customer, resultTemp);
-
-        if (resultTemp < decimal.Zero)
-            resultTemp = decimal.Zero;
-        if (_shoppingCartSettings.RoundPricesDuringCalculation)
-            resultTemp = await _priceCalculationService.RoundPriceAsync(resultTemp);
 
         if (!shoppingCartShipping.HasValue)
         {
             //we have errors
-            return (null, discountAmount, appliedDiscounts, appliedGiftCards, redeemedRewardPoints, redeemedRewardPointsAmount);
+            return (null, discountAmount, appliedDiscounts);
         }
 
         var orderTotal = resultTemp;
 
-        //reward points
-        (redeemedRewardPoints, redeemedRewardPointsAmount) = await SetRewardPointsAsync(redeemedRewardPoints, redeemedRewardPointsAmount, useRewardPoints, customer, orderTotal);
-
-        orderTotal -= redeemedRewardPointsAmount;
-
         if (_shoppingCartSettings.RoundPricesDuringCalculation)
             orderTotal = await _priceCalculationService.RoundPriceAsync(orderTotal);
-        return (orderTotal, discountAmount, appliedDiscounts, appliedGiftCards, redeemedRewardPoints, redeemedRewardPointsAmount);
+        return (orderTotal, discountAmount, appliedDiscounts);
     }
 
     /// <summary>
@@ -1422,83 +1247,6 @@ public partial class OrderTotalCalculationService : IOrderTotalCalculationServic
         var result = (decimal)((float)orderTotalWithoutPaymentFee * (float)fee / 100f);
 
         return result;
-    }
-
-    /// <summary>
-    /// Converts existing reward points to amount
-    /// </summary>
-    /// <param name="rewardPoints">Reward points</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the converted value
-    /// </returns>
-    public virtual async Task<decimal> ConvertRewardPointsToAmountAsync(int rewardPoints)
-    {
-        if (rewardPoints <= 0)
-            return decimal.Zero;
-
-        var result = rewardPoints * _rewardPointsSettings.ExchangeRate;
-        if (_shoppingCartSettings.RoundPricesDuringCalculation)
-            result = await _priceCalculationService.RoundPriceAsync(result);
-        return result;
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether a customer has minimum amount of reward points to use (if enabled)
-    /// </summary>
-    /// <param name="rewardPoints">Reward points to check</param>
-    /// <returns>true - reward points could use; false - cannot be used.</returns>
-    public virtual bool CheckMinimumRewardPointsToUseRequirement(int rewardPoints)
-    {
-        if (_rewardPointsSettings.MinimumRewardPointsToUse <= 0)
-            return true;
-
-        return rewardPoints >= _rewardPointsSettings.MinimumRewardPointsToUse;
-    }
-
-    /// <summary>
-    /// Calculate how order total (maximum amount) for which reward points could be earned/reduced
-    /// </summary>
-    /// <param name="orderShippingInclTax">Order shipping (including tax)</param>
-    /// <param name="orderTotal">Order total</param>
-    /// <returns>Applicable order total</returns>
-    public virtual decimal CalculateApplicableOrderTotalForRewardPoints(decimal orderShippingInclTax, decimal orderTotal)
-    {
-        //do you give reward points for order total? or do you exclude shipping?
-        //since shipping costs vary some of store owners don't give reward points based on shipping total
-        //you can put your custom logic here
-        var totalForRewardPoints = orderTotal - orderShippingInclTax;
-
-        //check the minimum total to award points
-        if (totalForRewardPoints < _rewardPointsSettings.MinOrderTotalToAwardPoints)
-            return decimal.Zero;
-
-        return totalForRewardPoints;
-    }
-
-    /// <summary>
-    /// Calculate how much reward points will be earned/reduced based on certain amount spent
-    /// </summary>
-    /// <param name="customer">Customer</param>
-    /// <param name="amount">Amount (in primary store currency)</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the number of reward points
-    /// </returns>
-    public virtual async Task<int> CalculateRewardPointsAsync(Customer customer, decimal amount)
-    {
-        if (!_rewardPointsSettings.Enabled)
-            return 0;
-
-        if (_rewardPointsSettings.PointsForPurchases_Amount <= decimal.Zero)
-            return 0;
-
-        //ensure that reward points are applied only to registered users
-        if (customer == null || await _customerService.IsGuestAsync(customer))
-            return 0;
-
-        var points = (int)Math.Truncate(amount / _rewardPointsSettings.PointsForPurchases_Amount) * _rewardPointsSettings.PointsForPurchases_Points;
-        return points;
     }
 
     #endregion

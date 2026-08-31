@@ -16,19 +16,9 @@ public static partial class NopLinksDefaults
         public static string Main => "https://www.nopcommerce.com/";
 
         /// <summary>
-        /// Gets the boards page
-        /// </summary>
-        public static string Boards => "https://www.nopcommerce.com/boards/";
-
-        /// <summary>
         /// Gets the translations page
         /// </summary>
         public static string Translations => "https://www.nopcommerce.com/translations/";
-
-        /// <summary>
-        /// Gets the copyright removal key page
-        /// </summary>
-        public static string CopyrightRemovalKey => "https://www.nopcommerce.com/nopcommerce-copyright-removal-key";
 
         /// <summary>
         /// Gets the premium support services page
@@ -49,11 +39,6 @@ public static partial class NopLinksDefaults
         /// Gets the shipping plugins page
         /// </summary>
         public static string ShippingPlugins => "https://www.nopcommerce.com/en/marketplace/?category=shipping-delivery";
-
-        /// <summary>
-        /// Gets the tax plugins page
-        /// </summary>
-        public static string TaxPlugins => "https://www.nopcommerce.com/en/marketplace/?category=taxes";
 
         /// <summary>
         /// Gets the themes page
@@ -112,11 +97,6 @@ public static partial class NopLinksDefaults
         public static string ProductAttributes => "https://docs.nopcommerce.com/running-your-store/catalog/products/product-attributes.html";
 
         /// <summary>
-        /// Gets a URL of the specification attributes docs page
-        /// </summary>
-        public static string SpecificationAttributes => "https://docs.nopcommerce.com/running-your-store/catalog/products/specification-attributes.html";
-
-        /// <summary>
         /// Gets a URL of the checkout attributes docs page
         /// </summary>
         public static string CheckoutAttributes => "https://docs.nopcommerce.com/running-your-store/order-management/checkout-attributes.html";
@@ -135,26 +115,6 @@ public static partial class NopLinksDefaults
         /// Gets a URL of the return requests docs page
         /// </summary>
         public static string ReturnRequests => "https://docs.nopcommerce.com/running-your-store/order-management/return-requests.html";
-
-        /// <summary>
-        /// Gets a URL of the recurring payments docs page
-        /// </summary>
-        public static string RecurringPayments => "https://docs.nopcommerce.com/running-your-store/catalog/products/recurring-products.html";
-
-        /// <summary>
-        /// Gets a URL of the shopping carts and wishlists docs page
-        /// </summary>
-        public static string ShoppingCartsAndWishlists => "https://docs.nopcommerce.com/running-your-store/order-management/shopping-carts-and-wishlists.html";
-
-        /// <summary>
-        /// Gets a URL of the RFQ docs page
-        /// </summary>
-        public static string RFQ => "https://docs.nopcommerce.com/running-your-store/order-management/rfq.html";
-
-        /// <summary>
-        /// Gets a URL of the gift cards docs page
-        /// </summary>
-        public static string GiftCards => "https://docs.nopcommerce.com/running-your-store/promotional-tools/gift-cards.html";
 
         /// <summary>
         /// Gets a URL of the customers docs page
@@ -272,11 +232,6 @@ public static partial class NopLinksDefaults
         public static string PaymentMethodRestrictions => "https://docs.nopcommerce.com/getting-started/configure-payments/advanced-configuration/payment-method-restrictions.html";
 
         /// <summary>
-        /// Gets a URL of the tax providers docs page
-        /// </summary>
-        public static string TaxProviders => "https://docs.nopcommerce.com/getting-started/configure-taxes/tax-providers/index.html";
-
-        /// <summary>
         /// Gets a URL of the shipping providers docs page
         /// </summary>
         public static string ShippingProviders => "https://docs.nopcommerce.com/getting-started/configure-shipping/shipping-providers/index.html";
@@ -305,11 +260,6 @@ public static partial class NopLinksDefaults
         /// Gets a URL of the ACL docs page
         /// </summary>
         public static string Acl => "https://docs.nopcommerce.com/running-your-store/customer-management/access-control-list.html";
-
-        /// <summary>
-        /// Gets a URL of the external authentication docs page
-        /// </summary>
-        public static string ExternalAuthentication => "https://docs.nopcommerce.com/getting-started/advanced-configuration/external-authentication-methods.html";
 
         /// <summary>
         /// Gets a URL of the plugins docs page
@@ -352,11 +302,6 @@ public static partial class NopLinksDefaults
         public static string Reports => "https://docs.nopcommerce.com/running-your-store/reports.html";
 
         /// <summary>
-        /// Gets a URL of the tax management docs page
-        /// </summary>
-        public static string TaxManagement => "https://docs.nopcommerce.com/getting-started/configure-taxes/index.html";
-
-        /// <summary>
         /// Gets a URL of the app settings docs page
         /// </summary>
         public static string AppSettings => " https://docs.nopcommerce.com/en/developer/tutorials/appsettings-json-file.html";
@@ -370,16 +315,6 @@ public static partial class NopLinksDefaults
         /// Gets a URL of the SSL install docs page
         /// </summary>
         public static string SslInstall => "https://docs.nopcommerce.com/getting-started/advanced-configuration/how-to-install-and-configure-ssl-certification.html";
-
-        /// <summary>
-        /// Gets a URL of the PayPal docs page
-        /// </summary>
-        public static string PayPal => "https://docs.nopcommerce.com/getting-started/configure-payments/payment-methods/paypal-commerce.html";
-
-        /// <summary>
-        /// Gets a URL of the Avalara docs page
-        /// </summary>
-        public static string Avalara => "https://docs.nopcommerce.com/getting-started/configure-taxes/tax-providers/avalara.html";
     }
 
     /// <summary>
@@ -448,18 +383,8 @@ public static partial class NopLinksDefaults
         public static string OnAdminShippingPlugins => "?utm_source=admin-panel&utm_medium=menu&utm_campaign=marketplace&utm_content=shipping-plugins";
 
         /// <summary>
-        /// Gets parameters used on admin area tax plugins page
-        /// </summary>
-        public static string OnAdminTaxPlugins => "?utm_source=admin-panel&utm_medium=menu&utm_campaign=marketplace&utm_content=tax-plugins";
-
-        /// <summary>
         /// Gets parameters used on install
         /// </summary>
         public static string OnInstall => "?utm_source=installation-page&utm_medium=footer&utm_campaign=installation-page";
-
-        /// <summary>
-        /// Gets parameters used on admin area configuration steps block
-        /// </summary>
-        public static string OnAdminConfigurationSteps => "?utm_source=admin-panel&utm_medium=tour&utm_campaign=powered_by_nopcommerce&utm_content=dashboard";
     }
 }

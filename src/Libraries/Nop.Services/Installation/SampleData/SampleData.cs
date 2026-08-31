@@ -16,11 +16,6 @@ public partial class SampleData
     public List<SampleCheckoutAttribute> CheckoutAttributes { get; set; } = new();
 
     /// <summary>
-    /// Gets or sets the list of specification attributes
-    /// </summary>
-    public SampleSpecificationAttributes SpecificationAttributes { get; set; }
-
-    /// <summary>
     /// Gets or sets the list of product attributes
     /// </summary>
     public List<SampleProductAttribute> ProductAttributes { get; set; } = new();

@@ -1,0 +1,207 @@
+@using System.Globalization
+@using Nop.Core
+@using Nop.Web.Extensions
+@using NopStation.Plugin.Misc.Core.Domains.Marketplace
+
+@model MarketplaceModel
+
+@{
+    var currentVersion = NopVersion.CURRENT_VERSION;
+}
+
+@if (!Model.Products.Any())
+{
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle" aria-hidden="true"></i>
+        @T("Admin.NopStation.Core.Marketplace.NoPluginsFound")
+    </div>
+}
+else
+{
+    <p class="text-muted mb-3 small">
+        @Html.Raw(string.Format(
+            T("Admin.NopStation.Core.Marketplace.ShowingProducts").Text,
+            $"<strong>{Model.Products.Count}</strong>",
+            $"<strong>{Model.TotalCount}</strong>"))
+    </p>
+
+    <div class="marketplace-grid">
+        @foreach (var product in Model.Products)
+        {
+            var hasOldPrice = product.OldPrice > 0;
+            var priceValue = string.IsNullOrWhiteSpace(product.FormattedPrice)
+                ? product.Price.ToString("N2", CultureInfo.InvariantCulture)
+                : product.FormattedPrice;
+            var oldPriceValue = string.IsNullOrWhiteSpace(product.FormattedOldPrice)
+                ? product.OldPrice.ToString("N2", CultureInfo.InvariantCulture)
+                : product.FormattedOldPrice;
+
+            <article class="marketplace-card">
+                <div class="marketplace-card-logo">
+                    @if (!string.IsNullOrWhiteSpace(product.PictureUrl))
+                    {
+                        <div class="marketplace-image-preview">
+                            <img src="@product.PictureUrl"
+                                 alt="@product.Name"
+                                 width="400"
+                                 height="220"
+                                 loading="lazy" />
+
+                            <span class="marketplace-image-tooltip"
+                                  role="tooltip"
+                                  aria-hidden="true">
+                                <img src="@product.PictureUrl"
+                                     alt=""
+                                     width="400"
+                                     height="400"
+                                     loading="lazy" />
+                            </span>
+                        </div>
+                    }
+                    else
+                    {
+                        <span class="no-image" aria-hidden="true">
+                            <i class="fas fa-puzzle-piece"></i>
+                        </span>
+                    }
+                </div>
+
+                <div class="marketplace-card-body">
+                    <div class="marketplace-card-title"
+                         title="@product.Name">
+                        <span class="marketplace-card-title-text">
+                            @product.Name
+                        </span>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(product.ShortDescription))
+                    {
+                        <div class="marketplace-card-description">
+                            <div class="marketplace-desc-text">
+                                @Html.Raw(product.ShortDescription)
+                            </div>
+
+                            <button type="button"
+                                    class="marketplace-desc-toggle"
+                                    aria-expanded="false">
+                                @T("Admin.NopStation.Core.Marketplace.Description.ShowMore")
+                            </button>
+                        </div>
+                    }
+
+                    @if (product.SupportedVersions.Any())
+                    {
+                        <div class="marketplace-card-meta">
+                            @foreach (var version in product.SupportedVersions)
+                            {
+                                var isCurrentVersion = string.Equals(
+                                    version,
+                                    currentVersion,
+                                    StringComparison.OrdinalIgnoreCase);
+
+                                <span class="marketplace-version-tag @(isCurrentVersion ? "current" : string.Empty)"
+                                      title="@version">
+                                    @version
+                                </span>
+                            }
+                        </div>
+                    }
+
+                    <div class="marketplace-card-pricing">
+                        @if (hasOldPrice)
+                        {
+                            <span class="marketplace-price-old">
+                                <del>@oldPriceValue</del>
+                            </span>
+                        }
+
+                        @if (product.Price == 0)
+                        {
+                            <span class="marketplace-price-free">
+                                @T("Admin.NopStation.Core.Marketplace.Free")
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="marketplace-price-value">
+                                @priceValue
+                            </span>
+                        }
+                    </div>
+
+                </div>
+
+                <div class="marketplace-card-footer">
+                    <div class="marketplace-card-actions">
+                        @if (product.ButtonAction == ButtonAction.Installed)
+                        {
+                            <div class="marketplace-card-status">
+                                <span class="marketplace-badge-installed">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                    @T("Admin.NopStation.Core.Marketplace.Button.Installed")
+                                </span>
+                            </div>
+
+                            <a href="@product.ProductUrl"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="btn btn-outline-secondary btn-sm"
+                               aria-label="@T("Admin.NopStation.Core.Marketplace.Button.Details")">
+                                @T("Admin.NopStation.Core.Marketplace.Button.Details")
+                            </a>
+                        }
+                        else
+                        {
+                            if (!product.SupportedVersions.Contains(currentVersion))
+                            {
+                                <button type="button"
+                                        class="btn btn-warning btn-sm marketplace-upgrade-request-btn"
+                                        data-product-id="@product.Id"
+                                        data-system-name="@product.SystemName"
+                                        aria-label="@T("Admin.NopStation.Core.Marketplace.Button.NeedUpgrade")">
+                                    <i class="fas fa-arrow-up" aria-hidden="true"></i>
+                                    @T("Admin.NopStation.Core.Marketplace.Button.NeedUpgrade")
+                                </button>
+                            }
+                            else if (product.Price == 0)
+                            {
+                                <button type="button"
+                                        class="btn btn-success btn-sm marketplace-install-btn"
+                                        data-product-id="@product.Id"
+                                        data-system-name="@product.SystemName"
+                                        aria-label="@T("Admin.NopStation.Core.Marketplace.Button.Install")">
+                                    <i class="fas fa-download" aria-hidden="true"></i>
+                                    @T("Admin.NopStation.Core.Marketplace.Button.Install")
+                                </button>
+                            }
+
+                            <a href="@product.ProductUrl"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="btn btn-primary btn-sm"
+                               aria-label="@T("Admin.NopStation.Core.Marketplace.Button.BuyNow")">
+                                <i class="fa fa-external-link" aria-hidden="true"></i>
+                                @T("Admin.NopStation.Core.Marketplace.Button.BuyNow")
+                            </a>
+                        }
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+    
+    var pager = Html.Pager(Model)
+        .QueryParam("pagenumber")
+        .MainUlCssClass("marketplace-pagination")
+        .FirstPageCssClass("marketplace-page-btn marketplace-page-nav")
+        .PreviousPageCssClass("marketplace-page-btn marketplace-page-nav")
+        .CurrentPageCssClass("marketplace-page-btn active")
+        .IndividualPageCssClass("marketplace-page-btn")
+        .NextPageCssClass("marketplace-page-btn marketplace-page-nav")
+        .LastPageCssClass("marketplace-page-btn marketplace-page-nav");
+
+    @if (!await pager.IsEmpty())
+    {
+        @pager
+    }
+}

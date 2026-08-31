@@ -36,11 +36,6 @@ public static partial class TokenGroupNames
     public static string OrderNoteTokens => "Order note tokens";
 
     /// <summary>
-    /// Represents tokens with information about the recurring payment
-    /// </summary>
-    public static string RecurringPaymentTokens => "Recurring payment tokens";
-
-    /// <summary>
     /// Represents tokens with information about the newsletter subscription
     /// </summary>
     public static string SubscriptionTokens => "Newsletter subscription tokens";
@@ -81,11 +76,6 @@ public static partial class TokenGroupNames
     public static string VendorTokens => "Vendor tokens";
 
     /// <summary>
-    /// Represents tokens with information about the gift card
-    /// </summary>
-    public static string GiftCardTokens => "Gift card tokens";
-
-    /// <summary>
     /// Represents tokens with information about the product review
     /// </summary>
     public static string ProductReviewTokens => "Product review tokens";
@@ -106,19 +96,9 @@ public static partial class TokenGroupNames
     public static string NewsCommentTokens => "News comment tokens";
 
     /// <summary>
-    /// Represents tokens with information that product is in stock
-    /// </summary>
-    public static string ProductBackInStockTokens => "Back in stock tokens";
-
-    /// <summary>
     /// Represents tokens with information about the sending email to friend 
     /// </summary>
     public static string EmailAFriendTokens => "Email a friend tokens";
-
-    /// <summary>
-    /// Represents tokens with information about the sending wishlist to a friend
-    /// </summary>
-    public static string WishlistToFriendTokens => "Wishlist to friend tokens";
 
     /// <summary>
     /// Represents tokens with information about validation of the VAT request

@@ -39,7 +39,48 @@
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeNews })
         @await Component.InvokeAsync(typeof(HomepageNewsViewComponent))
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforePoll })
-        @await Component.InvokeAsync(typeof(HomepagePollsViewComponent))
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBottom })
+        <section class="product-grid home-page-all-products">
+            @*the heading only makes sense once the first page of the feed has landed*@
+            <h2 class="title" id="home-products-title" hidden>@T("Homepage.AllProducts")</h2>
+            <div class="item-grid" id="home-products-grid"></div>
+        </section>
+        <div id="home-products-sentinel"></div>
     </div>
 </div>
+
+<script asp-location="Footer">
+    $(function () {
+        //infinite scrolling: keep appending catalog pages below the configured home page sections
+        var url = '@Url.RouteUrl(NopRouteNames.Ajax.HOMEPAGE_PRODUCTS)';
+        var $grid = $('#home-products-grid'), sentinel = document.getElementById('home-products-sentinel');
+        var page = 1, busy = false;
+
+        var observer = new IntersectionObserver(function (entries) {
+            if (!entries[0].isIntersecting || busy)
+                return;
+            busy = true;
+            $.get(url, { pageNumber: page }, function (html) {
+                if (!$.trim(html)) {
+                    //no more products
+                    observer.disconnect();
+                    return;
+                }
+                page++;
+                //skip products already shown by the sections above
+                $(html).filter('.item-box').each(function () {
+                    var id = $(this).find('[data-productid]').data('productid');
+                    if (!$('[data-productid="' + id + '"]').length)
+                        $grid.append(this);
+                });
+                $('#home-products-title').prop('hidden', !$grid.children().length);
+                busy = false;
+                //re-trigger when the sentinel is still visible (short or fully skipped page)
+                observer.unobserve(sentinel);
+                observer.observe(sentinel);
+            }).fail(function () { busy = false; });
+        }, { rootMargin: '400px' });
+
+        observer.observe(sentinel);
+    });
+</script>

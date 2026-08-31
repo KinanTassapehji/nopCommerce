@@ -1,0 +1,16 @@
+{
+  "Group": "Nop-Station",
+  "FriendlyName": "Nop-Station Product Ribbon",
+  "SystemName": "NopStation.Plugin.Widgets.ProductRibbon",
+  "Version": "4.90.1.0",
+  "SupportedVersions": [
+    "4.90"
+  ],
+  "Author": "Nop-Station Team",
+  "DisplayOrder": 1,
+  "FileName": "NopStation.Plugin.Widgets.ProductRibbon.dll",
+  "Description": "This plugin allows to display product ribbon on public store.",
+  "DependsOnSystemNames": [
+    "NopStation.Core"
+  ]
+}

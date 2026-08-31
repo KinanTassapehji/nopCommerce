@@ -195,3 +195,13 @@ function addAntiForgeryToken(data) {
     }
     return data;
 };
+
+//TmTm: storefront ajax activity indicator - the same brand bar the admin
+//shows on ajaxStart/ajaxStop, drawn by body.tm-loading::before in
+//css/tm-loader.css. Non-blocking, so it complements displayAjaxLoading()
+//rather than replacing it.
+$(document).ajaxStart(function () {
+    $(document.body).addClass('tm-loading');
+}).ajaxStop(function () {
+    $(document.body).removeClass('tm-loading');
+});

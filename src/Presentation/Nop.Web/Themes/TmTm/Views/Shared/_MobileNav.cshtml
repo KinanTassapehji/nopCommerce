@@ -1,0 +1,135 @@
+﻿@*
+    TmTm mobile navigation shell — replaces the stacked category navbar that
+    DefaultClean renders under the header on phones and tablets. That list was
+    ~400px tall and, sitting under the three-band header, pushed the first
+    product more than three screens down.
+
+    In its place:
+      * a bottom tab bar with the four destinations a shopper actually uses —
+        home, categories, cart, account — thumb-reachable and always visible;
+      * the full category tree in a bottom sheet behind the "Categories" tab.
+
+    The sheet is a native popover. The browser supplies light dismiss, Esc,
+    top-layer stacking and the invoker wiring, so no script ships with it.
+    Browsers without popover lay the sheet out inline instead, which keeps the
+    tree reachable; brand.css hides the trigger there via @@supports so the tab
+    never dead-ends.
+
+    The tree itself is the stock MainMenu component, so the menu configured in
+    admin, its accordion script and every localisation still apply.
+*@
+@using Nop.Core.Domain.Orders
+@using Nop.Services.Localization
+@using Nop.Services.Orders
+
+@inject ILanguageService languageService
+@inject IShoppingCartService shoppingCartService
+@inject Nop.Core.IStoreContext storeContext
+@inject Nop.Core.IWebHelper webHelper
+@inject Nop.Core.IWorkContext workContext
+
+@{
+    var store = await storeContext.GetCurrentStoreAsync();
+    var customer = await workContext.GetCurrentCustomerAsync();
+
+    //mirrors CommonModelFactory: the flag spares the query for an empty cart,
+    //which is the common case on a first visit
+    var cartQuantity = 0;
+    if (customer.HasShoppingCartItems)
+    {
+        cartQuantity = (await shoppingCartService.GetShoppingCartAsync(customer, ShoppingCartType.ShoppingCart, store.Id))
+            .Sum(item => item.Quantity);
+    }
+
+    //the language switch has no home in the store header — the only other one
+    //lives on the account page — so the sheet carries it for bilingual stores
+    var languages = await languageService.GetAllLanguagesAsync(storeId: store.Id);
+    var currentLanguageId = (await workContext.GetWorkingLanguageAsync()).Id;
+    var returnUrl = webHelper.GetRawUrl(Context.Request);
+
+    //Which tab is current is a question about the section of the store rather
+    //than about one URL: /cart and every checkout step are both "cart", and an
+    //order or a return request is still "account".
+    var controller = Context.Request.RouteValues["controller"]?.ToString() ?? string.Empty;
+    bool inSection(params string[] controllers) =>
+        controllers.Any(name => string.Equals(controller, name, StringComparison.OrdinalIgnoreCase));
+
+    var homeActive = inSection("Home");
+    var browseActive = inSection("Catalog", "Product");
+    var cartActive = inSection("ShoppingCart", "Checkout");
+    var accountActive = inSection("Customer", "Order", "ReturnRequest");
+}
+
+<div id="tm-menu-sheet" class="tm-sheet" popover>
+    <div class="tm-sheet-grip" aria-hidden="true"></div>
+    <div class="tm-sheet-head">
+        <h2 class="tm-sheet-title">@T("Categories")</h2>
+        <button class="tm-sheet-close" type="button" popovertarget="tm-menu-sheet" popovertargetaction="hide" aria-label="@T("Common.Close")">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+        </button>
+    </div>
+    <div class="tm-sheet-body">
+        <div class="header-menu">
+            @await Component.InvokeAsync(typeof(MainMenuViewComponent))
+        </div>
+        @if (languages.Count > 1)
+        {
+            <div class="tm-lang-switch" role="group" aria-label="@T("Languages.Selector.Label")">
+                @foreach (var language in languages)
+                {
+                    <a class="tm-lang @(language.Id == currentLanguageId ? "active" : null)"
+                       href="@Url.RouteUrl(NopRouteNames.Standard.CHANGE_LANGUAGE, new { langid = language.Id, returnUrl })"
+                       lang="@language.UniqueSeoCode"
+                       aria-current="@(language.Id == currentLanguageId ? "true" : null)">@language.Name</a>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<nav class="mobile-tab-bar" aria-label="@T("Menu")">
+    <a class="mobile-tab @(homeActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.HOMEPAGE)" aria-current="@(homeActive ? "page" : null)">
+        <span class="mobile-tab-icon-wrap">
+            <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 10.6 12 3.2l9 7.4" />
+                <path d="M5.6 9.4V20a1 1 0 0 0 1 1h3.2v-5.6h4.4V21h3.2a1 1 0 0 0 1-1V9.4" />
+            </svg>
+        </span>
+        <span class="mobile-tab-label">@T("Mobile.Nav.Home")</span>
+    </a>
+    <button class="mobile-tab @(browseActive ? "active" : null)" type="button" popovertarget="tm-menu-sheet">
+        <span class="mobile-tab-icon-wrap">
+            <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="3.2" y="3.2" width="7.6" height="7.6" rx="2.2" />
+                <rect x="13.2" y="3.2" width="7.6" height="7.6" rx="2.2" />
+                <rect x="3.2" y="13.2" width="7.6" height="7.6" rx="2.2" />
+                <rect x="13.2" y="13.2" width="7.6" height="7.6" rx="2.2" />
+            </svg>
+        </span>
+        <span class="mobile-tab-label">@T("Categories")</span>
+    </button>
+    <a class="mobile-tab @(cartActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CART)" aria-current="@(cartActive ? "page" : null)">
+        <span class="mobile-tab-icon-wrap">
+            <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M5.6 8h12.8l.9 11.3a1.6 1.6 0 0 1-1.6 1.7H6.3a1.6 1.6 0 0 1-1.6-1.7Z" />
+                <path d="M9 8V6.4a3 3 0 0 1 6 0V8" />
+            </svg>
+            @*Prints data-qty, not its own text: HeaderLinks keeps every .cart-qty
+                on the page reduced to a bare number there, and an empty cart's
+                badge is hidden on [data-qty="0"] with no script at all.*@
+            <span class="mobile-tab-badge cart-qty" data-qty="@cartQuantity">@T("ShoppingCart.HeaderQuantity", cartQuantity)</span>
+        </span>
+        <span class="mobile-tab-label">@T("Mobile.Nav.Cart")</span>
+    </a>
+    <a class="mobile-tab @(accountActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CUSTOMER_INFO)" aria-current="@(accountActive ? "page" : null)">
+        <span class="mobile-tab-icon-wrap">
+            <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="8" r="3.8" />
+                <path d="M4.6 20.6c0-3.9 3.3-6.1 7.4-6.1s7.4 2.2 7.4 6.1" />
+            </svg>
+        </span>
+        <span class="mobile-tab-label">@T("Account.MyAccount")</span>
+    </a>
+</nav>

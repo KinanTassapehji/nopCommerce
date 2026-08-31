@@ -1,0 +1,110 @@
+@model ReminderModel
+
+<div class="card-body">
+    <div class="form-group row">
+        @* Display model-level validation errors *@
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+   </div>
+     
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="IsEnabled" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="IsEnabled" />
+            <span asp-validation-for="IsEnabled"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Name" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Name" asp-required="true" />
+            <span asp-validation-for="Name"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="ReminderRuleId" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="ReminderRuleId" asp-items="Model.AvailableReminderRules" />
+            <span asp-validation-for="ReminderRuleId"></span>
+            <div class="form-text-row">
+                <em>@T("NopStation.Plugins.CustomerReminders.Admin.Reminders.Fields.ReminderRule.Hint")</em>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="StoreId" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="StoreId" asp-items="Model.AvailableStores" />
+            <span asp-validation-for="StoreId"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="VendorId" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="VendorId" asp-items="Model.AvailableVendors" />
+            <span asp-validation-for="VendorId"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MaxMessagesPerCustomer" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MaxMessagesPerCustomer" asp-required="true" />
+            <span asp-validation-for="MaxMessagesPerCustomer"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="DateGreaterThan" />
+        </div>
+        <div class="col-md-2">
+            <nop-editor asp-for="DateGreaterThan" />
+        </div>
+        <div class="col-md-2">
+            <nop-select asp-for="DateGreaterThanIntervalTypeId" asp-items="Model.AvailableDateGreaterThanIntervalTypes" class="middleAligned" />
+        </div>
+        <span asp-validation-for="DateGreaterThan"></span>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="DateLowerThan" />
+        </div>
+        <div class="col-md-2">
+            <nop-editor asp-for="DateLowerThan" />
+        </div>
+        <div class="col-md-2">
+            <nop-select asp-for="DateLowerThanIntervalTypeId" asp-items="Model.AvailableDateLowerThanIntervalTypes" class="middleAligned" />
+        </div>
+        <span asp-validation-for="DateLowerThan"></span>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="IntervalBetweenMessages" />
+        </div>
+        <div class="col-md-2">
+            <nop-editor asp-for="IntervalBetweenMessages" />
+        </div>
+        <div class="col-md-2">
+            <nop-select asp-for="IntervalBetweenMessagesTypeId" asp-items="Model.AvailableIntervalBetweenMessagesTypes" class="middleAligned" />
+        </div>
+        <span asp-validation-for="IntervalBetweenMessages"></span>
+    </div>
+</div>

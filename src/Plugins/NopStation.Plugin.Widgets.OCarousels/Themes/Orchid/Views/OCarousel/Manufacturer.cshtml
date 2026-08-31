@@ -1,0 +1,99 @@
+﻿@using Nop.Core.Domain.Catalog;
+@model OCarouselModel
+
+@if (Model.Manufacturers.Count > 0)
+{
+    @if (Model.ShowBackgroundPicture)
+    {
+        <div class="ocarousel-background" style="background:url('@Model.BackgroundPictureUrl') no-repeat center; background-size: cover;">
+            <div class="ocarousel-grid manufacturer-carousel">
+                @if (Model.DisplayTitle)
+                {
+                    <div class="title">
+                        <i class="icon-logo-icon-left"></i>
+                        <strong>@Model.Title</strong>
+                        <i class="icon-logo-icon-right"></i>
+                    </div>
+                }
+
+                <div class="owl-carousel ocarousel @Model.CustomCssClass" id="ocarousel-@(Model.Id)">
+                    @foreach (var manufacturerModel in Model.Manufacturers)
+                    {
+                        <div class="ocarousel-item">
+                            <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { SeName = manufacturerModel.SeName }))" title="@manufacturerModel.PictureModel.Title">
+                                <img alt="@manufacturerModel.PictureModel.AlternateText" src="@manufacturerModel.PictureModel.ImageUrl" title="@manufacturerModel.PictureModel.Title" />
+                            </a>
+                            <div class="manufacturer-name">
+                                <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { SeName = manufacturerModel.SeName }))">@manufacturerModel.Name</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="ocarousel-grid manufacturer-carousel">
+            @if (Model.DisplayTitle)
+            {
+                <div class="title">
+                    <i class="icon-logo-icon-left"></i>
+                    <strong>@Model.Title</strong>
+                    <i class="icon-logo-icon-right"></i>
+                </div>
+            }
+            <div class="owl-carousel ocarousel @Model.CustomCssClass" id="ocarousel-@(Model.Id)">
+                @foreach (var manufacturerModel in Model.Manufacturers)
+                {
+                    <div class="ocarousel-item">
+                        <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { SeName = manufacturerModel.SeName }))" title="@manufacturerModel.PictureModel.Title">
+                            <img alt="@manufacturerModel.PictureModel.AlternateText" src="@manufacturerModel.PictureModel.ImageUrl" title="@manufacturerModel.PictureModel.Title" />
+                        </a>
+                        <div class="manufacturer-name">
+                            <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { SeName = manufacturerModel.SeName }))">@manufacturerModel.Name</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <script>
+        $(document).ready(function () {
+            $('#ocarousel-@(Model.Id)').owlCarousel({
+                nav: @Model.Nav.ToString().ToLowerInvariant(),
+                loop: @Model.Loop.ToString().ToLowerInvariant(),
+                dots: true,
+                margin: 30,
+                autoplay: @Model.AutoPlay.ToString().ToLowerInvariant(),
+                rtl: @Model.Rtl.ToString().ToLowerInvariant(),
+                autoplayTimeout: @Model.AutoPlayTimeout,
+                autoplayHoverPause: @Model.AutoPlayHoverPause.ToString().ToLowerInvariant(),
+                lazyLoad: @Model.LazyLoad.ToString().ToLowerInvariant(),
+                lazyLoadEager: @Model.LazyLoadEager,
+                center: @Model.Center.ToString().ToLowerInvariant(),
+                startPosition: @Model.StartPosition,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    576: {
+                        items: 2
+                    },
+                    768: {
+                        items: 3
+                    },
+                    992: {
+                        items: 4
+                    },
+                    1200: {
+                        items: 5
+                    }
+                }
+            });
+            $(".owl-next").html("<i class='icon-right-arrow-icon'></i>");
+            $(".owl-prev").html("<i class='icon-left-arrow-icon'></i>");
+        });
+    </script>
+}

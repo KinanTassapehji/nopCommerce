@@ -1,0 +1,510 @@
+/* ── Sidebar filter ── */
+.marketplace-sidebar {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.marketplace-sidebar-section {
+    border-bottom: 1px solid #dee2e6;
+    padding: 0;
+}
+
+.marketplace-sidebar-section:last-child {
+    border-bottom: none;
+}
+
+.marketplace-sidebar-heading {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #495057;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    margin: 0;
+}
+
+.marketplace-filter-list {
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+}
+
+.marketplace-filter-list li {
+    margin: 0;
+}
+
+.marketplace-filter-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 7px 16px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    font-size: 0.88rem;
+    color: #495057;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    text-decoration: none;
+}
+
+.marketplace-filter-item:hover,
+.marketplace-filter-item:focus {
+    background: #e9ecef;
+    color: #212529;
+    outline: none;
+    text-decoration: none;
+}
+
+.marketplace-filter-item.active {
+    background: #007bff;
+    color: #fff;
+    font-weight: 600;
+}
+
+.marketplace-filter-item.active:hover {
+    background: #0069d9;
+    color: #fff;
+}
+
+.marketplace-filter-count {
+    font-size: 0.75rem;
+    background: rgba(0,0,0,.08);
+    border-radius: 10px;
+    padding: 1px 7px;
+}
+
+.marketplace-filter-item.active .marketplace-filter-count {
+    background: rgba(255,255,255,.25);
+    color: #fff;
+}
+
+/* ── Category show-more toggle ── */
+.category-extra {
+    display: none;
+}
+
+.category-extra.visible {
+    display: block;
+}
+
+.marketplace-show-more-btn {
+    display: block;
+    width: 100%;
+    padding: 7px 16px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    font-size: 0.82rem;
+    color: #007bff;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.marketplace-show-more-btn:hover,
+.marketplace-show-more-btn:focus {
+    color: #0056b3;
+    outline: none;
+}
+
+/* ── Search box ── */
+.marketplace-search-wrap {
+    padding: 12px 16px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.marketplace-search-wrap .input-group-text {
+    background: #f8f9fa;
+    border-right: none;
+    color: #6c757d;
+}
+
+.marketplace-search-wrap input {
+    border-left: none;
+}
+
+/* ── Products grid ── */
+.marketplace-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
+    padding: 4px 0 10px;
+}
+
+.marketplace-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    box-shadow: 0 1px 3px rgba(0,0,0,.07);
+    transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.marketplace-card:hover,
+.marketplace-card:focus-within {
+    box-shadow: 0 4px 14px rgba(0,0,0,.13);
+    transform: translateY(-1px);
+    position: relative;
+    z-index: 10;
+}
+
+.marketplace-card-logo {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    background: #f8f9fa;
+    overflow: visible;
+    border-radius: 8px 8px 0 0;
+}
+
+.marketplace-image-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    outline: none;
+}
+
+.marketplace-image-preview > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+}
+
+.marketplace-image-tooltip {
+    display: none;
+    position: absolute;
+    z-index: 30;
+    top: 12px;
+    left: 50%;
+    width: min(360px, calc(100vw - 32px));
+    padding: 8px;
+    border: 1px solid #dce3ed;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(15, 35, 70, .2);
+    transform: translateX(-50%);
+}
+
+.marketplace-image-tooltip img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 360px;
+    object-fit: contain;
+}
+
+.marketplace-image-preview:hover .marketplace-image-tooltip,
+.marketplace-image-preview:focus .marketplace-image-tooltip {
+    display: block;
+}
+
+.marketplace-card-logo .no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 42px;
+    color: #ced4da;
+}
+
+.marketplace-card-body {
+    padding: 14px 14px 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.marketplace-card-title {
+    position: relative;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #212529;
+}
+
+.marketplace-card-title-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.marketplace-name-tooltip {
+    display: none;
+    position: absolute;
+    z-index: 40;
+    top: calc(100% + 4px);
+    left: 0;
+    max-width: min(360px, calc(100vw - 32px));
+    padding: 6px 9px;
+    border: 1px solid #dce3ed;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(15, 35, 70, .18);
+    color: #212529;
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1.3;
+    white-space: normal;
+}
+
+.marketplace-card-title:hover .marketplace-name-tooltip,
+.marketplace-card-title:focus .marketplace-name-tooltip {
+    display: block;
+}
+
+/* ── Description clamp ── */
+.marketplace-card-description {
+    font-size: 0.82rem;
+    color: #6c757d;
+    flex: 1;
+    margin-bottom: 10px;
+}
+
+.marketplace-desc-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.marketplace-desc-text.expanded {
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+}
+
+.marketplace-desc-toggle {
+    display: none;
+    margin-top: 3px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-size: 0.78rem;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.marketplace-desc-toggle:hover,
+.marketplace-desc-toggle:focus {
+    color: #0056b3;
+    outline: none;
+    text-decoration: underline;
+}
+
+.marketplace-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.marketplace-card-status {
+    margin-top: 6px;
+}
+
+.marketplace-card-pricing {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 12px;
+}
+
+.marketplace-version-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 3px 9px;
+    border: 1px solid #d7dee8;
+    border-radius: 6px;
+    background: #f8fafc;
+    color: #52627a;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: .01em;
+}
+
+.marketplace-version-tag.current {
+    border-color: #8fd1b8;
+    background: #e8f7ef;
+    color: #087f5b;
+}
+
+.marketplace-card-footer {
+    padding: 10px 14px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.marketplace-card-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.marketplace-card-price {
+    display: flex;
+    align-items: center;
+}
+
+.marketplace-price-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #212529;
+}
+
+.marketplace-price-free {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #28a745;
+}
+
+.marketplace-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.marketplace-card .marketplace-card-actions .btn,
+.marketplace-card-footer > .marketplace-upgrade-request-btn {
+    min-height: 34px;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-weight: 600;
+    transition: transform .15s, box-shadow .15s;
+}
+
+.marketplace-card .marketplace-card-actions .btn:hover,
+.marketplace-card-footer > .marketplace-upgrade-request-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(15, 35, 70, .16);
+}
+
+.marketplace-card .marketplace-install-btn {
+    background: #087f5b;
+    border-color: #087f5b;
+}
+
+.marketplace-card .marketplace-install-btn:hover {
+    background: #066649;
+    border-color: #066649;
+}
+
+.marketplace-card .marketplace-upgrade-request-btn {
+    color: #b66a00;
+    background: #fff8e6;
+    border: 1px solid #f3c969;
+}
+
+.marketplace-card .btn-outline-secondary {
+    color: #344054;
+    border-color: #cbd5e1;
+    background: #fff;
+}
+
+.marketplace-card-footer > .marketplace-upgrade-request-btn {
+    width: 100%;
+}
+
+.marketplace-badge-installed {
+    display: inline-block;
+    background: #28a745;
+    color: #fff;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.marketplace-price-old {
+    font-size: 0.92rem;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.marketplace-install-progress {
+    margin-top: 6px;
+}
+
+/* ── Pagination ── */
+.marketplace-pagination {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 0;
+    padding: 18px 0 4px;
+}
+
+.marketplace-page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: 1px solid #d9e1ec;
+    border-radius: 3px;
+    background: #fff;
+    color: #52627a;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.marketplace-page-btn > a,
+.marketplace-page-btn > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+}
+
+.marketplace-page-btn:hover,
+.marketplace-page-btn:focus,
+.marketplace-page-btn > a:hover,
+.marketplace-page-btn > a:focus {
+    border-color: #1769e0;
+    background: #f3f6ff;
+    color: #1769e0;
+    outline: none;
+}
+
+.marketplace-page-btn.active {
+    border-color: #1769e0;
+    background: #1769e0;
+    color: #fff;
+}
+
+.marketplace-products-container {
+    position: relative;
+}
+
+.marketplace-progress,
+.marketplace-result {
+    display: none;
+}
+
+.marketplace-progress-bar {
+    height: 6px;
+}

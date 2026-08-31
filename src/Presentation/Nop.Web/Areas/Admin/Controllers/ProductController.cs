@@ -54,9 +54,7 @@ public partial class ProductController : BaseAdminController
 
     protected readonly AdminAreaSettings _adminAreaSettings;
     protected readonly CustomerSettings _customerSettings;
-    protected readonly IAclService _aclService;
     protected readonly IArtificialIntelligenceService _artificialIntelligenceService;
-    protected readonly IBackInStockSubscriptionService _backInStockSubscriptionService;
     protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
     protected readonly ICategoryService _categoryService;
     protected readonly ICopyProductService _copyProductService;
@@ -87,7 +85,6 @@ public partial class ProductController : BaseAdminController
     protected readonly IProductTagService _productTagService;
     protected readonly ISettingService _settingService;
     protected readonly IShoppingCartService _shoppingCartService;
-    protected readonly ISpecificationAttributeService _specificationAttributeService;
     protected readonly IStoreContext _storeContext;
     protected readonly IStoreMappingService _storeMappingService;
     protected readonly ITranslationModelFactory _translationModelFactory;
@@ -108,9 +105,7 @@ public partial class ProductController : BaseAdminController
 
     public ProductController(AdminAreaSettings adminAreaSettings,
         CustomerSettings customerSettings,
-        IAclService aclService,
         IArtificialIntelligenceService artificialIntelligenceService,
-        IBackInStockSubscriptionService backInStockSubscriptionService,
         IBaseAdminModelFactory baseAdminModelFactory,
         ICategoryService categoryService,
         ICopyProductService copyProductService,
@@ -141,7 +136,6 @@ public partial class ProductController : BaseAdminController
         IProductTagService productTagService,
         ISettingService settingService,
         IShoppingCartService shoppingCartService,
-        ISpecificationAttributeService specificationAttributeService,
         IStoreContext storeContext,
         IStoreMappingService storeMappingService,
         ITranslationModelFactory translationModelFactory,
@@ -157,9 +151,7 @@ public partial class ProductController : BaseAdminController
     {
         _adminAreaSettings = adminAreaSettings;
         _customerSettings = customerSettings;
-        _aclService = aclService;
         _artificialIntelligenceService = artificialIntelligenceService;
-        _backInStockSubscriptionService = backInStockSubscriptionService;
         _baseAdminModelFactory = baseAdminModelFactory;
         _categoryService = categoryService;
         _copyProductService = copyProductService;
@@ -190,7 +182,6 @@ public partial class ProductController : BaseAdminController
         _productTagService = productTagService;
         _settingService = settingService;
         _shoppingCartService = shoppingCartService;
-        _specificationAttributeService = specificationAttributeService;
         _storeContext = storeContext;
         _storeMappingService = storeMappingService;
         _translationModelFactory = translationModelFactory;
@@ -1206,9 +1197,6 @@ public partial class ProductController : BaseAdminController
                 model.ShowOnHomepage = product.ShowOnHomepage;
 
             //some previously used values
-            var prevTotalStockQuantity = await _productService.GetTotalStockQuantityAsync(product);
-            var prevDownloadId = product.DownloadId;
-            var prevSampleDownloadId = product.SampleDownloadId;
             var previousStockQuantity = product.StockQuantity;
             var previousWarehouseId = product.WarehouseId;
             var previousProductType = product.ProductType;
@@ -1261,34 +1249,6 @@ public partial class ProductController : BaseAdminController
 
             //picture seo names
             await UpdatePictureSeoNamesAsync(product);
-
-            //back in stock notifications
-            if (product.ManageInventoryMethod == ManageInventoryMethod.ManageStock &&
-                product.BackorderMode == BackorderMode.NoBackorders &&
-                product.AllowBackInStockSubscriptions &&
-                await _productService.GetTotalStockQuantityAsync(product) > 0 &&
-                prevTotalStockQuantity <= 0 &&
-                product.Published &&
-                !product.Deleted)
-            {
-                await _backInStockSubscriptionService.SendNotificationsToSubscribersAsync(product);
-            }
-
-            //delete an old "download" file (if deleted or updated)
-            if (prevDownloadId > 0 && prevDownloadId != product.DownloadId)
-            {
-                var prevDownload = await _downloadService.GetDownloadByIdAsync(prevDownloadId);
-                if (prevDownload != null)
-                    await _downloadService.DeleteDownloadAsync(prevDownload);
-            }
-
-            //delete an old "sample download" file (if deleted or updated)
-            if (prevSampleDownloadId > 0 && prevSampleDownloadId != product.SampleDownloadId)
-            {
-                var prevSampleDownload = await _downloadService.GetDownloadByIdAsync(prevSampleDownloadId);
-                if (prevSampleDownload != null)
-                    await _downloadService.DeleteDownloadAsync(prevSampleDownload);
-            }
 
             //quantity change history
             if (previousWarehouseId != product.WarehouseId)
@@ -1448,18 +1408,6 @@ public partial class ProductController : BaseAdminController
         return Json(new { Result = message });
     }
 
-    //action displaying notification (warning) to a store owner that 'Date of Birth' is disabled
-    public virtual async Task<IActionResult> CustomersDateOfBirthDisabledWarning()
-    {
-        if (_customerSettings.DateOfBirthEnabled)
-            return Json(new { Result = string.Empty });
-
-        var warning = string.Format(await _localizationService.GetResourceAsync("Admin.Catalog.Products.Fields.AgeVerification.DateOfBirthDisabled"),
-            Url.Action("CustomerUser", "Setting"));
-
-        return Json(new { Result = warning });
-    }
-
     [CheckPermission(StandardPermission.Catalog.PRODUCTS_CREATE_EDIT_DELETE)]
     public virtual async Task<IActionResult> FullDescriptionGeneratorPopup(int languageId, string productName)
     {
@@ -1503,61 +1451,6 @@ public partial class ProductController : BaseAdminController
         await _baseAdminModelFactory.PrepareLanguagesAsync(model.AvailableLanguages, false);
 
         return View(model);
-    }
-
-    #endregion
-
-    #region Required products
-
-    [HttpPost]
-    [CheckPermission(StandardPermission.Catalog.PRODUCTS_VIEW)]
-    public virtual async Task<IActionResult> LoadProductFriendlyNames(string productIds)
-    {
-        var result = string.Empty;
-
-        if (string.IsNullOrWhiteSpace(productIds))
-            return Json(new { Text = result });
-
-        var ids = new List<int>();
-        var rangeArray = productIds
-            .Split(_separator, StringSplitOptions.RemoveEmptyEntries)
-            .Select(x => x.Trim())
-            .ToList();
-
-        foreach (var str1 in rangeArray)
-        {
-            if (int.TryParse(str1, out var tmp1))
-                ids.Add(tmp1);
-        }
-
-        var products = await _productService.GetProductsByIdsAsync(ids.ToArray());
-        for (var i = 0; i <= products.Count - 1; i++)
-        {
-            result += products[i].Name;
-            if (i != products.Count - 1)
-                result += ", ";
-        }
-
-        return Json(new { Text = result });
-    }
-
-    [CheckPermission(StandardPermission.Catalog.PRODUCTS_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> RequiredProductAddPopup()
-    {
-        //prepare model
-        var model = await _productModelFactory.PrepareAddRequiredProductSearchModelAsync(new AddRequiredProductSearchModel());
-
-        return View(model);
-    }
-
-    [HttpPost]
-    [CheckPermission(StandardPermission.Catalog.PRODUCTS_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> RequiredProductAddPopupList(AddRequiredProductSearchModel searchModel)
-    {
-        //prepare model
-        var model = await _productModelFactory.PrepareAddRequiredProductListModelAsync(searchModel);
-
-        return Json(model);
     }
 
     #endregion
@@ -2311,238 +2204,6 @@ public partial class ProductController : BaseAdminController
         await _videoService.DeleteVideoAsync(video);
 
         return new NullJsonResult();
-    }
-
-    #endregion
-
-    #region Product specification attributes
-
-    [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
-    [CheckPermission(StandardPermission.Catalog.PRODUCTS_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> ProductSpecificationAttributeAdd(AddSpecificationAttributeModel model, bool continueEditing)
-    {
-        var product = await _productService.GetProductByIdAsync(model.ProductId);
-        if (product == null)
-        {
-            _notificationService.ErrorNotification("No product found with the specified id");
-            return RedirectToAction("List");
-        }
-
-        //a vendor should have access only to his products
-        var currentVendor = await _workContext.GetCurrentVendorAsync();
-        if (currentVendor != null && product.VendorId != currentVendor.Id)
-        {
-            return RedirectToAction("List");
-        }
-
-        //we allow filtering only for "Option" attribute type
-        if (model.AttributeTypeId != (int)SpecificationAttributeType.Option)
-            model.AllowFiltering = false;
-
-        //we don't allow CustomValue for "Option" attribute type
-        if (model.AttributeTypeId == (int)SpecificationAttributeType.Option)
-            model.ValueRaw = null;
-
-        //store raw html if field allow this
-        if (model.AttributeTypeId == (int)SpecificationAttributeType.CustomText || model.AttributeTypeId == (int)SpecificationAttributeType.Hyperlink)
-            model.ValueRaw = model.Value;
-
-        var psa = model.ToEntity<ProductSpecificationAttribute>();
-        psa.CustomValue = model.ValueRaw;
-        await _specificationAttributeService.InsertProductSpecificationAttributeAsync(psa);
-
-        switch (psa.AttributeType)
-        {
-            case SpecificationAttributeType.CustomText:
-                foreach (var localized in model.Locales)
-                {
-                    await _localizedEntityService.SaveLocalizedValueAsync(psa,
-                        x => x.CustomValue,
-                        localized.Value,
-                        localized.LanguageId);
-                }
-
-                break;
-            case SpecificationAttributeType.CustomHtmlText:
-                foreach (var localized in model.Locales)
-                {
-                    await _localizedEntityService.SaveLocalizedValueAsync(psa,
-                        x => x.CustomValue,
-                        localized.ValueRaw,
-                        localized.LanguageId);
-                }
-
-                break;
-            case SpecificationAttributeType.Option:
-                break;
-            case SpecificationAttributeType.Hyperlink:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        if (continueEditing)
-            return RedirectToAction("ProductSpecAttributeAddOrEdit",
-                new { productId = psa.ProductId, specificationId = psa.Id });
-
-        //select an appropriate card
-        SaveSelectedCardName("product-specification-attributes");
-        return RedirectToAction("Edit", new { id = model.ProductId });
-    }
-
-    [HttpPost]
-    [CheckPermission(StandardPermission.Catalog.PRODUCTS_VIEW)]
-    public virtual async Task<IActionResult> ProductSpecAttrList(ProductSpecificationAttributeSearchModel searchModel)
-    {
-        //try to get a product with the specified id
-        var product = await _productService.GetProductByIdAsync(searchModel.ProductId)
-            ?? throw new ArgumentException("No product found with the specified id");
-
-        //a vendor should have access only to his products
-        var currentVendor = await _workContext.GetCurrentVendorAsync();
-        if (currentVendor != null && product.VendorId != currentVendor.Id)
-            return Content("This is not your product");
-
-        //prepare model
-        var model = await _productModelFactory.PrepareProductSpecificationAttributeListModelAsync(searchModel, product);
-
-        return Json(model);
-    }
-
-    [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
-    [CheckPermission(StandardPermission.Catalog.PRODUCTS_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> ProductSpecAttrUpdate(AddSpecificationAttributeModel model, bool continueEditing)
-    {
-        //try to get a product specification attribute with the specified id
-        var psa = await _specificationAttributeService.GetProductSpecificationAttributeByIdAsync(model.SpecificationId);
-        if (psa == null)
-        {
-            //select an appropriate card
-            SaveSelectedCardName("product-specification-attributes");
-            _notificationService.ErrorNotification("No product specification attribute found with the specified id");
-
-            return RedirectToAction("Edit", new { id = model.ProductId });
-        }
-
-        //a vendor should have access only to his products
-        var currentVendor = await _workContext.GetCurrentVendorAsync();
-        if (currentVendor != null
-            && (await _productService.GetProductByIdAsync(psa.ProductId)).VendorId != currentVendor.Id)
-        {
-            _notificationService.ErrorNotification("This is not your product");
-
-            return RedirectToAction("List");
-        }
-
-        //we allow filtering and change option only for "Option" attribute type
-        //save localized values for CustomHtmlText and CustomText
-        switch (model.AttributeTypeId)
-        {
-            case (int)SpecificationAttributeType.Option:
-                psa.AllowFiltering = model.AllowFiltering;
-                psa.SpecificationAttributeOptionId = model.SpecificationAttributeOptionId;
-
-                break;
-            case (int)SpecificationAttributeType.CustomHtmlText:
-                psa.CustomValue = model.ValueRaw;
-                foreach (var localized in model.Locales)
-                {
-                    await _localizedEntityService.SaveLocalizedValueAsync(psa,
-                        x => x.CustomValue,
-                        localized.ValueRaw,
-                        localized.LanguageId);
-                }
-
-                break;
-            case (int)SpecificationAttributeType.CustomText:
-                psa.CustomValue = model.Value;
-                foreach (var localized in model.Locales)
-                {
-                    await _localizedEntityService.SaveLocalizedValueAsync(psa,
-                        x => x.CustomValue,
-                        localized.Value,
-                        localized.LanguageId);
-                }
-
-                break;
-            default:
-                psa.CustomValue = model.Value;
-
-                break;
-        }
-
-        psa.ShowOnProductPage = model.ShowOnProductPage;
-        psa.DisplayOrder = model.DisplayOrder;
-        await _specificationAttributeService.UpdateProductSpecificationAttributeAsync(psa);
-
-        if (continueEditing)
-        {
-            return RedirectToAction("ProductSpecAttributeAddOrEdit",
-                new { productId = psa.ProductId, specificationId = model.SpecificationId });
-        }
-
-        //select an appropriate card
-        SaveSelectedCardName("product-specification-attributes");
-
-        return RedirectToAction("Edit", new { id = psa.ProductId });
-    }
-
-    [CheckPermission(StandardPermission.Catalog.PRODUCTS_VIEW)]
-    public virtual async Task<IActionResult> ProductSpecAttributeAddOrEdit(int productId, int? specificationId)
-    {
-        if (!specificationId.HasValue && !await _permissionService.AuthorizeAsync(StandardPermission.Catalog.PRODUCTS_CREATE_EDIT_DELETE))
-            return AccessDeniedView();
-
-        if (await _productService.GetProductByIdAsync(productId) == null)
-        {
-            _notificationService.ErrorNotification("No product found with the specified id");
-            return RedirectToAction("List");
-        }
-
-        //try to get a product specification attribute with the specified id
-        try
-        {
-            var model = await _productModelFactory.PrepareAddSpecificationAttributeModelAsync(productId, specificationId);
-            return View(model);
-        }
-        catch (Exception ex)
-        {
-            await _notificationService.ErrorNotificationAsync(ex);
-
-            //select an appropriate card
-            SaveSelectedCardName("product-specification-attributes");
-            return RedirectToAction("Edit", new { id = productId });
-        }
-    }
-
-    [HttpPost]
-    [CheckPermission(StandardPermission.Catalog.PRODUCTS_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> ProductSpecAttrDelete(AddSpecificationAttributeModel model)
-    {
-        //try to get a product specification attribute with the specified id
-        var psa = await _specificationAttributeService.GetProductSpecificationAttributeByIdAsync(model.SpecificationId);
-        if (psa == null)
-        {
-            //select an appropriate card
-            SaveSelectedCardName("product-specification-attributes");
-            _notificationService.ErrorNotification("No product specification attribute found with the specified id");
-            return RedirectToAction("Edit", new { id = model.ProductId });
-        }
-
-        //a vendor should have access only to his products
-        var currentVendor = await _workContext.GetCurrentVendorAsync();
-        if (currentVendor != null && (await _productService.GetProductByIdAsync(psa.ProductId)).VendorId != currentVendor.Id)
-        {
-            _notificationService.ErrorNotification("This is not your product");
-            return RedirectToAction("List", new { id = model.ProductId });
-        }
-
-        await _specificationAttributeService.DeleteProductSpecificationAttributeAsync(psa);
-
-        //select an appropriate card
-        SaveSelectedCardName("product-specification-attributes");
-
-        return RedirectToAction("Edit", new { id = psa.ProductId });
     }
 
     #endregion
@@ -3657,18 +3318,7 @@ public partial class ProductController : BaseAdminController
             return Json(new { Result = await _localizationService.GetResourceAsync("Admin.Catalog.Products.ProductAttributes.Attributes.Values.Fields.AssociatedProduct.HasAttributes") });
         }
 
-        //gift card
-        if (associatedProduct.IsGiftCard)
-        {
-            return Json(new { Result = await _localizationService.GetResourceAsync("Admin.Catalog.Products.ProductAttributes.Attributes.Values.Fields.AssociatedProduct.GiftCard") });
-        }
-
         //downloadable product
-        if (associatedProduct.IsDownload)
-        {
-            return Json(new { Result = await _localizationService.GetResourceAsync("Admin.Catalog.Products.ProductAttributes.Attributes.Values.Fields.AssociatedProduct.Downloadable") });
-        }
-
         return Json(new { Result = string.Empty });
     }
 
@@ -4120,17 +3770,13 @@ public partial class ProductController : BaseAdminController
                 Published = IsPublished,
                 //set default values for the new model
                 MaximumCustomerEnteredPrice = 1000,
-                MaxNumberOfDownloads = 10,
-                RecurringCycleLength = 100,
-                RecurringTotalCycles = 10,
+
                 RentalPriceLength = 1,
                 NotifyAdminForQuantityBelow = 1,
                 OrderMinimumQuantity = 1,
                 OrderMaximumQuantity = 10000,
                 TaxCategoryId = _defaultTaxCategoryId,
-                UnlimitedDownloads = true,
                 IsShipEnabled = true,
-                AllowCustomerReviews = true,
                 VisibleIndividually = true,
                 ProductType = ProductType.SimpleProduct,
                 VendorId = _vendorId

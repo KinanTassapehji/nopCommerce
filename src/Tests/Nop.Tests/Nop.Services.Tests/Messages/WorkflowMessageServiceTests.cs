@@ -36,7 +36,7 @@ public class WorkflowMessageServiceTests : ServiceTest
     private Shipment _shipment;
     private IList<MessageTemplate> _allMessageTemplates;
     private OrderNote _orderNote;
-    private RecurringPayment _recurringPayment;
+
     private NewsLetterSubscription _subscription;
     private Product _product;
     private OrderItem _orderItem;
@@ -46,10 +46,8 @@ public class WorkflowMessageServiceTests : ServiceTest
     private ForumPost _forumPost;
     private PrivateMessage _privateMessage;
     private ProductReview _productReview;
-    private GiftCard _giftCard;
     private BlogComment _blogComment;
     private NewsComment _newsComment;
-    private BackInStockSubscription _backInStockSubscription;
     private readonly IForumService _forumService;
 
     public WorkflowMessageServiceTests()
@@ -69,7 +67,6 @@ public class WorkflowMessageServiceTests : ServiceTest
         var shipmentService = GetService<IShipmentService>();
         var productService = GetService<IProductService>();
         var productReviewService = GetService<IProductReviewService>();
-        var giftCardService = GetService<IGiftCardService>();
         var blogService = GetService<IBlogService>();
         var newsService = GetService<INewsService>();
 
@@ -79,7 +76,7 @@ public class WorkflowMessageServiceTests : ServiceTest
         _vendor = await vendorService.GetVendorByIdAsync(1);
         _shipment = await shipmentService.GetShipmentByIdAsync(1);
         _orderNote = await orderService.GetOrderNoteByIdAsync(1);
-        _recurringPayment = new RecurringPayment { InitialOrderId = _order.Id, IsActive = true };
+
         _subscription = new NewsLetterSubscription { Active = true, Email = NopTestsDefaults.AdminEmail, LanguageId = 1 };
         _product = await productService.GetProductByIdAsync(1);
         _returnRequest = new ReturnRequest { CustomerId = _customer.Id, OrderItemId = _orderItem.Id };
@@ -97,25 +94,8 @@ public class WorkflowMessageServiceTests : ServiceTest
             Text = string.Empty
         };
         _productReview = (await productReviewService.GetAllProductReviewsAsync()).FirstOrDefault();
-        _giftCard = await GetService<INopDataProvider>().InsertEntityAsync(new GiftCard
-        {
-            GiftCardType = GiftCardType.Virtual,
-            PurchasedWithOrderItemId = 3,
-            Amount = 25M,
-            IsGiftCardActivated = false,
-            GiftCardCouponCode = string.Empty,
-            RecipientName = "Brenda Lindgren",
-            RecipientEmail = "brenda_lindgren@nopCommerce.com",
-            SenderName = "Steve Gates",
-            SenderEmail = "steve_gates@nopCommerce.com",
-            Message = string.Empty,
-            IsRecipientNotified = false,
-            CreatedOnUtc = DateTime.UtcNow
-        });
-
         _blogComment = await blogService.GetBlogCommentByIdAsync(1);
         _newsComment = await newsService.GetNewsCommentByIdAsync(1);
-        _backInStockSubscription = new BackInStockSubscription { ProductId = _product.Id, CustomerId = _customer.Id };
 
         _allMessageTemplates = await _messageTemplateService.GetAllMessageTemplatesAsync(0);
 
@@ -314,27 +294,6 @@ public class WorkflowMessageServiceTests : ServiceTest
             await _workflowMessageService.SendNewOrderNoteAddedCustomerNotificationAsync(_orderNote, 1));
     }
 
-    [Test]
-    public async Task CanSendRecurringPaymentCancelledStoreOwnerNotification()
-    {
-        await CheckData(async () =>
-            await _workflowMessageService.SendRecurringPaymentCancelledStoreOwnerNotificationAsync(_recurringPayment, 1));
-    }
-
-    [Test]
-    public async Task CanSendRecurringPaymentCancelledCustomerNotification()
-    {
-        await CheckData(async () =>
-            await _workflowMessageService.SendRecurringPaymentCancelledCustomerNotificationAsync(_recurringPayment, 1));
-    }
-
-    [Test]
-    public async Task CanSendRecurringPaymentFailedCustomerNotification()
-    {
-        await CheckData(async () =>
-            await _workflowMessageService.SendRecurringPaymentFailedCustomerNotificationAsync(_recurringPayment, 1));
-    }
-
     #endregion
 
     #region Newsletter workflow
@@ -362,13 +321,6 @@ public class WorkflowMessageServiceTests : ServiceTest
     {
         await CheckData(async () =>
             await _workflowMessageService.SendProductEmailAFriendMessageAsync(_customer, 1, _product, NopTestsDefaults.AdminEmail, NopTestsDefaults.AdminEmail, string.Empty));
-    }
-
-    [Test]
-    public async Task CanSendWishlistEmailAFriendMessage()
-    {
-        await CheckData(async () =>
-            await _workflowMessageService.SendWishlistEmailAFriendMessageAsync(_customer, 1, NopTestsDefaults.AdminEmail, NopTestsDefaults.AdminEmail, string.Empty, string.Empty));
     }
 
     #endregion
@@ -454,13 +406,6 @@ public class WorkflowMessageServiceTests : ServiceTest
     }
 
     [Test]
-    public async Task CanSendGiftCardNotification()
-    {
-        await CheckData(async () =>
-            await _workflowMessageService.SendGiftCardNotificationAsync(_giftCard, 1));
-    }
-
-    [Test]
     public async Task CanSendQuantityBelowStoreOwnerNotification()
     {
         await CheckData(async () =>
@@ -486,13 +431,6 @@ public class WorkflowMessageServiceTests : ServiceTest
     {
         await CheckData(async () =>
             await _workflowMessageService.SendNewsCommentStoreOwnerNotificationMessageAsync(_newsComment, 1));
-    }
-
-    [Test]
-    public async Task CanSendBackInStockNotification()
-    {
-        await CheckData(async () =>
-            await _workflowMessageService.SendBackInStockNotificationAsync(_backInStockSubscription, 1));
     }
 
     [Test]

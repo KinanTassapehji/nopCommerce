@@ -12,7 +12,7 @@ namespace Nop.Web.Areas.Admin.Models.Catalog;
 /// Represents a product model
 /// </summary>
 public partial record ProductModel : BaseNopEntityModel,
-    IAclSupportedModel, IDiscountSupportedModel, ITranslationSupportedModel, ILocalizedModel<ProductLocalizedModel>, IStoreMappingSupportedModel, IMetaTagsSupportedModel
+    IDiscountSupportedModel, ITranslationSupportedModel, ILocalizedModel<ProductLocalizedModel>, IStoreMappingSupportedModel, IMetaTagsSupportedModel
 {
     #region Ctor
 
@@ -48,9 +48,6 @@ public partial record ProductModel : BaseNopEntityModel,
         SelectedCategoryIds = new List<int>();
         AvailableCategories = new List<SelectListItem>();
 
-        SelectedCustomerRoleIds = new List<int>();
-        AvailableCustomerRoles = new List<SelectListItem>();
-
         SelectedDiscountIds = new List<int>();
         AvailableDiscounts = new List<SelectListItem>();
 
@@ -63,7 +60,6 @@ public partial record ProductModel : BaseNopEntityModel,
         AssociatedProductSearchModel = new AssociatedProductSearchModel();
         ProductPictureSearchModel = new ProductPictureSearchModel();
         ProductVideoSearchModel = new ProductVideoSearchModel();
-        ProductSpecificationAttributeSearchModel = new ProductSpecificationAttributeSearchModel();
         ProductOrderSearchModel = new ProductOrderSearchModel();
         TierPriceSearchModel = new TierPriceSearchModel();
         StockQuantityHistorySearchModel = new StockQuantityHistorySearchModel();
@@ -128,9 +124,6 @@ public partial record ProductModel : BaseNopEntityModel,
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.SeName")]
     public string SeName { get; set; }
 
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.AllowCustomerReviews")]
-    public bool AllowCustomerReviews { get; set; }
-
     public IList<SelectListItem> AvailableProductTags { get; set; }
 
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.ProductTags")]
@@ -144,70 +137,6 @@ public partial record ProductModel : BaseNopEntityModel,
 
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.GTIN")]
     public virtual string Gtin { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.IsGiftCard")]
-    public bool IsGiftCard { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.GiftCardType")]
-    public int GiftCardTypeId { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.OverriddenGiftCardAmount")]
-    [UIHint("DecimalNullable")]
-    public decimal? OverriddenGiftCardAmount { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.RequireOtherProducts")]
-    public bool RequireOtherProducts { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.RequiredProductIds")]
-    public string RequiredProductIds { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.AutomaticallyAddRequiredProducts")]
-    public bool AutomaticallyAddRequiredProducts { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.IsDownload")]
-    public bool IsDownload { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.Download")]
-    [UIHint("Download")]
-    public int DownloadId { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.UnlimitedDownloads")]
-    public bool UnlimitedDownloads { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.MaxNumberOfDownloads")]
-    public int MaxNumberOfDownloads { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.DownloadExpirationDays")]
-    [UIHint("Int32Nullable")]
-    public int? DownloadExpirationDays { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.DownloadActivationType")]
-    public int DownloadActivationTypeId { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.HasSampleDownload")]
-    public bool HasSampleDownload { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.SampleDownload")]
-    [UIHint("Download")]
-    public int SampleDownloadId { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.HasUserAgreement")]
-    public bool HasUserAgreement { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.UserAgreementText")]
-    public string UserAgreementText { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.IsRecurring")]
-    public bool IsRecurring { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.RecurringCycleLength")]
-    public int RecurringCycleLength { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.RecurringCyclePeriod")]
-    public int RecurringCyclePeriodId { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.RecurringTotalCycles")]
-    public int RecurringTotalCycles { get; set; }
 
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.IsRental")]
     public bool IsRental { get; set; }
@@ -278,12 +207,6 @@ public partial record ProductModel : BaseNopEntityModel,
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.NotifyAdminForQuantityBelow")]
     public int NotifyAdminForQuantityBelow { get; set; }
 
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.BackorderMode")]
-    public int BackorderModeId { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.AllowBackInStockSubscriptions")]
-    public bool AllowBackInStockSubscriptions { get; set; }
-
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.OrderMinimumQuantity")]
     public int OrderMinimumQuantity { get; set; }
 
@@ -305,21 +228,12 @@ public partial record ProductModel : BaseNopEntityModel,
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.DisableBuyButton")]
     public bool DisableBuyButton { get; set; }
 
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.DisableWishlistButton")]
-    public bool DisableWishlistButton { get; set; }
-
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.AvailableForPreOrder")]
     public bool AvailableForPreOrder { get; set; }
 
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.PreOrderAvailabilityStartDateTimeUtc")]
     [UIHint("DateTimeNullable")]
     public DateTime? PreOrderAvailabilityStartDateTimeUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.AgeVerification")]
-    public bool AgeVerification { get; set; }
-
-    [NopResourceDisplayName("Admin.Catalog.Products.Fields.MinimumAgeToPurchase")]
-    public int MinimumAgeToPurchase { get; set; }
 
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.CallForPrice")]
     public bool CallForPrice { get; set; }
@@ -407,9 +321,6 @@ public partial record ProductModel : BaseNopEntityModel,
 
     public IList<ProductLocalizedModel> Locales { get; set; }
 
-    public IList<int> SelectedCustomerRoleIds { get; set; }
-    public IList<SelectListItem> AvailableCustomerRoles { get; set; }
-
     //store mapping
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.LimitedToStores")]
     public IList<int> SelectedStoreIds { get; set; }
@@ -454,9 +365,6 @@ public partial record ProductModel : BaseNopEntityModel,
     [NopResourceDisplayName("Admin.Catalog.Products.ProductWarehouseInventory")]
     public IList<ProductWarehouseInventoryModel> ProductWarehouseInventoryModels { get; set; }
 
-    //specification attributes
-    public bool HasAvailableSpecificationAttributes { get; set; }
-
     public bool PreTranslationAvailable { get; set; }
 
     //copy product
@@ -479,8 +387,6 @@ public partial record ProductModel : BaseNopEntityModel,
     public ProductPictureSearchModel ProductPictureSearchModel { get; set; }
 
     public ProductVideoSearchModel ProductVideoSearchModel { get; set; }
-
-    public ProductSpecificationAttributeSearchModel ProductSpecificationAttributeSearchModel { get; set; }
 
     public ProductOrderSearchModel ProductOrderSearchModel { get; set; }
 

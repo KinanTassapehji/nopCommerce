@@ -50,10 +50,9 @@
             $('[data-card-name=product-price]').showElement();
             $('[data-card-name=product-shipping]').showElement();
             $('[data-card-name=product-inventory]').showElement();
-            $('[data-card-name=product-giftcard]').showElement();
             $('[data-card-name=product-downloadable]').showElement();
             $('[data-card-name=product-rental]').showElement();
-            $('[data-card-name=product-recurring]').showElement();
+
         } else if (selectedProductTypeId == groupedProductId) {
             $('#group-required-other-products').hideElement();
             $('#group-visible-individually').hideElement();
@@ -70,10 +69,9 @@
             $('[data-card-name=product-price]').hideElement();
             $('[data-card-name=product-shipping]').hideElement();
             $('[data-card-name=product-inventory]').hideElement();
-            $('[data-card-name=product-giftcard]').hideElement();
             $('[data-card-name=product-downloadable]').hideElement();
             $('[data-card-name=product-rental]').hideElement();
-            $('[data-card-name=product-recurring]').hideElement();
+
         }
 
         //templates
@@ -103,53 +101,6 @@
             $('#pnlProductTemplateId').showElement();
         } else {
             $('#pnlProductTemplateId').hideElement();
-        }
-    }
-
-    //required product friendly names
-    $(function() {
-        loadRequiredProductFriendlyNames();
-    });
-
-    $(function() {
-        $('#@Html.IdFor(model => model.RequiredProductIds)')
-            .data('timeout', null)
-            .keyup(function() {
-                clearTimeout($(this).data('timeout'));
-                //one second timeout
-                $(this).data('timeout', setTimeout(loadRequiredProductFriendlyNames, 1000));
-            });
-    });
-
-    function loadRequiredProductFriendlyNames() {
-        var inputValue = $('#@Html.IdFor(model => model.RequiredProductIds)').val();
-        if (inputValue) {
-            //load friendly names
-            $('#required-products-check-progress').show();
-
-            var postData = {
-                productIds: inputValue
-            };
-            addAntiForgeryToken(postData);
-
-            $.ajax({
-                cache: false,
-                type: "POST",
-                url: "@Url.Action("LoadProductFriendlyNames", "Product")",
-                data: postData,
-                dataType: "json",
-                success: function (data, textStatus, jqXHR) {
-                    $('#required-product-names').text(data.Text);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    $('#required-product-names').text('');
-                },
-                complete: function (jqXHR, textStatus) {
-                    $('#required-products-check-progress').hide();
-                }
-            });
-        } else {
-            $('#required-product-names').text('');
         }
     }
 
@@ -317,15 +268,6 @@
             <span asp-validation-for="SelectedProductTags"></span>
         </div>
     </div>
-    <div class="form-group row @(Model.ProductEditorSettingsModel.GTIN ? null : "advanced-setting")">
-        <div class="col-md-3">
-            <nop-label asp-for="Gtin" />
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Gtin" />
-            <span asp-validation-for="Gtin"></span>
-        </div>
-    </div>
     <div class="form-group row @(Model.ProductEditorSettingsModel.ManufacturerPartNumber ? null : "advanced-setting")">
         <div class="col-md-3">
             <nop-label asp-for="ManufacturerPartNumber" />
@@ -481,42 +423,7 @@
             <span asp-validation-for="VisibleIndividually"></span>
         </div>
     </div>
-    <div class="form-group row @(Model.ProductEditorSettingsModel.AgeVerification ? null : "advanced-setting")">
-        <div class="col-md-3">
-            <nop-label asp-for="AgeVerification" />
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="AgeVerification" />
-            <span asp-validation-for="AgeVerification"></span>
-        </div>
-        <script asp-location="Footer">
-            $(function() {
-                $('#@Html.IdFor(m => m.AgeVerification)').on('change', function() {
-                    if (this.checked) {
-                        warningValidation('@Url.Action("CustomersDateOfBirthDisabledWarning")', '@Html.NameFor(model => model.AgeVerification)', { ageVerification: this.checked });
-                    }
-                    else {
-                        $(this).siblings('.field-validation-custom').remove();
-                    }
-                });
-
-                $('#@Html.IdFor(m => m.AgeVerification)').trigger('change');
-            });
-        </script>
-    </div>
-    <nop-nested-setting asp-for="AgeVerification">
-        <div class="form-group row @(Model.ProductEditorSettingsModel.AgeVerification ? null : "advanced-setting")">
-            <div class="col-md-3">
-                <nop-label asp-for="MinimumAgeToPurchase" />
-            </div>
-            <div class="col-md-9">
-                <nop-editor asp-for="MinimumAgeToPurchase" asp-required="true" />
-                <span asp-validation-for="MinimumAgeToPurchase"></span>
-            </div>
-        </div>
-    </nop-nested-setting>
-@await Component.InvokeAsync(typeof(AclCustomerRolesViewComponent), Model)
-    <div class="form-group row @(Model.ProductEditorSettingsModel.Stores ? null : "advanced-setting")">
+    <div class="form-group row @(Model.ProductEditorSettingsModel.Stores ? null : "advanced-setting")" @(Model.AvailableStores.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
         <div class="col-md-3">
             <nop-label asp-for="SelectedStoreIds" />
         </div>
@@ -545,74 +452,13 @@
             </div>
         </div>
     </div>
-    <div class="form-group row @(Model.ProductEditorSettingsModel.Vendor ? null : "advanced-setting")" @(Model.IsLoggedInAsVendor ? Html.Raw("style='display: none;'") : null)>
+    <div class="form-group row @(Model.ProductEditorSettingsModel.Vendor ? null : "advanced-setting")" @(Model.AvailableVendors.SelectionIsNotPossible() || Model.IsLoggedInAsVendor ? Html.Raw("style='display: none;'") : null)>
         <div class="col-md-3">
             <nop-label asp-for="VendorId" />
         </div>
         <div class="col-md-9">
             <nop-select asp-for="VendorId" asp-items="Model.AvailableVendors" />
             <span asp-validation-for="VendorId"></span>
-        </div>
-    </div>
-    <div class="form-group row @(Model.ProductEditorSettingsModel.RequireOtherProductsAddedToCart ? null : "advanced-setting")" id="group-required-other-products">
-        <div class="col-md-3">
-            <nop-label asp-for="RequireOtherProducts" />
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="RequireOtherProducts" />
-            <span asp-validation-for="RequireOtherProducts"></span>
-        </div>
-    </div>
-    <nop-nested-setting asp-for="RequireOtherProducts">
-        <div class="form-group row @(Model.ProductEditorSettingsModel.RequireOtherProductsAddedToCart ? null : "advanced-setting")">
-            <div class="col-md-3">
-                <nop-label asp-for="RequiredProductIds" />
-                <span id="required-products-check-progress" style="display: none; float: right; clear: both" class="please-wait">
-                    @T("Common.Wait")
-                </span>
-            </div>
-            <div class="col-md-9">
-                <div class="input-group">
-                    <nop-editor asp-for="RequiredProductIds" />
-                    <div class="input-group-append">
-                        <button type="submit" id="btnRefreshRequiredProducts" style="display: none"></button>
-                        <script>
-                            $(function() {
-                                $('#btnRefreshRequiredProducts').click(function () {
-                                    //refresh product list
-                                    loadRequiredProductFriendlyNames();
-
-                                    //return false to don't reload a page
-                                    return false;
-                                });
-                            });
-                        </script>
-                        <button type="submit" id="btnAddNewRequiredProduct" onclick="javascript:OpenWindow('@(Url.Action("RequiredProductAddPopup", "Product", new {btnId = "btnRefreshRequiredProducts", productIdsInput = "RequiredProductIds"}))', 800, 850, true); return false;" class="btn btn-info">
-                            @T("Admin.Catalog.Products.Fields.RequiredProductIds.AddNew")
-                        </button>
-                    </div>
-                </div>
-                <span id="required-product-names"></span>
-                @Html.ValidationMessageFor(model => model.RequiredProductIds)
-            </div>
-        </div>
-        <div class="form-group row @(Model.ProductEditorSettingsModel.RequireOtherProductsAddedToCart ? null : "advanced-setting")">
-            <div class="col-md-3">
-                <nop-label asp-for="AutomaticallyAddRequiredProducts" />
-            </div>
-            <div class="col-md-9">
-                <nop-editor asp-for="AutomaticallyAddRequiredProducts" />
-                <span asp-validation-for="AutomaticallyAddRequiredProducts"></span>
-            </div>
-        </div>
-    </nop-nested-setting>
-    <div class="form-group row @(Model.ProductEditorSettingsModel.AllowCustomerReviews ? null : "advanced-setting")">
-        <div class="col-md-3">
-            <nop-label asp-for="AllowCustomerReviews" />
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="AllowCustomerReviews" />
-            <span asp-validation-for="AllowCustomerReviews"></span>
         </div>
     </div>
     <div class="form-group row @(Model.ProductEditorSettingsModel.AvailableStartDate ? null : "advanced-setting")">

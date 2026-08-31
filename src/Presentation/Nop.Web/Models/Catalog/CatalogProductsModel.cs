@@ -31,11 +31,6 @@ public partial record CatalogProductsModel : BasePageableModel
     public PriceRangeFilterModel PriceRangeFilter { get; set; }
 
     /// <summary>
-    /// Gets or sets the specification filter model
-    /// </summary>
-    public SpecificationFilterModel SpecificationFilter { get; set; }
-
-    /// <summary>
     /// Gets or sets the manufacturer filter model
     /// </summary>
     public ManufacturerFilterModel ManufacturerFilter { get; set; }
@@ -92,7 +87,6 @@ public partial record CatalogProductsModel : BasePageableModel
     public CatalogProductsModel()
     {
         PriceRangeFilter = new PriceRangeFilterModel();
-        SpecificationFilter = new SpecificationFilterModel();
         ManufacturerFilter = new ManufacturerFilterModel();
         AvailableSortOptions = new List<SelectListItem>();
         AvailableViewModes = new List<SelectListItem>();

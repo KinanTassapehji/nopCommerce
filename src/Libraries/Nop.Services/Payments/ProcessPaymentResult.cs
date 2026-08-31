@@ -53,11 +53,6 @@ public partial class ProcessPaymentResult : BaseNopResult
     public bool AllowStoringCreditCardNumber { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating that the recurring payment failed
-    /// </summary>
-    public bool RecurringPaymentFailed { get; set; }
-
-    /// <summary>
     /// Gets or sets a payment status after processing
     /// </summary>
     public PaymentStatus NewPaymentStatus { get; set; } = PaymentStatus.Pending;

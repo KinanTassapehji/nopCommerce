@@ -1,0 +1,170 @@
+@model AddCustomerToReminderSearchModel
+
+@{
+    Layout = "_AdminPopupLayout";
+    //page title
+    ViewBag.PageTitle = T("NopStation.Plugins.CustomerReminders.Admin.Reminders.ExcludedCustomers.AddNew").Text;
+}
+
+<form asp-controller="Reminder" asp-action="CustomerAddPopup" method="post" id="customer-add-form">
+
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("NopStation.Plugins.CustomerReminders.Admin.Reminders.ExcludedCustomers.AddNew")
+        </h1>
+        <div class="float-right">
+            &nbsp;
+        </div>
+    </div>
+
+    @if (ViewBag.RefreshPage == true)
+    {
+        <script>
+            try {
+                window.opener.document.getElementById('btnRefresh').click();
+            }
+            catch (e) { }
+            window.close();
+        </script>
+    }
+    else
+    {
+        <input type="hidden" name="ReminderId" value="@Model.ReminderId" />
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="form-horizontal">
+                    <div class="cards-group">
+                        <div class="card card-default card-search card-popup">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchEmail" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchEmail" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="text-center col-12">
+                                        <button type="button"
+                                                id="search-customers"
+                                                class="btn btn-primary btn-search">
+                                            <i class="fas fa-search"></i>
+                                            @T("Admin.Common.Search")
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-default">
+                            <div class="card-body">
+                                @await Html.PartialAsync("Table", new DataTablesModel
+                                {
+                                    Name = "customers-grid",
+                                                        UrlRead = new DataUrl("CustomerAddPopupList", "Reminder", null),
+                                                        SearchButtonId = "search-customers",
+                                                        Length = Model.PageSize,
+                                                        LengthMenu = Model.AvailablePageSizes,
+                                                        Filters = new List<FilterParameter>
+                                                        {
+                                                        new FilterParameter(nameof(Model.SearchEmail)),
+                                                        new FilterParameter(nameof(Model.ReminderId), Model.ReminderId)
+                                                        },
+                                                        ColumnCollection = new List<ColumnProperty>
+                                                        {
+                                                        new ColumnProperty(nameof(AddCustomerToReminderModel.Id))
+                                                        {
+                                                        IsMasterCheckBox = true,
+                                                        Render = new RenderCheckBox("checkbox_customers"),
+                                                        ClassName = NopColumnClassDefaults.CenterAll,
+                                                        Width = "50"
+                                                        },
+                                                        new ColumnProperty(nameof(AddCustomerToReminderModel.Email))
+                                                        {
+                                                        Title = T("Admin.Customers.Customers.Fields.Email").Text
+                                                        },
+                                                        new ColumnProperty(nameof(AddCustomerToReminderModel.Username))
+                                                        {
+                                                        Title = T("Admin.Customers.Customers.Fields.Username").Text
+                                                        },
+                                                        new ColumnProperty(nameof(AddCustomerToReminderModel.FullName))
+                                                        {
+                                                        Title = T("Admin.Customers.Customers.Fields.FullName").Text
+                                                        },
+                                                        new ColumnProperty(nameof(AddCustomerToReminderModel.CustomerRoleNames))
+                                                        {
+                                                        Title = T("Admin.Customers.Customers.Fields.CustomerRoles").Text
+                                                        },
+                                                        new ColumnProperty(nameof(AddCustomerToReminderModel.Active))
+                                                        {
+                                                        Title = T("Admin.Customers.Customers.Fields.Active").Text,
+                                                        Render = new RenderBoolean()
+                                                        }
+                                                        }
+                                })
+
+                                <button type="button"
+                                        id="save"
+                                        class="btn btn-primary">
+                                    <i class="far fa-floppy-disk"></i>
+                                    @T("Admin.Common.Save")
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            $(function () {
+                var form = $('#customer-add-form');
+
+                $("#save").on('click', function (e) {
+
+                    var selectedIds = [];
+
+                    $("#customers-grid")
+                        .find("input.checkboxGroups:checked")
+                        .each(function () {
+                            selectedIds.push($(this).val());
+                        });
+
+                    if (selectedIds.length == 0) {
+                        alert('@T("Admin.Common.Alert.NothingSelected")');
+                        return false;
+                    }
+
+                    // Remove any existing hidden inputs for selected customer IDs
+                    $('input[name="SelectedCustomerIds"]').remove();
+                    $('input[name="save"]').remove();
+
+                    // Create a hidden input named 'save' for FormValueRequired attribute
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'save',
+                        value: 'save'
+                    }).appendTo(form);
+
+                    // Create hidden inputs for each selected customer ID
+                    $.each(selectedIds, function (index, value) {
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: 'SelectedCustomerIds',
+                            value: value
+                        }).appendTo(form);
+                    });
+
+                    // Submit the form
+                    form.submit();
+                });
+            });
+        </script>
+    }
+</form>

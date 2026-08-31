@@ -45,23 +45,6 @@ public partial class InstallationService
     }
 
     /// <summary>
-    /// Gets a specification attribute option identifier
-    /// </summary>
-    /// <param name="specAttributeName">The spec attribute name</param>
-    /// <param name="specAttributeOptionName">The spec attribute option name</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    protected virtual async Task<int> GetSpecificationAttributeOptionIdAsync(string specAttributeName, string specAttributeOptionName)
-    {
-        var specificationAttribute = await Table<SpecificationAttribute>()
-            .SingleAsync(sa => sa.Name == specAttributeName);
-
-        var specificationAttributeOption = await Table<SpecificationAttributeOption>()
-            .SingleAsync(sao => sao.Name == specAttributeOptionName && sao.SpecificationAttributeId == specificationAttribute.Id);
-
-        return specificationAttributeOption.Id;
-    }
-
-    /// <summary>
     /// Insert product tags mappings
     /// </summary>
     /// <param name="product"></param>
@@ -167,11 +150,6 @@ public partial class InstallationService
                 throw new Exception($"Product with SKU = \"{sku}\" could not be loaded"));
         }
 
-        //TODO: avoid using service
-        var downloadService = EngineContext.Current.Resolve<IDownloadService>();
-
-        var sampleDownloadsPath = _fileProvider.GetAbsolutePath(NopInstallationDefaults.SampleImagesPath);
-
         async Task insertProduct(SampleProducts.SampleProduct sample, int parentGroupedProductId = 0)
         {
             var product = new Product
@@ -184,7 +162,6 @@ public partial class InstallationService
                 ShortDescription = sample.ShortDescription,
                 FullDescription = sample.FullDescription,
                 ProductTemplateId = await getProductTemplate(sample.ProductTemplateName),
-                AllowCustomerReviews = sample.AllowCustomerReviews,
                 Price = sample.Price,
                 OldPrice = sample.OldPrice,
                 IsShipEnabled = sample.IsShipEnabled,
@@ -197,30 +174,20 @@ public partial class InstallationService
                 ManageInventoryMethod = sample.ManageInventoryMethod,
                 StockQuantity = sample.StockQuantity,
                 NotifyAdminForQuantityBelow = sample.NotifyAdminForQuantityBelow,
-                AllowBackInStockSubscriptions = sample.AllowBackInStockSubscriptions,
                 DisplayStockAvailability = sample.DisplayStockAvailability,
                 LowStockActivity = sample.LowStockActivity,
-                BackorderMode = sample.BackorderMode,
                 OrderMinimumQuantity = sample.OrderMinimumQuantity,
                 OrderMaximumQuantity = sample.OrderMaximumQuantity,
                 Published = sample.Published,
                 ShowOnHomepage = sample.ShowOnHomepage,
                 MarkAsNew = sample.MarkAsNew,
-                IsRecurring = sample.IsRecurring,
-                RecurringCycleLength = sample.RecurringCycleLength,
-                RecurringCyclePeriod = sample.RecurringCyclePeriod,
-                RecurringTotalCycles = sample.RecurringTotalCycles,
+
                 CreatedOnUtc = DateTime.UtcNow,
                 UpdatedOnUtc = DateTime.UtcNow,
                 IsRental = sample.IsRental,
                 RentalPriceLength = sample.RentalPriceLength,
                 RentalPricePeriod = sample.RentalPricePeriod,
-                IsGiftCard = sample.IsGiftCard,
-                GiftCardType = sample.GiftCardType,
-                IsDownload = sample.IsDownload,
-                DownloadActivationType = sample.DownloadActivationType,
-                UnlimitedDownloads = sample.UnlimitedDownloads,
-                HasUserAgreement = sample.HasUserAgreement,
+
                 CustomerEntersPrice = sample.CustomerEntersPrice,
                 MinimumCustomerEnteredPrice = sample.MinimumCustomerEnteredPrice,
                 MaximumCustomerEnteredPrice = sample.MaximumCustomerEnteredPrice,
@@ -231,39 +198,6 @@ public partial class InstallationService
 
             if (!string.IsNullOrEmpty(sample.DeliveryDate))
                 product.DeliveryDateId = await getDeliveryDateId(sample.DeliveryDate);
-
-            if (sample.Download != null)
-            {
-                var download = new Download
-                {
-                    DownloadGuid = Guid.NewGuid(),
-                    ContentType = sample.Download.ContentType,
-                    DownloadBinary = await _fileProvider.ReadAllBytesAsync(sampleDownloadsPath + sample.Download.DownloadFileName),
-                    Extension = sample.Download.Extension,
-                    Filename = sample.Download.Filename,
-                    IsNew = sample.Download.IsNew
-                };
-                await downloadService.InsertDownloadAsync(download);
-
-                product.DownloadId = download.Id;
-            }
-
-            if (sample.SampleDownload != null)
-            {
-                var download = new Download
-                {
-                    DownloadGuid = Guid.NewGuid(),
-                    ContentType = sample.SampleDownload.ContentType,
-                    DownloadBinary = await _fileProvider.ReadAllBytesAsync(sampleDownloadsPath + sample.SampleDownload.DownloadFileName),
-                    Extension = sample.SampleDownload.Extension,
-                    Filename = sample.SampleDownload.Filename,
-                    IsNew = sample.SampleDownload.IsNew
-                };
-                await downloadService.InsertDownloadAsync(download);
-
-                product.HasSampleDownload = true;
-                product.DownloadId = download.Id;
-            }
 
             allProducts.Add(product);
 
@@ -358,23 +292,6 @@ public partial class InstallationService
 
             if (sample.ProductTags.Any())
                 await InsertProductTagMappingAsync(product, sample.ProductTags.ToArray());
-
-            if (sample.ProductSpecificationAttribute.Any())
-            {
-                var productSpecificationAttributes = new List<ProductSpecificationAttribute>();
-
-                foreach (var specificationAttribute in sample.ProductSpecificationAttribute)
-                    productSpecificationAttributes.Add(new ProductSpecificationAttribute
-                    {
-                        ProductId = product.Id,
-                        AllowFiltering = specificationAttribute.AllowFiltering,
-                        ShowOnProductPage = specificationAttribute.ShowOnProductPage,
-                        DisplayOrder = specificationAttribute.DisplayOrder,
-                        SpecificationAttributeOptionId = await GetSpecificationAttributeOptionIdAsync(specificationAttribute.SpecAttributeName, specificationAttribute.SpecAttributeOptionName)
-                    });
-
-                await _dataProvider.BulkInsertEntitiesAsync(productSpecificationAttributes);
-            }
 
             foreach (var sampleGroupedProduct in sample.GroupedProducts)
                 await insertProduct(sampleGroupedProduct, product.Id);

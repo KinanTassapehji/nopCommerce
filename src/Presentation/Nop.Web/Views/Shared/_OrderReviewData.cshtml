@@ -6,7 +6,7 @@
         <div class="billing-info-wrap">
             <div class="billing-info">
                 <h2 class="title">
-                    @T("Order.BillingAddress")
+                    @T("Order.ShippingAddress")
                 </h2>
                 <ul class="info-list">
                     <li class="name">
@@ -73,59 +73,21 @@
         @if (Model.IsShippable)
         {
             <div class="shipping-info-wrap">
-                <div class="shipping-info">
-                    <h2 class="title">
-                        @(Model.SelectedPickupInStore ? T("Order.PickupAddress") : T("Order.ShippingAddress"))
-                    </h2>
-                    <ul class="info-list">
-                        @if (!Model.SelectedPickupInStore)
-                        {
-                            <li class="name">
-                                @Model.ShippingAddress.FirstName @Model.ShippingAddress.LastName
-                            </li>
-                            <li class="email">
-                                @T("Order.Email"): @Model.ShippingAddress.Email
-                            </li>
-                            if (Model.ShippingAddress.PhoneEnabled)
-                            {
-                                <li class="phone">
-                                    @T("Order.Phone"): @Model.ShippingAddress.PhoneNumber
-                                </li>
-                            }
-                            if (Model.ShippingAddress.FaxEnabled)
-                            {
-                                <li class="fax">
-                                    @T("Order.Fax"): @Model.ShippingAddress.FaxNumber
-                                </li>
-                            }
-                            if (Model.ShippingAddress.CompanyEnabled && !string.IsNullOrEmpty(Model.ShippingAddress.Company))
-                            {
-                                <li class="company">
-                                    @Model.ShippingAddress.Company
-                                </li>
-                            }
-                            @foreach (var item in Model.ShippingAddress.AddressFields)
-                            {
-                                <li class=@item.Key.ToString().ToLower()>@item.Value</li>
-                            }
-                            if (!string.IsNullOrEmpty(Model.ShippingAddress.FormattedCustomAddressAttributes))
-                            {
-                                <li class="custom-attributes-view">
-                                    @Html.Raw(Model.ShippingAddress.FormattedCustomAddressAttributes)
-                                </li>
-                            }
-                            @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.OrderSummaryShippingAddress, additionalData = Model })
-                        }
-                        else
-                        {
+                @if (Model.SelectedPickupInStore)
+                {
+                    <div class="shipping-info">
+                        <h2 class="title">
+                            @T("Order.PickupAddress")
+                        </h2>
+                        <ul class="info-list">
                             @foreach (var item in Model.PickupAddress.AddressFields)
                             {
                                 <li class=@item.Key.ToString().ToLower()>@item.Value</li>
                             }
-                        }
-                        @await Html.PartialAsync("_OrderCustomValues", Model.CustomValues?.GetValuesByDisplayLocation(CustomValueDisplayLocation.ShippingAddress))
-                    </ul>
-                </div>
+                            @await Html.PartialAsync("_OrderCustomValues", Model.CustomValues?.GetValuesByDisplayLocation(CustomValueDisplayLocation.ShippingAddress))
+                        </ul>
+                    </div>
+                }
                 <div class="shipping-method-info">
                     <h2 class="title">
                         @T("Order.Shipping")

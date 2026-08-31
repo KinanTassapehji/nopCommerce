@@ -103,14 +103,13 @@ public partial interface IOrderTotalCalculationService
     /// Gets shopping cart total
     /// </summary>
     /// <param name="cart">Cart</param>
-    /// <param name="useRewardPoints">A value indicating reward points should be used; null to detect current choice of the customer</param>
     /// <param name="usePaymentMethodAdditionalFee">A value indicating whether we should use payment method additional fee when calculating order total</param>
     /// <returns>
     /// A task that represents the asynchronous operation
-    /// The task result contains the shopping cart total;Null if shopping cart total couldn't be calculated now. Applied gift cards. Applied discount amount. Applied discounts. Reward points to redeem. Reward points amount in primary store currency to redeem
+    /// The task result contains the shopping cart total;Null if shopping cart total couldn't be calculated now. Applied discount amount. Applied discounts. Reward points to redeem. Reward points amount in primary store currency to redeem
     /// </returns>
-    Task<(decimal? shoppingCartTotal, decimal discountAmount, List<Discount> appliedDiscounts, List<AppliedGiftCard> appliedGiftCards, int redeemedRewardPoints, decimal redeemedRewardPointsAmount)> GetShoppingCartTotalAsync(IList<ShoppingCartItem> cart,
-        bool? useRewardPoints = null, bool usePaymentMethodAdditionalFee = true);
+    Task<(decimal? shoppingCartTotal, decimal discountAmount, List<Discount> appliedDiscounts)> GetShoppingCartTotalAsync(IList<ShoppingCartItem> cart,
+        bool usePaymentMethodAdditionalFee = true);
 
     /// <summary>
     /// Calculate payment method fee
@@ -132,39 +131,4 @@ public partial interface IOrderTotalCalculationService
     /// <returns>A task that represents the asynchronous operation</returns>
     Task UpdateOrderTotalsAsync(UpdateOrderParameters updateOrderParameters, IList<ShoppingCartItem> restoredCart);
 
-    /// <summary>
-    /// Converts existing reward points to amount
-    /// </summary>
-    /// <param name="rewardPoints">Reward points</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the converted value
-    /// </returns>
-    Task<decimal> ConvertRewardPointsToAmountAsync(int rewardPoints);
-
-    /// <summary>
-    /// Gets a value indicating whether a customer has minimum amount of reward points to use (if enabled)
-    /// </summary>
-    /// <param name="rewardPoints">Reward points to check</param>
-    /// <returns>true - reward points could use; false - cannot be used.</returns>
-    bool CheckMinimumRewardPointsToUseRequirement(int rewardPoints);
-
-    /// <summary>
-    /// Calculate how order total (maximum amount) for which reward points could be earned/reduced
-    /// </summary>
-    /// <param name="orderShippingInclTax">Order shipping (including tax)</param>
-    /// <param name="orderTotal">Order total</param>
-    /// <returns>Applicable order total</returns>
-    decimal CalculateApplicableOrderTotalForRewardPoints(decimal orderShippingInclTax, decimal orderTotal);
-
-    /// <summary>
-    /// Calculate how much reward points will be earned/reduced based on certain amount spent
-    /// </summary>
-    /// <param name="customer">Customer</param>
-    /// <param name="amount">Amount (in primary store currency)</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the number of reward points
-    /// </returns>
-    Task<int> CalculateRewardPointsAsync(Customer customer, decimal amount);
 }

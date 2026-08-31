@@ -101,10 +101,10 @@ public class BlogServiceTests : ServiceTest
     public async Task CanGetAllBlogPosts()
     {
         var blogPosts = await _blogService.GetAllBlogPostsAsync();
-        blogPosts.TotalCount.Should().Be(2);
+        blogPosts.TotalCount.Should().Be(1);
 
         blogPosts = await _blogService.GetAllBlogPostsAsync(showHidden: true);
-        blogPosts.TotalCount.Should().Be(2);
+        blogPosts.TotalCount.Should().Be(1);
     }
 
     [Test]
@@ -116,13 +116,13 @@ public class BlogServiceTests : ServiceTest
         blogPosts = await _blogService.GetAllBlogPostsByTagAsync();
         blogPosts.TotalCount.Should().Be(0);
 
-        blogPosts = await _blogService.GetAllBlogPostsByTagAsync(tag: "e-commerce");
-        blogPosts.TotalCount.Should().Be(2);
-
-        blogPosts = await _blogService.GetAllBlogPostsByTagAsync(tag: "nopCommerce");
+        blogPosts = await _blogService.GetAllBlogPostsByTagAsync(tag: "إضاءة");
         blogPosts.TotalCount.Should().Be(1);
 
-        blogPosts = await _blogService.GetAllBlogPostsByTagAsync(tag: "blog");
+        blogPosts = await _blogService.GetAllBlogPostsByTagAsync(tag: "nopCommerce");
+        blogPosts.TotalCount.Should().Be(0);
+
+        blogPosts = await _blogService.GetAllBlogPostsByTagAsync(tag: "أدلة");
         blogPosts.TotalCount.Should().Be(1);
 
         blogPosts = await _blogService.GetAllBlogPostsByTagAsync(tag: "not exists");
@@ -132,21 +132,24 @@ public class BlogServiceTests : ServiceTest
     [Test]
     public async Task CanGetAllBlogPostTags()
     {
-        var blogPostTags = await _blogService.GetAllBlogPostTagsAsync(1, 1);
-        blogPostTags.Count.Should().Be(5);
+        //the seeded post belongs to the store's own language (2), not to English (1)
+        var blogPostTags = await _blogService.GetAllBlogPostTagsAsync(1, 2);
+        blogPostTags.Count.Should().Be(3);
 
-        blogPostTags = await _blogService.GetAllBlogPostTagsAsync(2, 1);
-        blogPostTags.Count.Should().Be(5);
+        blogPostTags = await _blogService.GetAllBlogPostTagsAsync(2, 2);
+        blogPostTags.Count.Should().Be(3);
 
-        blogPostTags = await _blogService.GetAllBlogPostTagsAsync(1, 2);
+        blogPostTags = await _blogService.GetAllBlogPostTagsAsync(1, 1);
         blogPostTags.Count.Should().Be(0);
     }
 
     [Test]
     public async Task CanGetPostsByDate()
     {
-        var posts = (await _blogService.GetAllBlogPostsByTagAsync(tag: "e-commerce")).OrderBy(b => b.Id).ToList();
-        posts[1].CreatedOnUtc = posts[1].CreatedOnUtc.AddDays(1);
+        var posts = (await _blogService.GetAllBlogPostsByTagAsync(tag: "إضاءة")).OrderBy(b => b.Id).ToList();
+
+        //the sample data has a single post, so add an in-memory one a day later to test the range
+        posts.Add(new BlogPost { CreatedOnUtc = posts[0].CreatedOnUtc.AddDays(1) });
 
         var filteredPosts = await _blogService.GetPostsByDateAsync(posts, posts[0].CreatedOnUtc, posts[0].CreatedOnUtc);
         filteredPosts.Count.Should().Be(1);
@@ -159,7 +162,7 @@ public class BlogServiceTests : ServiceTest
     public async Task CanGetAllComments()
     {
         var comments = await _blogService.GetAllCommentsAsync();
-        comments.Count.Should().Be(2);
+        comments.Count.Should().Be(1);
         comments = await _blogService.GetAllCommentsAsync(blogPostId: 1);
         comments.Count.Should().Be(1);
         comments = await _blogService.GetAllCommentsAsync(blogPostId: 3);

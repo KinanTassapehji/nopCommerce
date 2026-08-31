@@ -5,13 +5,23 @@
 @if (Model.AvailableLanguages.Count > 1)
 {
     var returnUrl = webHelper.GetRawUrl(Context.Request);
-    var languages = Model.AvailableLanguages.Select(lang => new SelectListItem
-                {
-                    Text = lang.Name,
-                    Value = Url.Action("SetLanguage", "Common", new { langid = lang.Id, area = AreaNames.ADMIN, returnUrl },
-                webHelper.GetCurrentRequestProtocol()),
-                    Selected = lang.Id.Equals(Model.CurrentLanguage.Id)
-                }).ToList();
 
-    <nop-select asp-for-name="customerlanguage" asp-items="@languages" onchange="setLocation(this.value);" />
+    <a class="nav-link language-switcher-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" aria-label="@T("Languages.Selector.Label")">
+        <span class="language-switcher-name">@Model.CurrentLanguage.Name</span>
+        <i class="fas fa-angle-down"></i>
+    </a>
+    <div class="language-switcher-menu dropdown-menu dropdown-menu-right" role="menu">
+        @foreach (var lang in Model.AvailableLanguages)
+        {
+            var current = lang.Id == Model.CurrentLanguage.Id;
+            <a class="dropdown-item@(current ? " active" : null)" role="menuitem"
+               href="@Url.Action("SetLanguage", "Common", new { langid = lang.Id, area = AreaNames.ADMIN, returnUrl }, webHelper.GetCurrentRequestProtocol())">
+                <span class="language-switcher-name">@lang.Name</span>
+                @if (current)
+                {
+                    <i class="fas fa-check"></i>
+                }
+            </a>
+        }
+    </div>
 }

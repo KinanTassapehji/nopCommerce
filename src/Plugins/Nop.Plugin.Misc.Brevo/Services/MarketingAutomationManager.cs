@@ -139,7 +139,7 @@ public class MarketingAutomationManager
                     await _workContext.GetTaxDisplayTypeAsync() == TaxDisplayType.IncludingTax);
                 var cartTax = await _orderTotalCalculationService.GetTaxTotalAsync(cart, false);
                 var cartShipping = await _orderTotalCalculationService.GetShoppingCartShippingTotalAsync(cart);
-                var (cartTotal, _, _, _, _, _) = await _orderTotalCalculationService.GetShoppingCartTotalAsync(cart, false, false);
+                var (cartTotal, _, _) = await _orderTotalCalculationService.GetShoppingCartTotalAsync(cart, false);
 
                 //get products data by shopping cart items
                 var itemsData = await cart.Where(item => item.ProductId != 0).SelectAwait(async item =>

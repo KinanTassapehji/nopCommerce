@@ -1,7 +1,6 @@
 ﻿@model CatalogProductsModel
 
 @if (!Model.PriceRangeFilter.Enabled &&
-     !Model.SpecificationFilter.Enabled &&
      !Model.ManufacturerFilter.Enabled)
 {
     return;
@@ -11,11 +10,6 @@
     @if (Model.PriceRangeFilter.Enabled)
     {
         @await Html.PartialAsync("_FilterPriceBox", Model.PriceRangeFilter)
-    }
-
-    @if (Model.SpecificationFilter.Enabled)
-    {
-        @await Html.PartialAsync("_FilterSpecsBox", Model.SpecificationFilter)
     }
 
     @if (Model.ManufacturerFilter.Enabled)

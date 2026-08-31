@@ -63,7 +63,6 @@ public partial class CustomerController : BaseAdminController
     protected readonly INotificationService _notificationService;
     protected readonly IPermissionService _permissionService;
     protected readonly IQueuedEmailService _queuedEmailService;
-    protected readonly IRewardPointService _rewardPointService;
     protected readonly IStoreContext _storeContext;
     protected readonly ITaxService _taxService;
     protected readonly IWorkContext _workContext;
@@ -101,7 +100,6 @@ public partial class CustomerController : BaseAdminController
         INotificationService notificationService,
         IPermissionService permissionService,
         IQueuedEmailService queuedEmailService,
-        IRewardPointService rewardPointService,
         IStoreContext storeContext,
         ITaxService taxService,
         IWorkContext workContext,
@@ -134,7 +132,6 @@ public partial class CustomerController : BaseAdminController
         _notificationService = notificationService;
         _permissionService = permissionService;
         _queuedEmailService = queuedEmailService;
-        _rewardPointService = rewardPointService;
         _storeContext = storeContext;
         _taxService = taxService;
         _workContext = workContext;
@@ -749,25 +746,6 @@ public partial class CustomerController : BaseAdminController
 
     [HttpPost]
     [CheckPermission(StandardPermission.Customers.CUSTOMERS_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> RemoveBindMFA(int id)
-    {
-        //try to get a customer with the specified id
-        var customer = await _customerService.GetCustomerByIdAsync(id);
-        if (customer == null)
-            return RedirectToAction("List");
-
-        await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.SelectedMultiFactorAuthenticationProviderAttribute, string.Empty);
-
-        //raise event       
-        await _eventPublisher.PublishAsync(new CustomerChangeMultiFactorAuthenticationProviderEvent(customer));
-
-        _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Customers.Customers.UnbindMFAProvider"));
-
-        return RedirectToAction("Edit", new { id = customer.Id });
-    }
-
-    [HttpPost]
-    [CheckPermission(StandardPermission.Customers.CUSTOMERS_CREATE_EDIT_DELETE)]
     public virtual async Task<IActionResult> Delete(int id)
     {
         //try to get a customer with the specified id
@@ -986,61 +964,6 @@ public partial class CustomerController : BaseAdminController
         }
 
         return RedirectToAction("Edit", new { id = customer.Id });
-    }
-
-    #endregion
-
-    #region Reward points history
-
-    [HttpPost]
-    [CheckPermission(StandardPermission.Customers.CUSTOMERS_VIEW)]
-    public virtual async Task<IActionResult> RewardPointsHistorySelect(CustomerRewardPointsSearchModel searchModel)
-    {
-        //try to get a customer with the specified id
-        var customer = await _customerService.GetCustomerByIdAsync(searchModel.CustomerId)
-            ?? throw new ArgumentException("No customer found with the specified id");
-
-        //prepare model
-        var model = await _customerModelFactory.PrepareRewardPointsListModelAsync(searchModel, customer);
-
-        return Json(model);
-    }
-
-    [CheckPermission(StandardPermission.Customers.CUSTOMERS_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> RewardPointsHistoryAdd(AddRewardPointsToCustomerModel model)
-    {
-        //prevent adding a new row with zero value
-        if (model.Points == 0)
-            return ErrorJson(await _localizationService.GetResourceAsync("Admin.Customers.Customers.RewardPoints.AddingZeroValueNotAllowed"));
-
-        //prevent adding negative point validity for point reduction
-        if (model.Points < 0 && model.PointsValidity.HasValue)
-            return ErrorJson(await _localizationService.GetResourceAsync("Admin.Customers.Customers.RewardPoints.Fields.AddNegativePointsValidity"));
-
-        //try to get a customer with the specified id
-        var customer = await _customerService.GetCustomerByIdAsync(model.CustomerId);
-        if (customer == null)
-            return ErrorJson("Customer cannot be loaded");
-
-        //check whether delay is set
-        DateTime? activatingDate = null;
-        if (!model.ActivatePointsImmediately && model.ActivationDelay > 0)
-        {
-            var delayPeriod = (RewardPointsActivatingDelayPeriod)model.ActivationDelayPeriodId;
-            var delayInHours = delayPeriod.ToHours(model.ActivationDelay);
-            activatingDate = DateTime.UtcNow.AddHours(delayInHours);
-        }
-
-        //whether points validity is set
-        DateTime? endDate = null;
-        if (model.PointsValidity > 0)
-            endDate = (activatingDate ?? DateTime.UtcNow).AddDays(model.PointsValidity.Value);
-
-        //add reward points
-        await _rewardPointService.AddRewardPointsHistoryEntryAsync(customer, model.Points, model.StoreId, model.Message,
-            activatingDate: activatingDate, endDate: endDate);
-
-        return Json(new { Result = true });
     }
 
     #endregion
@@ -1308,7 +1231,7 @@ public partial class CustomerController : BaseAdminController
 
     #endregion
 
-    #region Current shopping cart/ wishlist
+    #region Current shopping cart
 
     [HttpPost]
     [CheckPermission(StandardPermission.Customers.CUSTOMERS_VIEW)]
@@ -1339,24 +1262,6 @@ public partial class CustomerController : BaseAdminController
 
         //prepare model
         var model = await _customerModelFactory.PrepareCustomerActivityLogListModelAsync(searchModel, customer);
-
-        return Json(model);
-    }
-
-    #endregion
-
-    #region Back in stock subscriptions
-
-    [HttpPost]
-    [CheckPermission(StandardPermission.Customers.CUSTOMERS_VIEW)]
-    public virtual async Task<IActionResult> BackInStockSubscriptionList(CustomerBackInStockSubscriptionSearchModel searchModel)
-    {
-        //try to get a customer with the specified id
-        var customer = await _customerService.GetCustomerByIdAsync(searchModel.CustomerId)
-            ?? throw new ArgumentException("No customer found with the specified id");
-
-        //prepare model
-        var model = await _customerModelFactory.PrepareCustomerBackInStockSubscriptionListModelAsync(searchModel, customer);
 
         return Json(model);
     }

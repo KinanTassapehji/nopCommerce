@@ -288,12 +288,13 @@ public partial class DiscountModelFactory : IDiscountModelFactory
             model ??= discount.ToModel<DiscountModel>();
 
             //prepare available discount requirement rules
+            var currentLanguage = await _workContext.GetWorkingLanguageAsync();
             var discountRules = await _discountPluginManager.LoadAllPluginsAsync();
             foreach (var discountRule in discountRules)
             {
                 model.AvailableDiscountRequirementRules.Add(new SelectListItem
                 {
-                    Text = discountRule.PluginDescriptor.FriendlyName,
+                    Text = await _localizationService.GetLocalizedFriendlyNameAsync(discountRule, currentLanguage.Id),
                     Value = discountRule.PluginDescriptor.SystemName
                 });
             }
@@ -405,7 +406,8 @@ public partial class DiscountModelFactory : IDiscountModelFactory
             if (requirementRule == null)
                 return null;
 
-            requirementModel.RuleName = requirementRule.PluginDescriptor.FriendlyName;
+            requirementModel.RuleName = await _localizationService
+                .GetLocalizedFriendlyNameAsync(requirementRule, (await _workContext.GetWorkingLanguageAsync()).Id);
             requirementModel
                 .ConfigurationUrl = requirementRule.GetConfigurationUrl(discount.Id, requirement.Id);
 

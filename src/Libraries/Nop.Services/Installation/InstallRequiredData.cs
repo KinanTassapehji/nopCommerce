@@ -63,19 +63,19 @@ public partial class InstallationService
         var stores = new List<Store>
         {
             new() {
-                Name = "Your store name",
-                DefaultTitle = "Your store",
+                Name = "تمتم",
+                DefaultTitle = "تمتم",
                 DefaultMetaKeywords = string.Empty,
                 DefaultMetaDescription = string.Empty,
-                HomepageTitle = "Home page title",
-                HomepageDescription = "Home page description",
+                HomepageTitle = "منزلك وحياتك اليومية",
+                HomepageDescription = "متجر تمتم: أدوات منزلية وتقنية وملابس وعناية، بتوصيل خلال يوم إلى يومين.",
                 Url = storeUrl,
                 SslEnabled = _webHelper.IsCurrentConnectionSecured(),
                 Hosts = "yourstore.com,www.yourstore.com",
                 DisplayOrder = 1,
                 //should we set some default company info?
-                CompanyName = "Your company name",
-                CompanyAddress = "your company country, state, zip, street, etc",
+                CompanyName = "تمتم",
+                CompanyAddress = "دمشق، سوريا",
                 CompanyPhoneNumber = "(123) 456-78901",
                 CompanyVat = null
             }
@@ -167,7 +167,6 @@ public partial class InstallationService
         {
             new() {Name = "Books", DisplayOrder = 1},
             new() {Name = "Electronics & Software", DisplayOrder = 5},
-            new() {Name = "Downloadable Products", DisplayOrder = 10},
             new() {Name = "Jewelry", DisplayOrder = 15},
             new() {Name = "Apparel", DisplayOrder = 20}
         };
@@ -344,10 +343,49 @@ public partial class InstallationService
             await ImportResourcesFromXmlAsync(defaultLanguage, streamReader);
         }
 
+        //install the language packs bundled with the store (a "<culture>.nopres.xml" file per language)
+        var languagePacksPath = _fileProvider.MapPath(NopInstallationDefaults.BundledLanguagePacksPath);
+        var bundledLanguagesCount = 0;
+        if (_fileProvider.DirectoryExists(languagePacksPath))
+            foreach (var filePath in _fileProvider.EnumerateFiles(languagePacksPath, pattern))
+            {
+                var packCulture = new CultureInfo(_fileProvider.GetFileName(filePath).Split('.')[0]);
+                if (packCulture.Name == defaultCulture.Name)
+                    continue;
+
+                languageName = re.Replace(packCulture.NativeName, string.Empty);
+
+                var bundledLanguage = new Language
+                {
+                    Name = languageName[0].ToString().ToUpper() + languageName[1..],
+                    LanguageCulture = packCulture.Name,
+                    UniqueSeoCode = packCulture.TwoLetterISOLanguageName,
+                    FlagImageFileName = $"{packCulture.Name.ToLowerInvariant()[^2..]}.png",
+                    Rtl = packCulture.TextInfo.IsRightToLeft,
+                    Published = true,
+                    DisplayOrder = bundledLanguagesCount++
+                };
+                await _dataProvider.InsertEntityAsync(bundledLanguage);
+
+                using var streamReader = new StreamReader(filePath);
+                await ImportResourcesFromXmlAsync(bundledLanguage, streamReader);
+            }
+
+        //bundled packs are the store's own languages, so they come before English in the language selector
+        if (bundledLanguagesCount > 0)
+        {
+            defaultLanguage.DisplayOrder = bundledLanguagesCount + 2;
+            await _dataProvider.UpdateEntityAsync(defaultLanguage);
+        }
+
         var cultureInfo = _installationSettings.CultureInfo;
         var regionInfo = _installationSettings.RegionInfo;
 
         if (cultureInfo == null || regionInfo == null || cultureInfo.Name == NopCommonDefaults.DefaultLanguageCulture)
+            return;
+
+        //the language selected during installation may already be installed from a bundled language pack
+        if (Table<Language>().Any(language => language.LanguageCulture == cultureInfo.Name))
             return;
 
         languageName = re.Replace(cultureInfo.NativeName, string.Empty);
@@ -564,10 +602,15 @@ public partial class InstallationService
                 });
             }
 
-            foreach (var currency in currencies.Where(currency => currency.CurrencyCode == regionInfo.ISOCurrencySymbol))
+            //single-currency store: publish the region's currency and nothing else.
+            //The header's currency selector renders only when two or more are
+            //published, so this is also what keeps it out of the navbar.
+            foreach (var currency in currencies)
             {
-                currency.Published = true;
-                currency.DisplayOrder = 0;
+                currency.Published = currency.CurrencyCode == regionInfo.ISOCurrencySymbol;
+
+                if (currency.Published)
+                    currency.DisplayOrder = 0;
             }
         }
 
@@ -727,13 +770,6 @@ public partial class InstallationService
                     EmailAccountId = eaGeneral.Id
                 },
                 new() {
-                    Name = MessageTemplateSystemNames.BACK_IN_STOCK_NOTIFICATION,
-                    Subject = "%Store.Name%. Back in stock notification",
-                    Body = $"<p>{Environment.NewLine}<a href=\"%Store.URL%\">%Store.Name%</a>{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}Hello %Customer.FullName%,{Environment.NewLine}<br />{Environment.NewLine}Product <a target=\"_blank\" href=\"%BackInStockSubscription.ProductUrl%\">%BackInStockSubscription.ProductName%</a> is in stock.{Environment.NewLine}</p>{Environment.NewLine}",
-                    IsActive = true,
-                    EmailAccountId = eaGeneral.Id
-                },
-                new() {
                     Name = MessageTemplateSystemNames.CUSTOMER_EMAIL_VALIDATION_MESSAGE,
                     Subject = "%Store.Name%. Email validation",
                     Body = $"<a href=\"%Store.URL%\">%Store.Name%</a>{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}To activate your account <a href=\"%Customer.AccountActivationURL%\">click here</a>.{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}%Store.Name%{Environment.NewLine}",
@@ -779,13 +815,6 @@ public partial class InstallationService
                     Name = MessageTemplateSystemNames.NEW_FORUM_TOPIC_MESSAGE,
                     Subject = "%Store.Name%. New Topic Notification.",
                     Body = $"<p>{Environment.NewLine}<a href=\"%Store.URL%\">%Store.Name%</a>{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}A new topic <a href=\"%Forums.TopicURL%\">\"%Forums.TopicName%\"</a> has been created at <a href=\"%Forums.ForumURL%\">\"%Forums.ForumName%\"</a> forum.{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}Click <a href=\"%Forums.TopicURL%\">here</a> for more info.{Environment.NewLine}</p>{Environment.NewLine}",
-                    IsActive = true,
-                    EmailAccountId = eaGeneral.Id
-                },
-                new() {
-                    Name = MessageTemplateSystemNames.GIFT_CARD_NOTIFICATION,
-                    Subject = "%GiftCard.SenderName% has sent you a gift card for %Store.Name%",
-                    Body = $"<p>{Environment.NewLine}You have received a gift card for %Store.Name%{Environment.NewLine}</p>{Environment.NewLine}<p>{Environment.NewLine}Dear %GiftCard.RecipientName%,{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}%GiftCard.SenderName% (%GiftCard.SenderEmail%) has sent you a %GiftCard.Amount% gift card for <a href=\"%Store.URL%\"> %Store.Name%</a>{Environment.NewLine}</p>{Environment.NewLine}<p>{Environment.NewLine}Your gift card code is %GiftCard.CouponCode%{Environment.NewLine}</p>{Environment.NewLine}<p>{Environment.NewLine}%GiftCard.Message%{Environment.NewLine}</p>{Environment.NewLine}",
                     IsActive = true,
                     EmailAccountId = eaGeneral.Id
                 },
@@ -980,37 +1009,9 @@ public partial class InstallationService
                     EmailAccountId = eaGeneral.Id
                 },
                 new() {
-                    Name = MessageTemplateSystemNames.WISHLIST_TO_FRIEND_MESSAGE,
-                    Subject = "%Store.Name%. Wishlist",
-                    Body = $"<p>{Environment.NewLine}<a href=\"%Store.URL%\"> %Store.Name%</a>{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}%Wishlist.Email% was shopping on %Store.Name% and wanted to share a wishlist with you.{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}For more info click <a target=\"_blank\" href=\"%Wishlist.URLForCustomer%\">here</a>{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}%Wishlist.PersonalMessage%{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}%Store.Name%{Environment.NewLine}</p>{Environment.NewLine}",
-                    IsActive = true,
-                    EmailAccountId = eaGeneral.Id
-                },
-                new() {
                     Name = MessageTemplateSystemNames.NEW_ORDER_NOTE_ADDED_CUSTOMER_NOTIFICATION,
                     Subject = "%Store.Name%. New order note has been added",
                     Body = $"<p>{Environment.NewLine}<a href=\"%Store.URL%\">%Store.Name%</a>{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}Hello %Customer.FullName%,{Environment.NewLine}<br />{Environment.NewLine}New order note has been added to your account:{Environment.NewLine}<br />{Environment.NewLine}\"%Order.NewNoteText%\".{Environment.NewLine}<br />{Environment.NewLine}<a target=\"_blank\" href=\"%Order.OrderURLForCustomer%\">%Order.OrderURLForCustomer%</a>{Environment.NewLine}</p>{Environment.NewLine}",
-                    IsActive = true,
-                    EmailAccountId = eaGeneral.Id
-                },
-                new() {
-                    Name = MessageTemplateSystemNames.RECURRING_PAYMENT_CANCELLED_STORE_OWNER_NOTIFICATION,
-                    Subject = "%Store.Name%. Recurring payment cancelled",
-                    Body = $"<p>{Environment.NewLine}<a href=\"%Store.URL%\">%Store.Name%</a>{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}%if (%RecurringPayment.CancelAfterFailedPayment%) The last payment for the recurring payment ID=%RecurringPayment.ID% failed, so it was cancelled. endif% %if (!%RecurringPayment.CancelAfterFailedPayment%) %Customer.FullName% (%Customer.Email%) has just cancelled a recurring payment ID=%RecurringPayment.ID%. endif%{Environment.NewLine}</p>{Environment.NewLine}",
-                    IsActive = true,
-                    EmailAccountId = eaGeneral.Id
-                },
-                new() {
-                    Name = MessageTemplateSystemNames.RECURRING_PAYMENT_CANCELLED_CUSTOMER_NOTIFICATION,
-                    Subject = "%Store.Name%. Recurring payment cancelled",
-                    Body = $"<p>{Environment.NewLine}<a href=\"%Store.URL%\">%Store.Name%</a>{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}Hello %Customer.FullName%,{Environment.NewLine}<br />{Environment.NewLine}%if (%RecurringPayment.CancelAfterFailedPayment%) It appears your credit card didn't go through for this recurring payment (<a href=\"%Order.OrderURLForCustomer%\" target=\"_blank\">%Order.OrderURLForCustomer%</a>){Environment.NewLine}<br />{Environment.NewLine}So your subscription has been cancelled. endif% %if (!%RecurringPayment.CancelAfterFailedPayment%) The recurring payment ID=%RecurringPayment.ID% was cancelled. endif%{Environment.NewLine}</p>{Environment.NewLine}",
-                    IsActive = true,
-                    EmailAccountId = eaGeneral.Id
-                },
-                new() {
-                    Name = MessageTemplateSystemNames.RECURRING_PAYMENT_FAILED_CUSTOMER_NOTIFICATION,
-                    Subject = "%Store.Name%. Last recurring payment failed",
-                    Body = $"<p>{Environment.NewLine}<a href=\"%Store.URL%\">%Store.Name%</a>{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}Hello %Customer.FullName%,{Environment.NewLine}<br />{Environment.NewLine}It appears your credit card didn't go through for this recurring payment (<a href=\"%Order.OrderURLForCustomer%\" target=\"_blank\">%Order.OrderURLForCustomer%</a>){Environment.NewLine}<br /> %if (%RecurringPayment.RecurringPaymentType% == \"Manual\") {Environment.NewLine}You can recharge balance and manually retry payment or cancel it on the order history page. endif% %if (%RecurringPayment.RecurringPaymentType% == \"Automatic\") {Environment.NewLine}You can recharge balance and wait, we will try to make the payment again, or you can cancel it on the order history page. endif%{Environment.NewLine}</p>{Environment.NewLine}",
                     IsActive = true,
                     EmailAccountId = eaGeneral.Id
                 },
@@ -1352,7 +1353,7 @@ public partial class InstallationService
             LastNewsTitleAdminArea = string.Empty,
             LicenseTerms = string.Empty,
             UseIsoDateFormatInJsonResult = true,
-            ShowDocumentationReferenceLinks = true,
+            ShowDocumentationReferenceLinks = false,
             UseStickyHeaderLayout = false,
             MinimumDropdownItemsForSearch = 50
         });
@@ -1362,7 +1363,6 @@ public partial class InstallationService
             Weight = true,
             Dimensions = true,
             ProductAttributes = true,
-            SpecificationAttributes = true,
             FilterLevelValuesProducts = true,
             PAngV = isGermany
         });
@@ -1412,7 +1412,9 @@ public partial class InstallationService
             NewProductsPageSize = 6,
             NewProductsAllowCustomersToSelectPageSize = true,
             NewProductsPageSizeOptions = "6, 3, 9",
-            CompareProductsEnabled = true,
+            //the store does not do product comparison; this also drops the
+            //compare button from every product card
+            CompareProductsEnabled = false,
             CompareProductsNumber = 4,
             ProductSearchAutoCompleteEnabled = true,
             ProductSearchEnabled = true,
@@ -1420,7 +1422,8 @@ public partial class InstallationService
             ShowLinkToAllResultInSearchAutoComplete = false,
             ProductSearchTermMinimumLength = 3,
             ShowProductImagesInSearchAutoComplete = false,
-            ShowBestsellersOnHomepage = false,
+            //the homepage is built around three bands: categories, featured, bestsellers
+            ShowBestsellersOnHomepage = true,
             NumberOfBestsellersOnHomepage = 4,
             ShowSearchBoxCategories = false,
             SearchPageProductsPerPage = 6,
@@ -1438,7 +1441,6 @@ public partial class InstallationService
             IncludeShortDescriptionInCompareProducts = false,
             IncludeFullDescriptionInCompareProducts = false,
             IncludeFeaturedProductsInNormalLists = false,
-            UseLinksInRequiredProductWarnings = true,
             DisplayTierPricesWithDiscounts = true,
             IgnoreDiscounts = false,
             IgnoreFeaturedProducts = false,
@@ -1451,13 +1453,12 @@ public partial class InstallationService
             ProductsByTagManuallyPriceRange = true,
             ProductsByTagPriceFrom = NopCatalogDefaults.DefaultPriceRangeFrom,
             ProductsByTagPriceTo = NopCatalogDefaults.DefaultPriceRangeTo,
-            MaximumBackInStockSubscriptions = 200,
             ManufacturersBlockItemsToDisplay = 2,
             DisplayTaxShippingInfoFooter = isGermany,
             DisplayTaxShippingInfoProductDetailsPage = isGermany,
             DisplayTaxShippingInfoProductBoxes = isGermany,
             DisplayTaxShippingInfoShoppingCart = isGermany,
-            DisplayTaxShippingInfoWishlist = isGermany,
+
             DisplayTaxShippingInfoOrderDetailsPage = isGermany,
             DefaultCategoryPageSizeOptions = "6, 3, 9",
             DefaultCategoryPageSize = 6,
@@ -1467,7 +1468,6 @@ public partial class InstallationService
             ProductReviewsPageSizeOnAccountPage = 10,
             ProductReviewsSortByCreatedDateAscending = false,
             ExportImportProductAttributes = true,
-            ExportImportProductSpecificationAttributes = true,
             ExportImportTierPrices = true,
             ExportImportUseDropdownlistsForAssociatedEntities = true,
             ExportImportProductsCountInOneFile = 500,
@@ -1478,7 +1478,6 @@ public partial class InstallationService
             UseAjaxCatalogProductsLoading = true,
             EnableManufacturerFiltering = true,
             EnablePriceRangeFiltering = true,
-            EnableSpecificationAttributeFiltering = true,
             DisplayFromPrices = false,
             AttributeValueOutOfStockDisplayType = AttributeValueOutOfStockDisplayType.AlwaysDisplay,
             AllowCustomersToSearchWithCategoryName = false,
@@ -1557,9 +1556,6 @@ public partial class InstallationService
             AllowViewingProfiles = false,
             NotifyFailedLoginAttempt = false,
             NotifyNewCustomerRegistration = false,
-            HideDownloadableProductsTab = false,
-            HideBackInStockSubscriptionsTab = false,
-            DownloadableProductsValidateUser = false,
             CustomerNameFormat = CustomerNameFormat.ShowFirstName,
             FirstNameEnabled = true,
             FirstNameRequired = true,
@@ -1593,8 +1589,7 @@ public partial class InstallationService
             LastActivityMinutes = 15,
             SuffixDeletedCustomers = false,
             EnteringEmailTwice = false,
-            RequireRegistrationForDownloadableProducts = false,
-            AllowCustomersToCheckGiftCardBalance = false,
+
             DeleteGuestTaskOlderThanMinutes = 1440,
             PhoneNumberValidationEnabled = false,
             PhoneNumberValidationUseRegex = false,
@@ -1602,28 +1597,24 @@ public partial class InstallationService
             DefaultCountryId = await GetFirstEntityIdAsync<Country>(c => c.ThreeLetterIsoCode == _installationSettings.RegionInfo.ThreeLetterISORegionName)
         });
 
-        await SaveSettingAsync(dictionary, new MultiFactorAuthenticationSettings
-        {
-            ForceMultifactorAuthentication = false
-        });
-
         await SaveSettingAsync(dictionary, new AddressSettings
         {
-            CompanyEnabled = true,
+            //Syria-only store: city, area, street and phone are the whole address
+            CompanyEnabled = false,
             StreetAddressEnabled = true,
             StreetAddressRequired = true,
-            StreetAddress2Enabled = true,
-            ZipPostalCodeEnabled = true,
-            ZipPostalCodeRequired = true,
+            StreetAddress2Enabled = false,
+            ZipPostalCodeEnabled = false,
+            ZipPostalCodeRequired = false,
             CityEnabled = true,
             CityRequired = true,
-            CountyEnabled = false,
-            CountyRequired = false,
-            CountryEnabled = true,
-            StateProvinceEnabled = true,
+            CountyEnabled = true,
+            CountyRequired = true,
+            CountryEnabled = false,
+            StateProvinceEnabled = false,
             PhoneEnabled = true,
             PhoneRequired = true,
-            FaxEnabled = true,
+            FaxEnabled = false,
             DefaultCountryId = await GetFirstEntityIdAsync<Country>(c => c.ThreeLetterIsoCode == _installationSettings.RegionInfo.ThreeLetterISORegionName),
             PrePopulateCountryByCustomer = true
         });
@@ -1660,7 +1651,9 @@ public partial class InstallationService
         await SaveSettingAsync(dictionary, new StoreInformationSettings
         {
             StoreClosed = false,
-            DefaultStoreTheme = "DefaultClean",
+            //the store ships with its own theme; a fresh install that came up in
+            //DefaultClean lost the branding every time until this was seeded
+            DefaultStoreTheme = "TmTm",
             AllowCustomerToSelectTheme = false,
             DisplayEuCookieLawWarning = isEurope,
             FacebookLink = "https://www.facebook.com/nopCommerce",
@@ -1670,39 +1663,14 @@ public partial class InstallationService
             HidePoweredByNopCommerce = false
         });
 
-        await SaveSettingAsync(dictionary, new ExternalAuthenticationSettings
-        {
-            RequireEmailValidation = false,
-            LogErrors = false,
-            AllowCustomersToRemoveAssociations = true
-        });
-
-        await SaveSettingAsync(dictionary, new RewardPointsSettings
-        {
-            Enabled = true,
-            ExchangeRate = 1,
-            PointsForRegistration = 0,
-            RegistrationPointsValidity = 30,
-            PointsForPurchases_Amount = 10,
-            PointsForPurchases_Points = 1,
-            MinOrderTotalToAwardPoints = 0,
-            MaximumRewardPointsToUsePerOrder = 0,
-            MaximumRedeemedRate = 0,
-            PurchasesPointsValidity = 45,
-            ActivationDelay = 0,
-            ActivationDelayPeriodId = 0,
-            DisplayHowMuchWillBeEarned = true,
-            PointsAccumulatedForAllStores = true,
-            PageSize = 10
-        });
-
-        var primaryCurrency = "USD";
+        //the store prices in its own region's currency, not in dollars
+        var primaryCurrency = _installationSettings.RegionInfo?.ISOCurrencySymbol ?? "USD";
         await SaveSettingAsync(dictionary, new CurrencySettings
         {
             DisplayCurrencyLabel = false,
             PrimaryStoreCurrencyId = (await Table<Currency>().SingleAsync(c => c.CurrencyCode == primaryCurrency)).Id,
             PrimaryExchangeRateCurrencyId = (await Table<Currency>().SingleAsync(c => c.CurrencyCode == primaryCurrency)).Id,
-            ActiveExchangeRateProviderSystemName = "CurrencyExchange.ECB",
+            ActiveExchangeRateProviderSystemName = string.Empty,
             AutoUpdateEnabled = false,
             DisplayCurrencySymbolInCurrencySelector = false
         });
@@ -1727,21 +1695,21 @@ public partial class InstallationService
         await SaveSettingAsync(dictionary, new ShoppingCartSettings
         {
             DisplayCartAfterAddingProduct = false,
-            DisplayWishlistAfterAddingProduct = false,
+
             MaximumShoppingCartItems = 1000,
-            MaximumWishlistItems = 1000,
-            AllowMultipleWishlist = true,
-            MaximumNumberOfCustomWishlist = 10,
-            AllowOutOfStockItemsToBeAddedToWishlist = false,
-            MoveItemsFromWishlistToCart = true,
+
+
+
+
+
             CartsSharedBetweenStores = false,
             ShowProductImagesOnShoppingCart = true,
-            ShowProductImagesOnWishList = true,
+
             ShowDiscountBox = true,
-            ShowGiftCardBox = true,
+
             CrossSellsNumber = 4,
-            EmailWishlistEnabled = true,
-            AllowAnonymousUsersToEmailWishlist = false,
+
+
             MiniShoppingCartEnabled = true,
             ShowProductImagesInMiniShoppingCart = true,
             MiniShoppingCartProductNumber = 5,
@@ -1777,9 +1745,9 @@ public partial class InstallationService
             ReturnRequestsFileMaximumSize = 2048,
             NumberOfDaysReturnRequestAvailable = 365,
             MinimumOrderPlacementInterval = 1,
-            ActivateGiftCardsAfterCompletingOrder = false,
-            DeactivateGiftCardsAfterCancellingOrder = false,
-            DeactivateGiftCardsAfterDeletingOrder = false,
+
+
+
             CompleteOrderWhenDelivered = true,
             CustomOrderNumberMask = "{ID}",
             ExportWithProducts = true,
@@ -1818,7 +1786,8 @@ public partial class InstallationService
             FreeShippingOverXIncludingTax = false,
             EstimateShippingProductPageEnabled = true,
             EstimateShippingCartPageEnabled = true,
-            EstimateShippingCityNameEnabled = false,
+            //the store ships inside Syria only - a city/area name, not a postal code
+            EstimateShippingCityNameEnabled = true,
             DisplayShipmentEventsToCustomers = false,
             DisplayShipmentEventsToStoreOwner = false,
             HideShippingTotal = false,
@@ -1833,12 +1802,12 @@ public partial class InstallationService
 
         await SaveSettingAsync(dictionary, new PaymentSettings
         {
-            ActivePaymentMethodSystemNames = ["Payments.CheckMoneyOrder", "Payments.Manual"],
+            ActivePaymentMethodSystemNames = ["Payments.CashOnDelivery"],
             AllowRePostingPayments = true,
             BypassPaymentMethodSelectionIfOnlyOne = true,
             ShowPaymentMethodDescriptions = true,
             SkipPaymentInfoStepForRedirectionPaymentMethods = false,
-            CancelRecurringPaymentsAfterFailedPayment = false,
+
             RegenerateOrderGuidInterval = 180
         });
 
@@ -1847,7 +1816,7 @@ public partial class InstallationService
             TaxBasedOn = TaxBasedOn.BillingAddress,
             TaxBasedOnPickupPointAddress = false,
             TaxDisplayType = TaxDisplayType.ExcludingTax,
-            ActiveTaxProviderSystemName = "Tax.FixedOrByCountryStateZip",
+            ActiveTaxProviderSystemName = string.Empty,
             DefaultTaxAddressId = 0,
             DisplayTaxSuffix = false,
             DisplayTaxRates = false,
@@ -1856,15 +1825,15 @@ public partial class InstallationService
             AllowCustomersToSelectTaxDisplayType = false,
             ForceTaxExclusionFromOrderSubtotal = false,
             DefaultTaxCategoryId = 0,
-            HideZeroTax = false,
-            HideTaxInOrderSummary = false,
+            HideZeroTax = true,
+            HideTaxInOrderSummary = true,
             ShippingIsTaxable = false,
             ShippingPriceIncludesTax = false,
             ShippingTaxClassId = 0,
             PaymentMethodAdditionalFeeIsTaxable = false,
             PaymentMethodAdditionalFeeIncludesTax = false,
             PaymentMethodAdditionalFeeTaxClassId = 0,
-            EuVatEnabled = isEurope,
+            EuVatEnabled = false,
             EuVatEnabledForGuests = false,
             EuVatRequired = false,
             EuVatShopCountryId = isEurope ? (await GetFirstEntityIdAsync<Country>(x => x.TwoLetterIsoCode == country) ?? 0) : 0,
@@ -1980,7 +1949,7 @@ public partial class InstallationService
             ShowOnBlogCommentPage = false,
             ShowOnContactUsPage = false,
             ShowOnEmailProductToFriendPage = false,
-            ShowOnEmailWishlistToFriendPage = false,
+
             ShowOnForgotPasswordPage = false,
             ShowOnForum = false,
             ShowOnLoginPage = false,
@@ -1988,8 +1957,7 @@ public partial class InstallationService
             ShowOnNewsletterPage = false,
             ShowOnProductReviewPage = false,
             ShowOnRegistrationPage = false,
-            ShowOnCheckoutPageForGuests = false,
-            ShowOnCheckGiftCardBalance = true
+            ShowOnCheckoutPageForGuests = false
         });
 
         await SaveSettingAsync(dictionary, new MessagesSettings { UsePopupNotifications = false });
@@ -2093,7 +2061,7 @@ public partial class InstallationService
                 "/customer/info",
                 "/customer/productreviews",
                 "/deletepm",
-                "/emailwishlist",
+
                 "/eucookielawaccept",
                 "/inboxupdate",
                 "/newsletter/subscriptionactivation",
@@ -2106,7 +2074,6 @@ public partial class InstallationService
                 "/recentlyviewedproducts",
                 "/returnrequest",
                 "/returnrequest/history",
-                "/rewardpoints/history",
                 "/search?",
                 "/sendpm",
                 "/sentupdate",
@@ -2117,8 +2084,7 @@ public partial class InstallationService
                 "/viewpm",
                 "/uploadfilecheckoutattribute",
                 "/uploadfileproductattribute",
-                "/uploadfilereturnrequest",
-                "/wishlist"
+                "/uploadfilereturnrequest"
             ]
         });
 
@@ -2311,9 +2277,9 @@ public partial class InstallationService
                     IsPasswordProtected = false,
                     DisplayOrder = 20,
                     Published = true,
-                    Title = "About us",
+                    Title = "من نحن",
                     Body =
-                        "<p>Put your &quot;About Us&quot; information here. You can edit this in the admin site.</p>",
+                        "<p>اكتب هنا نبذة عن متجرك. يمكنك تعديل هذا النص من لوحة التحكم.</p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2324,7 +2290,7 @@ public partial class InstallationService
                     Published = true,
                     Title = string.Empty,
                     Body =
-                        "<p><strong>Register and save time!</strong><br />Register with us for future convenience:</p><ul><li>Fast and easy check out</li><li>Easy access to your order history and status</li></ul>",
+                        "<p><strong>أنشئ حساباً ووفّر وقتك!</strong><br />بحساب لدينا تحصل على:</p><ul><li>إتمام الطلب بخطوات أسرع</li><li>متابعة طلباتك وسجلّها في أي وقت</li></ul>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2333,8 +2299,8 @@ public partial class InstallationService
                     IsPasswordProtected = false,
                     DisplayOrder = 15,
                     Published = true,
-                    Title = "Conditions of Use",
-                    Body = "<p>Put your conditions of use information here. You can edit this in the admin site.</p>",
+                    Title = "شروط الاستخدام",
+                    Body = "<p>اكتب هنا شروط الاستخدام. يمكنك تعديل هذا النص من لوحة التحكم.</p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2344,7 +2310,7 @@ public partial class InstallationService
                     DisplayOrder = 1,
                     Published = true,
                     Title = string.Empty,
-                    Body = "<p>Put your contact information here. You can edit this in the admin site.</p>",
+                    Body = "<p>اكتب هنا معلومات التواصل. يمكنك تعديل هذا النص من لوحة التحكم.</p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2353,8 +2319,8 @@ public partial class InstallationService
                     IsPasswordProtected = false,
                     DisplayOrder = 1,
                     Published = true,
-                    Title = "Forums",
-                    Body = "<p>Put your welcome message here. You can edit this in the admin site.</p>",
+                    Title = "المنتديات",
+                    Body = "<p>اكتب هنا رسالة الترحيب. يمكنك تعديل هذا النص من لوحة التحكم.</p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2362,10 +2328,13 @@ public partial class InstallationService
                     IncludeInSitemap = false,
                     IsPasswordProtected = false,
                     DisplayOrder = 1,
-                    Published = true,
-                    Title = "Welcome to our store",
+                    //the homepage opens on the slider; this block sat between the
+                    //slider and the categories saying nothing. Body kept so it can
+                    //be published from the admin if the store ever wants it.
+                    Published = false,
+                    Title = "أهلاً بك في تمتم",
                     Body =
-                        "<p>Online shopping is the process consumers go through to purchase products or services over the Internet. You can edit this in the admin site.</p><p>If you have questions, see the <a href=\"http://docs.nopcommerce.com/\">Documentation</a>, or post in the <a href=\"https://www.nopcommerce.com/boards/\">Forums</a> at <a href=\"https://www.nopcommerce.com\">nopCommerce.com</a></p>",
+                        "<p>أدوات منزلية وتقنية وملابس وعناية، مختارة قطعة قطعة لتدوم. التوصيل خلال يوم إلى يومي عمل، والإرجاع مجاني خلال 30 يوماً.</p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2374,9 +2343,9 @@ public partial class InstallationService
                     IsPasswordProtected = false,
                     DisplayOrder = 1,
                     Published = true,
-                    Title = "About login / registration",
+                    Title = "عن تسجيل الدخول وإنشاء الحساب",
                     Body =
-                        "<p>Put your login / registration information here. You can edit this in the admin site.</p>",
+                        "<p>اكتب هنا معلومات تسجيل الدخول وإنشاء الحساب. يمكنك تعديل هذا النص من لوحة التحكم.</p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2385,8 +2354,8 @@ public partial class InstallationService
                     IsPasswordProtected = false,
                     DisplayOrder = 10,
                     Published = true,
-                    Title = "Privacy notice",
-                    Body = "<p>Put your privacy policy information here. You can edit this in the admin site.</p>",
+                    Title = "سياسة الخصوصية",
+                    Body = "<p>اكتب هنا سياسة الخصوصية. يمكنك تعديل هذا النص من لوحة التحكم.</p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2397,7 +2366,7 @@ public partial class InstallationService
                     Published = true,
                     Title = string.Empty,
                     Body =
-                        "<p><strong>The page you requested was not found, and we have a fine guess why.</strong></p><ul><li>If you typed the URL directly, please make sure the spelling is correct.</li><li>The page no longer exists. In this case, we profusely apologize for the inconvenience and for any damage this may cause.</li></ul>",
+                        "<p><strong>الصفحة المطلوبة غير موجودة، ولدينا تخمين جيد للسبب.</strong></p><ul><li>إن كتبت العنوان يدوياً، تأكد من صحة الأحرف.</li><li>أو أن الصفحة لم تعد موجودة، ونعتذر عن الإزعاج.</li></ul>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2406,9 +2375,9 @@ public partial class InstallationService
                     IsPasswordProtected = false,
                     DisplayOrder = 5,
                     Published = true,
-                    Title = "Shipping & returns",
+                    Title = "الشحن والإرجاع",
                     Body =
-                        "<p>Put your shipping &amp; returns information here. You can edit this in the admin site.</p>",
+                        "<p>اكتب هنا معلومات الشحن والإرجاع. يمكنك تعديل هذا النص من لوحة التحكم.</p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2418,7 +2387,7 @@ public partial class InstallationService
                     DisplayOrder = 1,
                     Published = true,
                     Title = string.Empty,
-                    Body = "<p>Put your apply vendor instructions here. You can edit this in the admin site.</p>",
+                    Body = "<p>اكتب هنا تعليمات التقدّم كبائع. يمكنك تعديل هذا النص من لوحة التحكم.</p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2427,8 +2396,8 @@ public partial class InstallationService
                     IsPasswordProtected = false,
                     DisplayOrder = 1,
                     Published = true,
-                    Title = "Terms of services for vendors",
-                    Body = "<p>Put your terms of service information here. You can edit this in the admin site.</p>",
+                    Title = "شروط الخدمة للبائعين",
+                    Body = "<p>اكتب هنا شروط الخدمة. يمكنك تعديل هذا النص من لوحة التحكم.</p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 }
             };
@@ -2534,11 +2503,6 @@ public partial class InstallationService
                     Name = "Add a new email account"
                 },
                 new() {
-                    SystemKeyword = "AddNewGiftCard",
-                    Enabled = true,
-                    Name = "Add a new gift card"
-                },
-                new() {
                     SystemKeyword = "AddNewFilterLevelValue",
                     Enabled = true,
                     Name = "Add a new filter level value"
@@ -2582,16 +2546,6 @@ public partial class InstallationService
                     SystemKeyword = "AddNewSetting",
                     Enabled = true,
                     Name = "Add a new setting"
-                },
-                new() {
-                    SystemKeyword = "AddNewSpecAttribute",
-                    Enabled = true,
-                    Name = "Add a new specification attribute"
-                },
-                new() {
-                    SystemKeyword = "AddNewSpecAttributeGroup",
-                    Enabled = true,
-                    Name = "Add a new specification attribute group"
                 },
                 new() {
                     SystemKeyword = "AddNewStateProvince",
@@ -2744,11 +2698,6 @@ public partial class InstallationService
                     Name = "Delete a filter level value"
                 },
                 new() {
-                    SystemKeyword = "DeleteGiftCard",
-                    Enabled = true,
-                    Name = "Delete a gift card"
-                },
-                new() {
                     SystemKeyword = "DeleteLanguage",
                     Enabled = true,
                     Name = "Delete a language"
@@ -2822,16 +2771,6 @@ public partial class InstallationService
                     SystemKeyword = "DeleteSetting",
                     Enabled = true,
                     Name = "Delete a setting"
-                },
-                new() {
-                    SystemKeyword = "DeleteSpecAttribute",
-                    Enabled = true,
-                    Name = "Delete a specification attribute"
-                },
-                new() {
-                    SystemKeyword = "DeleteSpecAttributeGroup",
-                    Enabled = true,
-                    Name = "Delete a specification attribute group"
                 },
                 new() {
                     SystemKeyword = "DeleteStateProvince",
@@ -2979,11 +2918,6 @@ public partial class InstallationService
                     Name = "Edit a filter level value"
                 },
                 new() {
-                    SystemKeyword = "EditGiftCard",
-                    Enabled = true,
-                    Name = "Edit a gift card"
-                },
-                new() {
                     SystemKeyword = "EditLanguage",
                     Enabled = true,
                     Name = "Edit a language"
@@ -3077,16 +3011,6 @@ public partial class InstallationService
                     SystemKeyword = "EditTask",
                     Enabled = true,
                     Name = "Edit a task"
-                },
-                new() {
-                    SystemKeyword = "EditSpecAttribute",
-                    Enabled = true,
-                    Name = "Edit a specification attribute"
-                },
-                new() {
-                    SystemKeyword = "EditSpecAttributeGroup",
-                    Enabled = true,
-                    Name = "Edit a specification attribute group"
                 },
                 new() {
                     SystemKeyword = "EditVendor",
@@ -3268,11 +3192,6 @@ public partial class InstallationService
                     SystemKeyword = "PublicStore.AddToShoppingCart",
                     Enabled = false,
                     Name = "Public store. Add to shopping cart"
-                },
-                new() {
-                    SystemKeyword = "PublicStore.AddToWishlist",
-                    Enabled = false,
-                    Name = "Public store. Add to wishlist"
                 },
                 new() {
                     SystemKeyword = "PublicStore.SuccessfulLogin",
@@ -3774,14 +3693,6 @@ public partial class InstallationService
                 MenuItemType = MenuItemType.StandardPage,
                 RouteName = NopRouteNames.General.CART,
                 Title = "Shopping cart",
-                Published = true
-            },
-            new MenuItem
-            {
-                MenuId = footerMyAccount.Id,
-                MenuItemType = MenuItemType.StandardPage,
-                RouteName = NopRouteNames.General.WISHLIST,
-                Title = "Wishlist",
                 Published = true
             },
             new MenuItem

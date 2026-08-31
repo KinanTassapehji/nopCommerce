@@ -1,0 +1,410 @@
+﻿.carousel-grid-background {
+  padding: 20px;
+  background-size: cover;
+}
+
+.carousel-container.carousel-product {
+  min-height: 520px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container.carousel-category {
+  min-height: 250px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container.carousel-manufacturer {
+  min-height: 400px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container .loader img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.carousel-category {
+  min-height: 300px;
+}
+
+.carousel-manufacturer {
+  min-height: 400px;
+}
+
+
+.carousel-product {
+  min-height: 540px;
+}
+
+.ocarousel .item-box {
+  width: 100% !important;
+}
+
+/*Nav buttons, matching the theme's other round controls: 44px circle (the touch-target
+  floor), the owl navText glyph hidden but left in the DOM as the accessible name, and the
+  chevron painted as a mask so it takes currentColor and needs no second asset for hover.
+  ponytail: duplicated in NopStation.Plugin.Widgets.AnywhereSlider/Content/css/styles.css rather than shared -
+  each plugin ships its own stylesheet and neither can load the other's.*/
+.ocarousel .owl-nav {
+  direction: ltr;                 /*previous is always the left button, next the right one*/
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: var(--tm-stack-md, 16px) 0 0;
+}
+
+.ocarousel-grid .ocarousel .owl-nav button.owl-prev,
+.ocarousel-grid .ocarousel .owl-nav button.owl-next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0 !important;
+  margin: 0;
+  border: 1px solid var(--tm-teal-border, #b3dedc);
+  border-radius: 50%;
+  background: var(--tm-surface, #fff);
+  color: var(--tm-teal-deep, #02787e);
+  font-size: 0;
+  line-height: 0;
+  opacity: 1;
+  box-shadow: var(--tm-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
+  transition: background var(--tm-transition, 0.18s ease), border-color var(--tm-transition, 0.18s ease), color var(--tm-transition, 0.18s ease), transform var(--tm-transition, 0.18s ease);
+}
+
+.ocarousel-grid .ocarousel .owl-nav button.owl-prev:before,
+.ocarousel-grid .ocarousel .owl-nav button.owl-next:before {
+  content: "";
+  width: 12px;
+  height: 20px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 1.5 2.5 10l7 8.5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 1.5 2.5 10l7 8.5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/*the mask is drawn pointing left; each button turns it to face the way it travels, which
+  is mirrored on rtl pages because the items themselves run the other way*/
+.ocarousel-grid .ocarousel .owl-nav button.owl-next:before {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .ocarousel-grid .ocarousel .owl-nav button.owl-prev:before {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .ocarousel-grid .ocarousel .owl-nav button.owl-next:before {
+  transform: none;
+}
+
+.ocarousel-grid .ocarousel .owl-nav button.owl-prev:hover,
+.ocarousel-grid .ocarousel .owl-nav button.owl-next:hover,
+.ocarousel-grid .ocarousel .owl-nav button.owl-prev:focus,
+.ocarousel-grid .ocarousel .owl-nav button.owl-next:focus {
+  border-color: var(--tm-teal-deep, #02787e);
+  background: var(--tm-teal-deep, #02787e);
+  color: var(--tm-white, #fff);
+  opacity: 1;
+}
+
+.ocarousel-grid .ocarousel .owl-nav button.owl-prev:active,
+.ocarousel-grid .ocarousel .owl-nav button.owl-next:active {
+  background: var(--tm-teal-hover, #01585c);
+  border-color: var(--tm-teal-hover, #01585c);
+  transform: scale(0.94);
+}
+
+/*owl marks the ends when the carousel does not loop*/
+.ocarousel-grid .ocarousel .owl-nav button.owl-prev.disabled,
+.ocarousel-grid .ocarousel .owl-nav button.owl-next.disabled {
+  opacity: 0.35;
+  cursor: default;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .ocarousel-grid .ocarousel .owl-nav button.owl-prev,
+  .ocarousel-grid .ocarousel .owl-nav button.owl-next {
+    transition: none;
+  }
+
+  .ocarousel-grid .ocarousel .owl-nav button.owl-prev:active,
+  .ocarousel-grid .ocarousel .owl-nav button.owl-next:active {
+    transform: none;
+  }
+}
+
+/*Position indicator, twin of the one in
+  NopStation.Plugin.Widgets.AnywhereSlider/Content/css/styles.css. Owl appends nav then
+  dots, so the carousel is turned into a column flexbox purely to reorder them - the
+  indicator belongs directly under the row, with the arrows below it.*/
+.ocarousel-grid .ocarousel.owl-carousel {
+  display: flex;
+  flex-direction: column;
+}
+
+.ocarousel-grid .ocarousel .owl-stage-outer {
+  order: 0;
+}
+
+.ocarousel .owl-dots {
+  order: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: var(--tm-stack-sm, 8px) 0 0;
+}
+
+.ocarousel .owl-nav {
+  order: 2;
+}
+
+.ocarousel-grid .ocarousel .owl-dots button.owl-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+}
+
+/*the dot itself is the span; the button around it stays big enough to hit*/
+.ocarousel-grid .ocarousel .owl-dots button.owl-dot span {
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--tm-teal-border, #b3dedc);
+  transition: width var(--tm-transition, 0.18s ease), background var(--tm-transition, 0.18s ease);
+}
+
+.ocarousel-grid .ocarousel .owl-dots button.owl-dot:hover span {
+  background: var(--tm-teal, #009a95);
+}
+
+.ocarousel-grid .ocarousel .owl-dots button.owl-dot.active span {
+  width: 24px;
+  background: var(--tm-teal-deep, #02787e);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .ocarousel-grid .ocarousel .owl-dots button.owl-dot span {
+    transition: none;
+  }
+}
+
+.ocarousel-grid {
+  margin: 0 0 50px;
+}
+
+  .ocarousel-grid .title {
+    margin: 0 0 24px;
+    border-bottom: 1px solid var(--tm-line, #dfe5e5);
+    padding: 0 0 12px;
+    font-size: var(--tm-fs-headline-sm, 24px);
+    font-weight: 700;
+    color: var(--tm-ink, #10201f);
+  }
+
+    .ocarousel-grid .title strong {
+      font-weight: normal;
+    }
+
+.ocarousel .category-name,
+.ocarousel .manufacturer-name {
+  font-weight: normal;
+  font-size: 18px;
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.ocarousel-item {
+  margin: 0 0 80px;
+}
+
+/* --- Manufacturer carousel ------------------------------------------------
+   The shipped treatment is a bare 415px thumbnail with the name under it and
+   80px of dead space below, which reads as an unstyled image strip. Give the
+   logos a tile of their own so they line up at one size whatever the source
+   image is. Scoped to .carousel-manufacturer: the product carousels already
+   render .product-item cards and must not get a second border around them. */
+.carousel-manufacturer .ocarousel-item {
+  margin: 0 0 10px;
+  /* owl clips the stage, and the tile sits flush against its top edge, so the
+     -2px hover lift took the top border (and the top of its shadow) with it */
+  padding-block-start: 14px;
+}
+
+.carousel-manufacturer .ocarousel-item > a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  padding: 18px;
+  background: var(--tm-surface, #fff);
+  border: 1px solid var(--tm-line, #dfe5e5);
+  border-radius: var(--tm-radius, 12px);
+  transition: border-color var(--tm-transition, .18s ease),
+              box-shadow var(--tm-transition, .18s ease),
+              transform var(--tm-transition, .18s ease);
+}
+
+/* contain, never crop — the source images are not a uniform aspect ratio */
+.carousel-manufacturer .ocarousel-item > a img {
+  width: auto;
+  max-width: 100%;
+  max-height: 84px;
+  object-fit: contain;
+}
+
+.carousel-manufacturer .ocarousel-item > a:hover,
+.carousel-manufacturer .ocarousel-item > a:focus-visible {
+  border-color: var(--tm-teal, #009a95);
+  box-shadow: var(--tm-shadow, 0 6px 20px rgba(2, 120, 126, .1));
+  transform: translateY(-2px);
+}
+
+.carousel-manufacturer .manufacturer-name {
+  margin-top: 12px;
+  font-size: var(--tm-fs-label, 14px);
+  font-weight: 600;
+}
+
+.carousel-manufacturer .manufacturer-name a {
+  color: var(--tm-ink, #10201f);
+  transition: color var(--tm-transition, .18s ease);
+}
+
+.carousel-manufacturer .manufacturer-name a:hover {
+  color: var(--tm-teal-deep, #02787e);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-manufacturer .ocarousel-item > a {
+    transition: none;
+  }
+
+  .carousel-manufacturer .ocarousel-item > a:hover {
+    transform: none;
+  }
+}
+
+.ocarousel-background {
+  padding: 50px 0 0;
+  position: relative;
+  margin-bottom: 80px;
+}
+
+  .ocarousel-background::before {
+    content: "";
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(255,255,255,0.7);
+    z-index: 0;
+  }
+
+  .ocarousel-background .custom-container {
+    position: relative;
+    z-index: 1;
+  }
+
+/**CSS Loader Starts**/
+
+.loader {
+  position: relative;
+  min-height: 300px;
+}
+
+  .loader > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+  .lds-ellipsis div {
+    position: absolute;
+    top: 33px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #4ab2f1;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+  }
+
+    .lds-ellipsis div:nth-child(1) {
+      left: 8px;
+      animation: lds-ellipsis1 0.6s infinite;
+    }
+
+    .lds-ellipsis div:nth-child(2) {
+      left: 8px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+
+    .lds-ellipsis div:nth-child(3) {
+      left: 32px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+
+    .lds-ellipsis div:nth-child(4) {
+      left: 56px;
+      animation: lds-ellipsis3 0.6s infinite;
+    }
+
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0);
+  }
+}
+
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
+/**CSS Loader Ends**/

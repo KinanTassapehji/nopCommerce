@@ -1,0 +1,47 @@
+﻿@model OCarouselListModel
+
+@foreach (var carousel in Model.OCarousels)
+{
+    var carouselType = carousel.CarouselType.ToString().ToLower();
+    var bg = carousel.ShowBackgroundPicture ? $"style=\"background:url('{carousel.BackgroundPictureUrl}') no-repeat center; background-size: cover;\"" : "";
+
+    if (carousel.ShowBackgroundPicture == true)
+    {
+        <div class="ocarousel-grid carousel-background" style="background:url('@carousel.BackgroundPictureUrl') no-repeat center; background-size: cover;">
+            @if (carousel.DisplayTitle)
+            {
+                <div class="title section-header">
+                    <h3 class="d-flex justify-content-center align-items-center text-uppercase section-title"><span>@carousel.Title</span></h3>
+                </div>
+            }
+
+            <div class="carousel-container carousel-@carouselType" data-carouselid="@carousel.Id">
+                <div class="loader">
+                    <div class="lds-ripple"><div></div><div></div></div>
+                    @*<img src="/Plugins/NopStation.OCarousels/Contents/images/loader.gif" />*@
+                </div>
+            </div>
+        </div>
+    }
+
+    else
+    {
+        <div class="ocarousel-grid">
+            @if (carousel.DisplayTitle)
+            {
+                <div class="title section-header">
+                    <h3 class="d-flex justify-content-center align-items-center text-uppercase section-title"><span>@carousel.Title</span></h3>
+                </div>
+            }
+
+            <div class="carousel-container carousel-@carouselType" data-carouselid="@carousel.Id">
+                <div class="loader">
+                    <div class="lds-ripple"><div></div><div></div></div>
+                    @*<img src="/Plugins/NopStation.OCarousels/Contents/images/loader.gif" />*@
+                </div>
+            </div>
+        </div>
+
+    }
+
+}

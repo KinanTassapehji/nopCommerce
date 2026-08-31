@@ -1,0 +1,178 @@
+@model ReminderModel
+
+@{
+    const string hideSettingsBlockAttributeName = "ReminderPage.HideSettingsBlock";
+    var customer = await workContext.GetCurrentCustomerAsync();
+    var hideSettingsBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideSettingsBlockAttributeName);
+
+    const string hideMessageTemplateBlockAttributeName = "ReminderPage.HideMessageTemplateBlock";
+    var hideMessageTemplateBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideMessageTemplateBlockAttributeName);
+
+    const string hideExcludedCustomersBlockAttributeName = "ReminderPage.HideExcludedCustomersBlock";
+    var hideExcludedCustomersBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideExcludedCustomersBlockAttributeName, defaultValue: true);
+}
+
+<input asp-for="Id" type="hidden" />
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <nop-cards id="reminder-cards">
+                <nop-card asp-name="reminder-settings" asp-icon="fas fa-cog"
+                          asp-title="@T("NopStation.Plugins.CustomerReminders.Admin.Reminders.Tabs.Settings")"
+                          asp-hide-block-attribute-name="@hideSettingsBlockAttributeName" asp-hide="@hideSettingsBlock"
+                          asp-advanced="false">
+                    @await Html.PartialAsync("_CreateOrUpdate.ReminderSettings", Model)
+                </nop-card>
+
+                <nop-card asp-name="reminder-message-template" asp-icon="fas fa-envelope"
+                          asp-title="@T("NopStation.Plugins.CustomerReminders.Admin.Reminders.Tabs.MessageTemplate")"
+                          asp-hide-block-attribute-name="@hideMessageTemplateBlockAttributeName"
+                          asp-hide="@hideMessageTemplateBlock" asp-advanced="false">
+                    @await Html.PartialAsync("_CreateOrUpdate.MessageTemplate", Model)
+                </nop-card>
+
+                @if (Model.Id > 0)
+                {
+                    <nop-card asp-name="reminder-excluded-customers" asp-icon="fas fa-user-slash"
+                              asp-title="@T("NopStation.Plugins.CustomerReminders.Admin.Reminders.Tabs.ExcludedCustomers")"
+                              asp-hide-block-attribute-name="@hideExcludedCustomersBlockAttributeName"
+                              asp-hide="@hideExcludedCustomersBlock" asp-advanced="true">
+                        @await Html.PartialAsync("_CreateOrUpdate.ExcludedCustomers", Model)
+                    </nop-card>
+                }
+            </nop-cards>
+        </div>
+    </div>
+</section>
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        var hideTimer;
+        var allowedTokens = [];
+        var $ruleSelectId = $('#@Html.IdFor(model => model.ReminderRuleId)');
+        var $bodyEditor = $('#@Html.IdFor(model => model.MessageTemplateBody)');
+        var $subjectInput = $('#@Html.IdFor(model => model.MessageTemplateSubject)');
+
+        // --- 1. Token Loading Logic ---
+        $ruleSelectId.change(function () {
+            var selectedRuleId = $(this).val();
+
+            if (selectedRuleId && selectedRuleId > 0) {
+                $('#tokens-loading-template').show();
+                $('#available-tokens-display-template').hide();
+                $('#available-tokens-section-template').show();
+
+                $.ajax({
+                    url: '@Url.Action("GetReminderRuleTokens", "Reminder")',
+                    type: 'GET',
+                    data: { reminderRuleId: selectedRuleId },
+                    success: function (response) {
+                        if (response && response.tokens) {
+                            $('#available-tokens-display-template').html(response.tokens).show();
+                            // Split and clean tokens
+                            allowedTokens = response.tokens.split(',').map(function (t) { return t.trim(); });
+                            validateTokens();
+                        } else {
+                            $('#available-tokens-display-template').html('<em>No tokens available</em>').show();
+                            allowedTokens = [];
+                        }
+                    },
+                    error: function () {
+                        $('#available-tokens-display-template').html('<em class="text-danger">Error loading tokens</em>').show();
+                        allowedTokens = [];
+                    },
+                    complete: function () {
+                        $('#tokens-loading-template').hide();
+                    }
+                });
+            } else {
+                $('#available-tokens-section-template').hide();
+                $('#token-warning-container').hide();
+                allowedTokens = [];
+            }
+        });
+
+        // Close button handler for warning
+        $(document).on('click', '.token-warning-close', function () {
+            $('#token-warning-container').hide();
+        });
+
+
+        // --- 2. Validation Logic ---
+        function validateTokens() {
+            if (allowedTokens.length === 0) {
+                $('#token-warning-container').hide();
+                return;
+            }
+
+            var subject = $subjectInput.val() || '';
+
+            // Get Summernote content
+            var bodyHtml = '';
+
+            // Check if summernote API is active on the element
+            if ($bodyEditor.summernote) {
+                // Try getting code from summernote; fallback to textarea val if not init yet
+                try {
+                    bodyHtml = $bodyEditor.summernote('code');
+                } catch (e) {
+                    bodyHtml = $bodyEditor.val();
+                }
+            } else {
+                bodyHtml = $bodyEditor.val();
+            }
+
+            // Strip HTML tags to find tokens like %Name% clearly
+            var bodyText = $('<div>').html(bodyHtml).text();
+            var allText = subject + ' ' + bodyText;
+
+            // Regex to find %Something%
+            var foundTokens = allText.match(/%[^%\s]+%/g) || [];
+
+            // Find invalid tokens
+            var invalidTokens = [];
+            $.each(foundTokens, function (i, token) {
+                if ($.inArray(token, allowedTokens) === -1 && $.inArray(token, invalidTokens) === -1) {
+                    invalidTokens.push(token);
+                }
+            });
+
+            if (invalidTokens.length > 0) {
+                $('#token-warning-text').html(
+                    'These tokens are invalid for this rule and can\'t be replace with dynamic value: <b>' + invalidTokens.join(', ') + '</b>'
+                );
+                $('#token-warning-container').show();
+
+                clearTimeout(hideTimer);
+                hideTimer = setTimeout(function () {
+                    $('#token-warning-container').fadeOut();
+                }, 5700);
+            }
+            else {
+                clearTimeout(hideTimer);
+                $('#token-warning-container').hide();
+            }
+        }
+
+        // --- 3. Event Binding ---
+
+        // Bind Subject events
+        $subjectInput.on('keyup change blur paste', validateTokens);
+
+        // Bind Summernote events
+        $bodyEditor.on('summernote.change summernote.keyup summernote.blur', function () {
+            validateTokens();
+        });
+
+        // --- 4. Initialization Trigger ---
+        var initialRuleId = $ruleSelectId.val();
+        if (initialRuleId > 0) {
+            $ruleSelectId.trigger('change');
+        }
+        else {
+            // Even if no rule, run validation once to ensure clean state
+            validateTokens();
+        }
+    });
+</script>

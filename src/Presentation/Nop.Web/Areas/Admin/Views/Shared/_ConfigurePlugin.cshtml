@@ -1,6 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Controllers
-@using Nop.Services.Authentication.External
-@using Nop.Services.Authentication.MultiFactor
 @using Nop.Services.Catalog
 @using Nop.Services.Cms
 @using Nop.Services.Payments
@@ -56,25 +54,6 @@
         backToLocale = "Admin.Configuration.Tax.Providers.BackToList";
         listActionMethodName = "List";
         listControllerName = "Tax";
-    }
-    else if (plugin is IExternalAuthenticationMethod)
-    {
-        //external auth method
-        activeMenuSystemName = "External authentication methods";
-        configureLocale = "Admin.Configuration.Authentication.ExternalMethods.Configure";
-        backToLocale = "Admin.Configuration.Authentication.ExternalMethods.BackToList";
-        listActionMethodName = "ExternalMethods";
-        listControllerName = "Authentication";
-    }
-    else if (plugin is IMultiFactorAuthenticationMethod)
-    {
-        //multi-factor authentication method
-        activeMenuSystemName = "Multi-factor authentication methods";
-        configureLocale = "Admin.Configuration.Authentication.MultiFactorMethods.Configure";
-        backToLocale = "Admin.Configuration.Authentication.MultiFactorMethods.BackToList";
-        listActionMethodName = "MultiFactorMethods";
-        listControllerName = "Authentication";
-
     }
     else if (plugin is IWidgetPlugin widget && !widget.HideInWidgetList)
     {

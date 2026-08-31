@@ -1,0 +1,45 @@
+﻿.product-item .offer-content,
+.product-details-page .offer-content {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: auto;
+  text-transform: uppercase;
+  font-family: 'NunitoExtraBold';
+  font-size: 11px;
+  z-index: 1;
+}
+.product-item .offer-content .new-product-label,
+.product-details-page .offer-content .new-product-label {
+  padding: 3px 10px;
+  background-color: #36CE15;
+  color: #fff;
+  text-align: center;
+  border-radius: 100px;
+}
+.product-item .offer-content .bestseller-label,
+.product-details-page .offer-content .bestseller-label {
+  padding: 3px 10px;
+  background-color: #FFC350;
+  color: #fff;
+  text-align: center;
+  border-radius: 100px;
+}
+.product-item .offer-content .discount-info-label,
+.product-details-page .offer-content .discount-info-label {
+  padding: 3px 10px;
+  background-color: #ED008C;
+  color: #fff;
+  text-align: center;
+  border-radius: 100px;
+}
+.product-details-page .offer-content {
+  /*z-index: 1000;*/
+}
+.product-item .offer-content {
+  /*z-index: 999;*/
+}
+.product-essential .gallery,
+.product-essential .picture {
+  position: relative;
+}

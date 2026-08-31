@@ -15,7 +15,6 @@ namespace Nop.Web.Components;
 public partial class HomepageBestSellersViewComponent : NopViewComponent
 {
     protected readonly CatalogSettings _catalogSettings;
-    protected readonly IAclService _aclService;
     protected readonly IOrderReportService _orderReportService;
     protected readonly IProductModelFactory _productModelFactory;
     protected readonly IProductService _productService;
@@ -24,7 +23,6 @@ public partial class HomepageBestSellersViewComponent : NopViewComponent
     protected readonly IStoreMappingService _storeMappingService;
 
     public HomepageBestSellersViewComponent(CatalogSettings catalogSettings,
-        IAclService aclService,
         IOrderReportService orderReportService,
         IProductModelFactory productModelFactory,
         IProductService productService,
@@ -33,7 +31,6 @@ public partial class HomepageBestSellersViewComponent : NopViewComponent
         IStoreMappingService storeMappingService)
     {
         _catalogSettings = catalogSettings;
-        _aclService = aclService;
         _orderReportService = orderReportService;
         _productModelFactory = productModelFactory;
         _productService = productService;
@@ -58,8 +55,8 @@ public partial class HomepageBestSellersViewComponent : NopViewComponent
 
         //load products
         var products = await (await _productService.GetProductsByIdsAsync(report.Select(x => x.ProductId).ToArray()))
-            //ACL and store mapping
-            .WhereAwait(async p => await _aclService.AuthorizeAsync(p) && await _storeMappingService.AuthorizeAsync(p))
+            //store mapping
+            .WhereAwait(async p => await _storeMappingService.AuthorizeAsync(p))
             //availability dates
             .Where(p => _productService.ProductIsAvailable(p)).ToListAsync();
 

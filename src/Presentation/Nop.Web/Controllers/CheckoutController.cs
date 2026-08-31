@@ -7,6 +7,7 @@ using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
 using Nop.Core.Domain.Security;
 using Nop.Core.Domain.Shipping;
+using Nop.Core.Domain.Stores;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Http;
 using Nop.Core.Http.Extensions;
@@ -59,7 +60,6 @@ public partial class CheckoutController : BasePublicController
     protected readonly IWorkContext _workContext;
     protected readonly OrderSettings _orderSettings;
     protected readonly PaymentSettings _paymentSettings;
-    protected readonly RewardPointsSettings _rewardPointsSettings;
     protected readonly ShippingSettings _shippingSettings;
     protected readonly TaxSettings _taxSettings;
     private static readonly string[] _separator = ["___"];
@@ -93,7 +93,6 @@ public partial class CheckoutController : BasePublicController
         IWorkContext workContext,
         OrderSettings orderSettings,
         PaymentSettings paymentSettings,
-        RewardPointsSettings rewardPointsSettings,
         ShippingSettings shippingSettings,
         TaxSettings taxSettings)
     {
@@ -122,7 +121,6 @@ public partial class CheckoutController : BasePublicController
         _workContext = workContext;
         _orderSettings = orderSettings;
         _paymentSettings = paymentSettings;
-        _rewardPointsSettings = rewardPointsSettings;
         _shippingSettings = shippingSettings;
         _taxSettings = taxSettings;
     }
@@ -188,6 +186,30 @@ public partial class CheckoutController : BasePublicController
                             ?? throw new Exception("Pickup point is not allowed");
 
         return selectedPoint;
+    }
+
+    /// <summary>
+    /// Use the address entered at checkout as the shipping address (this store collects a single, shipping-only address)
+    /// </summary>
+    /// <param name="customer">Customer</param>
+    /// <param name="cart">Shopping cart</param>
+    /// <param name="store">Store</param>
+    /// <returns>
+    /// The task result contains true when the cart requires shipping
+    /// </returns>
+    protected virtual async Task<bool> UseAddressForShippingAsync(Customer customer, IList<ShoppingCartItem> cart, Store store)
+    {
+        //reset selected shipping method (in case if "pick up in store" was selected)
+        await _genericAttributeService.SaveAttributeAsync<ShippingOption>(customer, NopCustomerDefaults.SelectedShippingOptionAttribute, null, store.Id);
+
+        if (!await _shoppingCartService.ShoppingCartRequiresShippingAsync(cart))
+            return false;
+
+        customer.ShippingAddressId = customer.BillingAddressId;
+        await _customerService.UpdateCustomerAsync(customer);
+        await _genericAttributeService.SaveAttributeAsync<PickupPoint>(customer, NopCustomerDefaults.SelectedPickupPointAttribute, null, store.Id);
+
+        return true;
     }
 
     /// <summary>
@@ -326,11 +348,7 @@ public partial class CheckoutController : BasePublicController
         if (!cart.Any())
             return RedirectToRoute(NopRouteNames.General.CART);
 
-        var cartProductIds = cart.Select(ci => ci.ProductId).ToArray();
-        var downloadableProductsRequireRegistration =
-            _customerSettings.RequireRegistrationForDownloadableProducts && await _productService.HasAnyDownloadableProductAsync(cartProductIds);
-
-        if (await _customerService.IsGuestAsync(customer) && (!_orderSettings.AnonymousCheckoutAllowed || downloadableProductsRequireRegistration))
+        if (await _customerService.IsGuestAsync(customer) && !_orderSettings.AnonymousCheckoutAllowed)
             return Challenge();
 
         //if we have only "button" payment methods available (displayed on the shopping cart page, not during checkout),
@@ -373,7 +391,6 @@ public partial class CheckoutController : BasePublicController
                 sci.RentalStartDateUtc,
                 sci.RentalEndDateUtc,
                 sci.Quantity,
-                false,
                 sci.Id);
             if (sciWarnings.Any())
                 return RedirectToRoute(NopRouteNames.General.CART);
@@ -617,7 +634,7 @@ public partial class CheckoutController : BasePublicController
         return View(model);
     }
 
-    public virtual async Task<IActionResult> SelectBillingAddress(int addressId, bool shipToSameAddress = false)
+    public virtual async Task<IActionResult> SelectBillingAddress(int addressId)
     {
         //validation
         if (_orderSettings.CheckoutDisabled)
@@ -635,21 +652,9 @@ public partial class CheckoutController : BasePublicController
         var store = await _storeContext.GetCurrentStoreAsync();
         var cart = await _shoppingCartService.GetShoppingCartAsync(customer, ShoppingCartType.ShoppingCart, store.Id);
 
-        //ship to the same address?
-        //by default Shipping is available if the country is not specified
-        var shippingAllowed = !_addressSettings.CountryEnabled || ((await _countryService.GetCountryByAddressAsync(address))?.AllowsShipping ?? false);
-        if (_shippingSettings.ShipToSameAddress && shipToSameAddress && await _shoppingCartService.ShoppingCartRequiresShippingAsync(cart) && shippingAllowed)
-        {
-            customer.ShippingAddressId = customer.BillingAddressId;
-            await _customerService.UpdateCustomerAsync(customer);
-            //reset selected shipping method (in case if "pick up in store" was selected)
-            await _genericAttributeService.SaveAttributeAsync<ShippingOption>(customer, NopCustomerDefaults.SelectedShippingOptionAttribute, null, store.Id);
-            await _genericAttributeService.SaveAttributeAsync<PickupPoint>(customer, NopCustomerDefaults.SelectedPickupPointAttribute, null, store.Id);
-            //limitation - "Ship to the same address" doesn't properly work in "pick up in store only" case (when no shipping plugins are available) 
-            return RedirectToRoute(NopRouteNames.Standard.CHECKOUT_SHIPPING_METHOD);
-        }
+        await UseAddressForShippingAsync(customer, cart, store);
 
-        return RedirectToRoute(NopRouteNames.Standard.CHECKOUT_SHIPPING_ADDRESS);
+        return RedirectToRoute(NopRouteNames.Standard.CHECKOUT_SHIPPING_METHOD);
     }
 
     [HttpPost, ActionName("BillingAddress")]
@@ -722,21 +727,9 @@ public partial class CheckoutController : BasePublicController
 
             await _customerService.UpdateCustomerAsync(customer);
 
-            //ship to the same address?
-            if (_shippingSettings.ShipToSameAddress && model.ShipToSameAddress && await _shoppingCartService.ShoppingCartRequiresShippingAsync(cart))
-            {
-                customer.ShippingAddressId = customer.BillingAddressId;
-                await _customerService.UpdateCustomerAsync(customer);
+            await UseAddressForShippingAsync(customer, cart, store);
 
-                //reset selected shipping method (in case if "pick up in store" was selected)
-                await _genericAttributeService.SaveAttributeAsync<ShippingOption>(customer, NopCustomerDefaults.SelectedShippingOptionAttribute, null, store.Id);
-                await _genericAttributeService.SaveAttributeAsync<PickupPoint>(customer, NopCustomerDefaults.SelectedPickupPointAttribute, null, store.Id);
-
-                //limitation - "Ship to the same address" doesn't properly work in "pick up in store only" case (when no shipping plugins are available) 
-                return RedirectToRoute(NopRouteNames.Standard.CHECKOUT_SHIPPING_METHOD);
-            }
-
-            return RedirectToRoute(NopRouteNames.Standard.CHECKOUT_SHIPPING_ADDRESS);
+            return RedirectToRoute(NopRouteNames.Standard.CHECKOUT_SHIPPING_METHOD);
         }
 
         //if we got this far, something failed, redisplay form
@@ -766,14 +759,8 @@ public partial class CheckoutController : BasePublicController
         if (await _customerService.IsGuestAsync(customer) && !_orderSettings.AnonymousCheckoutAllowed)
             return Challenge();
 
-        if (!await _shoppingCartService.ShoppingCartRequiresShippingAsync(cart))
-            return RedirectToRoute(NopRouteNames.Standard.CHECKOUT_SHIPPING_METHOD);
-
-        //model
-        var model = new CheckoutShippingAddressModel();
-        await _checkoutModelFactory.PrepareShippingAddressModelAsync(model, cart, prePopulateNewAddressWithCustomerFields: true);
-
-        return View(model);
+        //this store collects a single address at the billing step and ships to it, so there is no separate shipping address step
+        return RedirectToRoute(NopRouteNames.Standard.CHECKOUT_SHIPPING_METHOD);
     }
 
     public virtual async Task<IActionResult> SelectShippingAddress(int addressId)
@@ -1044,8 +1031,7 @@ public partial class CheckoutController : BasePublicController
             return Challenge();
 
         //Check whether payment workflow is required
-        //we ignore reward points during cart total calculation
-        var isPaymentWorkflowRequired = await _orderProcessingService.IsPaymentWorkflowRequiredAsync(cart, false);
+        var isPaymentWorkflowRequired = await _orderProcessingService.IsPaymentWorkflowRequiredAsync(cart);
         if (!isPaymentWorkflowRequired)
         {
             await _genericAttributeService.SaveAttributeAsync<string>(customer,
@@ -1064,10 +1050,9 @@ public partial class CheckoutController : BasePublicController
         var paymentMethodModel = await _checkoutModelFactory.PreparePaymentMethodModelAsync(cart, filterByCountryId);
 
         if (_paymentSettings.BypassPaymentMethodSelectionIfOnlyOne &&
-            paymentMethodModel.PaymentMethods.Count == 1 && !paymentMethodModel.DisplayRewardPoints)
+            paymentMethodModel.PaymentMethods.Count == 1)
         {
-            //if we have only one payment method and reward points are disabled or the current customer doesn't have any reward points
-            //so customer doesn't have to choose a payment method
+            //if we have only one payment method, then customer doesn't have to choose a payment method
 
             await _genericAttributeService.SaveAttributeAsync(customer,
                 NopCustomerDefaults.SelectedPaymentMethodAttribute,
@@ -1099,14 +1084,6 @@ public partial class CheckoutController : BasePublicController
 
         if (await _customerService.IsGuestAsync(customer) && !_orderSettings.AnonymousCheckoutAllowed)
             return Challenge();
-
-        //reward points
-        if (_rewardPointsSettings.Enabled)
-        {
-            await _genericAttributeService.SaveAttributeAsync(customer,
-                NopCustomerDefaults.UseRewardPointsDuringCheckoutAttribute, model.UseRewardPoints,
-                store.Id);
-        }
 
         //Check whether payment workflow is required
         var isPaymentWorkflowRequired = await _orderProcessingService.IsPaymentWorkflowRequiredAsync(cart);
@@ -1379,10 +1356,9 @@ public partial class CheckoutController : BasePublicController
     protected virtual async Task<JsonResult> OpcLoadStepAfterShippingMethod(IList<ShoppingCartItem> cart)
     {
         //Check whether payment workflow is required
-        //we ignore reward points during cart total calculation
         var customer = await _workContext.GetCurrentCustomerAsync();
         var store = await _storeContext.GetCurrentStoreAsync();
-        var isPaymentWorkflowRequired = await _orderProcessingService.IsPaymentWorkflowRequiredAsync(cart, false);
+        var isPaymentWorkflowRequired = await _orderProcessingService.IsPaymentWorkflowRequiredAsync(cart);
         if (isPaymentWorkflowRequired)
         {
             //filter by country
@@ -1396,10 +1372,9 @@ public partial class CheckoutController : BasePublicController
             var paymentMethodModel = await _checkoutModelFactory.PreparePaymentMethodModelAsync(cart, filterByCountryId);
 
             if (_paymentSettings.BypassPaymentMethodSelectionIfOnlyOne &&
-                paymentMethodModel.PaymentMethods.Count == 1 && !paymentMethodModel.DisplayRewardPoints)
+                paymentMethodModel.PaymentMethods.Count == 1)
             {
-                //if we have only one payment method and reward points are disabled or the current customer doesn't have any reward points
-                //so customer doesn't have to choose a payment method
+                //if we have only one payment method, then customer doesn't have to choose a payment method
 
                 var selectedPaymentMethodSystemName = paymentMethodModel.PaymentMethods[0].PaymentMethodSystemName;
                 await _genericAttributeService.SaveAttributeAsync(customer,
@@ -1607,42 +1582,8 @@ public partial class CheckoutController : BasePublicController
                 await _customerService.UpdateCustomerAsync(customer);
             }
 
-            if (await _shoppingCartService.ShoppingCartRequiresShippingAsync(cart))
-            {
-                //shipping is required
-                var address = await _customerService.GetCustomerBillingAddressAsync(customer);
-
-                //by default Shipping is available if the country is not specified
-                var shippingAllowed = !_addressSettings.CountryEnabled || ((await _countryService.GetCountryByAddressAsync(address))?.AllowsShipping ?? false);
-                if (_shippingSettings.ShipToSameAddress && model.ShipToSameAddress && shippingAllowed)
-                {
-                    //ship to the same address
-                    customer.ShippingAddressId = address.Id;
-                    await _customerService.UpdateCustomerAsync(customer);
-                    //reset selected shipping method (in case if "pick up in store" was selected)
-                    await _genericAttributeService.SaveAttributeAsync<ShippingOption>(customer, NopCustomerDefaults.SelectedShippingOptionAttribute, null, store.Id);
-                    await _genericAttributeService.SaveAttributeAsync<PickupPoint>(customer, NopCustomerDefaults.SelectedPickupPointAttribute, null, store.Id);
-                    //limitation - "Ship to the same address" doesn't properly work in "pick up in store only" case (when no shipping plugins are available) 
-                    return await OpcLoadStepAfterShippingAddress(cart);
-                }
-
-                //do not ship to the same address
-                var shippingAddressModel = new CheckoutShippingAddressModel();
-                await _checkoutModelFactory.PrepareShippingAddressModelAsync(shippingAddressModel, cart, prePopulateNewAddressWithCustomerFields: true);
-
-                return Json(new
-                {
-                    update_section = new UpdateSectionJsonModel
-                    {
-                        name = "shipping",
-                        html = await RenderPartialViewToStringAsync("OpcShippingAddress", shippingAddressModel)
-                    },
-                    goto_section = "shipping"
-                });
-            }
-
-            //shipping is not required
-            await _genericAttributeService.SaveAttributeAsync<ShippingOption>(customer, NopCustomerDefaults.SelectedShippingOptionAttribute, null, store.Id);
+            if (await UseAddressForShippingAsync(customer, cart, store))
+                return await OpcLoadStepAfterShippingAddress(cart);
 
             //load next step
             return await OpcLoadStepAfterShippingMethod(cart);
@@ -1883,14 +1824,6 @@ public partial class CheckoutController : BasePublicController
             //payment method 
             if (string.IsNullOrEmpty(paymentmethod))
                 throw new Exception("Selected payment method can't be parsed");
-
-            //reward points
-            if (_rewardPointsSettings.Enabled)
-            {
-                await _genericAttributeService.SaveAttributeAsync(customer,
-                    NopCustomerDefaults.UseRewardPointsDuringCheckoutAttribute, model.UseRewardPoints,
-                    store.Id);
-            }
 
             //Check whether payment workflow is required
             var isPaymentWorkflowRequired = await _orderProcessingService.IsPaymentWorkflowRequiredAsync(cart);

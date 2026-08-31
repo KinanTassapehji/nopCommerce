@@ -1,4 +1,4 @@
-@inject INopFileProvider fileProvider;
+﻿@inject INopFileProvider fileProvider;
 @inject IWebHelper webHelper
 @inject LocalizationSettings localizationSettings
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
@@ -50,6 +50,15 @@ else
 }
 
 <link rel="stylesheet" href="~/lib_npm/admin-lte/plugins/select2/css/select2.min.css">
+
+@*TmTm brand: the storefront theme tokens are the single palette source, the
+    override sheet must stay last so it wins over AdminLTE and the nop admin css*@
+<link rel="stylesheet" href="~/Themes/TmTm/Content/css/tokens.css"/>
+<link rel="stylesheet" href="~/css/admin/brand.css"/>
+
+@*TmTm: the shared loader — same file the storefront links, so every
+    waiting state looks the same on both sides. Must stay after brand.css.*@
+<link rel="stylesheet" href="~/css/tm-loader.css"/>
 
 @NopHtml.GenerateCssFiles()
 

@@ -1,0 +1,260 @@
+﻿@using Nop.Core
+@using Nop.Web.Framework.Themes
+@model MegaMenuModel
+@inject IWorkContext workContext
+@inject IThemeContext themeContext
+@{
+    var supportRtl = (await workContext.GetWorkingLanguageAsync()).Rtl;
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+
+    if (supportRtl)
+    {
+        NopHtml.AddCssFileParts($"/Plugins/NopStation.Plugin.Widgets.MegaMenu/Themes/{await themeContext.GetWorkingThemeNameAsync()}/content/css/megamenu.rtl.css",string.Empty);
+    }
+    else
+    {
+        NopHtml.AddCssFileParts($"/Plugins/NopStation.Plugin.Widgets.MegaMenu/Themes/{await themeContext.GetWorkingThemeNameAsync()}/content/css/megamenu.css",string.Empty);
+    }
+}
+<div class="megamenu-header-link">
+    <ul id="megamenu-header-link-list">
+        @if (Model.DisplayHomePageMenuItem)
+        {
+            <li><a href="@Url.RouteUrl("HomePage")">@T("NopStation.MegaMenu.Public.Home")</a></li>
+        }
+        @if (Model.Categories.Any())
+        {
+            <li class="mm-nav-item dropdown-menu-list">
+                <a href="#" class="d-inline-flex align-items-center">
+                    @T("NopStation.MegaMenu.Public.Categories")
+                </a>
+                <div class="mm-dropdown">
+                    <ul class="mm-dropdown-list">
+                        @foreach (var category in Model.Categories)
+                        {
+                            var categoryLineModel = new MegaMenuModel.CategoryLineModel
+                            {
+                                Category = category,
+                                MaxLevel = Model.MaxCategoryLevelsToShow
+                            };
+                            @await Html.PartialAsync("_CategoryLine.MegaMenu.cshtml", categoryLineModel)
+                        }
+                    </ul>
+                </div>
+            </li>
+        }
+        @foreach (var topic in Model.Topics)
+        {
+            <li><a href="@Url.RouteUrl("Topic", new { SeName = topic.SeName })">@topic.Name</a></li>
+        }
+
+        @if (Model.NewProductsEnabled && Model.DisplayNewProductsMenuItem)
+        {
+            <li><a href="@Url.RouteUrl("NewProducts")">@T("Products.NewProducts")</a></li>
+        }
+
+        @if (Model.DisplayProductSearchMenuItem)
+        {
+            <li><a href="@Url.RouteUrl("ProductSearch")">@T("Search")</a></li>
+        }
+        @if (Model.DisplayCustomerInfoMenuItem)
+        {
+            <li><a href="@Url.RouteUrl("CustomerInfo")">@T("Account.MyAccount")</a></li>
+        }
+        @if (Model.BlogEnabled && Model.DisplayBlogMenuItem)
+        {
+            <li><a href="@Url.RouteUrl("Blog")">@T("Blog")</a></li>
+        }
+        @if (Model.ForumEnabled && Model.DisplayForumsMenuItem)
+        {
+            <li><a href="@Url.RouteUrl("Boards")">@T("Forum.Forums")</a></li>
+        }
+        @if (Model.DisplayContactUsMenuItem)
+        {
+            <li><a href="@Url.RouteUrl("ContactUs")">@T("ContactUs")</a></li>
+        }
+
+        @if (Model.Manufacturers.Any())
+        {
+            <li class="d-inline-block manufacturer-nav-item">
+                <ul class="dropdown-menu">
+                    <li class="dropdown-menu-list">
+                        <a class="mm-nav-link manufacturer-link" href="#">@T("NopStation.MegaMenu.Public.Manufacturers")</a>
+                        <ul class="submenu">
+                            @foreach (var manufacturer in Model.Manufacturers)
+                            {
+                                <li class="mm-nav-item">
+                                    <a href="@Url.RouteUrl("Manufacturer", new { SeName = manufacturer.SeName })">
+                                        <span>@manufacturer.Name</span>
+                                    </a>
+                                </li>
+                            }
+                            <li class="mm-nav-item">
+                                <a href="@Url.RouteUrl("ManufacturerList")">@T("NopStation.MegaMenu.Public.AllManufacturers")</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        }
+    </ul>
+</div>
+<div class="mm-navbar">
+    <ul class="mm-navbar-nav">
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderMenuBefore })
+
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderMenuAfter })
+    </ul>
+</div>
+
+<ul class="top-menu mm-navbar mobile mobile-menu">
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.MobHeaderMenuBefore })
+    @{
+        <button class="close-mobile-menu">
+            <i class="icon-close beautyShop-primary-color-bg" id="colseMenu"></i>
+        </button>
+    }
+
+    @if (Model.DisplayHomePageMenuItem)
+    {
+        <li class="mm-nav-item"><a class="mm-nav-link" href="@Url.RouteUrl("HomePage")">@T("HomePage")</a></li>
+    }
+    @foreach (var category in Model.Categories)
+    {
+        var categoryLineModel = new MegaMenuModel.CategoryLineModel
+        {
+            Category = category
+        };
+        @await Html.PartialAsync("_CategoryLine.MegaMenu.cshtml", categoryLineModel)
+    }
+    @if (Model.Manufacturers.Any())
+    {
+        <li class="manufacturer-nav-item mm-nav-item has-submenu">
+            <a class="mm-nav-link manufacturer-link" href="#">@T("NopStation.MegaMenu.Public.Manufacturers")</a>
+            <div class="sublist-toggle beautyShop-primary-color-text"></div>
+            <ul class="mm-dropdown-list sublist first-level">
+                <li class="sublist-close-button">
+                    <button class="d-inline-flex mm-back-button beautyShop-primary-color-text">
+                        <i class="icon icon-left-arrow"></i>  @T("Common.Back")
+                    </button>
+                </li>
+                @foreach (var manufacturer in Model.Manufacturers)
+                {
+                    <li class="mm-nav-item">
+                        <a class="mm-nav-link" href="@Url.RouteUrl("Manufacturer", new { SeName = manufacturer.SeName })">
+                            <span>@manufacturer.Name</span>
+                        </a>
+                    </li>
+                }
+                <li class="mm-nav-item all-manufacture">
+                    <a class="mm-nav-link" href="@Url.RouteUrl("ManufacturerList")">@T("NopStation.MegaMenu.Public.AllManufacturers")</a>
+                </li>
+            </ul>
+        </li>
+    }
+    @foreach (var topic in Model.Topics)
+    {
+        <li class="mm-nav-item"><a class="mm-nav-link" href="@Url.RouteUrl("Topic", new { SeName = topic.SeName })">@topic.Name</a></li>
+    }
+    @if (Model.NewProductsEnabled && Model.DisplayNewProductsMenuItem)
+    {
+        <li class="mm-nav-item"><a class="mm-nav-link" href="@Url.RouteUrl("NewProducts")">@T("Products.NewProducts")</a></li>
+    }
+    @if (Model.DisplayProductSearchMenuItem)
+    {
+        <li class="mm-nav-item"><a class="mm-nav-link" href="@Url.RouteUrl("ProductSearch")">@T("Search")</a></li>
+    }
+    @if (Model.DisplayCustomerInfoMenuItem)
+    {
+        <li class="mm-nav-item"><a class="mm-nav-link" href="@Url.RouteUrl("CustomerInfo")">@T("Account.MyAccount")</a></li>
+    }
+    @if (Model.BlogEnabled && Model.DisplayBlogMenuItem)
+    {
+        <li class="mm-nav-item"><a class="mm-nav-link" href="@Url.RouteUrl("Blog")">@T("Blog")</a></li>
+    }
+    @if (Model.ForumEnabled && Model.DisplayForumsMenuItem)
+    {
+        <li class="mm-nav-item"><a class="mm-nav-link" href="@Url.RouteUrl("Boards")">@T("Forum.Forums")</a></li>
+    }
+    @if (Model.DisplayContactUsMenuItem)
+    {
+        <li class="mm-nav-item"><a class="mm-nav-link" href="@Url.RouteUrl("ContactUs")">@T("ContactUs")</a></li>
+    }
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.MobHeaderMenuAfter })
+</ul>
+<div class="bg-overlay"></div>
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+
+        var cartLinkList = $("#other-link-list").html();
+        $("#other-links").prepend(cartLinkList);
+        $(".header-other-link-items").remove();
+
+        // Count first sublist items & assign class accordingly
+        $('.sublist.first-level').each(function () {
+            var navItem = $(this).children('li:not(.sublist-close-button):not(.mm-nav-img)');
+            var navItems = navItem.length;
+            if ((navItems == 4) || (navItems > 4)) {
+                $(this).addClass("col4");
+            }
+            if (navItems == 3) {
+                $(this).addClass("col3");
+            }
+            if (navItems == 2) {
+                $(this).addClass("col2");
+            }
+            if (navItems == 1) {
+                $(this).addClass("col1");
+            }
+        });
+
+        $(".mm-back-button").on("click", function (e) {
+            $(this).parent(".mm-navbar.active").removeClass("active");
+            $(this).parent(".sublist-close-button").parent(".sublist.active").removeClass("active");
+            $(this).parent(".sublist-close-button").parent(".mm-dropdown-list").parent(".mm-dropdown.active").removeClass("active");
+            if ($(".mm-navbar").hasClass("active")) {
+
+            } else {
+                $("body").removeClass("mm-menu-opened");
+                $(".header-menu").removeClass("active");
+            }
+            e.stopPropagation();
+        });
+        $(".header-logo .icon").on("click", function (e) {
+            $(".mm-navbar.mobile").addClass("active");
+            $(".header-menu").addClass("active");
+            $(".bg-overlay").addClass("active");
+            $("body").addClass("mm-menu-opened");
+            e.stopPropagation();
+        });
+
+        $(".mm-nav-item .sublist-toggle").on("click", function (e) {
+            e.preventDefault();
+            $(this).siblings(".sublist").addClass("active");
+            $(this).siblings(".mm-dropdown").addClass("active");
+            e.stopPropagation();
+        });
+
+        $(".mm-navbar").on("click", function (e) {
+            e.stopPropagation();
+        });
+
+        function menuHide() {
+            $(".mm-navbar.mobile, .sublist").removeClass("active");
+            $(".bg-overlay").removeClass("active");
+            $(".mm-dropdown.active").removeClass("active");
+            $("body").removeClass("mm-menu-opened");
+        }
+
+        $(window).on("resize", function () {
+            menuHide();
+        });
+        $(document).on("click", function () {
+            menuHide();
+        });
+        $("#colseMenu").on("click", function () {
+            menuHide();
+        });
+    });
+</script>

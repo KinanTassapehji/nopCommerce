@@ -1,0 +1,16 @@
+{
+  "Group": "Nop-Station",
+  "FriendlyName": "Nop-Station Quick View",
+  "SystemName": "NopStation.Plugin.Widgets.QuickView",
+  "Version": "4.90.1.1",
+  "SupportedVersions": [
+    "4.90"
+  ],
+  "Author": "Nop-Station Team",
+  "DisplayOrder": 1,
+  "FileName": "NopStation.Plugin.Widgets.QuickView.dll",
+  "Description": "This plugin enables quick view on public store.",
+  "DependsOnSystemNames": [
+    "NopStation.Core"
+  ]
+}

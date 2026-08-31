@@ -47,7 +47,11 @@ public partial class InstallationService
         if (_defaultLanguageId.HasValue)
             return _defaultLanguageId.Value;
 
-        var lang = await Table<Language>().FirstOrDefaultAsync() ?? throw new Exception("Default language could not be loaded");
+        //order by DisplayOrder: sample blog posts and news are language-scoped, and the
+        //storefront shows the language customers actually browse in - which is the first
+        //by display order, not whichever row the provider happens to return first
+        var lang = await Table<Language>().OrderBy(language => language.DisplayOrder).FirstOrDefaultAsync()
+            ?? throw new Exception("Default language could not be loaded");
 
         _defaultLanguageId = lang.Id;
 
@@ -1147,7 +1151,12 @@ public partial class InstallationService
         foreach (var c in name.Trim().ToLowerInvariant())
             if (seoCharacterTable.TryGetValue(c, out var transliteration))
                 sb.Append(transliteration.ToLowerInvariant());
-            else if (okChars.Contains(c))
+            //the transliteration table only covers Latin and Cyrillic, so a name in any
+            //other script used to be deleted character by character and left a slug of
+            //nothing but its punctuation - and Arabic names then all collided on it.
+            //Keep any letter or digit, which is what SeoSettings.AllowUnicodeCharsInUrls
+            //(seeded true) tells the store to do outside the installer.
+            else if (okChars.Contains(c) || char.IsLetterOrDigit(c))
                 sb.Append(c);
 
         var seName = new Regex(@"[\s-]+").Replace(sb.ToString(), "-");
@@ -1290,42 +1299,6 @@ public partial class InstallationService
                     AttributeId = checkoutAttribute.Id
                 }));
         }
-    }
-
-    /// <summary>
-    /// Installs a sample specification attributes
-    /// </summary>
-    /// <param name="sampleSpecificationAttributes">Sample specification attributes to install</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    protected virtual async Task InstallSpecificationAttributesAsync(SampleSpecificationAttributes sampleSpecificationAttributes)
-    {
-        var attributes = sampleSpecificationAttributes.Attributes.ToDictionary(data => data,
-             data => new SpecificationAttribute { Name = data.Name, DisplayOrder = data.DisplayOrder });
-
-        foreach (var jsonModel in sampleSpecificationAttributes.AttributeGroups)
-        {
-            var specificationAttributeGroup = await _dataProvider.InsertEntityAsync(
-                new SpecificationAttributeGroup { Name = jsonModel.Name });
-
-            foreach (var data in jsonModel.Attributes)
-                attributes.Add(data, new SpecificationAttribute
-                {
-                    Name = data.Name,
-                    DisplayOrder = data.DisplayOrder,
-                    SpecificationAttributeGroupId = specificationAttributeGroup.Id
-                });
-        }
-
-        await _dataProvider.BulkInsertEntitiesAsync(attributes.Values);
-
-        await _dataProvider.BulkInsertEntitiesAsync(attributes.SelectMany(data =>
-            data.Key.AttributeOptions.Select(o => new SpecificationAttributeOption
-            {
-                Name = o.Name,
-                DisplayOrder = o.DisplayOrder,
-                ColorSquaresRgb = o.ColorSquaresRgb,
-                SpecificationAttributeId = data.Value.Id
-            })));
     }
 
     /// <summary>
@@ -1837,9 +1810,6 @@ public partial class InstallationService
                 Quantity = oi.Quantity,
                 DiscountAmountInclTax = oi.DiscountAmountInclTax,
                 DiscountAmountExclTax = oi.DiscountAmountExclTax,
-                DownloadCount = oi.DownloadCount,
-                IsDownloadActivated = oi.IsDownloadActivated,
-                LicenseDownloadId = oi.LicenseDownloadId,
                 ItemWeight = oi.ItemWeight,
                 RentalStartDateUtc = oi.RentalStartDateUtc,
                 RentalEndDateUtc = oi.RentalEndDateUtc

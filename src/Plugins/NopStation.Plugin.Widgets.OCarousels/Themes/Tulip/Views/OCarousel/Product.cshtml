@@ -1,0 +1,83 @@
+﻿@model OCarouselModel
+
+@if (Model.Products.Count > 0)
+{
+    var className = "";
+    //var className = "simple-product";
+    //if (Model.DataSourceTypeEnum == DataSourceTypeEnum.HomePageProducts)
+    //{
+    //    className = "featured-product";
+    //}
+    //else if (Model.DataSourceTypeEnum == DataSourceTypeEnum.NewProducts)
+    //{
+    //    className = "new-product-container";
+    //}
+
+    <div class="OCarousel-container custom-container-fluid latest-product pb-3 pb-sm-5 @className">
+        <div class="row no-gutters">
+            @if (Model.DisplayTitle)
+            {
+                if (Model.ShowBackgroundPicture)
+                {
+                    <div class="title title-container text-white">
+                        <h2> <strong>@Model.Title</strong> </h2>
+                    </div>
+                }
+                else
+                {
+                    <div class="title title-container">
+                        <h2> <strong>@Model.Title</strong> </h2>
+                    </div>
+                }
+            }
+
+            <div class="col-lg-12 owl-carousel OCarousel OCarousel-@(Model.Id) @Model.CustomCssClass" id="OCarousel-@(Model.Id)">
+                @foreach (var item in Model.Products)
+                {
+                    <div class="OCarousel-item">
+                        @await Html.PartialAsync("_ProductBox", item)
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            $('#OCarousel-@(Model.Id)').owlCarousel({
+                nav: @Model.Nav.ToString().ToLower(),
+                loop: @Model.Loop.ToString().ToLower(),
+                dots: true,
+                margin: 10,
+                autoplay: @Model.AutoPlay.ToString().ToLower(),
+                rtl: @Model.Rtl.ToString().ToLower(),
+                autoplayTimeout: @Model.AutoPlayTimeout,
+                autoplayHoverPause: @Model.AutoPlayHoverPause.ToString().ToLower(),
+                lazyLoad: @Model.LazyLoad.ToString().ToLower(),
+                lazyLoadEager: @Model.LazyLoadEager,
+                center: @Model.Center.ToString().ToLower(),
+                startPosition: @Model.StartPosition,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    576: {
+                        items: 1
+                    },
+                    768: {
+                        items: 2
+                    },
+                    992: {
+                        items: 3
+                    },
+                    1200: {
+                        items: 4
+                    },
+                    1500: {
+                        items: 5
+                    }
+                }
+            });
+        });
+    </script>
+}

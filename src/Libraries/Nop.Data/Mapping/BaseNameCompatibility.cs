@@ -31,7 +31,6 @@ public partial class BaseNameCompatibility : INameCompatibility
         { typeof(ProductCategory), "Product_Category_Mapping" },
         { typeof(ProductManufacturer), "Product_Manufacturer_Mapping" },
         { typeof(ProductPicture), "Product_Picture_Mapping" },
-        { typeof(ProductSpecificationAttribute), "Product_SpecificationAttribute_Mapping" },
         { typeof(ForumGroup), "Forums_Group" },
         { typeof(Forum), "Forums_Forum" },
         { typeof(ForumPost), "Forums_Post" },

@@ -52,7 +52,6 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
     protected readonly INewsLetterSubscriptionTypeService _newsLetterSubscriptionTypeService;
     protected readonly IPluginService _pluginService;
     protected readonly IProductTemplateService _productTemplateService;
-    protected readonly ISpecificationAttributeService _specificationAttributeService;
     protected readonly IStateProvinceService _stateProvinceService;
     protected readonly IStaticCacheManager _staticCacheManager;
     protected readonly IStoreService _storeService;
@@ -82,7 +81,6 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         INewsLetterSubscriptionTypeService newsLetterSubscriptionTypeService,
         IPluginService pluginService,
         IProductTemplateService productTemplateService,
-        ISpecificationAttributeService specificationAttributeService,
         IStateProvinceService stateProvinceService,
         IStaticCacheManager staticCacheManager,
         IStoreService storeService,
@@ -108,7 +106,6 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         _newsLetterSubscriptionTypeService = newsLetterSubscriptionTypeService;
         _pluginService = pluginService;
         _productTemplateService = productTemplateService;
-        _specificationAttributeService = specificationAttributeService;
         _stateProvinceService = stateProvinceService;
         _staticCacheManager = staticCacheManager;
         _storeService = storeService;
@@ -573,12 +570,9 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
     {
         ArgumentNullException.ThrowIfNull(items);
 
-        //prepare available vendors
-        var availableVendorItems = await GetVendorListAsync();
-        foreach (var vendorItem in availableVendorItems)
-        {
-            items.Add(vendorItem);
-        }
+        //ponytail: single-vendor store - leaving only the default item makes every admin
+        //vendor dropdown hide itself via SelectionIsNotPossible(). Restore the GetVendorListAsync()
+        //loop here if the store ever becomes a real marketplace.
 
         //insert special item for the default value
         await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText);
@@ -981,31 +975,6 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         //insert special item for the default value
         await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText);
     }
-
-    /// <summary>
-    /// Prepare available specification attribute groups
-    /// </summary>
-    /// <param name="items">Specification attributes</param>
-    /// <param name="withSpecialDefaultItem">Whether to insert the first special item for the default value</param>
-    /// <param name="defaultItemText">Default item text; pass null to use default value of the default item text</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task PrepareSpecificationAttributeGroupsAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null)
-    {
-        ArgumentNullException.ThrowIfNull(items);
-
-        //prepare available specification attribute groups
-        var availableSpecificationAttributeGroups = await _specificationAttributeService.GetSpecificationAttributeGroupsAsync();
-        foreach (var group in availableSpecificationAttributeGroups)
-        {
-            items.Add(new SelectListItem { Value = group.Id.ToString(), Text = group.Name });
-        }
-
-        // use empty string for nullable field
-        var defaultItemValue = string.Empty;
-
-        //insert special item for the default value
-        await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText, defaultItemValue);
-    }    
 
     /// <summary>
     /// Prepare translation supported model

@@ -36,9 +36,6 @@ public partial record ProductEditorSettingsModel : BaseNopModel, ISettingsModel
     [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.ShowOnHomepage")]
     public bool ShowOnHomepage { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.AllowCustomerReviews")]
-    public bool AllowCustomerReviews { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.ProductTags")]
     public bool ProductTags { get; set; }
 
@@ -60,9 +57,6 @@ public partial record ProductEditorSettingsModel : BaseNopModel, ISettingsModel
     [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.DisableBuyButton")]
     public bool DisableBuyButton { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.DisableWishlistButton")]
-    public bool DisableWishlistButton { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.AvailableForPreOrder")]
     public bool AvailableForPreOrder { get; set; }
 
@@ -77,18 +71,6 @@ public partial record ProductEditorSettingsModel : BaseNopModel, ISettingsModel
 
     [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.PAngV")]
     public bool PAngV { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.RequireOtherProductsAddedToCart")]
-    public bool RequireOtherProductsAddedToCart { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.IsGiftCard")]
-    public bool IsGiftCard { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.DownloadableProduct")]
-    public bool DownloadableProduct { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.RecurringProduct")]
-    public bool RecurringProduct { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.IsRental")]
     public bool IsRental { get; set; }
@@ -125,12 +107,6 @@ public partial record ProductEditorSettingsModel : BaseNopModel, ISettingsModel
 
     [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.NotifyAdminForQuantityBelow")]
     public bool NotifyAdminForQuantityBelow { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.Backorders")]
-    public bool Backorders { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.AllowBackInStockSubscriptions")]
-    public bool AllowBackInStockSubscriptions { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.MinimumCartQuantity")]
     public bool MinimumCartQuantity { get; set; }
@@ -183,17 +159,11 @@ public partial record ProductEditorSettingsModel : BaseNopModel, ISettingsModel
     [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.ProductAttributes")]
     public bool ProductAttributes { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.SpecificationAttributes")]
-    public bool SpecificationAttributes { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.Manufacturers")]
     public bool Manufacturers { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.StockQuantityHistory")]
     public bool StockQuantityHistory { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Settings.ProductEditor.AgeVerification")]
-    public bool AgeVerification { get; set; }
 
     #endregion
 }

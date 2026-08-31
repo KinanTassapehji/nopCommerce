@@ -36,9 +36,6 @@ public class MySqlDateTimeWithPrecisionMigration : ForwardOnlyMigration
         Alter.Table(NameCompatibilityManager.GetTableName(typeof(Address)))
             .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(Address), nameof(Address.CreatedOnUtc)))
             .AsCustom("datetime(6)");
-        Alter.Table(NameCompatibilityManager.GetTableName(typeof(BackInStockSubscription)))
-            .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(BackInStockSubscription), nameof(BackInStockSubscription.CreatedOnUtc)))
-            .AsCustom("datetime(6)");
         Alter.Table(NameCompatibilityManager.GetTableName(typeof(BlogComment)))
             .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(BlogComment), nameof(BlogComment.CreatedOnUtc)))
             .AsCustom("datetime(6)");
@@ -152,12 +149,7 @@ public class MySqlDateTimeWithPrecisionMigration : ForwardOnlyMigration
             .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(GenericAttribute), nameof(GenericAttribute.CreatedOrUpdatedDateUTC)))
             .AsCustom("datetime(6)")
             .Nullable();
-        Alter.Table(NameCompatibilityManager.GetTableName(typeof(GiftCard)))
-            .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(GiftCard), nameof(GiftCard.CreatedOnUtc)))
-            .AsCustom("datetime(6)");
-        Alter.Table(NameCompatibilityManager.GetTableName(typeof(GiftCardUsageHistory)))
-            .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(GiftCardUsageHistory), nameof(GiftCardUsageHistory.CreatedOnUtc)))
-            .AsCustom("datetime(6)");
+
         Alter.Table(NameCompatibilityManager.GetTableName(typeof(Log)))
             .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(Log), nameof(Log.CreatedOnUtc)))
             .AsCustom("datetime(6)");
@@ -257,28 +249,13 @@ public class MySqlDateTimeWithPrecisionMigration : ForwardOnlyMigration
             .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(QueuedEmail), nameof(QueuedEmail.SentOnUtc)))
             .AsCustom("datetime(6)")
             .Nullable();
-        Alter.Table(NameCompatibilityManager.GetTableName(typeof(RecurringPayment)))
-            .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(RecurringPayment), nameof(RecurringPayment.CreatedOnUtc)))
-            .AsCustom("datetime(6)");
-        Alter.Table(NameCompatibilityManager.GetTableName(typeof(RecurringPayment)))
-            .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(RecurringPayment), nameof(RecurringPayment.StartDateUtc)))
-            .AsCustom("datetime(6)");
-        Alter.Table(NameCompatibilityManager.GetTableName(typeof(RecurringPaymentHistory)))
-            .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(RecurringPaymentHistory), nameof(RecurringPaymentHistory.CreatedOnUtc)))
-            .AsCustom("datetime(6)");
+
         Alter.Table(NameCompatibilityManager.GetTableName(typeof(ReturnRequest)))
             .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(ReturnRequest), nameof(ReturnRequest.CreatedOnUtc)))
             .AsCustom("datetime(6)");
         Alter.Table(NameCompatibilityManager.GetTableName(typeof(ReturnRequest)))
             .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(ReturnRequest), nameof(ReturnRequest.UpdatedOnUtc)))
             .AsCustom("datetime(6)");
-        Alter.Table(NameCompatibilityManager.GetTableName(typeof(RewardPointsHistory)))
-            .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(RewardPointsHistory), nameof(RewardPointsHistory.CreatedOnUtc)))
-            .AsCustom("datetime(6)");
-        Alter.Table(NameCompatibilityManager.GetTableName(typeof(RewardPointsHistory)))
-            .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(RewardPointsHistory), nameof(RewardPointsHistory.EndDateUtc)))
-            .AsCustom("datetime(6)")
-            .Nullable();
         Alter.Table(NameCompatibilityManager.GetTableName(typeof(ScheduleTask)))
             .AlterColumn(NameCompatibilityManager.GetColumnName(typeof(ScheduleTask), nameof(ScheduleTask.LastEnabledUtc)))
             .AsCustom("datetime(6)")

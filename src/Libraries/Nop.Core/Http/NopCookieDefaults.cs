@@ -56,11 +56,6 @@ public static partial class NopCookieDefaults
     public static string AuthenticationCookie => ".Authentication";
 
     /// <summary>
-    /// Gets a cookie name of the external authentication
-    /// </summary>
-    public static string ExternalAuthenticationCookie => ".ExternalAuthentication";
-
-    /// <summary>
     /// Gets a cookie name of the Eu Cookie Law Warning
     /// </summary>
     public static string IgnoreEuCookieLawWarning => ".IgnoreEuCookieLawWarning";

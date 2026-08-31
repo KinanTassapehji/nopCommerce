@@ -15,7 +15,6 @@ public partial record ProductPriceModel : BaseNopModel
     public decimal? BasePricePAngVValue { get; set; }
 
     public bool DisableBuyButton { get; set; }
-    public bool DisableWishlistButton { get; set; }
     public bool DisableAddToCompareListButton { get; set; }
 
     public bool AvailableForPreOrder { get; set; }

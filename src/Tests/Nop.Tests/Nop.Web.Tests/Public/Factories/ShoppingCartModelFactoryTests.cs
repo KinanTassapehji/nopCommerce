@@ -21,7 +21,6 @@ public class ShoppingCartModelFactoryTests : WebTest
     private IProductService _producService;
     private ILocalizationService _localizationService;
     private ShoppingCartItem _shoppingCartItem;
-    private ShoppingCartItem _wishlistItem;
     private ICustomerService _customerService;
 
     [OneTimeSetUp]
@@ -38,26 +37,22 @@ public class ShoppingCartModelFactoryTests : WebTest
 
         var customer = await _workContext.GetCurrentCustomerAsync();
 
+        //a free-shipping product: without one the order total is null, because no
+        //shipping method has been chosen for the cart
+        var cartProduct = await _producService.GetProductBySkuAsync("TM-ST-1002");
+
         _shoppingCartItem = new ShoppingCartItem
         {
-            ProductId = 1,
+            ProductId = cartProduct.Id,
             Quantity = 1,
             CustomerId = customer.Id,
             ShoppingCartType = ShoppingCartType.ShoppingCart,
             StoreId = store.Id
         };
 
-        _wishlistItem = new ShoppingCartItem
-        {
-            ProductId = 2,
-            Quantity = 1,
-            CustomerId = customer.Id,
-            ShoppingCartType = ShoppingCartType.Wishlist
-        };
-
         var shoppingCartRepo = GetService<IRepository<ShoppingCartItem>>();
 
-        await shoppingCartRepo.InsertAsync(new List<ShoppingCartItem> { _shoppingCartItem, _wishlistItem });
+        await shoppingCartRepo.InsertAsync(new List<ShoppingCartItem> { _shoppingCartItem });
 
         customer.HasShoppingCartItems = true;
         await _customerService.UpdateCustomerAsync(customer);
@@ -67,7 +62,6 @@ public class ShoppingCartModelFactoryTests : WebTest
     public async Task TearDown()
     {
         await _shoppingCartService.DeleteShoppingCartItemAsync(_shoppingCartItem);
-        await _shoppingCartService.DeleteShoppingCartItemAsync(_wishlistItem);
 
         var customer = await _workContext.GetCurrentCustomerAsync();
         customer.HasShoppingCartItems = false;
@@ -107,23 +101,6 @@ public class ShoppingCartModelFactoryTests : WebTest
     }
 
     [Test]
-    public async Task CanPrepareWishlistModel()
-    {
-        var model = await _shoppingCartModelFactory.PrepareWishlistModelAsync(new WishlistModel(),
-            new List<ShoppingCartItem> { _wishlistItem });
-
-        var customer = await _workContext.GetCurrentCustomerAsync();
-
-        model.CustomerFullname.Should().Be("John Smith");
-        model.CustomerGuid.Should().Be(customer.CustomerGuid);
-        model.EmailWishlistEnabled.Should().BeTrue();
-        model.IsEditable.Should().BeTrue();
-        model.Items.Any().Should().BeTrue();
-        model.Items.Count.Should().Be(1);
-        model.Warnings.Count.Should().Be(0);
-    }
-
-    [Test]
     public async Task CanPrepareMiniShoppingCartModel()
     {
         var model = await _shoppingCartModelFactory.PrepareMiniShoppingCartModelAsync();
@@ -132,7 +109,7 @@ public class ShoppingCartModelFactoryTests : WebTest
         model.Items.Any().Should().BeTrue();
         model.Items.Count.Should().Be(1);
         model.TotalProducts.Should().Be(1);
-        model.SubTotal.Should().Be("$1,200.00");
+        model.SubTotal.Should().Be("$27.00");
     }
 
     [Test]
@@ -140,13 +117,14 @@ public class ShoppingCartModelFactoryTests : WebTest
     {
         var model = await _shoppingCartModelFactory.PrepareOrderTotalsModelAsync(new List<ShoppingCartItem> { _shoppingCartItem }, true);
 
-        model.SubTotal.Should().Be("$1,200.00");
-        model.OrderTotal.Should().Be("$1,200.00");
+        model.SubTotal.Should().Be("$27.00");
+        model.OrderTotal.Should().Be("$27.00");
 
-        model.GiftCards.Any().Should().BeFalse();
         model.Shipping.Should().Be("$0.00");
-        model.Tax.Should().Be("$0.00");
-        model.WillEarnRewardPoints.Should().Be(120);
+        //no tax applies to this cart, and TaxSettings.HideZeroTax is on, so the summary
+        //leaves the tax line out entirely rather than printing a zero
+        model.DisplayTax.Should().BeFalse();
+        model.Tax.Should().BeNull();
     }
 
     [Test]
@@ -157,27 +135,23 @@ public class ShoppingCartModelFactoryTests : WebTest
     }
 
     [Test]
-    public async Task CanPrepareWishlistEmailAFriendModel()
-    {
-        var model = await _shoppingCartModelFactory.PrepareWishlistEmailAFriendModelAsync(new WishlistEmailAFriendModel(),
-            false);
-
-        model.YourEmailAddress.Should().Be(NopTestsDefaults.AdminEmail);
-    }
-
-    [Test]
     public async Task CanPrepareCartItemPictureModel()
     {
         var product = await _producService.GetProductByIdAsync(_shoppingCartItem.ProductId);
 
         var model = await _shoppingCartModelFactory.PrepareCartItemPictureModelAsync(_shoppingCartItem, 100, true, await _localizationService.GetLocalizedAsync(product, x => x.Name));
 
-        model.AlternateText.Should().Be("Picture of Build your own computer");
-        model.ImageUrl.Should()
-            .Be($"http://{NopTestsDefaults.HostIpAddress}/images/thumbs/0000020_build-your-own-computer_100.jpeg");
-        model.Title.Should().Be("Show details for Build your own computer");
+        //composed from resources: both the wording and the product name are localized
+        model.AlternateText.Should().Be(string.Format(
+            await _localizationService.GetResourceAsync("Media.Product.ImageAlternateTextFormat"), product.Name));
+        model.Title.Should().Be(string.Format(
+            await _localizationService.GetResourceAsync("Media.Product.ImageLinkTitleFormat"), product.Name));
+        //the thumb file name carries the picture id and the slugged product name
+        model.ImageUrl.Should().StartWith($"http://{NopTestsDefaults.HostIpAddress}/images/thumbs/")
+            .And.EndWith("_100.png");
+        model.FullSizeImageUrl.Should().StartWith($"http://{NopTestsDefaults.HostIpAddress}/images/thumbs/")
+            .And.EndWith(".png");
 
-        model.FullSizeImageUrl.Should().Be($"http://{NopTestsDefaults.HostIpAddress}/images/thumbs/0000020_build-your-own-computer.jpeg");
         model.ThumbImageUrl.Should().BeNull();
     }
 }
