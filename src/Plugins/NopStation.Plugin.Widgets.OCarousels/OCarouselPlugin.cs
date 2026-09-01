@@ -163,7 +163,7 @@ public class OCarouselPlugin : BasePlugin, IWidgetPlugin, IPlugin, INopStationPl
 		{
 			["Featured Categories"] = "فئات مميزة",
 			["New Products"] = "منتجات جديدة",
-			["Best Sellers"] = "الأكثر مبيعا",
+			["Best Sellers"] = "الأكثر مبيعاً",
 			["Manufacturers"] = "الشركات"
 		};
 		foreach (OCarousel carousel in await _carouselService.GetAllCarouselsAsync())

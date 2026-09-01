@@ -9,8 +9,6 @@ public interface IFirebaseNotificationService
 
 	Task<bool> UnsubscribeDeviceAsync(int customerId, string token);
 
-	Task<bool> EnsureCustomerTokenAsync(int customerId, string platform = "web");
-
 	Task<bool> SendNotificationAsync(int customerId, string title, string body, Dictionary<string, string>? data = null, string platform = "all");
 
 	Task<int> SendNotificationToManyAsync(IList<int> customerIds, string title, string body, Dictionary<string, string>? data = null, string platform = "all");

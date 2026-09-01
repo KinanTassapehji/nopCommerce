@@ -1,0 +1,133 @@
+﻿@model CatalogProductsModel
+
+@*
+    TmTm product list — the core partial plus "keep scrolling" paging on phones.
+
+    On a phone the numbered pager was the only way forward and the page-size
+    <select> next to it the only way to see more at once; both are desktop
+    idioms. Here the next page loads as the end of the list comes into view and
+    is appended, which is what a thumb expects.
+
+    The pager is still rendered and still drives it: it is the single source of
+    "is there a next page, and which one", it survives the sort/filter reload
+    for free, and its Next link stays a real link for keyboard and screen
+    reader users (brand.css restyles it as the full-width button that the
+    observer normally presses first). Desktop keeps the core behaviour
+    unchanged.
+*@
+
+<script src="~/js/public.catalogproducts.js" asp-location="Footer"></script>
+
+<div class="products-container">
+    <div class="ajax-products-busy"></div>
+    <div class="products-wrapper">
+        @await Html.PartialAsync("_ProductsInGridOrLines", Model)
+    </div>
+</div>
+<script asp-location="Footer">
+    $(function() {
+        CatalogProducts.init({
+            ajax: @Model.UseAjaxLoading.ToString().ToLowerInvariant(),
+            browserPath: '@Context.Request.Path',
+            fetchUrl: '@ViewData["fetchUrl"]'
+        });
+
+        if (window.matchMedia('(max-width: 1000px)').matches && 'IntersectionObserver' in window) {
+            initInfiniteScroll();
+        } else {
+            addPagerHandlers();
+            $(CatalogProducts).on('loaded', function () {
+                addPagerHandlers();
+            });
+        }
+    });
+
+    function addPagerHandlers() {
+        $('[data-page]').on('click', function (e) {
+            e.preventDefault();
+            CatalogProducts.getProducts($(this).data('page'));
+            return false;
+        });
+    }
+
+    function initInfiniteScroll() {
+        var $container = $('.products-container').addClass('tm-infinite');
+        var loading = false;
+
+        // 400px of lead time: the request is usually done by the time the end
+        // of the list is actually on screen.
+        var observer = new IntersectionObserver(function (entries) {
+            for (var i = 0; i < entries.length; i++) {
+                if (entries[i].isIntersecting) {
+                    loadNextPage();
+                    return;
+                }
+            }
+        }, { rootMargin: '400px 0px' });
+
+        function watchPager() {
+            observer.disconnect();
+            var pagerEl = $container.find('.pager .next-page')[0];
+            if (pagerEl) {
+                observer.observe(pagerEl);
+            }
+        }
+
+        function loadNextPage() {
+            var $next = $container.find('.pager .next-page a[data-page]');
+            if (loading || $next.length === 0) {
+                return;
+            }
+            loading = true;
+            $container.addClass('tm-loading-more');
+
+            // The 'before' handlers of _CatalogSelectors put the current sort,
+            // view mode and page size on the builder, same as a pager click.
+            var urlBuilder = createProductsURLBuilder(CatalogProducts.settings.browserPath);
+            urlBuilder.addParameter('pagenumber', $next.data('page'));
+            $(CatalogProducts).trigger({ type: 'before', payload: { urlBuilder: urlBuilder } });
+
+            var postData = $.extend({}, urlBuilder.params.query);
+            addAntiForgeryToken(postData);
+
+            $.ajax({
+                cache: false,
+                url: CatalogProducts.settings.fetchUrl,
+                type: 'POST',
+                data: postData
+            }).done(function (response) {
+                var $response = $('<div>').html(response);
+                $container.find('.item-grid').append($response.find('.item-grid').children());
+
+                // The response's own pager carries the next page number, or is
+                // absent on the last page, which ends the scroll.
+                var $newPager = $response.find('.pager');
+                if ($newPager.length) {
+                    $container.find('.pager').replaceWith($newPager);
+                } else {
+                    $container.find('.pager').remove();
+                }
+            }).always(function () {
+                loading = false;
+                $container.removeClass('tm-loading-more');
+                // A short page can leave the new pager already in view.
+                watchPager();
+            });
+        }
+
+        // The Next link stays clickable, and sorting or filtering replaces the
+        // whole list, pager included.
+        $container.on('click', '.pager [data-page]', function (e) {
+            e.preventDefault();
+            loadNextPage();
+            return false;
+        });
+        $(CatalogProducts).on('loaded', watchPager);
+        watchPager();
+    }
+
+    // ponytail: the URL is not rewritten as pages are appended - a reload
+    // would then open at page 7 with the first six missing, which is worse
+    // than opening at the top. Store the loaded range in history.state if
+    // restoring the scroll position ever matters.
+</script>

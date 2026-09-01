@@ -1,50 +1,54 @@
 # Widgets.FirebasePushNotification
 
-This plugin integrates nopCommerce with Firebase Cloud Messaging (FCM) HTTP v1 API using a Google Service Account JSON.
+Firebase Cloud Messaging (FCM) push notifications for nopCommerce, sent through the
+Firebase Admin SDK (HTTP v1) with a Google service account.
 
-## Required configuration values
+## Setup
 
-- **Enable notifications** = enabled
-- **Firebase project ID** = required (single project id used for Android, iOS, and Web)
-- **Service account JSON** = required
-- **Use FCM HTTP v1 API** = enabled
+1. **Service account** - download the service account JSON from Firebase Console ->
+   Project settings -> Service accounts. Either drop it next to the app (the file is
+   found by its `*firebase-adminsdk*.json` name, exactly as downloaded) or point
+   `GOOGLE_APPLICATION_CREDENTIALS` at it. On GCP the metadata server is used instead.
+   Without a credential the plugin loads but every send fails silently.
+2. **Web app config** - Admin -> Configuration -> Local plugins ->
+   Widgets.FirebasePushNotification -> Configure. Fill API key, auth domain, project id,
+   messaging sender id and app id from Firebase Console -> Project settings -> General ->
+   Your apps -> Web app, and the VAPID key from Cloud Messaging -> Web Push certificates.
+   The client script renders nothing while API key or project id is empty.
+3. **Enable the widget** - Admin -> Configuration -> Widgets -> enable
+   `Widgets.FirebasePushNotification`. The script only renders when the widget is active.
+4. **HTTPS** - web push needs a secure context. Only `localhost` is exempt, so on a plain
+   `http://` host name the browser refuses to register the service worker and no token is
+   ever collected.
 
-> You do **not** need separate Firebase project IDs per platform.
+One Firebase project id covers Android, iOS and Web.
 
-## Automatic token creation on register/login
+## How tokens are collected
 
-The plugin now listens to customer authentication events:
+The widget renders into `body_end_html_tag_before` for logged-in customers, asks for
+notification permission once (the choice is remembered in `localStorage`), then posts the
+FCM token to the plugin. There is no server-side token creation: a customer has a row in
+`FirebaseDeviceToken` only after a real device registered.
 
-- customer registration
-- customer login
+Background delivery uses the site's own `wwwroot/sw.js`, which handles the `push` and
+`notificationclick` events with the plain Push API - the plugin does not serve a
+`firebase-messaging-sw.js` of its own.
 
-If a customer has no Firebase token record yet, the plugin creates a server-side token record automatically.
+Clients (e.g. a mobile wrapper) can register directly, as the authenticated customer:
 
-## Sending test notifications
+- `POST /api/plugin/FirebasePushNotification/RegisterToken` - `{ token, platform }`,
+  platform is `android`, `ios` or `web`
+- `POST /api/plugin/FirebasePushNotification/UnregisterToken` - `{ token }`
 
-You do **not** need to create a custom controller to send test notifications.
+Tokens FCM reports as unregistered or invalid are deactivated automatically.
 
-The plugin provides:
+## Sending
 
-- `POST /Admin/FirebasePushNotification/SendTest`
-
-In nopCommerce Admin, open:
-
-- **Configuration -> Local plugins -> Widgets.FirebasePushNotification -> Configure**
-
-Then use **Send test notification** (Customer ID + Title + Body + optional data JSON + platform).
-
-## Client registration endpoints
-
-Your mobile/web app can register device tokens (authenticated customer):
-
-- `POST /api/plugin/FirebasePushNotification/RegisterToken`
-- `POST /api/plugin/FirebasePushNotification/UnregisterToken`
-
-## Web Push / VAPID requirement
-
-Web push in Firebase requires configuring **Web Push certificates (VAPID keys)** in Firebase Console:
-
-- Firebase Console -> Project settings -> Cloud Messaging -> Web Push certificates.
-
-The plugin does **not** generate VAPID keys server-side.
+- **Automatic** - order placed, paid, processing, complete, cancelled, shipped, delivered
+  and ready-for-pickup events each push to the order's customer. These texts are currently
+  English only.
+- **Broadcast** - Admin -> Third party plugins -> Send Broadcast Notification. Targets one
+  searched customer or all customers, filtered by platform, with separate English and
+  Arabic title/body picked per customer language, plus optional `string:string` data JSON.
+- **Test** - `POST /Admin/FirebasePushNotification/SendTest` (customer id, title, body,
+  platform, optional data JSON). There is no form for it on the configuration page yet.

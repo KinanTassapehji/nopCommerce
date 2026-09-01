@@ -746,14 +746,6 @@ public partial class AdminMenu : IAdminMenu
                         },
                         new()
                         {
-                            SystemName = "Country sales",
-                            Title = await _localizationService.GetResourceAsync("Admin.Reports.Sales.Country"),
-                            PermissionNames = new List<string> { StandardPermission.Reports.COUNTRY_SALES },
-                            Url = GetMenuItemUrl("Report", "CountrySales"),
-                            IconClass = "far fa-dot-circle"
-                        },
-                        new()
-                        {
                             SystemName = "Customers",
                             Title = await _localizationService.GetResourceAsync("Admin.Reports.Customers"),
                             IconClass = "far fa-dot-circle",

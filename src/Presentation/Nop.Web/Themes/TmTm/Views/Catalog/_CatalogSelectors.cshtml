@@ -1,0 +1,125 @@
+﻿@model CatalogProductsModel
+
+@*
+    TmTm catalogue selectors — the core partial plus a phone-sized sort control.
+
+    Three changes against the core file:
+
+      * the grid/list switch is gone: CatalogModelFactory pins every list to
+        grid, so the block that drew it was unreachable markup;
+
+    The other two are mobile-only and done in CSS (brand.css, "Catalogue and
+    product page details"):
+
+      * the page-size <select> is hidden: the list now loads the next page as
+        you reach the end of it (see _CatalogProducts.cshtml), so choosing how
+        many fit on "a page" no longer means anything on a phone;
+
+      * sorting moves from a native <select> and its label into one chip that
+        names the current order and opens a bottom sheet of the options. The
+        chip is a 44px tap target that reads as a value rather than a form
+        field, and the sheet shows every option at once with the current one
+        ticked, instead of the OS list a <select> pops.
+
+    The <select> stays in the markup and stays the only control on desktop and
+    on browsers without popover; the chip and sheet just drive it. So sorting
+    keeps working with no script, and every handler below is the core one.
+*@
+
+@if (Model.Products.Count <= 0)
+{
+    return;
+}
+
+<div class="product-selectors">
+    @if (Model.AllowProductSorting)
+    {
+        var selectedSort = Model.AvailableSortOptions.FirstOrDefault(option => option.Selected)
+            ?? Model.AvailableSortOptions.FirstOrDefault();
+
+        <div class="product-sorting">
+            <span>@T("Catalog.OrderBy")</span>
+            @Html.DropDownList("products-orderby", Model.AvailableSortOptions, new { aria_label = T("Catalog.OrderBy.Label") })
+            <button class="tm-sort-chip" type="button" popovertarget="tm-sort-sheet" aria-label="@T("Catalog.OrderBy.Label")">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M4 7h13M4 12h9M4 17h5" />
+                </svg>
+                <span class="tm-sort-chip-value">@selectedSort?.Text</span>
+            </button>
+        </div>
+        <script asp-location="Footer">
+            $(function() {
+                var $orderByEl = $('#products-orderby');
+                $orderByEl.on('change', function () {
+                    CatalogProducts.getProducts();
+                });
+
+                $(CatalogProducts).on('before', function (e) {
+                    e.payload.urlBuilder
+                        .addParameter('orderby', $orderByEl.val());
+                });
+
+                var sortSheet = document.getElementById('tm-sort-sheet');
+                $('.tm-sort-option').on('click', function () {
+                    var $option = $(this);
+                    $('.tm-sort-option').attr('aria-checked', 'false');
+                    $option.attr('aria-checked', 'true');
+                    $('.tm-sort-chip-value').text($option.find('.tm-sort-option-label').text());
+                    if (sortSheet.hidePopover) {
+                        sortSheet.hidePopover();
+                    }
+                    if ($orderByEl.val() !== String($option.data('value'))) {
+                        $orderByEl.val($option.data('value')).trigger('change');
+                    }
+                });
+            });
+        </script>
+    }
+
+    @if (Model.AllowCustomersToSelectPageSize)
+    {
+        <div class="product-page-size">
+            <span>@T("Catalog.PageSize")</span>
+            @Html.DropDownList("products-pagesize", Model.PageSizeOptions, new { aria_label = T("Catalog.PageSize.Label") })
+            <span>@T("Catalog.PageSize.PerPage")</span>
+        </div>
+        <script asp-location="Footer">
+            $(function() {
+                var $pageSizeEl = $('#products-pagesize');
+                $pageSizeEl.on('change', function () {
+                    CatalogProducts.getProducts();
+                });
+
+                $(CatalogProducts).on('before', function (e) {
+                    e.payload.urlBuilder
+                        .addParameter('pagesize', $pageSizeEl.val());
+                });
+            });
+        </script>
+    }
+</div>
+
+@if (Model.AllowProductSorting)
+{
+    <div id="tm-sort-sheet" class="tm-sheet" popover>
+        <div class="tm-sheet-grip" aria-hidden="true"></div>
+        <div class="tm-sheet-head">
+            <h2 class="tm-sheet-title">@T("Catalog.OrderBy")</h2>
+            <button class="tm-sheet-close" type="button" popovertarget="tm-sort-sheet" popovertargetaction="hide" aria-label="@T("Common.Close")">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="m6 6 12 12M18 6 6 18" />
+                </svg>
+            </button>
+        </div>
+        <div class="tm-sheet-body">
+            <div class="tm-sort-list" role="radiogroup" aria-label="@T("Catalog.OrderBy.Label")">
+                @foreach (var option in Model.AvailableSortOptions)
+                {
+                    <button class="tm-sort-option" type="button" role="radio" data-value="@option.Value" aria-checked="@(option.Selected ? "true" : "false")">
+                        <span class="tm-sort-option-label">@option.Text</span>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+}

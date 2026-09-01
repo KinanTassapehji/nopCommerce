@@ -293,6 +293,7 @@ public partial class AddressService : IAddressService
     {
         var addr = new Address
         {
+            AddressName = address.AddressName,
             FirstName = address.FirstName,
             LastName = address.LastName,
             Email = address.Email,

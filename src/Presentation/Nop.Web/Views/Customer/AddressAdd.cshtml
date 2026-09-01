@@ -22,6 +22,7 @@
             @{
                 var dataDictAddress = new ViewDataDictionary(ViewData);
                 dataDictAddress.TemplateInfo.HtmlFieldPrefix = "Address";
+                Model.Address.NameAndEmailHidden = true;
                 @await Html.PartialAsync("_CreateOrUpdateAddress", Model.Address, dataDictAddress)
             }
             <div class="buttons">

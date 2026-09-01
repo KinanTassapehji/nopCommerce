@@ -6,6 +6,11 @@
 public partial class Address : BaseEntity
 {
     /// <summary>
+    /// Gets or sets the name the customer gave this address ("Home", "Work", ...)
+    /// </summary>
+    public string AddressName { get; set; }
+
+    /// <summary>
     /// Gets or sets the first name
     /// </summary>
     public string FirstName { get; set; }

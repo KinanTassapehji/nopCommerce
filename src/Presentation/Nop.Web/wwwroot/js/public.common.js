@@ -22,7 +22,10 @@ function displayAjaxLoading(display) {
         $('.ajax-loading-block-window').show();
     }
     else {
-        $('.ajax-loading-block-window').hide('slow');
+        //fadeOut, not hide('slow'): the overlay is a fixed full-screen box, so
+        //animating its width/height collapses it into the start corner (top-right
+        //in RTL) and drags the centred spinner along with it.
+        $('.ajax-loading-block-window').fadeOut(200);
     }
 }
 

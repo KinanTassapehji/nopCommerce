@@ -46,9 +46,9 @@
                 else
                 {
                     <div class="qty-stepper">
-                        <button type="button" class="qty-step" data-qty-step="-1" aria-label="@T("Products.Qty.Decrease")" aria-controls="product_enteredQuantity_@Model.ProductId">&minus;</button>
-                        <input asp-for="EnteredQuantity" id="product_enteredQuantity_@Model.ProductId" class="qty-input" type="text" inputmode="numeric" autocomplete="off" aria-label=@T("Products.Qty.AriaLabel")/>
                         <button type="button" class="qty-step" data-qty-step="1" aria-label="@T("Products.Qty.Increase")" aria-controls="product_enteredQuantity_@Model.ProductId">+</button>
+                        <input asp-for="EnteredQuantity" id="product_enteredQuantity_@Model.ProductId" class="qty-input" type="text" inputmode="numeric" autocomplete="off" aria-label=@T("Products.Qty.AriaLabel")/>
+                        <button type="button" class="qty-step" data-qty-step="-1" aria-label="@T("Products.Qty.Decrease")" aria-controls="product_enteredQuantity_@Model.ProductId">&minus;</button>
                     </div>
                     <script asp-location="Footer">
                         //when a customer clicks 'Enter' button we submit the "add to cart" button (if visible)

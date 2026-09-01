@@ -192,7 +192,8 @@ public partial class CatalogModelFactory : ICatalogModelFactory
     {
         var model = new ManufacturerFilterModel();
 
-        if (availableManufacturers?.Any() == true)
+        //ponytail: one brand filters nothing, so don't show the box for it
+        if (availableManufacturers?.Count > 1)
         {
             model.Enabled = true;
 
@@ -1915,31 +1916,16 @@ public partial class CatalogModelFactory : ICatalogModelFactory
     /// <param name="model">Catalog products model</param>
     /// <param name="command">Model to get the catalog products</param>
     /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task PrepareViewModesAsync(CatalogProductsModel model, CatalogProductsCommand command)
+    public virtual Task PrepareViewModesAsync(CatalogProductsModel model, CatalogProductsCommand command)
     {
-        model.AllowProductViewModeChanging = _catalogSettings.AllowProductViewModeChanging;
+        //ponytail: grid is the only view mode this store ships - the list layout was never
+        //designed for the phone-first catalogue. Leaving AllowProductViewModeChanging false
+        //takes the switch out of _CatalogSelectors, and ignoring command.ViewMode means a
+        //hand-written ?viewmode=list cannot bring the list back either.
+        model.AllowProductViewModeChanging = false;
+        model.ViewMode = "grid";
 
-        var viewMode = !string.IsNullOrEmpty(command.ViewMode)
-            ? command.ViewMode
-            : _catalogSettings.DefaultViewMode;
-        model.ViewMode = viewMode;
-        if (model.AllowProductViewModeChanging)
-        {
-            //grid
-            model.AvailableViewModes.Add(new SelectListItem
-            {
-                Text = await _localizationService.GetResourceAsync("Catalog.ViewMode.Grid"),
-                Value = "grid",
-                Selected = viewMode == "grid"
-            });
-            //list
-            model.AvailableViewModes.Add(new SelectListItem
-            {
-                Text = await _localizationService.GetResourceAsync("Catalog.ViewMode.List"),
-                Value = "list",
-                Selected = viewMode == "list"
-            });
-        }
+        return Task.CompletedTask;
     }
 
     /// <summary>

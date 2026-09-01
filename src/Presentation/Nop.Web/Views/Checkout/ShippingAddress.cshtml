@@ -75,7 +75,7 @@
                                         </div>
                                         <ul class="address-box">
                                             <li class="name">
-                                                @item.FirstName @item.LastName
+                                                @(!string.IsNullOrWhiteSpace(item.AddressName) ? item.AddressName : $"{item.FirstName} {item.LastName}")
                                             </li>
                                             <li class="email">
                                                 <label>@T("Address.Fields.Email"):</label>

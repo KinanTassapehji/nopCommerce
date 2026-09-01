@@ -483,6 +483,9 @@
   <LocaleResource Name="Account.Logout">
     <Value>تسجيل خروج</Value>
   </LocaleResource>
+  <LocaleResource Name="Account.Logout.Confirm">
+    <Value>هل تريد تسجيل الخروج؟</Value>
+  </LocaleResource>
   <LocaleResource Name="Account.MyAccount">
     <Value>حسابي</Value>
   </LocaleResource>
@@ -1131,6 +1134,12 @@
   <LocaleResource Name="Address.Fields.Address2.Required">
     <Value>العنوان 2 مطلوب</Value>
   </LocaleResource>
+  <LocaleResource Name="Address.Fields.AddressName">
+    <Value>اسم العنوان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Address.Fields.AddressName.Placeholder">
+    <Value>المنزل، العمل، ...</Value>
+  </LocaleResource>
   <LocaleResource Name="Address.Fields.City">
     <Value>المدينة</Value>
   </LocaleResource>
@@ -1189,7 +1198,7 @@
     <Value>المدينة</Value>
   </LocaleResource>
   <LocaleResource Name="Address.Fields.StateProvince.Required">
-    <Value>المحافظة مطلوبة</Value>
+    <Value>المدينة مطلوبة</Value>
   </LocaleResource>
   <LocaleResource Name="Address.Fields.ZipPostalCode">
     <Value>الرقم البريدي</Value>
@@ -1207,7 +1216,7 @@
     <Value>اختار الدولة</Value>
   </LocaleResource>
   <LocaleResource Name="Address.SelectState">
-    <Value>اختار المحافظة</Value>
+    <Value>اختر المدينة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin">
     <Value>مدير النظام</Value>
@@ -11950,6 +11959,9 @@
   <LocaleResource Name="Admin.Menu.Search">
     <Value>بحث</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Menu.Search.NoResults">
+    <Value>لا توجد نتائج</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.NopCommerceNews">
     <Value>NopCommerce أخبار</Value>
   </LocaleResource>
@@ -13670,10 +13682,10 @@
     <Value>العملاء المسجلين</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Customers.RegisteredCustomers.Fields.Customers">
-    <Value>عد</Value>
+    <Value>عدد العملاء</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Customers.RegisteredCustomers.Fields.Period">
-    <Value>فترة</Value>
+    <Value>الفترة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Customers.RegisteredCustomers.Fields.Period.14days">
     <Value>في آخر 14 يومًا</Value>
@@ -13691,7 +13703,7 @@
     <Value>تشغيل التقرير</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.LowStock">
-    <Value>الأسهم منخفضة</Value>
+    <Value>المخزون المنخفض</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.LowStock.SearchPublished">
     <Value>النشر</Value>
@@ -13709,7 +13721,7 @@
     <Value>غير منشورة </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Sales.Bestsellers">
-    <Value>الأكثر مبيعا</Value>
+    <Value>الأكثر مبيعاً</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Sales.Bestsellers.BillingCountry">
     <Value>بلد الشحن</Value>
@@ -13718,7 +13730,7 @@
     <Value>تصفية حسب بلد شحن الطلب.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Sales.Bestsellers.ByAmount">
-    <Value>الأكثر مبيعا حسب الكمية</Value>
+    <Value>الأكثر مبيعاً حسب الكمية</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Sales.Bestsellers.ByQuantity">
     <Value>الأكثر مبيعًا حسب الكمية</Value>
@@ -13832,7 +13844,7 @@
     <Value>تاريخ البداية للبحث</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Sales.NeverSold">
-    <Value>المنتجات التي تم شراؤها أبدا</Value>
+    <Value>المنتجات التي لم يتم شراؤها أبداً</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Sales.NeverSold.EndDate">
     <Value>تاريخ النهاية</Value>
@@ -14300,7 +14312,7 @@
     <Value>تم زيادة كمية المخزون بإلغاء الأمر #{0}</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.StockQuantityHistory.Messages.Combination.Edit">
-    <Value>تم تحرير كمية الأسهم من الجمع</Value>
+    <Value>تم تعديل كمية المخزون من المجموعة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.StockQuantityHistory.Messages.CopyProduct">
     <Value>تم تحرير كمية المخزون عن طريق نسخ المنتج #{0}</Value>
@@ -15542,7 +15554,7 @@
     <Value>نبرة صوتية داعمة ومهذبة</Value>
   </LocaleResource>
   <LocaleResource Name="Bestsellers">
-    <Value>الأكثر مبيعا</Value>
+    <Value>الأكثر مبيعاً</Value>
   </LocaleResource>
   <LocaleResource Name="Blog">
     <Value>مدونة</Value>
@@ -17819,7 +17831,7 @@
     <Value>{0} فى المخزن</Value>
   </LocaleResource>
   <LocaleResource Name="Products.Availability.LowStock">
-    <Value>الأسهم منخفضة</Value>
+    <Value>مخزون منخفض</Value>
   </LocaleResource>
   <LocaleResource Name="Products.Availability.LowStockWithQuantity">
     <Value>{0} مخزون منخفض</Value>

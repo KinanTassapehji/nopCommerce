@@ -47,7 +47,12 @@
         data: postData,
         success: function (response) {
           $('.products-wrapper').html(response);
-          $('html, body').animate({ scrollTop: $('.center-2 .page').offset().top }, 'slow');
+          //a page change means a new set of results to read from the top; a filter or sort
+          //toggle should leave you on the control you just used - on a phone the filters sit
+          //above the list, so scrolling up threw you off the checkbox you were ticking
+          if (pageNumber && $('.center-2 .page').length) {
+            $('html, body').animate({ scrollTop: $('.center-2 .page').offset().top }, 'slow');
+          }
           $(self).trigger({ type: "loaded" });
         },
         error: function () {

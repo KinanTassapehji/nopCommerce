@@ -483,6 +483,9 @@
   <LocaleResource Name="Account.Logout">
     <Value>Log out</Value>
   </LocaleResource>
+  <LocaleResource Name="Account.Logout.Confirm">
+    <Value>Are you sure you want to log out?</Value>
+  </LocaleResource>
   <LocaleResource Name="Account.MyAccount">
     <Value>My account</Value>
   </LocaleResource>
@@ -1130,6 +1133,12 @@
   </LocaleResource>
   <LocaleResource Name="Address.Fields.Address2.Required">
     <Value>Address 2 is required.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Address.Fields.AddressName">
+    <Value>Address name</Value>
+  </LocaleResource>
+  <LocaleResource Name="Address.Fields.AddressName.Placeholder">
+    <Value>Home, Work, ...</Value>
   </LocaleResource>
   <LocaleResource Name="Address.Fields.City">
     <Value>City</Value>
@@ -11947,6 +11956,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Menu.Search">
     <Value>Search</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Menu.Search.NoResults">
+    <Value>No results</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopCommerceNews">
     <Value>NopCommerce News</Value>

@@ -26,16 +26,9 @@
                         var address = Model.Addresses[i];
                         <div class="section address-item">
                             <h2 class="title">
-                                @address.FirstName @address.LastName
+                                @(!string.IsNullOrWhiteSpace(address.AddressName) ? address.AddressName : $"{address.FirstName} {address.LastName}")
                             </h2>
                             <ul class="info">
-                                <li class="name">
-                                    @address.FirstName @address.LastName
-                                </li>
-                                <li class="email">
-                                    <label>@T("Address.Fields.Email"):</label>
-                                    @address.Email
-                                </li>
                                 @if (address.PhoneEnabled)
                                 {
                                     <li class="phone">

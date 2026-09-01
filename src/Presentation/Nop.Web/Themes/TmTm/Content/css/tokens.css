@@ -52,6 +52,10 @@
   --tm-shadow-lg: 0 14px 38px rgba(2, 120, 126, 0.16);
   --tm-transition: 0.18s ease;
 
+  /* --- Icon marks -------------------------------------------------------
+     Masked, not coloured: whatever uses one paints it with the palette. */
+  --tm-mark-empty: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%23000%27%20stroke-width%3D%271.4%27%20stroke-linecap%3D%27round%27%3E%3Ccircle%20cx%3D%2710.5%27%20cy%3D%2710.5%27%20r%3D%276.5%27%2F%3E%3Cpath%20d%3D%27M15.4%2015.4%2021%2021M8%2010.5h5%27%2F%3E%3C%2Fsvg%3E");
+
   /* --- Logo clear space -------------------------------------------------
      Guideline: minimum clear space on every side = height of the letter "t".
      At the header lockup size that is ~14px; scale with the logo if resized. */

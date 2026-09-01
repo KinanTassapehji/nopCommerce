@@ -63,28 +63,10 @@
     <Content Update="**\*.config;**\*.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
-  <!-- This target execute after "Build" target.
-    We use it to clean up folder with plugins from unnecessary and obsolete libraries. -->
-  <Target Name="NopTarget" AfterTargets="Build">
-    <ItemGroup>
-      <!-- Get plugin description files to get plugin paths -->
-      <PluginsDescription Include="$(MSBuildProjectDirectory)\Plugins\**\plugin.json;" />
-      <!-- Get paths for all plugins -->
-      <PluginsFolders Include="@(PluginsDescription->'%(relativedir)')" />
-
-      <!-- Get paths for ClearPluginAssemblies project -->
-      <ClearPluginAssemblies Include="$(MSBuildProjectDirectory)\..\..\Build\ClearPluginAssemblies.proj" />
-
-    </ItemGroup>
-    <PropertyGroup>
-      <PluginsFolders>@(PluginsFolders)</PluginsFolders>
-    </PropertyGroup>
-    <!-- When .NET Core builds a project, it copies all referenced libraries to the output folder.
-      For plugins it creates too many unnecessary files that just take up space.
-      At the moment you can't disable this behavior. That's why we have to manually delete all unnecessary libraries from plugin output directories. -->
-    <MSBuild Projects="@(ClearPluginAssemblies)" Properties="PluginPath=$(PluginsFolders)" Targets="NopClear" />
-
-  </Target>
+  <!-- Plugin output is cleaned by each plugin's own NopTarget, which runs after that plugin
+    builds. Nop.Web must not repeat it here: publishing evaluates the "Plugins\**" glob before
+    the Build target runs, so deleting those files afterwards makes _CopyResolvedFilesToPublishDirectory
+    fail with MSB3030 on files that no longer exist. -->
 
   <PropertyGroup>
     <!--The common language runtime (CLR) supports two types of garbage collection:

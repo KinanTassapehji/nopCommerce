@@ -145,31 +145,6 @@ public partial class ReportController : BaseAdminController
 
     #endregion
 
-    #region Country sales
-
-    [CheckPermission(StandardPermission.Orders.ORDERS_VIEW)]
-    [CheckPermission(StandardPermission.Reports.COUNTRY_SALES)]
-    public virtual async Task<IActionResult> CountrySales()
-    {
-        //prepare model
-        var model = await _reportModelFactory.PrepareCountrySalesSearchModelAsync(new CountryReportSearchModel());
-
-        return View(model);
-    }
-
-    [HttpPost]
-    [CheckPermission(StandardPermission.Orders.ORDERS_VIEW)]
-    [CheckPermission(StandardPermission.Reports.COUNTRY_SALES)]
-    public virtual async Task<IActionResult> CountrySalesList(CountryReportSearchModel searchModel)
-    {
-        //prepare model
-        var model = await _reportModelFactory.PrepareCountrySalesListModelAsync(searchModel);
-
-        return Json(model);
-    }
-
-    #endregion
-
     #region Customer reports
 
     [CheckPermission(StandardPermission.Customers.CUSTOMERS_VIEW)]

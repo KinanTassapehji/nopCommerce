@@ -16,6 +16,15 @@ public partial record AddressModel : BaseNopEntityModel
         AddressFields = new KeyValuePair<AddressField, string>[7];
     }
 
+    [NopResourceDisplayName("Address.Fields.AddressName")]
+    public string AddressName { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the name and email are posted hidden (the address book of a
+    /// logged-in customer - they are always the account holder's own, so there is nothing to fill in)
+    /// </summary>
+    public bool NameAndEmailHidden { get; set; }
+
     [NopResourceDisplayName("Address.Fields.FirstName")]
     public string FirstName { get; set; }
     [NopResourceDisplayName("Address.Fields.LastName")]
@@ -94,6 +103,7 @@ public partial record AddressModel : BaseNopEntityModel
         destination ??= new Address();
         
         destination.Id = Id;
+        destination.AddressName = AddressName;
         destination.FirstName = FirstName;
         destination.LastName = LastName;
         destination.Email = Email;

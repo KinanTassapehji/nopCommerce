@@ -1405,7 +1405,8 @@ public partial class CustomerController : BasePublicController
 
     public virtual async Task<IActionResult> AddressAdd()
     {
-        if (!await _customerService.IsRegisteredAsync(await _workContext.GetCurrentCustomerAsync()))
+        var customer = await _workContext.GetCurrentCustomerAsync();
+        if (!await _customerService.IsRegisteredAsync(customer))
             return Challenge();
 
         var model = new CustomerAddressEditModel();
@@ -1414,6 +1415,11 @@ public partial class CustomerController : BasePublicController
             excludeProperties: false,
             addressSettings: _addressSettings,
             loadCountries: async () => await _countryService.GetAllCountriesAsync((await _workContext.GetWorkingLanguageAsync()).Id));
+
+        //the form does not ask for these - a registered customer always has them, and they are the same for every address of theirs
+        model.Address.FirstName = customer.FirstName;
+        model.Address.LastName = customer.LastName;
+        model.Address.Email = customer.Email;
 
         return View(model);
     }

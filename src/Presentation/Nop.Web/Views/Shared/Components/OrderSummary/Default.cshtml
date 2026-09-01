@@ -1,4 +1,4 @@
-@model ShoppingCartModel
+﻿@model ShoppingCartModel
 
 @using Nop.Core
 @using Nop.Core.Domain.Catalog
@@ -299,7 +299,7 @@
                                 <p>@T("Checkout.TermsOfService.PleaseAccept")</p>
                             </div>
                             <div class="terms-of-service">
-                                <input id="termsofservice" type="checkbox" name="termsofservice" />
+                                <input id="termsofservice" type="checkbox" name="termsofservice" checked />
                                 <label for="termsofservice">@T("Checkout.TermsOfService.IAccept")</label>
                                 @if (Model.TermsOfServicePopup)
                                 {

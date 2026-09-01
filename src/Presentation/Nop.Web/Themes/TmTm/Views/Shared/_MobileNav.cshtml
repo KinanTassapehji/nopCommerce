@@ -19,13 +19,10 @@
     admin, its accordion script and every localisation still apply.
 *@
 @using Nop.Core.Domain.Orders
-@using Nop.Services.Localization
 @using Nop.Services.Orders
 
-@inject ILanguageService languageService
 @inject IShoppingCartService shoppingCartService
 @inject Nop.Core.IStoreContext storeContext
-@inject Nop.Core.IWebHelper webHelper
 @inject Nop.Core.IWorkContext workContext
 
 @{
@@ -40,12 +37,6 @@
         cartQuantity = (await shoppingCartService.GetShoppingCartAsync(customer, ShoppingCartType.ShoppingCart, store.Id))
             .Sum(item => item.Quantity);
     }
-
-    //the language switch has no home in the store header — the only other one
-    //lives on the account page — so the sheet carries it for bilingual stores
-    var languages = await languageService.GetAllLanguagesAsync(storeId: store.Id);
-    var currentLanguageId = (await workContext.GetWorkingLanguageAsync()).Id;
-    var returnUrl = webHelper.GetRawUrl(Context.Request);
 
     //Which tab is current is a question about the section of the store rather
     //than about one URL: /cart and every checkout step are both "cart", and an
@@ -74,18 +65,6 @@
         <div class="header-menu">
             @await Component.InvokeAsync(typeof(MainMenuViewComponent))
         </div>
-        @if (languages.Count > 1)
-        {
-            <div class="tm-lang-switch" role="group" aria-label="@T("Languages.Selector.Label")">
-                @foreach (var language in languages)
-                {
-                    <a class="tm-lang @(language.Id == currentLanguageId ? "active" : null)"
-                       href="@Url.RouteUrl(NopRouteNames.Standard.CHANGE_LANGUAGE, new { langid = language.Id, returnUrl })"
-                       lang="@language.UniqueSeoCode"
-                       aria-current="@(language.Id == currentLanguageId ? "true" : null)">@language.Name</a>
-                }
-            </div>
-        }
     </div>
 </div>
 

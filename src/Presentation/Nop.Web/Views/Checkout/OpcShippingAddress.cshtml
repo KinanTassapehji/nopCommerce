@@ -43,9 +43,9 @@
                                 title="" onchange="Shipping.newAddress(this.value, @Model.SelectedBillingAddress)">
                             @foreach (var address in Model.ExistingAddresses)
                             {
-                                var addressLine = "";
-                                addressLine += address.FirstName;
-                                addressLine += " " + address.LastName;
+                                var addressLine = !string.IsNullOrWhiteSpace(address.AddressName)
+                                    ? address.AddressName
+                                    : $"{address.FirstName} {address.LastName}";
                                 addressLine += ", " + address.AddressLine;
                                 //how should we render "FormattedCustomAddressAttributes" here?
                                 <option value="@(address.Id)">@(addressLine)</option>

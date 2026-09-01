@@ -184,6 +184,7 @@ public partial class AddressModelFactory : IAddressModelFactory
         if (!excludeProperties && address != null)
         {
             model.Id = address.Id;
+            model.AddressName = address.AddressName;
             model.FirstName = address.FirstName;
             model.LastName = address.LastName;
             model.Email = address.Email;

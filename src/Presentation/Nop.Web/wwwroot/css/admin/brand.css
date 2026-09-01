@@ -303,3 +303,16 @@ table.dataTable tbody tr:hover > td {
 .main-sidebar * {
   scrollbar-color: rgba(255, 255, 255, .38) transparent;
 }
+
+/* --- RTL grid headers ---------------------------------------------------
+   The vendor DataTables sheet hardcodes text-align:left on thead/tfoot
+   cells, so in Arabic every grid header hangs off the far edge from its
+   own data. Flip it once here; dt-head-center / dt-head-right / the
+   sortable-header flex order carry a class, so they still win. */
+
+html[dir="rtl"] table.dataTable thead th,
+html[dir="rtl"] table.dataTable thead td,
+html[dir="rtl"] table.dataTable tfoot th,
+html[dir="rtl"] table.dataTable tfoot td {
+  text-align: right;
+}

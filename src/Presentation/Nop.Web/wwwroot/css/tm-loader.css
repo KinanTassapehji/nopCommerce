@@ -5,9 +5,10 @@
    after their brand layer, so every waiting state looks identical. Palette
    comes from tokens.css, which both sides already link.
 
-   No new markup and no JS: it restyles the four wait states nopCommerce
+   No new markup and no JS: it restyles the five wait states nopCommerce
    already ships and toggles —
      .ajax-loading-block-window   storefront blocking overlay (displayAjaxLoading)
+     .ajax-products-busy          storefront catalog list veil (sort/filter)
      .please-wait                 storefront inline "wait" labels
      #ajaxBusy                    admin global ajax indicator (ajaxStart/Stop)
      .throbber                    admin blocking overlay (long operations)
@@ -57,6 +58,7 @@
    --tm-teal-deep leads, so the visible head of the ring is the accessible
    teal and #00d9cc only ever appears as the decorative tail. */
 .ajax-loading-block-window::before,
+.products-container .ajax-products-busy::before,
 .throbber .curtain-content p::before {
   content: "";
   position: absolute;
@@ -133,6 +135,34 @@
   -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 2px), #000 calc(100% - 2px));
   mask: radial-gradient(farthest-side, #0000 calc(100% - 2px), #000 calc(100% - 2px));
   animation: tm-loader-spin .85s linear infinite;
+}
+
+/* --- Storefront: catalog list overlay ------------------------------------
+   The veil covers the list, but the list can be several screens tall, so a
+   ring centred *on it* lands off screen — sorting and filtering no longer
+   scroll to the top. Sticky, not fixed: fixed centred the ring on the
+   viewport, which on a two-column catalogue put it out over the sidebar
+   instead of over the products. In flow it centres on the veil — so on the
+   product column — and the sticky offset keeps it near the middle of the
+   screen for as long as any of the list is on screen, riding up to the list's
+   own top or bottom edge rather than floating over what follows.
+   No backdrop-filter here, that would make the veil the containing block. */
+.products-container .ajax-products-busy {
+  background: rgba(255, 255, 255, .72);
+  animation: tm-loader-fade .18s ease both;
+}
+
+.products-container .ajax-products-busy::before {
+  position: sticky;
+  /* sticky does not blockify the way absolute does, and an inline box drops
+     the width/height the shared rule sets. */
+  display: block;
+  inset-block-start: calc(50vh - var(--tm-loader-ring) / 2);
+  /* the shared rule's 50%/-half-width centring is for an absolute box; as
+     sticky offsets they would shove the ring across the page instead. */
+  inset-inline-start: auto;
+  margin-block-start: 0;
+  margin-inline: auto;
 }
 
 /* --- Admin: global ajax indicator ----------------------------------------
@@ -249,6 +279,7 @@ body.tm-loading::after {
 @media (prefers-reduced-motion: reduce) {
   .ajax-loading-block-window::before,
   .ajax-loading-block-window::after,
+  .products-container .ajax-products-busy::before,
   .throbber .curtain-content p::before,
   .please-wait::before,
   #ajaxBusy span,
@@ -258,6 +289,7 @@ body.tm-loading::after {
   }
 
   .ajax-loading-block-window::before,
+  .products-container .ajax-products-busy::before,
   .throbber .curtain-content p::before,
   .please-wait::before {
     animation-name: tm-loader-halo;

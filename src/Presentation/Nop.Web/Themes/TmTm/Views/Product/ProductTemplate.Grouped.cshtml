@@ -1,0 +1,237 @@
+﻿@model ProductDetailsModel
+
+@using Nop.Core
+@using Nop.Core.Domain.Catalog
+@using Nop.Core.Domain.Seo
+@using Nop.Services.Html
+
+@inject IHtmlFormatter htmlFormatter
+@inject IWebHelper webHelper
+@inject SeoSettings seoSettings
+
+@*
+    TmTm grouped product page — the sibling of ProductTemplate.Simple.cshtml.
+
+    Without this file a grouped product fell through to the core template, which
+    keeps the full description as a third row inside .product-essential. The
+    theme's gallery is sticky, so that row scrolled underneath it, and the variant
+    list kept the core's floats at page width with nothing in it laid out.
+
+    Same shape as the simple page, with one difference: the parent carries no
+    price, so the buy box belongs to each variant instead of to the overview
+    column. Everything identical across variants — the short description, the
+    brand, the full description — is printed once on the parent and left off the
+    variants, which is what made the list read as one block repeated.
+*@
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(!string.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
+    //meta
+    NopHtml.AddMetaDescriptionParts(Model.MetaDescription);
+    NopHtml.AddMetaKeywordParts(Model.MetaKeywords);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-product-details-page");
+
+    //canonical URL
+    if (seoSettings.CanonicalUrlsEnabled)
+    {
+        var productUrl = (await NopUrl.RouteGenericUrlAsync<Product>(new { SeName = Model.SeName }, webHelper.GetCurrentRequestProtocol())).ToLowerInvariant();
+        NopHtml.AddCanonicalUrlParts(productUrl, seoSettings.QueryStringInCanonicalUrlsEnabled);
+    }
+
+    //open graph META tags
+    if (seoSettings.OpenGraphMetaTags)
+    {
+        NopHtml.AddHeadCustomParts("<meta property=\"og:type\" content=\"product\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:description\" content=\"" + Html.Encode(htmlFormatter.StripTags(Model.MetaDescription)) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:image:url\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:url\" content=\"" + webHelper.GetThisPageUrl(false) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:site_name\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+    }
+
+    //Twitter META tags
+    if (seoSettings.TwitterMetaTags)
+    {
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:card\" content=\"summary\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:site\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:description\" content=\"" + Html.Encode(htmlFormatter.StripTags(Model.MetaDescription)) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:url\" content=\"" + webHelper.GetThisPageUrl(false) + "\" />");
+    }
+
+    NopHtml.AddJsonLdParts(Model.JsonLd);
+
+    var hasDescription = !string.IsNullOrEmpty(Model.FullDescription);
+}
+<!--product breadcrumb-->
+@section Breadcrumb
+{
+    @await Html.PartialAsync("_ProductBreadcrumb", Model.Breadcrumb)
+}
+@await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsAfterBreadcrumb, additionalData = Model })
+<div class="page product-details-page">
+    <div class="page-body">
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsTop, additionalData = Model })
+        <form asp-route="Product" asp-route-sename="@Model.SeName" method="post" id="product-details-form">
+            <article data-productid="@Model.Id">
+                <div class="product-essential">
+                    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsEssentialTop, additionalData = Model })
+                    <div class="gallery">
+                        <!--product pictures-->
+                        @await Html.PartialAsync("_ProductDetailsPictures", Model)
+                        <!--product videos-->
+                        @await Html.PartialAsync("_ProductDetailsVideos", Model)
+                    </div>
+                    <div class="overview">
+                        @await Html.PartialAsync("_Discontinued", Model)
+                        <div class="product-name">
+                            <h1>
+                                @Model.Name
+                            </h1>
+                        </div>
+                        <div class="tm-identity">
+                            <!--manufacturers-->
+                            @await Html.PartialAsync("_ProductManufacturers", Model.ProductManufacturers)
+                        </div>
+                        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsOverviewTop, additionalData = Model })
+                        @if (!string.IsNullOrEmpty(Model.ShortDescription))
+                        {
+                            <div class="short-description">
+                                @Html.Raw(Model.ShortDescription)
+                            </div>
+                        }
+                        @*One card per variant, each its own buy box: what differs from the
+                            parent — the colour in the name, the SKU, the price and the
+                            button — and nothing that does not.*@
+                        <section class="tm-variants">
+                            <div class="product-variant-list">
+                                @foreach (var variant in Model.AssociatedProducts)
+                                {
+                                    <article class="product-variant-line" data-productid="@variant.Id">
+                                        @if (!string.IsNullOrWhiteSpace(variant.DefaultPictureModel.ImageUrl))
+                                        {
+                                            <div class="variant-picture">
+                                                <img alt="@variant.DefaultPictureModel.AlternateText" src="@variant.DefaultPictureModel.ImageUrl"
+                                                     title="@variant.DefaultPictureModel.Title" id="main-product-img-@variant.Id" />
+                                            </div>
+                                        }
+                                        @*.overview as well as .variant-overview: the theme's
+                                            stepper, price and button rules are written against
+                                            .overview, and a variant's buy box is that control.*@
+                                        <div class="variant-overview overview">
+                                            @if (!string.IsNullOrWhiteSpace(variant.Name))
+                                            {
+                                                <h2 class="variant-name">
+                                                    @variant.Name
+                                                </h2>
+                                            }
+                                            <div class="tm-identity">
+                                                <!--SKU, MAN, GTIN, vendor-->
+                                                @await Html.PartialAsync("_SKU_Man_GTIN_Ven", variant)
+                                            </div>
+                                            <div class="tm-buybox">
+                                                <!--price-->
+                                                @{
+                                                    var dataDictPrice = new ViewDataDictionary(ViewData);
+                                                    dataDictPrice.TemplateInfo.HtmlFieldPrefix = $"price_{variant.Id}";
+                                                    @await Html.PartialAsync("_ProductPrice", variant.ProductPrice, dataDictPrice)
+                                                }
+                                                <!--price breaks-->
+                                                @await Html.PartialAsync("_ProductTierPrices", variant.TierPrices)
+                                                <!--availability-->
+                                                @await Html.PartialAsync("_Availability", variant)
+                                                <!--attributes-->
+                                                @{
+                                                    var dataDictAttributes = new ViewDataDictionary(ViewData);
+                                                    dataDictAttributes.TemplateInfo.HtmlFieldPrefix = $"attributes_{variant.Id}";
+                                                    @await Html.PartialAsync("_ProductAttributes", variant, dataDictAttributes)
+                                                }
+                                                <!--rental info-->
+                                                @{
+                                                    var dataDictRental = new ViewDataDictionary(ViewData);
+                                                    dataDictRental.TemplateInfo.HtmlFieldPrefix = $"rental_{variant.Id}";
+                                                    @await Html.PartialAsync("_RentalInfo", variant, dataDictRental)
+                                                }
+                                                @{
+                                                    var dataDictAddToCart = new ViewDataDictionary(ViewData);
+                                                    dataDictAddToCart.TemplateInfo.HtmlFieldPrefix = $"addtocart_{variant.Id}";
+                                                    @await Html.PartialAsync("_AddToCart", variant.AddToCart, dataDictAddToCart)
+                                                }
+                                            </div>
+                                            <div class="tm-assurances">
+                                                <!--delivery-->
+                                                @await Html.PartialAsync("_DeliveryInfo", variant)
+                                                <!--estimate shipping-->
+                                                @{
+                                                    var dataDictEstimateShipping = new ViewDataDictionary(ViewData);
+                                                    dataDictEstimateShipping.TemplateInfo.HtmlFieldPrefix = $"estimate_shipping_{variant.Id}";
+                                                    @await Html.PartialAsync("_ProductEstimateShipping", variant.ProductEstimateShipping, dataDictEstimateShipping)
+                                                }
+                                            </div>
+                                        </div>
+                                    </article>
+                                }
+                                @if (!Model.AssociatedProducts.Any())
+                                {
+                                    <div class="no-associated-products">
+                                        @T("Products.NoAssociatedProducts")
+                                    </div>
+                                }
+                            </div>
+                        </section>
+                        <div class="tm-overview-foot">
+                            <!--compare-->
+                            <div class="overview-buttons">
+                                @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsBefore, additionalData = Model })
+                                @await Html.PartialAsync("_CompareProductsButton", Model)
+                                @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsAfter, additionalData = Model })
+                            </div>
+                            @await Html.PartialAsync("_ShareButton", Model)
+                        </div>
+                        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsOverviewBottom, additionalData = Model })
+                    </div>
+                    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsEssentialBottom, additionalData = Model })
+                </div>
+            </article>
+        </form>
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBeforeCollateral, additionalData = Model })
+
+        <section class="product-collateral tm-panels">
+            @if (hasDescription)
+            {
+                <details class="tm-panel" id="tm-panel-description" open>
+                    <summary>@T("Products.Description")</summary>
+                    <div class="tm-panel-body">
+                        <div class="full-description">
+                            @Html.Raw(Model.FullDescription)
+                        </div>
+                    </div>
+                </details>
+            }
+            @await Html.PartialAsync("_ProductTags", Model.ProductTags)
+        </section>
+
+        @*we do not display "also purchased" for grouped products*@
+        @await Component.InvokeAsync(typeof(RelatedProductsViewComponent), new { productId = Model.Id })
+        @await Component.InvokeAsync(typeof(CompatibleWithFilterLevelValuesViewComponent), new { productId = Model.Id })
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBottom, additionalData = Model })
+    </div>
+</div>
+
+<script asp-location="Footer">
+    (function () {
+        //Panels ship open so a reader without script — and a crawler — gets the
+        //whole page. On a phone that is a long scroll, so all but the first fold.
+        if (window.matchMedia('(max-width: 1000px)').matches) {
+            Array.prototype.slice.call(document.querySelectorAll('.tm-panels .tm-panel'))
+                .slice(1)
+                .forEach(function (panel) { panel.open = false; });
+        }
+    })();
+</script>

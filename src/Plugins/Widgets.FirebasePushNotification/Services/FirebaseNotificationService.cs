@@ -78,43 +78,6 @@ public class FirebaseNotificationService : IFirebaseNotificationService
 		return true;
 	}
 
-	public async Task<bool> EnsureCustomerTokenAsync(int customerId, string platform = "web")
-	{
-		if (customerId <= 0)
-		{
-			return false;
-		}
-		string normalizedPlatform = (IsAllowedPlatform(platform) ? platform.Trim().ToLowerInvariant() : "web");
-		DateTime now = DateTime.UtcNow;
-		FirebaseDeviceToken existingToken = await (from x in _tokenRepository.Table
-			where x.CustomerId == customerId
-			orderby x.Id descending
-			select x).FirstOrDefaultAsync();
-		if (existingToken != null)
-		{
-			if (!existingToken.IsActive)
-			{
-				existingToken.IsActive = true;
-				existingToken.Platform = (string.IsNullOrWhiteSpace(existingToken.Platform) ? normalizedPlatform : existingToken.Platform);
-				existingToken.UpdatedOnUtc = now;
-				existingToken.LastUsedOnUtc = now;
-				await _tokenRepository.UpdateAsync(existingToken);
-			}
-			return true;
-		}
-		await _tokenRepository.InsertAsync(new FirebaseDeviceToken
-		{
-			CustomerId = customerId,
-			Token = "",
-			Platform = normalizedPlatform,
-			IsActive = true,
-			CreatedOnUtc = now,
-			UpdatedOnUtc = now,
-			LastUsedOnUtc = now
-		});
-		return true;
-	}
-
 	public async Task<bool> SendNotificationAsync(int customerId, string title, string body, Dictionary<string, string>? data = null, string platform = "all")
 	{
 		if (customerId <= 0)

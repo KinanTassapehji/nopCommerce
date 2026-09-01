@@ -148,7 +148,7 @@
                                 @if (isRegistered)
                                 {
                                     <li class="dropdown-item text-center">
-                                        <a asp-controller="Customer" asp-action="Logout" asp-area=""><i class="fas fa-right-from-bracket"></i> @T("Admin.Header.Logout")</a>
+                                        <a asp-controller="Customer" asp-action="Logout" asp-area="" onclick="return confirm('@Html.Raw(JavaScriptEncoder.Default.Encode(T("Account.Logout.Confirm").Text))');"><i class="fas fa-right-from-bracket"></i> @T("Admin.Header.Logout")</a>
                                     </li>
                                 }
                             </ul>
@@ -182,7 +182,7 @@
                         @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.SearchBoxBefore })
                         <script>
                             $(function() {
-                                Admin.Search.init();
+                                Admin.Search.init(@Json.Serialize(T("Admin.Menu.Search.NoResults").Text));
                             });
                         </script>
                         @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.MenuBefore })

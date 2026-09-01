@@ -58,6 +58,17 @@
     <PackageReference Include="brevo_csharp" Version="1.1.2" />
   </ItemGroup>
 
+  <!-- CopyLocalLockFileAssemblies, which this plugin needs for its own NuGet packages, also copies
+    the RID-specific runtimes\ tree of the whole dependency graph - SkiaSharp, HarfBuzz, the SqlClient
+    SNI natives and so on, for every one of the 19 runtime identifiers. Nop.Web has an identical copy
+    in the application base directory and that is where the host resolves native assets from, so the
+    plugin copy is dead weight. -->
+  <Target Name="NopRemoveRuntimeAssets" AfterTargets="ResolveReferences">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::Copy('%(ReferenceCopyLocalPaths.DestinationSubDirectory)').StartsWith('runtimes'))" />
+    </ItemGroup>
+  </Target>
+
   <!-- This target execute after "Build" target -->
   <Target Name="NopTarget" AfterTargets="Build">
     <!-- Delete unnecessary libraries from plugins path -->

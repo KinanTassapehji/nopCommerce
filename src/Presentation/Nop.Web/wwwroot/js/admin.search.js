@@ -71,7 +71,7 @@ Admin.Search = (function () {
     };
 
     return {
-        init: function () {
+        init: function (noResultsText) {
             Admin.Navigation.initOnce();
 
             var $input = $(".admin-search-box");
@@ -83,7 +83,7 @@ Admin.Search = (function () {
                 templates: {
                     empty: [
                             '<div class="empty-message">',
-                              "NO RESULTS",
+                              noResultsText,
                             "</div>"
                     ].join("\n"),
                     suggestion: itemTemplate
