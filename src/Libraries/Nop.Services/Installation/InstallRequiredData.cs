@@ -1461,7 +1461,7 @@ public partial class InstallationService
 
             DisplayTaxShippingInfoOrderDetailsPage = isGermany,
             DefaultCategoryPageSizeOptions = "6, 3, 9",
-            DefaultCategoryPageSize = 6,
+            DefaultCategoryPageSize = 8,
             DefaultManufacturerPageSizeOptions = "6, 3, 9",
             DefaultManufacturerPageSize = 6,
             ShowProductReviewsTabOnAccountPage = true,

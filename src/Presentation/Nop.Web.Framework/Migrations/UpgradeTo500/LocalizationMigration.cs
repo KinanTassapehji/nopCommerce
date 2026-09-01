@@ -32,12 +32,6 @@ public class LocalizationMigration : MigrationBase
             ["Admin.Customers.Customers.ShoppingCartAndWishlist"] = "Current shopping cart"
         });
 
-        //the home page ends with an endless catalog feed under its own heading
-        localizationService.AddOrUpdateLocaleResource(new Dictionary<string, string>
-        {
-            ["Homepage.AllProducts"] = "Browse all products"
-        });
-
         //WhatsApp joins the existing social links
         localizationService.AddOrUpdateLocaleResource(new Dictionary<string, string>
         {
@@ -55,8 +49,7 @@ public class LocalizationMigration : MigrationBase
                 ["Admin.Customers.Customers.ShoppingCartAndWishlist"] = "عربة التسوق الحالية",
                 ["Admin.Configuration.Settings.GeneralCommon.WhatsAppLink"] = "رابط WhatsApp",
                 ["Admin.Configuration.Settings.GeneralCommon.WhatsAppLink.Hint"] = "حدد رابط محادثة WhatsApp الخاص بك (مثال: https://wa.me/9665xxxxxxxx). اتركه فارغًا إذا لم يكن لديك حساب.",
-                ["Footer.FollowUs.WhatsApp"] = "واتساب",
-                ["Homepage.AllProducts"] = "تصفح كل المنتجات"
+                ["Footer.FollowUs.WhatsApp"] = "واتساب"
             }, arabic.Id);
 
         //product specifications are gone - the store describes a product with
