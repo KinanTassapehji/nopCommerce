@@ -1,5 +1,5 @@
 ﻿/* =============================================================================
-   tmtm — service worker
+   Arabian Appliances — service worker
 
    Caching policy is deliberately conservative, because this is a storefront:
 
@@ -17,7 +17,7 @@
    ============================================================================= */
 
 const CACHE_VERSION = 'v4';
-const STATIC_CACHE = `tmtm-static-${CACHE_VERSION}`;
+const STATIC_CACHE = `arabia-static-${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline.html';
 
 /* Cached up-front so the offline page works on the very first disconnection. */
@@ -75,7 +75,7 @@ self.addEventListener('activate', event => {
       await self.registration.navigationPreload.enable();
     }
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k.startsWith('tmtm-') && k !== STATIC_CACHE)
+    await Promise.all(keys.filter(k => k.startsWith('arabia-') && k !== STATIC_CACHE)
                           .map(k => caches.delete(k)));
     await self.clients.claim();
   })());

@@ -243,7 +243,7 @@ public partial class AdminMenu : IAdminMenu
                 },
                 //discounts
                 //Affiliates, newsletter subscriptions, subscription types and campaigns
-                //are not used by tmtm, so the whole Promotions group is gone and its one
+                //are not used by this store, so the whole Promotions group is gone and its one
                 //remaining entry sits at the top level, keeping the group's own icon.
                 new()
                 {

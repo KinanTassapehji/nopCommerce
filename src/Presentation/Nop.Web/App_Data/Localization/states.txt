@@ -1517,20 +1517,19 @@ RU,Чувашская Республика,21,True,1  
 RU,Чукотский автономный округ,87,True,1  
 RU,Ямало-Ненецкий автономный округ,89,True,1  
 RU,Ярославская область,76,True,1
-SA,Eastern Cape,,True,0
-SA,Al Bahah,, True,1
-SA,Al Jawf,, True,2
-SA,Al Madinah,, True,3
-SA,Al Qasim,, True,4
-SA,Al Riyadh,, True,5
-SA,Asir,, True,6
-SA,Eastern Province,, True,7
-SA,Ha'il,, True,8
-SA,Jizan,, True,9
-SA,Makkah,, True,10
-SA,Najran,, True,11
-SA,Northern Borders,, True,12
-SA,Tabuk,, True,13
+SA,الرياض,,True,1
+SA,مكة المكرمة,,True,2
+SA,المنطقة الشرقية,,True,3
+SA,عسير,,True,4
+SA,المدينة المنورة,,True,5
+SA,القصيم,,True,6
+SA,جازان,,True,7
+SA,تبوك,,True,8
+SA,حائل,,True,9
+SA,نجران,,True,10
+SA,الجوف,,True,11
+SA,الباحة,,True,12
+SA,الحدود الشمالية,,True,13
 SE,Stockholms län,01,True, 1
 SE,Uppsala län,03,True,3
 SE,Södermanlands län,04,True,4
@@ -1572,20 +1571,6 @@ SK,Žilinský kraj,,True,0
 SK,Banskobystrický kraj,,True,0
 SK,Košický kraj,,True,0
 SK,Prešovský kraj,,True,0
-SY,دمشق,,True,0
-SY,ريف دمشق,,True,1
-SY,حلب,,True,2
-SY,حمص,,True,3
-SY,حماة,,True,4
-SY,اللاذقية,,True,5
-SY,طرطوس,,True,6
-SY,إدلب,,True,7
-SY,دير الزور,,True,8
-SY,الرقة,,True,9
-SY,الحسكة,,True,10
-SY,درعا,,True,11
-SY,السويداء,,True,12
-SY,القنيطرة,,True,13
 TR,Adana,,True,0
 TR,Adıyaman,,True,0
 TR,Afyonkarahisar,,True,0

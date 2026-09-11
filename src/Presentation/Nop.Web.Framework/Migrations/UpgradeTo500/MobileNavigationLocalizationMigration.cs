@@ -31,7 +31,7 @@ public class MobileNavigationLocalizationMigration : MigrationBase
             ["Mobile.Nav.Cart"] = "Cart"
         });
 
-        //the store ships ar-SY, but match on the language rather than the
+        //the store ships ar-SA, but match on the language rather than the
         //region so a store installed with any other Arabic culture is covered
         var arabic = languageService.GetAllLanguages(showHidden: true)
             .FirstOrDefault(language => language.LanguageCulture.StartsWith("ar", StringComparison.OrdinalIgnoreCase));

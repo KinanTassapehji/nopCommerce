@@ -63,20 +63,20 @@ public partial class InstallationService
         var stores = new List<Store>
         {
             new() {
-                Name = "تمتم",
-                DefaultTitle = "تمتم",
+                Name = "العربية للأجهزة",
+                DefaultTitle = "العربية للأجهزة",
                 DefaultMetaKeywords = string.Empty,
                 DefaultMetaDescription = string.Empty,
-                HomepageTitle = "منزلك وحياتك اليومية",
-                HomepageDescription = "متجر تمتم: أدوات منزلية وتقنية وملابس وعناية، بتوصيل خلال يوم إلى يومين.",
+                HomepageTitle = "الخيار الأمثل لتجهيز منزلك",
+                HomepageDescription = "إحتياجاتك المنزلية من الأجهزة الكهربائية تجدها تحت سقف واحد.",
                 Url = storeUrl,
                 SslEnabled = _webHelper.IsCurrentConnectionSecured(),
-                Hosts = "yourstore.com,www.yourstore.com",
+                Hosts = "arabianco.com,www.arabianco.com",
                 DisplayOrder = 1,
                 //should we set some default company info?
-                CompanyName = "تمتم",
-                CompanyAddress = "دمشق، سوريا",
-                CompanyPhoneNumber = "(123) 456-78901",
+                CompanyName = "العربية للأجهزة",
+                CompanyAddress = "الرياض، طريق مكة المكرمة، تقاطع مع شارع العليا، ص.ب. 99 الرياض 11383، المملكة العربية السعودية",
+                CompanyPhoneNumber = "8001244080",
                 CompanyVat = null
             }
         };
@@ -598,7 +598,15 @@ public partial class InstallationService
                     CurrencyCode = regionInfo.ISOCurrencySymbol,
                     Rate = 1,
                     DisplayLocale = cultureInfo.Name,
-                    CustomFormatting = string.Empty,
+                    //Without this, PriceFormatter falls back to ToString("C", ar-SA), which under ICU
+                    //renders "1٬499٫50 ر.س.‏" - the symbol carries a trailing dot and an RLM. The symbol
+                    //must be quoted: unquoted, the dots in ر.س are read as decimal-point specifiers and
+                    //it comes out "رس".
+                    //ponytail: digits are already Latin; the group/decimal separators stay Arabic
+                    //(٬ ٫) because ToString(format) uses CurrentCulture. Forcing ASCII separators needs
+                    //a culture hook on the request, not a currency setting - add one if the store wants
+                    //"1,499.50".
+                    CustomFormatting = "#,##0.00 'ر.س'",
                     Published = true,
                     DisplayOrder = 0,
                     CreatedOnUtc = DateTime.UtcNow,
@@ -630,6 +638,11 @@ public partial class InstallationService
     /// </returns>
     protected virtual async Task InstallCountriesAndStatesAsync()
     {
+        //single-country store: only the region picked in the installer ships. Diverges from stock
+        //nopCommerce, which publishes all 244 and leaves the trimming to the admin. A null RegionInfo
+        //means we do not know which one, so fall back to stock behaviour rather than an empty list.
+        var shipsTo = _installationSettings.RegionInfo?.TwoLetterISORegionName;
+
         var countries = ISO3166.GetCollection().Select(country => new Country
         {
             Name = country.Name,
@@ -640,7 +653,7 @@ public partial class InstallationService
             NumericIsoCode = country.NumericCode,
             SubjectToVat = country.SubjectToVat,
             DisplayOrder = country.NumericCode == 840 ? 1 : 100,
-            Published = true
+            Published = shipsTo == null || country.Alpha2 == shipsTo
         }).ToList();
 
         await _dataProvider.BulkInsertEntitiesAsync(countries.ToArray());
@@ -1604,7 +1617,7 @@ public partial class InstallationService
 
         await SaveSettingAsync(dictionary, new AddressSettings
         {
-            //Syria-only store: city, area, street and phone are the whole address
+            //KSA store: region, city, street and phone are the whole address
             CompanyEnabled = false,
             StreetAddressEnabled = true,
             StreetAddressRequired = true,
@@ -1616,7 +1629,7 @@ public partial class InstallationService
             CountyEnabled = true,
             CountyRequired = true,
             CountryEnabled = false,
-            StateProvinceEnabled = false,
+            StateProvinceEnabled = true,
             PhoneEnabled = true,
             PhoneRequired = true,
             FaxEnabled = false,
@@ -1791,7 +1804,7 @@ public partial class InstallationService
             FreeShippingOverXIncludingTax = false,
             EstimateShippingProductPageEnabled = true,
             EstimateShippingCartPageEnabled = true,
-            //the store ships inside Syria only - a city/area name, not a postal code
+            //the store ships inside Saudi Arabia only - a city/district name, not a postal code
             EstimateShippingCityNameEnabled = true,
             DisplayShipmentEventsToCustomers = false,
             DisplayShipmentEventsToStoreOwner = false,
@@ -2337,9 +2350,9 @@ public partial class InstallationService
                     //slider and the categories saying nothing. Body kept so it can
                     //be published from the admin if the store ever wants it.
                     Published = false,
-                    Title = "أهلاً بك في تمتم",
+                    Title = "أهلاً بك في العربية للأجهزة",
                     Body =
-                        "<p>أدوات منزلية وتقنية وملابس وعناية، مختارة قطعة قطعة لتدوم. التوصيل خلال يوم إلى يومي عمل، والإرجاع مجاني خلال 30 يوماً.</p>",
+                        "<p>أجهزة كهربائية منزلية من أفضل الماركات العالمية، مع خدمة صيانة معتمدة وقطع غيار أصلية في جميع مناطق المملكة.</p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {

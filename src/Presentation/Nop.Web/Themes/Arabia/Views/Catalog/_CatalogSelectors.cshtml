@@ -40,11 +40,11 @@
         <div class="product-sorting">
             <span>@T("Catalog.OrderBy")</span>
             @Html.DropDownList("products-orderby", Model.AvailableSortOptions, new { aria_label = T("Catalog.OrderBy.Label") })
-            <button class="tm-sort-chip" type="button" popovertarget="tm-sort-sheet" aria-label="@T("Catalog.OrderBy.Label")">
+            <button class="ar-sort-chip" type="button" popovertarget="ar-sort-sheet" aria-label="@T("Catalog.OrderBy.Label")">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <path d="M4 7h13M4 12h9M4 17h5" />
                 </svg>
-                <span class="tm-sort-chip-value">@selectedSort?.Text</span>
+                <span class="ar-sort-chip-value">@selectedSort?.Text</span>
             </button>
         </div>
         <script asp-location="Footer">
@@ -59,12 +59,12 @@
                         .addParameter('orderby', $orderByEl.val());
                 });
 
-                var sortSheet = document.getElementById('tm-sort-sheet');
-                $('.tm-sort-option').on('click', function () {
+                var sortSheet = document.getElementById('ar-sort-sheet');
+                $('.ar-sort-option').on('click', function () {
                     var $option = $(this);
-                    $('.tm-sort-option').attr('aria-checked', 'false');
+                    $('.ar-sort-option').attr('aria-checked', 'false');
                     $option.attr('aria-checked', 'true');
-                    $('.tm-sort-chip-value').text($option.find('.tm-sort-option-label').text());
+                    $('.ar-sort-chip-value').text($option.find('.ar-sort-option-label').text());
                     if (sortSheet.hidePopover) {
                         sortSheet.hidePopover();
                     }
@@ -101,22 +101,22 @@
 
 @if (Model.AllowProductSorting)
 {
-    <div id="tm-sort-sheet" class="tm-sheet" popover>
-        <div class="tm-sheet-grip" aria-hidden="true"></div>
-        <div class="tm-sheet-head">
-            <h2 class="tm-sheet-title">@T("Catalog.OrderBy")</h2>
-            <button class="tm-sheet-close" type="button" popovertarget="tm-sort-sheet" popovertargetaction="hide" aria-label="@T("Common.Close")">
+    <div id="ar-sort-sheet" class="ar-sheet" popover>
+        <div class="ar-sheet-grip" aria-hidden="true"></div>
+        <div class="ar-sheet-head">
+            <h2 class="ar-sheet-title">@T("Catalog.OrderBy")</h2>
+            <button class="ar-sheet-close" type="button" popovertarget="ar-sort-sheet" popovertargetaction="hide" aria-label="@T("Common.Close")">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <path d="m6 6 12 12M18 6 6 18" />
                 </svg>
             </button>
         </div>
-        <div class="tm-sheet-body">
-            <div class="tm-sort-list" role="radiogroup" aria-label="@T("Catalog.OrderBy.Label")">
+        <div class="ar-sheet-body">
+            <div class="ar-sort-list" role="radiogroup" aria-label="@T("Catalog.OrderBy.Label")">
                 @foreach (var option in Model.AvailableSortOptions)
                 {
-                    <button class="tm-sort-option" type="button" role="radio" data-value="@option.Value" aria-checked="@(option.Selected ? "true" : "false")">
-                        <span class="tm-sort-option-label">@option.Text</span>
+                    <button class="ar-sort-option" type="button" role="radio" data-value="@option.Value" aria-checked="@(option.Selected ? "true" : "false")">
+                        <span class="ar-sort-option-label">@option.Text</span>
                     </button>
                 }
             </div>

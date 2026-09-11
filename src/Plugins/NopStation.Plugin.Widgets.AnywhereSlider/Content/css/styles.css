@@ -42,7 +42,7 @@
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin: var(--tm-stack-md, 16px) 0 0;
+  margin: var(--ar-stack-md, 16px) 0 0;
 }
 
 .slider-container .slider .owl-nav button.owl-prev,
@@ -55,15 +55,15 @@
   height: 44px;
   padding: 0 !important;
   margin: 0;
-  border: 1px solid var(--tm-teal-border, #b3dedc);
+  border: 1px solid var(--ar-teal-border, #b3dedc);
   border-radius: 50%;
-  background: var(--tm-surface, #fff);
-  color: var(--tm-teal-deep, #02787e);
+  background: var(--ar-surface, #fff);
+  color: var(--ar-teal-deep, #02787e);
   font-size: 0;
   line-height: 0;
   opacity: 1;
-  box-shadow: var(--tm-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
-  transition: background var(--tm-transition, 0.18s ease), border-color var(--tm-transition, 0.18s ease), color var(--tm-transition, 0.18s ease), transform var(--tm-transition, 0.18s ease);
+  box-shadow: var(--ar-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
+  transition: background var(--ar-transition, 0.18s ease), border-color var(--ar-transition, 0.18s ease), color var(--ar-transition, 0.18s ease), transform var(--ar-transition, 0.18s ease);
 }
 
 .slider-container .slider .owl-nav button.owl-prev:before,
@@ -94,16 +94,16 @@
 .slider-container .slider .owl-nav button.owl-next:hover,
 .slider-container .slider .owl-nav button.owl-prev:focus,
 .slider-container .slider .owl-nav button.owl-next:focus {
-  border-color: var(--tm-teal-deep, #02787e);
-  background: var(--tm-teal-deep, #02787e);
-  color: var(--tm-white, #fff);
+  border-color: var(--ar-teal-deep, #02787e);
+  background: var(--ar-teal-deep, #02787e);
+  color: var(--ar-white, #fff);
   opacity: 1;
 }
 
 .slider-container .slider .owl-nav button.owl-prev:active,
 .slider-container .slider .owl-nav button.owl-next:active {
-  background: var(--tm-teal-hover, #01585c);
-  border-color: var(--tm-teal-hover, #01585c);
+  background: var(--ar-teal-hover, #01585c);
+  border-color: var(--ar-teal-hover, #01585c);
   transform: scale(0.94);
 }
 
@@ -181,17 +181,17 @@
   height: 8px;
   margin: 0;
   border-radius: 999px;
-  background: var(--tm-teal-border, #b3dedc);
-  transition: width var(--tm-transition, 0.18s ease), background var(--tm-transition, 0.18s ease);
+  background: var(--ar-teal-border, #b3dedc);
+  transition: width var(--ar-transition, 0.18s ease), background var(--ar-transition, 0.18s ease);
 }
 
 .slider-container .owl-dots button.owl-dot:hover span {
-  background: var(--tm-teal, #009a95);
+  background: var(--ar-teal, #009a95);
 }
 
 .slider-container .owl-dots button.owl-dot.active span {
   width: 24px;
-  background: var(--tm-teal-deep, #02787e);
+  background: var(--ar-teal-deep, #02787e);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -207,9 +207,9 @@
   without it the image square pokes through them.*/
 .slider-container {
   position: relative;
-  border-radius: var(--tm-radius-lg, 20px);
+  border-radius: var(--ar-radius-lg, 20px);
   overflow: hidden;
-  box-shadow: var(--tm-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
+  box-shadow: var(--ar-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
 }
 
 a.slider-btn {

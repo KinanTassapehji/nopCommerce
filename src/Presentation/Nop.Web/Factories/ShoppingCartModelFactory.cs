@@ -46,7 +46,7 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
     /// <summary>
     /// The only country the store ships to
     /// </summary>
-    protected const string SHIP_TO_COUNTRY_ISO_CODE = "SY";
+    protected const string SHIP_TO_COUNTRY_ISO_CODE = "SA";
 
     #endregion
 
@@ -634,7 +634,7 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
 
             var currentLanguage = await _workContext.GetWorkingLanguageAsync();
 
-            //countries - the store ships inside Syria only, so the picker holds a single
+            //countries - the store ships inside Saudi Arabia only, so the picker holds a single
             //pre-selected option and the view keeps it hidden
             //ponytail: still a <select>, because the popup script reads the country name off the selected option
             var shipToCountry = await _countryService.GetCountryByTwoLetterIsoCodeAsync(SHIP_TO_COUNTRY_ISO_CODE);

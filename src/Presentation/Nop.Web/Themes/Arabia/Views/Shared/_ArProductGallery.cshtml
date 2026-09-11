@@ -36,24 +36,24 @@
         ? Model.PictureModels
         : new List<PictureModel> { Model.DefaultPictureModel };
     var hasMany = pictures.Count > 1;
-    var galleryId = $"tm-gallery-{Model.Id}";
+    var galleryId = $"ar-gallery-{Model.Id}";
 }
-<div class="tm-gallery @(hasMany ? "tm-gallery-many" : null)" id="@galleryId">
+<div class="ar-gallery @(hasMany ? "ar-gallery-many" : null)" id="@galleryId">
     @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBeforePictures, additionalData = Model })
 
     @*Carries the full-size URL for social scrapers, and is the element the core
         attribute-change script writes a combination picture's URL into.*@
     <link id="main-product-img-lightbox-anchor-@Model.Id" rel="image_src" href="@pictures[0].FullSizeImageUrl" />
 
-    <div class="tm-gallery-stage">
+    <div class="ar-gallery-stage">
         @*A list, so the count is announced. tabindex makes the track focusable and
             with that the arrow keys scroll it — a scroll container is keyboard
             scrollable as soon as it can hold focus, so no key handler ships here.*@
-        <ul class="tm-gallery-track" tabindex="0" aria-label="@T("Products.Gallery.Label")">
+        <ul class="ar-gallery-track" tabindex="0" aria-label="@T("Products.Gallery.Label")">
             @for (var i = 0; i < pictures.Count; i++)
             {
                 var picture = pictures[i];
-                <li class="tm-slide thumb-item" data-pictureid="@picture.Id">
+                <li class="ar-slide thumb-item" data-pictureid="@picture.Id">
                     <img src="@picture.ImageUrl"
                          data-full="@picture.FullSizeImageUrl"
                          alt="@picture.AlternateText"
@@ -68,7 +68,7 @@
 
         @*A button, not a link: there is no URL to fall back to. It covers the
             picture, so a tap anywhere on it opens the full-screen view.*@
-        <button type="button" class="tm-gallery-open" aria-label="@T("Products.Gallery.FullScreen")" aria-haspopup="dialog">
+        <button type="button" class="ar-gallery-open" aria-label="@T("Products.Gallery.FullScreen")" aria-haspopup="dialog">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path d="M14.5 4.5H19v4.5M9.5 19.5H5V15M19.5 4.5 14 10M4.5 19.5 10 14" />
             </svg>
@@ -76,26 +76,26 @@
 
         @if (hasMany)
         {
-            <button type="button" class="tm-gallery-arrow tm-gallery-prev" data-step="-1" aria-label="@T("Media.MagnificPopup.Previous")" aria-controls="@galleryId">
+            <button type="button" class="ar-gallery-arrow ar-gallery-prev" data-step="-1" aria-label="@T("Media.MagnificPopup.Previous")" aria-controls="@galleryId">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m15 5-7 7 7 7" /></svg>
             </button>
-            <button type="button" class="tm-gallery-arrow tm-gallery-next" data-step="1" aria-label="@T("Media.MagnificPopup.Next")" aria-controls="@galleryId">
+            <button type="button" class="ar-gallery-arrow ar-gallery-next" data-step="1" aria-label="@T("Media.MagnificPopup.Next")" aria-controls="@galleryId">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7" /></svg>
             </button>
             @*One text node the script rewrites, rather than a dot per picture with
                 its own state to keep in step with the thumbnails.*@
-            <p class="tm-gallery-counter">@T("Products.Gallery.Position", 1, pictures.Count)</p>
+            <p class="ar-gallery-counter">@T("Products.Gallery.Position", 1, pictures.Count)</p>
         }
     </div>
 
     @if (hasMany)
     {
-        <ul class="tm-gallery-thumbs">
+        <ul class="ar-gallery-thumbs">
             @for (var i = 0; i < pictures.Count; i++)
             {
                 var picture = pictures[i];
                 <li class="thumb-item" data-pictureid="@picture.Id">
-                    <button type="button" class="tm-thumb @(i == 0 ? "active" : null)" data-index="@i" aria-label="@T("Products.Gallery.Position", i + 1, pictures.Count)">
+                    <button type="button" class="ar-thumb @(i == 0 ? "active" : null)" data-index="@i" aria-label="@T("Products.Gallery.Position", i + 1, pictures.Count)">
                         <img src="@picture.ThumbImageUrl" alt="@picture.AlternateText" title="@picture.Title" loading="lazy" decoding="async" />
                     </button>
                 </li>
@@ -109,8 +109,8 @@
 @*Native dialog: top layer, Esc, backdrop and focus containment are the browser's
     job. It is filled by moving the stage into it rather than by cloning the
     pictures, so there is one set of <img> elements and no second download.*@
-<dialog class="tm-lightbox" id="tm-lightbox-@Model.Id" aria-label="@T("Products.Gallery.Label")">
-    <button type="button" class="tm-lightbox-close" aria-label="@T("Media.MagnificPopup.Close")">
+<dialog class="ar-lightbox" id="ar-lightbox-@Model.Id" aria-label="@T("Products.Gallery.Label")">
+    <button type="button" class="ar-lightbox-close" aria-label="@T("Media.MagnificPopup.Close")">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18" /></svg>
     </button>
 </dialog>
@@ -121,13 +121,13 @@
         if (!gallery)
             return;
 
-        var stage = gallery.querySelector('.tm-gallery-stage');
+        var stage = gallery.querySelector('.ar-gallery-stage');
         var slot = stage.nextElementSibling;      //where the stage returns to
-        var track = gallery.querySelector('.tm-gallery-track');
+        var track = gallery.querySelector('.ar-gallery-track');
         var slides = Array.prototype.slice.call(track.children);
-        var thumbs = Array.prototype.slice.call(gallery.querySelectorAll('.tm-thumb'));
-        var counter = gallery.querySelector('.tm-gallery-counter');
-        var dialog = document.getElementById('tm-lightbox-@Model.Id');
+        var thumbs = Array.prototype.slice.call(gallery.querySelectorAll('.ar-thumb'));
+        var counter = gallery.querySelector('.ar-gallery-counter');
+        var dialog = document.getElementById('ar-lightbox-@Model.Id');
         var counterFormat = @Html.Raw(Json.Serialize(T("Products.Gallery.Position", "{0}", "{1}").Text));
         var current = 0;
 
@@ -173,7 +173,7 @@
             });
         });
 
-        Array.prototype.forEach.call(gallery.querySelectorAll('.tm-gallery-arrow'), function (arrow) {
+        Array.prototype.forEach.call(gallery.querySelectorAll('.ar-gallery-arrow'), function (arrow) {
             arrow.addEventListener('click', function () {
                 goTo(current + parseInt(arrow.dataset.step, 10));
             });
@@ -196,8 +196,8 @@
             goTo(current);
         }
 
-        gallery.querySelector('.tm-gallery-open').addEventListener('click', openLightbox);
-        dialog.querySelector('.tm-lightbox-close').addEventListener('click', function () { dialog.close(); });
+        gallery.querySelector('.ar-gallery-open').addEventListener('click', openLightbox);
+        dialog.querySelector('.ar-lightbox-close').addEventListener('click', function () { dialog.close(); });
         //A click on the backdrop lands on the dialog itself, never on a child
         dialog.addEventListener('click', function (event) {
             if (event.target === dialog)

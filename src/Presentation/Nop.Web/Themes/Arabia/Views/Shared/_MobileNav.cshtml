@@ -51,17 +51,17 @@
     var accountActive = inSection("Customer", "Order", "ReturnRequest");
 }
 
-<div id="tm-menu-sheet" class="tm-sheet" popover>
-    <div class="tm-sheet-grip" aria-hidden="true"></div>
-    <div class="tm-sheet-head">
-        <h2 class="tm-sheet-title">@T("Categories")</h2>
-        <button class="tm-sheet-close" type="button" popovertarget="tm-menu-sheet" popovertargetaction="hide" aria-label="@T("Common.Close")">
+<div id="ar-menu-sheet" class="ar-sheet" popover>
+    <div class="ar-sheet-grip" aria-hidden="true"></div>
+    <div class="ar-sheet-head">
+        <h2 class="ar-sheet-title">@T("Categories")</h2>
+        <button class="ar-sheet-close" type="button" popovertarget="ar-menu-sheet" popovertargetaction="hide" aria-label="@T("Common.Close")">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path d="m6 6 12 12M18 6 6 18" />
             </svg>
         </button>
     </div>
-    <div class="tm-sheet-body">
+    <div class="ar-sheet-body">
         <div class="header-menu">
             @await Component.InvokeAsync(typeof(MainMenuViewComponent))
         </div>
@@ -78,7 +78,7 @@
         </span>
         <span class="mobile-tab-label">@T("Mobile.Nav.Home")</span>
     </a>
-    <button class="mobile-tab @(browseActive ? "active" : null)" type="button" popovertarget="tm-menu-sheet">
+    <button class="mobile-tab @(browseActive ? "active" : null)" type="button" popovertarget="ar-menu-sheet">
         <span class="mobile-tab-icon-wrap">
             <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <rect x="3.2" y="3.2" width="7.6" height="7.6" rx="2.2" />

@@ -30,7 +30,7 @@ public class LanguageServiceTests : ServiceTest
         var languages = await _languageService.GetAllLanguagesAsync();
 
         //a bundled pack outranks English, so it is the language a new customer gets
-        languages.First().LanguageCulture.Should().Be("ar-SY");
+        languages.First().LanguageCulture.Should().Be("ar-SA");
 
         var language = languages.First();
         language.Rtl.Should().BeTrue();

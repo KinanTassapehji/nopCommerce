@@ -55,7 +55,7 @@
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin: var(--tm-stack-md, 16px) 0 0;
+  margin: var(--ar-stack-md, 16px) 0 0;
 }
 
 .ocarousel-grid .ocarousel .owl-nav button.owl-prev,
@@ -68,15 +68,15 @@
   height: 44px;
   padding: 0 !important;
   margin: 0;
-  border: 1px solid var(--tm-teal-border, #b3dedc);
+  border: 1px solid var(--ar-teal-border, #b3dedc);
   border-radius: 50%;
-  background: var(--tm-surface, #fff);
-  color: var(--tm-teal-deep, #02787e);
+  background: var(--ar-surface, #fff);
+  color: var(--ar-teal-deep, #02787e);
   font-size: 0;
   line-height: 0;
   opacity: 1;
-  box-shadow: var(--tm-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
-  transition: background var(--tm-transition, 0.18s ease), border-color var(--tm-transition, 0.18s ease), color var(--tm-transition, 0.18s ease), transform var(--tm-transition, 0.18s ease);
+  box-shadow: var(--ar-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
+  transition: background var(--ar-transition, 0.18s ease), border-color var(--ar-transition, 0.18s ease), color var(--ar-transition, 0.18s ease), transform var(--ar-transition, 0.18s ease);
 }
 
 .ocarousel-grid .ocarousel .owl-nav button.owl-prev:before,
@@ -107,16 +107,16 @@
 .ocarousel-grid .ocarousel .owl-nav button.owl-next:hover,
 .ocarousel-grid .ocarousel .owl-nav button.owl-prev:focus,
 .ocarousel-grid .ocarousel .owl-nav button.owl-next:focus {
-  border-color: var(--tm-teal-deep, #02787e);
-  background: var(--tm-teal-deep, #02787e);
-  color: var(--tm-white, #fff);
+  border-color: var(--ar-teal-deep, #02787e);
+  background: var(--ar-teal-deep, #02787e);
+  color: var(--ar-white, #fff);
   opacity: 1;
 }
 
 .ocarousel-grid .ocarousel .owl-nav button.owl-prev:active,
 .ocarousel-grid .ocarousel .owl-nav button.owl-next:active {
-  background: var(--tm-teal-hover, #01585c);
-  border-color: var(--tm-teal-hover, #01585c);
+  background: var(--ar-teal-hover, #01585c);
+  border-color: var(--ar-teal-hover, #01585c);
   transform: scale(0.94);
 }
 
@@ -160,7 +160,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin: var(--tm-stack-sm, 8px) 0 0;
+  margin: var(--ar-stack-sm, 8px) 0 0;
 }
 
 .ocarousel .owl-nav {
@@ -186,17 +186,17 @@
   height: 8px;
   margin: 0;
   border-radius: 999px;
-  background: var(--tm-teal-border, #b3dedc);
-  transition: width var(--tm-transition, 0.18s ease), background var(--tm-transition, 0.18s ease);
+  background: var(--ar-teal-border, #b3dedc);
+  transition: width var(--ar-transition, 0.18s ease), background var(--ar-transition, 0.18s ease);
 }
 
 .ocarousel-grid .ocarousel .owl-dots button.owl-dot:hover span {
-  background: var(--tm-teal, #009a95);
+  background: var(--ar-teal, #009a95);
 }
 
 .ocarousel-grid .ocarousel .owl-dots button.owl-dot.active span {
   width: 24px;
-  background: var(--tm-teal-deep, #02787e);
+  background: var(--ar-teal-deep, #02787e);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -212,11 +212,11 @@
 
   .ocarousel-grid .title {
     margin: 0 0 24px;
-    border-bottom: 1px solid var(--tm-line, #dfe5e5);
+    border-bottom: 1px solid var(--ar-line, #dfe5e5);
     padding: 0 0 12px;
-    font-size: var(--tm-fs-headline-sm, 24px);
+    font-size: var(--ar-fs-headline-sm, 24px);
     font-weight: 700;
-    color: var(--tm-ink, #10201f);
+    color: var(--ar-ink, #10201f);
   }
 
     .ocarousel-grid .title strong {
@@ -255,12 +255,12 @@
   justify-content: center;
   min-height: 120px;
   padding: 18px;
-  background: var(--tm-surface, #fff);
-  border: 1px solid var(--tm-line, #dfe5e5);
-  border-radius: var(--tm-radius, 12px);
-  transition: border-color var(--tm-transition, .18s ease),
-              box-shadow var(--tm-transition, .18s ease),
-              transform var(--tm-transition, .18s ease);
+  background: var(--ar-surface, #fff);
+  border: 1px solid var(--ar-line, #dfe5e5);
+  border-radius: var(--ar-radius, 12px);
+  transition: border-color var(--ar-transition, .18s ease),
+              box-shadow var(--ar-transition, .18s ease),
+              transform var(--ar-transition, .18s ease);
 }
 
 /* contain, never crop — the source images are not a uniform aspect ratio */
@@ -273,24 +273,24 @@
 
 .carousel-manufacturer .ocarousel-item > a:hover,
 .carousel-manufacturer .ocarousel-item > a:focus-visible {
-  border-color: var(--tm-teal, #009a95);
-  box-shadow: var(--tm-shadow, 0 6px 20px rgba(2, 120, 126, .1));
+  border-color: var(--ar-teal, #009a95);
+  box-shadow: var(--ar-shadow, 0 6px 20px rgba(2, 120, 126, .1));
   transform: translateY(-2px);
 }
 
 .carousel-manufacturer .manufacturer-name {
   margin-top: 12px;
-  font-size: var(--tm-fs-label, 14px);
+  font-size: var(--ar-fs-label, 14px);
   font-weight: 600;
 }
 
 .carousel-manufacturer .manufacturer-name a {
-  color: var(--tm-ink, #10201f);
-  transition: color var(--tm-transition, .18s ease);
+  color: var(--ar-ink, #10201f);
+  transition: color var(--ar-transition, .18s ease);
 }
 
 .carousel-manufacturer .manufacturer-name a:hover {
-  color: var(--tm-teal-deep, #02787e);
+  color: var(--ar-teal-deep, #02787e);
 }
 
 @media (prefers-reduced-motion: reduce) {

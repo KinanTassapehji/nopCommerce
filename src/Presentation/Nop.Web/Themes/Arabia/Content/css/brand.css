@@ -7,10 +7,10 @@
    serves both the LTR and RTL stylesheets.
 
    Palette rule from the guideline: #00d9cc is never used on its own, so it
-   appears only inside var(--tm-gradient*). Because the gradient runs into
+   appears only inside var(--ar-gradient*). Because the gradient runs into
    #00d9cc (1.78:1 against white), the gradient is reserved for decoration —
    rules, strips, accents. Any surface carrying a label uses the solid
-   --tm-teal-deep, which holds white text at 5.26:1.
+   --ar-teal-deep, which holds white text at 5.26:1.
    ========================================================================== */
 
 /* --- Base ----------------------------------------------------------------
@@ -19,8 +19,8 @@ so this is a system stack with
    Arabic coverage rather than an invented webfont dependency. */
 body{
   font-family: "Segoe UI", "Noto Sans Arabic", "Dubai", Tahoma, Arial, sans-serif;
-  color: var(--tm-ink);
-  background: var(--tm-surface);
+  color: var(--ar-ink);
+  background: var(--ar-surface);
   /* The base sheet sets `font: normal 14px Arial`, and the shorthand resets
      line-height to `normal` for the whole store. `normal` is ~1.31 on the
      Arabic stack, which is less than the ink actually needs: every Arabic
@@ -38,17 +38,17 @@ body{
    a top margin here collapses through .master-wrapper-page and lands above
    the header instead. */
 .master-wrapper-content{
-  background: var(--tm-surface);
-  padding-block-start: var(--tm-stack-lg);
+  background: var(--ar-surface);
+  padding-block-start: var(--ar-stack-lg);
 }
 
 a{
-  color: var(--tm-teal-deep);
-  transition: color var(--tm-transition);
+  color: var(--ar-teal-deep);
+  transition: color var(--ar-transition);
 }
 
 a:hover{
-  color: var(--tm-teal-hover);
+  color: var(--ar-teal-hover);
 }
 
 /* Visible keyboard focus — DefaultClean leaves this to the browser default. */
@@ -57,15 +57,15 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible{
-  outline: 2px solid var(--tm-teal-deep);
+  outline: 2px solid var(--ar-teal-deep);
   outline-offset: 2px;
-  border-radius: var(--tm-radius-sm);
+  border-radius: var(--ar-radius-sm);
 }
 
 /* --- Header --------------------------------------------------------------- */
 .header{
-  background: var(--tm-surface);
-  box-shadow: var(--tm-shadow);
+  background: var(--ar-surface);
+  box-shadow: var(--ar-shadow);
   position: relative;
 }
 
@@ -75,12 +75,12 @@ used as the header's baseline. */
   content: "";
   display: block;
   height: 3px;
-  background: var(--tm-gradient);
+  background: var(--ar-gradient);
 }
 
 /* Guideline: minimum clear space on all sides equals the height of the "t". */
 .header-logo{
-  padding: var(--tm-logo-clear-space);
+  padding: var(--ar-logo-clear-space);
 }
 
 .header-logo img{
@@ -90,18 +90,18 @@ used as the header's baseline. */
 
 .header-links a,
 .header-selectors a{
-  color: var(--tm-ink-muted);
+  color: var(--ar-ink-muted);
 }
 
 .header-links a:hover,
 .header-selectors a:hover{
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
 }
 
 /* they carry a digit. */
 .header-links .cart-qty{
-  background: var(--tm-teal-deep);
-  color: var(--tm-white);
+  background: var(--ar-teal-deep);
+  color: var(--ar-white);
   border-radius: 999px;
   padding-inline: 8px;
   font-weight: 700;
@@ -111,27 +111,27 @@ used as the header's baseline. */
    The standalone category band this section used to skin is gone: below 1001px
    the tree moved into the mobile sheet (see the mobile app shell further down),
    and above it the header never carried one. .header-menu now exists only
-   inside .tm-sheet, which brings its own skin.
+   inside .ar-sheet, which brings its own skin.
    -------------------------------------------------------------------------- */
 
 /* --- Search --------------------------------------------------------------- */
 .search-box input.search-box-text{
-  border: 1px solid var(--tm-line);
-  border-radius: var(--tm-radius);
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
   padding-inline: 14px;
-  transition: border-color var(--tm-transition), box-shadow var(--tm-transition);
+  transition: border-color var(--ar-transition), box-shadow var(--ar-transition);
 }
 
 .search-box input.search-box-text:focus{
-  border-color: var(--tm-teal);
+  border-color: var(--ar-teal);
   box-shadow: 0 0 0 3px rgba(0, 154, 149, 0.18);
 }
 
 .search-box .search-box-button{
-  background: var(--tm-teal-deep);
+  background: var(--ar-teal-deep);
   border: 0;
-  border-radius: var(--tm-radius);
-  color: var(--tm-white);
+  border-radius: var(--ar-radius);
+  color: var(--ar-white);
   font-weight: 600;
 }
 
@@ -177,12 +177,12 @@ input[type="search"],
 textarea{
   min-height: 40px;
   height: auto;
-  border: 1px solid var(--tm-line);
-  border-radius: var(--tm-radius);
-  background-color: var(--tm-surface);
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
+  background-color: var(--ar-surface);
   padding-block: 8px;
-  color: var(--tm-ink);
-  transition: border-color var(--tm-transition), box-shadow var(--tm-transition);
+  color: var(--ar-ink);
+  transition: border-color var(--ar-transition), box-shadow var(--ar-transition);
 }
 
 textarea{
@@ -197,7 +197,7 @@ input[type="tel"]:hover:not(:disabled),
 input[type="password"]:hover:not(:disabled),
 input[type="number"]:hover:not(:disabled),
 input[type="search"]:hover:not(:disabled){
-  border-color: var(--tm-teal-border);
+  border-color: var(--ar-teal-border);
 }
 
 /* Border + ring for pointer focus. The global :focus-visible outline further
@@ -210,28 +210,28 @@ input[type="password"]:focus,
 input[type="number"]:focus,
 input[type="search"]:focus,
 textarea:focus{
-  border-color: var(--tm-teal);
+  border-color: var(--ar-teal);
   box-shadow: 0 0 0 3px rgba(0, 154, 149, 0.18);
-  color: var(--tm-ink);
+  color: var(--ar-ink);
 }
 
 select:disabled,
 input:disabled,
 textarea:disabled{
-  background-color: var(--tm-surface-alt);
-  color: var(--tm-ink-muted);
+  background-color: var(--ar-surface-alt);
+  color: var(--ar-ink-muted);
   cursor: not-allowed;
   opacity: 1; /* Safari dims disabled controls a second time on top of this */
 }
 
 /* Windows/Linux draw the popup from the element's own colours. */
 select option{
-  background-color: var(--tm-surface);
-  color: var(--tm-ink);
+  background-color: var(--ar-surface);
+  color: var(--ar-ink);
 }
 
 select option:disabled{
-  color: var(--tm-ink-muted);
+  color: var(--ar-ink-muted);
 }
 
 /* --- The open dropdown ----------------------------------------------------
@@ -258,8 +258,8 @@ select option:disabled{
   }
 
   select:not([multiple])::picker-icon{
-    color: var(--tm-ink-muted);
-    transition: transform var(--tm-transition);
+    color: var(--ar-ink-muted);
+    transition: transform var(--ar-transition);
   }
 
   select:not([multiple]):open::picker-icon{
@@ -267,22 +267,22 @@ select option:disabled{
   }
 
   select:not([multiple])::picker(select){
-    border: 1px solid var(--tm-line);
-    border-radius: var(--tm-radius);
-    background-color: var(--tm-surface);
-    box-shadow: var(--tm-shadow-lg);
+    border: 1px solid var(--ar-line);
+    border-radius: var(--ar-radius);
+    background-color: var(--ar-surface);
+    box-shadow: var(--ar-shadow-lg);
     padding: 6px;
     margin-block-start: 6px;
     max-height: 320px;
     overflow-y: auto;
     /* the picker renders in the top layer, outside the field's inheritance */
     font: inherit;
-    color: var(--tm-ink);
+    color: var(--ar-ink);
     opacity: 0;
     translate: 0 -6px;
-    transition: opacity var(--tm-transition), translate var(--tm-transition),
-                overlay var(--tm-transition) allow-discrete,
-                display var(--tm-transition) allow-discrete;
+    transition: opacity var(--ar-transition), translate var(--ar-transition),
+                overlay var(--ar-transition) allow-discrete,
+                display var(--ar-transition) allow-discrete;
   }
 
   select:not([multiple]):open::picker(select){
@@ -303,18 +303,18 @@ select option:disabled{
     gap: 8px;
     min-height: 36px;
     padding: 8px 10px;
-    border-radius: var(--tm-radius-sm);
+    border-radius: var(--ar-radius-sm);
     cursor: pointer;
   }
 
   select option:hover:not(:disabled),
   select option:focus:not(:disabled){
-    background-color: var(--tm-teal-tint);
+    background-color: var(--ar-teal-tint);
     outline: none;
   }
 
   select option:checked{
-    background-color: var(--tm-teal-tint-strong);
+    background-color: var(--ar-teal-tint-strong);
     font-weight: 600;
   }
 
@@ -326,7 +326,7 @@ select option:disabled{
   select option::checkmark{
     order: 1;
     margin-inline-start: auto;
-    color: var(--tm-teal-deep);
+    color: var(--ar-teal-deep);
   }
 }
 
@@ -338,42 +338,42 @@ input[type="button"],
 input[type="submit"],
 button,
 .estimate-shipping-button{
-  border-radius: var(--tm-radius);
+  border-radius: var(--ar-radius);
   /* form controls do not inherit the body face, so an Arabic label on a
      <button> falls back to the UA default while the <a> beside it does not. */
   font-family: inherit;
   font-weight: 600;
-  transition: background var(--tm-transition), color var(--tm-transition),
-              box-shadow var(--tm-transition), transform var(--tm-transition);
+  transition: background var(--ar-transition), color var(--ar-transition),
+              box-shadow var(--ar-transition), transform var(--ar-transition);
 }
 
 /* Secondary / utility buttons */
 .button-2{
-  background: var(--tm-white);
-  color: var(--tm-teal-deep);
-  border: 1px solid var(--tm-teal-border);
+  background: var(--ar-white);
+  color: var(--ar-teal-deep);
+  border: 1px solid var(--ar-teal-border);
 }
 
 .button-2:hover{
-  background: var(--tm-teal-tint);
-  border-color: var(--tm-teal);
-  color: var(--tm-teal-hover);
+  background: var(--ar-teal-tint);
+  border-color: var(--ar-teal);
+  color: var(--ar-teal-hover);
 }
 
 /* Primary buttons — solid deep teal keeps white label text at 5.26:1. */
 .button-1{
-  background: var(--tm-teal-deep);
-  color: var(--tm-white);
+  background: var(--ar-teal-deep);
+  color: var(--ar-white);
   border: 0;
 }
 
 .button-1:hover{
-  background: var(--tm-teal-hover);
-  color: var(--tm-white);
+  background: var(--ar-teal-hover);
+  color: var(--ar-white);
 }
 
 .button-1:active{
-  background: var(--tm-teal-active);
+  background: var(--ar-teal-active);
   transform: translateY(1px);
 }
 
@@ -384,8 +384,8 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
 .button-1.product-box-add-to-cart-button,
 .button-1.register-button,
 .button-1.login-button{
-  background: var(--tm-teal-deep);
-  box-shadow: var(--tm-shadow);
+  background: var(--ar-teal-deep);
+  box-shadow: var(--ar-shadow);
 }
 
 .button-1.add-to-cart-button:hover,
@@ -393,8 +393,8 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
 .button-1.product-box-add-to-cart-button:hover,
 .button-1.register-button:hover,
 .button-1.login-button:hover{
-  background: var(--tm-teal-hover);
-  box-shadow: var(--tm-shadow-lg);
+  background: var(--ar-teal-hover);
+  box-shadow: var(--ar-shadow-lg);
 }
 
 /* --- Page titles — the guideline's gradient rule with terminal dot -------- */
@@ -409,7 +409,7 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
 
 .page-title h1,
 .page-title h2{
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
   font-weight: 700;
 }
 
@@ -422,7 +422,7 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
   width: min(240px, 60%);
   height: 4px;
   border-radius: 999px;
-  background: var(--tm-gradient);
+  background: var(--ar-gradient);
 }
 
 /* the dot that terminates the rule in the brand document */
@@ -435,39 +435,39 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--tm-teal-bright);
+  background: var(--ar-teal-bright);
   z-index: 1;
 }
 
 /* --- Content blocks / sidebar --------------------------------------------- */
 .block .title{
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
   font-weight: 700;
 }
 
 .block .listbox{
-  background: var(--tm-surface);
-  border: 1px solid var(--tm-line);
-  border-radius: var(--tm-radius);
+  background: var(--ar-surface);
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
 }
 
 .block a:hover{
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
 }
 
 /* --- Product cards -------------------------------------------------------- */
 .item-box .product-item{
-  background: var(--tm-surface);
-  border: 1px solid var(--tm-line);
-  border-radius: var(--tm-radius-lg); /* echoes the logo's rounded square */
+  background: var(--ar-surface);
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius-lg); /* echoes the logo's rounded square */
   overflow: hidden;
-  transition: box-shadow var(--tm-transition), border-color var(--tm-transition),
-              transform var(--tm-transition);
+  transition: box-shadow var(--ar-transition), border-color var(--ar-transition),
+              transform var(--ar-transition);
 }
 
 .item-box .product-item:hover{
-  border-color: var(--tm-teal);
-  box-shadow: var(--tm-shadow-lg);
+  border-color: var(--ar-teal);
+  box-shadow: var(--ar-shadow-lg);
   transform: translateY(-3px);
 }
 
@@ -477,8 +477,8 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
    inline sides to the card's own rhythm. The homepage featured grid zeroes this
    again at higher specificity, because those cards carry no border. */
 .item-box .details{
-  padding-inline: var(--tm-stack-md);
-  padding-block-end: var(--tm-stack-md);
+  padding-inline: var(--ar-stack-md);
+  padding-block-end: var(--ar-stack-md);
 }
 
 /* Star ratings are off on the cards: most of the catalogue carries one seeded
@@ -491,22 +491,22 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
 /* With the rating gone the name should sit right on top of the price line
    rather than keeping the gap the rating used to fill. */
 .item-box .product-title{
-  margin-block-end: var(--tm-stack-sm);
+  margin-block-end: var(--ar-stack-sm);
 }
 
 .item-box .product-title a{
-  color: var(--tm-ink);
+  color: var(--ar-ink);
   font-weight: 600;
 }
 
 .item-box .product-title a:hover{
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
 }
 
 .item-box .prices .actual-price,
 .prices .actual-price,
 .product-price span{
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
   font-weight: 700;
 }
 
@@ -514,13 +514,13 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
    step larger, which put two different price sizes on the same screen as soon
    as a second grid was below it. */
 .item-box .prices .actual-price{
-  font-size: var(--tm-fs-body);
+  font-size: var(--ar-fs-body);
   line-height: 1.25;
 }
 
 .item-box .prices .old-price,
 .prices .old-price{
-  color: var(--tm-ink-muted);
+  color: var(--ar-ink-muted);
 }
 
 /* so it becomes a round icon button parked at
@@ -544,7 +544,7 @@ so RTL
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap;
-  gap: var(--tm-stack-sm);
+  gap: var(--ar-stack-sm);
 }
 
 /* Price left, cart right whichever way the page reads: this row is a fixed
@@ -618,12 +618,12 @@ so screen
   min-height: 44px;
   padding: 0;
   border-radius: 50%;
-  background: var(--tm-teal-deep);
-  color: var(--tm-white);
+  background: var(--ar-teal-deep);
+  color: var(--ar-white);
   font-size: 0;
   line-height: 0;
-  box-shadow: var(--tm-shadow);
-  transition: background var(--tm-transition), transform var(--tm-transition);
+  box-shadow: var(--ar-shadow);
+  transition: background var(--ar-transition), transform var(--ar-transition);
 }
 
 /* Masked rather than a background image,
@@ -640,8 +640,8 @@ so the glyph takes currentColor and
 
 .item-box .product-box-add-to-cart-button:hover,
 .item-box .product-box-add-to-cart-button:focus{
-  background: var(--tm-teal-hover);
-  color: var(--tm-white);
+  background: var(--ar-teal-hover);
+  color: var(--ar-white);
 }
 
 .item-box .product-box-add-to-cart-button:active{
@@ -683,41 +683,41 @@ which would
 .data-table th,
 .forum-table th,
 .compare-products-table th{
-  background: var(--tm-teal-tint);
-  color: var(--tm-teal-deep);
-  border-block-end: 2px solid var(--tm-teal-border);
+  background: var(--ar-teal-tint);
+  color: var(--ar-teal-deep);
+  border-block-end: 2px solid var(--ar-teal-border);
 }
 
 .data-table tr:hover td{
-  background: var(--tm-surface-alt);
+  background: var(--ar-surface-alt);
 }
 
 /* --- Cart / checkout ------------------------------------------------------ */
 .cart-total .order-total,
 .cart-total .order-total strong{
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
   font-weight: 700;
 }
 
 .opc .step-title,
 .checkout-page .section .title{
-  background: var(--tm-teal-tint);
-  color: var(--tm-teal-deep);
-  border-radius: var(--tm-radius-sm);
+  background: var(--ar-teal-tint);
+  color: var(--ar-teal-deep);
+  border-radius: var(--ar-radius-sm);
 }
 
 .opc .allow .step-title{
-  background: var(--tm-teal-deep);
-  color: var(--tm-white);
+  background: var(--ar-teal-deep);
+  color: var(--ar-white);
 }
 
 /* --- Notifications -------------------------------------------------------- */
 .bar-notification.success{
-  background: var(--tm-success);
+  background: var(--ar-success);
 }
 
 .bar-notification.error{
-  background: var(--tm-error);
+  background: var(--ar-error);
 }
 
 /* The base sheet parks 100px under the single-column body, which stacks with
@@ -731,8 +731,8 @@ which would
 
 /* --- Footer --------------------------------------------------------------- */
 .footer{
-  background: var(--tm-teal-deep);
-  color: var(--tm-white);
+  background: var(--ar-teal-deep);
+  color: var(--ar-white);
   margin-block-start: 40px;
 }
 
@@ -740,7 +740,7 @@ which would
   content: "";
   display: block;
   height: 4px;
-  background: var(--tm-gradient);
+  background: var(--ar-gradient);
 }
 
 .footer-upper{
@@ -749,7 +749,7 @@ which would
 
 .footer .title,
 .footer .footer-block .title{
-  color: var(--tm-white);
+  color: var(--ar-white);
   font-weight: 700;
 }
 
@@ -759,12 +759,12 @@ not a tinted white: at 0.82 alpha these links measured
 under the 4.5:1 floor for 14px text. */
 .footer a,
 .footer li a{
-  color: var(--tm-white);
+  color: var(--ar-white);
 }
 
 .footer a:hover,
 .footer li a:hover{
-  color: var(--tm-white);
+  color: var(--ar-white);
 }
 
 .footer-lower{
@@ -853,47 +853,47 @@ under the 4.5:1 floor for 14px text. */
 
 /* --- Newsletter ----------------------------------------------------------- */
 .newsletter-email input[type="email"]{
-  border-radius: var(--tm-radius);
-  border: 1px solid var(--tm-teal-border);
+  border-radius: var(--ar-radius);
+  border: 1px solid var(--ar-teal-border);
 }
 
 .newsletter-subscribe-button{
-  background: var(--tm-teal-deep);
-  color: var(--tm-white);
+  background: var(--ar-teal-deep);
+  color: var(--ar-white);
   border: 0;
-  border-radius: var(--tm-radius);
+  border-radius: var(--ar-radius);
 }
 
 /* --- Pager ---------------------------------------------------------------- */
 .pager li a,
 .pager li span{
-  border-radius: var(--tm-radius-sm);
-  border: 1px solid var(--tm-line);
-  color: var(--tm-ink);
+  border-radius: var(--ar-radius-sm);
+  border: 1px solid var(--ar-line);
+  color: var(--ar-ink);
 }
 
 .pager li.current-page span,
 .pager li a:hover{
-  background: var(--tm-teal-deep);
-  border-color: var(--tm-teal-deep);
-  color: var(--tm-white);
+  background: var(--ar-teal-deep);
+  border-color: var(--ar-teal-deep);
+  color: var(--ar-white);
 }
 
 /* Mobile-only chrome: the phone layout turns this on, nothing else does. */
-.tm-sort-chip{
+.ar-sort-chip{
   display: none;
 }
 
 /* --- Scroll-to-top -------------------------------------------------------- */
 .scroll-back-button{
-  background: var(--tm-teal-deep);
+  background: var(--ar-teal-deep);
   border-radius: 50%;
-  box-shadow: var(--tm-shadow);
+  box-shadow: var(--ar-shadow);
 }
 
 /* --- Scrollbars -----------------------------------------------------------
    Standard properties first (Firefox, Chrome 121+); the ::-webkit- block is
-   the fallback for Safari and older Chromium. Thumb is --tm-teal-deep, the
+   the fallback for Safari and older Chromium. Thumb is --ar-teal-deep, the
    only teal that stays legible against the track at this width; the bright
    teal appears on hover as a gradient, matching the decorative-only rule.
    The scrollbar is chrome, not a label, so the gradient is safe here.
@@ -901,7 +901,7 @@ under the 4.5:1 floor for 14px text. */
    scrollbar-width:none later in this file and still win. */
 html{
   scrollbar-width: thin;
-  scrollbar-color: var(--tm-teal-deep) var(--tm-surface-alt);
+  scrollbar-color: var(--ar-teal-deep) var(--ar-surface-alt);
 }
 
 ::-webkit-scrollbar{
@@ -910,11 +910,11 @@ html{
 }
 
 ::-webkit-scrollbar-track{
-  background: var(--tm-surface-alt);
+  background: var(--ar-surface-alt);
 }
 
 ::-webkit-scrollbar-thumb{
-  background: var(--tm-teal-deep);
+  background: var(--ar-teal-deep);
   border-radius: 999px;
   /* Inset the thumb without changing the hit target: a transparent border
      over a padding-box background is the only way to do it in WebKit. */
@@ -923,17 +923,17 @@ html{
 }
 
 ::-webkit-scrollbar-thumb:hover{
-  background: var(--tm-gradient-diagonal);
+  background: var(--ar-gradient-diagonal);
   background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:active{
-  background: var(--tm-teal-active);
+  background: var(--ar-teal-active);
   background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-corner{
-  background: var(--tm-surface-alt);
+  background: var(--ar-surface-alt);
 }
 
 /* --- Reduced motion ------------------------------------------------------- */
@@ -959,16 +959,16 @@ which beat
 .overview .button-2,
 .variant-overview .button-2,
 .address-list-page .button-2{
-  background-color: var(--tm-white);
-  color: var(--tm-teal-deep);
-  border: 1px solid var(--tm-teal-border);
+  background-color: var(--ar-white);
+  color: var(--ar-teal-deep);
+  border: 1px solid var(--ar-teal-border);
 }
 
 .overview .button-2:hover,
 .variant-overview .button-2:hover,
 .address-list-page .button-2:hover{
-  background-color: var(--tm-teal-tint);
-  color: var(--tm-teal-hover);
+  background-color: var(--ar-teal-tint);
+  color: var(--ar-teal-hover);
 }
 
 /* The collapsible footer menu inherits body ink,
@@ -977,7 +977,7 @@ which lands at 3.2:1 on the
 .footer .footer-menu__title,
 .footer .footer-menu__title a,
 .footer .footer-menu__body a{
-  color: var(--tm-white);
+  color: var(--ar-white);
 }
 
 /* ==========================================================================
@@ -1048,7 +1048,7 @@ above the WCAG 2.2 SC 2.5.8 floor. */
     inline-size: 20px !important;
     block-size: 20px !important;
     margin-inline-end: 6px;
-    accent-color: var(--tm-teal-deep);
+    accent-color: var(--ar-teal-deep);
     vertical-align: middle;
   }
 
@@ -1142,14 +1142,14 @@ so the "HomepageText" topic that would
    the category bar above it. Give it the same top gap it would put between
    itself and a second slider, so the rhythm is the same wherever it appears. */
 .home-page .nop-slider{
-  margin-block-start: var(--tm-stack-md);
+  margin-block-start: var(--ar-stack-md);
   /* The slider owns the gap on both sides of itself rather than leaving it to
      whatever widget lands in the zone below, which butted straight against it.
-     --tm-stack-lg is the same rhythm the sections keep between themselves. */
-  margin-block-end: var(--tm-stack-lg);
+     --ar-stack-lg is the same rhythm the sections keep between themselves. */
+  margin-block-end: var(--ar-stack-lg);
   /* Same rounded square as the product cards and category tiles, so the hero
      sits in the same family instead of being the one hard-cornered block. */
-  border-radius: var(--tm-radius-lg);
+  border-radius: var(--ar-radius-lg);
   overflow: hidden;
 }
 
@@ -1168,7 +1168,7 @@ so the "HomepageText" topic that would
    column rather than a reordered one — no markup change.
    -------------------------------------------------------------------------- */
 :is(.home-page-category-grid, .sub-category-grid){
-  margin-block-end: var(--tm-stack-lg);
+  margin-block-end: var(--ar-stack-lg);
 }
 
 /* --- OCarousel bands ("وصل حديثاً", the brand strip) ----------------------
@@ -1179,7 +1179,7 @@ so the "HomepageText" topic that would
    AddCssFileParts (end of the list) while plugins prepend, so this wins on
    order at equal specificity. */
 .ocarousel-grid{
-  margin-block-end: var(--tm-stack-lg);
+  margin-block-end: var(--ar-stack-lg);
 }
 
 /* Same rhythm for every band in the stack, whoever ships it: the base sheet's
@@ -1187,7 +1187,7 @@ so the "HomepageText" topic that would
    `.slider-grid` (40px) each carried their own bottom margin, leaving three
    different gaps down one page. */
 .home-page .page-body > *{
-  margin-block-end: var(--tm-stack-lg);
+  margin-block-end: var(--ar-stack-lg);
 }
 
 /* One title treatment for every band on the home page, whoever ships it. The
@@ -1201,14 +1201,14 @@ so the "HomepageText" topic that would
 .home-page .page-body > * > .title{
   display: flex;
   align-items: center;
-  gap: var(--tm-stack-sm);
-  margin: 0 0 var(--tm-stack-md);
+  gap: var(--ar-stack-sm);
+  margin: 0 0 var(--ar-stack-md);
   border: 0;
   padding: 0;
   text-align: start;
-  color: var(--tm-ink);
-  font-size: var(--tm-fs-headline);
-  line-height: var(--tm-lh-headline);
+  color: var(--ar-ink);
+  font-size: var(--ar-fs-headline);
+  line-height: var(--ar-lh-headline);
   font-weight: 700;
   /* A heading with no break opportunity — an untranslated resource key, a
      long product or brand name — used to push the document wider than the
@@ -1218,7 +1218,7 @@ so the "HomepageText" topic that would
 }
 
 /* A brand rule marks where each band starts — the gradient is decorative, so
-   it may run into --tm-teal-bright here where a label never could. The bar is
+   it may run into --ar-teal-bright here where a label never could. The bar is
    drawn on the flex line, so it flips to the right side in RTL for free, and
    sizing it in `em` keeps it tied to the heading at every breakpoint. */
 .home-page .page-body > * > .title:before{
@@ -1227,7 +1227,7 @@ so the "HomepageText" topic that would
   inline-size: 5px;
   block-size: 1em;
   border-radius: 999px;
-  background: var(--tm-gradient-diagonal);
+  background: var(--ar-gradient-diagonal);
 }
 
 /* the base sheet prints the news heading's text in a <strong> at normal weight */
@@ -1250,8 +1250,8 @@ so the "HomepageText" topic that would
 :is(.home-page-category-grid, .sub-category-grid) .item-grid{
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: var(--tm-stack-md);
-  row-gap: var(--tm-stack-lg);
+  column-gap: var(--ar-stack-md);
+  row-gap: var(--ar-stack-lg);
 }
 
 /* The base sheet's float/clear/percentage-width layout is redundant once the
@@ -1260,7 +1260,7 @@ so the "HomepageText" topic that would
   display: flex;
   flex-direction: column-reverse;
   align-items: center;
-  gap: var(--tm-stack-sm);
+  gap: var(--ar-stack-sm);
   float: none;
   width: auto;
   height: auto;
@@ -1282,15 +1282,15 @@ so the "HomepageText" topic that would
   max-inline-size: 128px;
   aspect-ratio: 1;
   margin: 0;
-  border-radius: var(--tm-radius-lg); /* echoes the logo's rounded square */
-  background: var(--tm-teal-tint);
+  border-radius: var(--ar-radius-lg); /* echoes the logo's rounded square */
+  background: var(--ar-teal-tint);
   overflow: hidden;
-  box-shadow: var(--tm-shadow);
-  transition: box-shadow var(--tm-transition), transform var(--tm-transition);
+  box-shadow: var(--ar-shadow);
+  transition: box-shadow var(--ar-transition), transform var(--ar-transition);
 }
 
 :is(.home-page-category-grid, .sub-category-grid) .item-box:hover .picture{
-  box-shadow: var(--tm-shadow-lg);
+  box-shadow: var(--ar-shadow-lg);
   transform: translateY(-3px);
 }
 
@@ -1323,8 +1323,8 @@ so the "HomepageText" topic that would
   padding: 0;
   inline-size: 100%;
   text-align: center;
-  font-size: var(--tm-fs-label);
-  line-height: var(--tm-lh-label);
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
   font-weight: 600;
 }
 
@@ -1335,11 +1335,11 @@ so the "HomepageText" topic that would
   line-clamp: 2;
   overflow: hidden;
   padding: 0;
-  color: var(--tm-ink);
+  color: var(--ar-ink);
 }
 
 :is(.home-page-category-grid, .sub-category-grid) .title a:hover{
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
   text-decoration: none;
 }
 
@@ -1351,8 +1351,8 @@ so the "HomepageText" topic that would
 .home-page .home-page-product-grid .item-grid{
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: var(--tm-stack-sm);
-  row-gap: var(--tm-stack-md);
+  column-gap: var(--ar-stack-sm);
+  row-gap: var(--ar-stack-md);
 }
 
 .home-page .home-page-product-grid .item-box{
@@ -1370,8 +1370,8 @@ so the "HomepageText" topic that would
    lifting on hover — so featured, bestsellers, new products and the category
    pages behave identically. */
 .home-page .home-page-product-grid .picture{
-  margin: 0 0 var(--tm-stack-sm);
-  background: var(--tm-surface-alt);
+  margin: 0 0 var(--ar-stack-sm);
+  background: var(--ar-surface-alt);
   overflow: hidden;
 }
 
@@ -1398,8 +1398,8 @@ so the "HomepageText" topic that would
 .home-page .home-page-product-grid .product-title{
   min-height: 0;
   margin: 0 0 4px;
-  font-size: var(--tm-fs-label);
-  line-height: var(--tm-lh-label);
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
 }
 
 /* The base sheet makes the link a block,
@@ -1421,7 +1421,7 @@ not a layout one — and rides on the
    price line as an icon,
 so it needs no vertical offset of its own here. */
 .home-page .home-page-product-grid .add-info{
-  margin-block-start: var(--tm-stack-sm);
+  margin-block-start: var(--ar-stack-sm);
 }
 
 @media (min-width: 1001px) {
@@ -1431,14 +1431,14 @@ so it needs no vertical offset of its own here. */
   }
 
   :is(.home-page-category-grid, .sub-category-grid) .title{
-    font-size: var(--tm-fs-body);
-    line-height: var(--tm-lh-body);
+    font-size: var(--ar-fs-body);
+    line-height: var(--ar-lh-body);
   }
 
   .home-page .home-page-product-grid .item-grid{
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: var(--tm-gutter);
-    row-gap: var(--tm-gutter);
+    column-gap: var(--ar-gutter);
+    row-gap: var(--ar-gutter);
   }
 }
 
@@ -1526,7 +1526,7 @@ the category bar having gone. */
   font-size: 0;
   line-height: 0;
   text-indent: 0;
-  transition: background var(--tm-transition), color var(--tm-transition);
+  transition: background var(--ar-transition), color var(--ar-transition);
 }
 
 .header-links :is(.ico-account, .ico-login):before,
@@ -1575,35 +1575,35 @@ the category bar having gone. */
 .header-links :is(.ico-account, .ico-login),
 #topcartlink .ico-cart{
   background: none;
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
 }
 
 .header-links :is(.ico-account, .ico-login):hover,
 .header-links :is(.ico-account, .ico-login):focus,
 #topcartlink .ico-cart:hover,
 #topcartlink .ico-cart:focus{
-  background: var(--tm-teal-tint);
-  color: var(--tm-teal-hover);
+  background: var(--ar-teal-tint);
+  color: var(--ar-teal-hover);
 }
 
 .search-box .search-box-button{
-  background: var(--tm-teal-deep);
-  color: var(--tm-white);
+  background: var(--ar-teal-deep);
+  color: var(--ar-white);
 }
 
 /* Empty field, nothing to submit: the core script's only answer to that was a
    blocking alert. The button says it instead (see the theme's _Header.cshtml). */
 .search-box .search-box-button:disabled,
 .search-box .search-box-button:disabled:hover{
-  background: var(--tm-teal-tint);
-  color: var(--tm-teal-deep);
+  background: var(--ar-teal-tint);
+  color: var(--ar-teal-deep);
   cursor: default;
 }
 
 .search-box .search-box-button:hover:not(:disabled),
 .search-box .search-box-button:focus:not(:disabled){
-  background: var(--tm-teal-hover);
-  color: var(--tm-white);
+  background: var(--ar-teal-hover);
+  color: var(--ar-white);
 }
 
 /* The base sheet paints the bag as a left-aligned PNG and pads the link to
@@ -1646,8 +1646,8 @@ along with the pill the li was wrapped in. */
   height: 20px;
   padding-inline: 5px;
   border-radius: 999px;
-  background: var(--tm-teal-deep);
-  color: var(--tm-white);
+  background: var(--ar-teal-deep);
+  color: var(--ar-white);
   font-size: 0;
   line-height: 1;
   font-weight: 700;
@@ -1668,13 +1668,13 @@ so it stays a text link,
 sized
    down so it reads as secondary beside the three glyphs. */
 .header-links .ico-logout{
-  font-size: var(--tm-fs-label-sm);
-  line-height: var(--tm-lh-label-sm);
-  color: var(--tm-ink-muted);
+  font-size: var(--ar-fs-label-sm);
+  line-height: var(--ar-lh-label-sm);
+  color: var(--ar-ink-muted);
 }
 
 .header-links .ico-logout:hover{
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
 }
 
 /* The list that holds the links becomes the icon row. */
@@ -1710,7 +1710,7 @@ sized
 
   /* The one measurement anything sticky below the header offsets against. */
   :root{
-    --tm-header-h: 80px;
+    --ar-header-h: 80px;
   }
 
   .header{
@@ -1759,13 +1759,13 @@ knocking the logo out of line with the content below. */
   .header-links-wrapper{
     order: 3;
     float: none;
-    margin-inline-start: var(--tm-gutter);
+    margin-inline-start: var(--ar-gutter);
     padding: 0;
   }
 
   .header-selectors-wrapper{
     order: 4;
-    margin-inline-start: var(--tm-gutter);
+    margin-inline-start: var(--ar-gutter);
     border: 0;
     padding: 0;
   }
@@ -1845,7 +1845,7 @@ so the field stays visible beside the icon. */
     display: flex;
     align-items: center;
     min-height: 64px;
-    padding-inline: var(--tm-margin-mobile);
+    padding-inline: var(--ar-margin-mobile);
     padding-block: 8px;
   }
 
@@ -1853,10 +1853,10 @@ so the field stays visible beside the icon. */
      scrolled down and takes it off on the first scroll up, so the bar costs
      nothing while reading and is one flick away when search is wanted. */
   .header{
-    transition: transform var(--tm-transition);
+    transition: transform var(--ar-transition);
   }
 
-  .header.tm-header-hidden{
+  .header.ar-header-hidden{
     transform: translateY(-100%);
   }
 
@@ -1925,14 +1925,14 @@ so the field stays visible beside the icon. */
     border: 0;
     border-radius: 50%;
     background: none;
-    color: var(--tm-teal-deep);
+    color: var(--ar-teal-deep);
     cursor: pointer;
-    transition: background-color var(--tm-transition), color var(--tm-transition);
+    transition: background-color var(--ar-transition), color var(--ar-transition);
   }
 
   .mobile-search-toggle:hover,
   .mobile-search-toggle:focus-visible{
-    background: var(--tm-teal-tint);
+    background: var(--ar-teal-tint);
   }
 
   .mobile-search-icon{
@@ -1969,7 +1969,7 @@ so the field stays visible beside the icon. */
      form's own submit glyph stays at the far end where the thumb expects it. */
   .header.search-open .mobile-search-toggle{
     order: 0;
-    margin-inline: 0 var(--tm-stack-sm);
+    margin-inline: 0 var(--ar-stack-sm);
   }
 
   /* --- Search pill ------------------------------------------------------
@@ -1997,14 +1997,14 @@ so the field stays visible beside the icon. */
     gap: 0;
     padding-inline: 16px 4px;
     border-radius: 999px;
-    background: var(--tm-surface-alt);
-    box-shadow: inset 0 0 0 1px var(--tm-line);
-    transition: box-shadow var(--tm-transition);
+    background: var(--ar-surface-alt);
+    box-shadow: inset 0 0 0 1px var(--ar-line);
+    transition: box-shadow var(--ar-transition);
   }
 
   .search-box form:focus-within{
-    background: var(--tm-surface);
-    box-shadow: inset 0 0 0 2px var(--tm-teal-deep);
+    background: var(--ar-surface);
+    box-shadow: inset 0 0 0 2px var(--ar-teal-deep);
   }
 
   .search-box input.search-box-text{
@@ -2019,7 +2019,7 @@ so the field stays visible beside the icon. */
     background: none;
     /* under 16px iOS zooms the viewport when the field takes focus */
     font-size: 16px;
-    color: var(--tm-ink);
+    color: var(--ar-ink);
   }
 
   /* The pill carries the focus ring for the whole control, so the field must
@@ -2050,7 +2050,7 @@ so the field stays visible beside the icon. */
      a second one lands at the end of the bar rather than in front of the logo. */
   .header-selectors-wrapper{
     order: 3;
-    margin-inline-start: var(--tm-stack-sm);
+    margin-inline-start: var(--ar-stack-sm);
     border: 0;
     padding: 0;
   }
@@ -2073,7 +2073,7 @@ so the field stays visible beside the icon. */
    scroll chaining, which is the part that actually reads as broken. Swap in
    dialog.showModal() if the page underneath ever has to be truly inert.
    -------------------------------------------------------------------------- */
-.tm-sheet{
+.ar-sheet{
   position: fixed;
   inset: auto 0 0 0;
   z-index: 1100;
@@ -2085,79 +2085,79 @@ so the field stays visible beside the icon. */
   margin: 0;
   border: 0;
   padding: 0;
-  border-start-start-radius: var(--tm-radius-lg);
-  border-start-end-radius: var(--tm-radius-lg);
-  background: var(--tm-surface);
-  color: var(--tm-ink);
-  box-shadow: var(--tm-shadow-lg);
+  border-start-start-radius: var(--ar-radius-lg);
+  border-start-end-radius: var(--ar-radius-lg);
+  background: var(--ar-surface);
+  color: var(--ar-ink);
+  box-shadow: var(--ar-shadow-lg);
   overflow: hidden;
   transform: translateY(100%);
   transition:
-    transform var(--tm-transition),
-    overlay var(--tm-transition) allow-discrete,
-    display var(--tm-transition) allow-discrete;
+    transform var(--ar-transition),
+    overlay var(--ar-transition) allow-discrete,
+    display var(--ar-transition) allow-discrete;
 }
 
-.tm-sheet:popover-open{
+.ar-sheet:popover-open{
   transform: translateY(0);
 }
 
 @starting-style{
 
-  .tm-sheet:popover-open{
+  .ar-sheet:popover-open{
     transform: translateY(100%);
   }
 }
 
-.tm-sheet::backdrop{
+.ar-sheet::backdrop{
   background: rgba(16, 32, 31, 0.45);
   opacity: 0;
   transition:
-    opacity var(--tm-transition),
-    overlay var(--tm-transition) allow-discrete,
-    display var(--tm-transition) allow-discrete;
+    opacity var(--ar-transition),
+    overlay var(--ar-transition) allow-discrete,
+    display var(--ar-transition) allow-discrete;
 }
 
-.tm-sheet:popover-open::backdrop{
+.ar-sheet:popover-open::backdrop{
   opacity: 1;
 }
 
 @starting-style{
 
-  .tm-sheet:popover-open::backdrop{
+  .ar-sheet:popover-open::backdrop{
     opacity: 0;
   }
 }
 
-.tm-sheet-grip{
+.ar-sheet-grip{
   flex: 0 0 auto;
   inline-size: 40px;
   block-size: 4px;
   margin: 10px auto 0;
   border-radius: 999px;
-  background: var(--tm-line);
+  background: var(--ar-line);
 }
 
-.tm-sheet-head{
+.ar-sheet-head{
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px var(--tm-margin-mobile) 12px;
-  border-block-end: 1px solid var(--tm-line);
+  padding: 8px var(--ar-margin-mobile) 12px;
+  border-block-end: 1px solid var(--ar-line);
 }
 
-.tm-sheet-title{
+.ar-sheet-title{
   flex: 1 1 auto;
   min-inline-size: 0;
   margin: 0;
-  font-size: var(--tm-fs-title);
-  line-height: var(--tm-lh-title);
+  font-size: var(--ar-fs-title);
+  line-height: var(--ar-lh-title);
   font-weight: 700;
-  color: var(--tm-ink);
+  color: var(--ar-ink);
 }
 
-.tm-sheet-close{
+.ar-sheet-close{
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
@@ -2168,19 +2168,19 @@ so the field stays visible beside the icon. */
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: var(--tm-surface-alt);
-  color: var(--tm-ink-muted);
+  background: var(--ar-surface-alt);
+  color: var(--ar-ink-muted);
   cursor: pointer;
-  transition: background-color var(--tm-transition), color var(--tm-transition);
+  transition: background-color var(--ar-transition), color var(--ar-transition);
 }
 
-.tm-sheet-close:hover,
-.tm-sheet-close:focus-visible{
-  background: var(--tm-teal-tint);
-  color: var(--tm-teal-deep);
+.ar-sheet-close:hover,
+.ar-sheet-close:focus-visible{
+  background: var(--ar-teal-tint);
+  color: var(--ar-teal-deep);
 }
 
-.tm-sheet-close svg{
+.ar-sheet-close svg{
   inline-size: 20px;
   block-size: 20px;
   fill: none;
@@ -2189,7 +2189,7 @@ so the field stays visible beside the icon. */
   stroke-linecap: round;
 }
 
-.tm-sheet-body{
+.ar-sheet-body{
   flex: 1 1 auto;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -2203,7 +2203,7 @@ so the field stays visible beside the icon. */
    changes. The base sheet styles .header-menu as a centred 600px band with a
    coloured toggle bar, all of which the sheet supplies instead.
    -------------------------------------------------------------------------- */
-.tm-sheet .header-menu{
+.ar-sheet .header-menu{
   width: auto;
   max-width: none;
   margin: 0;
@@ -2211,54 +2211,54 @@ so the field stays visible beside the icon. */
   background: none;
 }
 
-.tm-sheet .header-menu:after{
+.ar-sheet .header-menu:after{
   content: none;
 }
 
-.tm-sheet .menu-container{
+.ar-sheet .menu-container{
   width: auto;
   padding: 0;
 }
 
 /* The sheet's own heading is the menu's name. */
-.tm-sheet .menu__toggle{
+.ar-sheet .menu__toggle{
   display: none;
 }
 
-.tm-sheet .menu{
-  font-size: var(--tm-fs-body);
+.ar-sheet .menu{
+  font-size: var(--ar-fs-body);
 }
 
 /* Only the box model is touched here. `display` is deliberately left alone:
    .menu-dropdown is a grid whose second row animates from 0fr to 1fr, and that
    is the whole collapse mechanism. */
-.tm-sheet .menu__item,
-.tm-sheet .menu > .menu__item{
+.ar-sheet .menu__item,
+.ar-sheet .menu > .menu__item{
   width: auto;
   margin: 0;
   background: none;
-  color: var(--tm-ink);
+  color: var(--ar-ink);
 }
 
 /* The base sheet pads the leaf item; here the link inside it carries the
    padding, so the whole row is the touch target. */
-.tm-sheet .menu__item:not(.menu-dropdown){
+.ar-sheet .menu__item:not(.menu-dropdown){
   display: block;
   padding: 0;
 }
 
-.tm-sheet .menu > .menu__item:not(:last-child){
-  border-block-end: 1px solid var(--tm-line);
+.ar-sheet .menu > .menu__item:not(:last-child){
+  border-block-end: 1px solid var(--ar-line);
 }
 
-.tm-sheet .menu__item-toggle{
+.ar-sheet .menu__item-toggle{
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   min-height: 52px;
   padding: 0 0 0 0;
-  padding-inline-start: var(--tm-margin-mobile);
+  padding-inline-start: var(--ar-margin-mobile);
   border: 0;
   background: none;
   color: inherit;
@@ -2268,29 +2268,29 @@ so the field stays visible beside the icon. */
 /* Two targets in one row: the label navigates to the category, the chevron
    opens its children. Stock nopCommerce nests the link inside the toggle, so
    without this split a tap on the name both navigated and expanded. */
-.tm-sheet .menu__link{
+.ar-sheet .menu__link{
   flex: 1 1 auto;
   min-inline-size: 0;
   min-height: 52px;
   padding-block: 12px;
-  padding-inline: var(--tm-margin-mobile);
+  padding-inline: var(--ar-margin-mobile);
   color: inherit;
-  font-size: var(--tm-fs-body);
-  line-height: var(--tm-lh-body);
+  font-size: var(--ar-fs-body);
+  line-height: var(--ar-lh-body);
   text-decoration: none;
 }
 
-.tm-sheet .menu__item-toggle .menu__link{
+.ar-sheet .menu__item-toggle .menu__link{
   padding-inline-start: 0;
   padding-inline-end: 0;
 }
 
-.tm-sheet .menu__link:hover,
-.tm-sheet .menu__link:focus-visible{
-  color: var(--tm-teal-deep);
+.ar-sheet .menu__link:hover,
+.ar-sheet .menu__link:focus-visible{
+  color: var(--ar-teal-deep);
 }
 
-.tm-sheet .menu__item-toggle::after{
+.ar-sheet .menu__item-toggle::after{
   content: "";
   flex: 0 0 auto;
   inline-size: 48px;
@@ -2299,47 +2299,47 @@ so the field stays visible beside the icon. */
   padding: 0;
   background: none;
   background-color: currentColor;
-  color: var(--tm-ink-muted);
+  color: var(--ar-ink-muted);
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 15.6 4.7 8.3l1.6-1.6L12 12.4l5.7-5.7 1.6 1.6z'/%3E%3C/svg%3E") center / 16px no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 15.6 4.7 8.3l1.6-1.6L12 12.4l5.7-5.7 1.6 1.6z'/%3E%3C/svg%3E") center / 16px no-repeat;
-  transition: transform var(--tm-transition);
+  transition: transform var(--ar-transition);
 }
 
-.tm-sheet .menu-dropdown--active > .menu__item-toggle::after{
+.ar-sheet .menu-dropdown--active > .menu__item-toggle::after{
   transform: rotate(180deg);
 }
 
 /* Children sit on the tinted surface and one indent in, so depth reads
    without a second border system. */
-.tm-sheet .menu__list-view,
-.tm-sheet .menu__grid-view{
+.ar-sheet .menu__list-view,
+.ar-sheet .menu__grid-view{
   position: static;
   padding: 0;
-  background: var(--tm-surface-alt);
+  background: var(--ar-surface-alt);
   box-shadow: none;
 }
 
-.tm-sheet .menu__list-view .menu__link,
-.tm-sheet .menu__group .menu__link{
+.ar-sheet .menu__list-view .menu__link,
+.ar-sheet .menu__group .menu__link{
   min-height: 48px;
-  padding-inline-start: calc(var(--tm-margin-mobile) + 16px);
-  color: var(--tm-ink-muted);
-  font-size: var(--tm-fs-label);
+  padding-inline-start: calc(var(--ar-margin-mobile) + 16px);
+  color: var(--ar-ink-muted);
+  font-size: var(--ar-fs-label);
 }
 
-.tm-sheet .menu__list-view .menu__link::before,
-.tm-sheet .menu__group .menu__link::before{
+.ar-sheet .menu__list-view .menu__link::before,
+.ar-sheet .menu__group .menu__link::before{
   content: none;
 }
 
-.tm-sheet .menu__group{
+.ar-sheet .menu__group{
   padding: 0;
 }
 
-.tm-sheet .menu__group-title{
-  padding-inline: calc(var(--tm-margin-mobile) + 16px);
+.ar-sheet .menu__group-title{
+  padding-inline: calc(var(--ar-margin-mobile) + 16px);
   padding-block: 12px;
-  font-size: var(--tm-fs-label);
+  font-size: var(--ar-fs-label);
   font-weight: 700;
 }
 
@@ -2371,9 +2371,9 @@ so the field stays visible beside the icon. */
     background: rgba(255, 255, 255, 0.88);
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
-    border-block-start: 1px solid var(--tm-line);
-    border-start-start-radius: var(--tm-radius-lg);
-    border-start-end-radius: var(--tm-radius-lg);
+    border-block-start: 1px solid var(--ar-line);
+    border-start-start-radius: var(--ar-radius-lg);
+    border-start-end-radius: var(--ar-radius-lg);
     box-shadow: 0 -4px 20px rgba(2, 120, 126, 0.06);
   }
 
@@ -2394,20 +2394,20 @@ so the field stays visible beside the icon. */
     margin: 0;
     padding: 4px 2px;
     border: 0;
-    border-radius: var(--tm-radius);
+    border-radius: var(--ar-radius);
     background: none;
-    color: var(--tm-ink-muted);
+    color: var(--ar-ink-muted);
     font-family: inherit;
     text-decoration: none;
     cursor: pointer;
     -webkit-appearance: none;
     appearance: none;
-    transition: color var(--tm-transition);
+    transition: color var(--ar-transition);
   }
 
   .mobile-tab:hover,
   .mobile-tab:focus-visible{
-    color: var(--tm-teal-deep);
+    color: var(--ar-teal-deep);
   }
 
   .mobile-tab:active{
@@ -2425,15 +2425,15 @@ so the field stays visible beside the icon. */
     max-inline-size: 100%;
     block-size: 28px;
     border-radius: 999px;
-    transition: background-color var(--tm-transition);
+    transition: background-color var(--ar-transition);
   }
 
   .mobile-tab.active{
-    color: var(--tm-teal-deep);
+    color: var(--ar-teal-deep);
   }
 
   .mobile-tab.active .mobile-tab-icon-wrap{
-    background: var(--tm-teal-tint);
+    background: var(--ar-teal-tint);
   }
 
   .mobile-tab.active .mobile-tab-label{
@@ -2477,10 +2477,10 @@ so the field stays visible beside the icon. */
     block-size: 16px;
     padding-inline: 4px;
     border-radius: 999px;
-    background: var(--tm-teal-deep);
-    box-shadow: 0 0 0 2px var(--tm-surface);
+    background: var(--ar-teal-deep);
+    box-shadow: 0 0 0 2px var(--ar-surface);
     font-size: 0;
-    color: var(--tm-white);
+    color: var(--ar-white);
   }
 
   .mobile-tab-badge::after{
@@ -2495,15 +2495,15 @@ so the field stays visible beside the icon. */
    as a phone layout that was left to grow. Cap the measure, keep the chrome. */
 @media (min-width: 600px) and (max-width: 1000px){
 
-  .tm-sheet{
+  .ar-sheet{
     max-inline-size: 560px;
     margin-inline: auto;
-    border-radius: var(--tm-radius-lg) var(--tm-radius-lg) 0 0;
+    border-radius: var(--ar-radius-lg) var(--ar-radius-lg) 0 0;
   }
 
   .mobile-tab-bar{
     justify-content: center;
-    gap: var(--tm-stack-sm);
+    gap: var(--ar-stack-sm);
   }
 
   .mobile-tab{
@@ -2529,9 +2529,9 @@ so the field stays visible beside the icon. */
   .header,
   .mobile-tab,
   .mobile-tab-icon-wrap,
-  .tm-sheet,
-  .tm-sheet::backdrop,
-  .tm-sheet .menu__item-toggle::after{
+  .ar-sheet,
+  .ar-sheet::backdrop,
+  .ar-sheet .menu__item-toggle::after{
     transition: none;
   }
 
@@ -2545,7 +2545,7 @@ so the field stays visible beside the icon. */
    block and the tab scrolls to it (see _MobileNav.cshtml). */
 @supports not selector(:popover-open){
 
-  .tm-sheet{
+  .ar-sheet{
     position: static;
     max-block-size: none;
     border-radius: 0;
@@ -2553,8 +2553,8 @@ so the field stays visible beside the icon. */
     transform: none;
   }
 
-  .tm-sheet-grip,
-  .tm-sheet-close{
+  .ar-sheet-grip,
+  .ar-sheet-close{
     display: none;
   }
 }
@@ -2577,7 +2577,7 @@ so the field stays visible beside the icon. */
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
-    margin-block-end: var(--tm-stack-md);
+    margin-block-end: var(--ar-stack-md);
     padding-block: 12px;
   }
 
@@ -2596,9 +2596,9 @@ so the field stays visible beside the icon. */
 
   .product-selectors span{
     flex: 0 0 auto;
-    font-size: var(--tm-fs-label-sm);
-    line-height: var(--tm-lh-label-sm);
-    color: var(--tm-ink-muted);
+    font-size: var(--ar-fs-label-sm);
+    line-height: var(--ar-lh-label-sm);
+    color: var(--ar-ink-muted);
     white-space: nowrap;
   }
 
@@ -2628,12 +2628,12 @@ so the field stays visible beside the icon. */
       display: none;
     }
 
-    .tm-sort-chip{
+    .ar-sort-chip{
       display: inline-flex;
     }
   }
 
-  .tm-sort-chip{
+  .ar-sort-chip{
     align-items: center;
     gap: 8px;
     max-inline-size: 100%;
@@ -2641,24 +2641,24 @@ so the field stays visible beside the icon. */
     margin: 0;
     padding-block: 8px;
     padding-inline: 14px;
-    border: 1px solid var(--tm-teal-border);
+    border: 1px solid var(--ar-teal-border);
     border-radius: 999px;
-    background: var(--tm-surface);
-    color: var(--tm-ink);
+    background: var(--ar-surface);
+    color: var(--ar-ink);
     font: inherit;
-    font-size: var(--tm-fs-label);
-    line-height: var(--tm-lh-label);
+    font-size: var(--ar-fs-label);
+    line-height: var(--ar-lh-label);
     font-weight: 600;
     cursor: pointer;
   }
 
-  .tm-sort-chip:hover,
-  .tm-sort-chip:focus-visible{
-    background: var(--tm-teal-tint);
-    border-color: var(--tm-teal);
+  .ar-sort-chip:hover,
+  .ar-sort-chip:focus-visible{
+    background: var(--ar-teal-tint);
+    border-color: var(--ar-teal);
   }
 
-  .tm-sort-chip svg{
+  .ar-sort-chip svg{
     flex: 0 0 auto;
     inline-size: 18px;
     block-size: 18px;
@@ -2669,18 +2669,18 @@ so the field stays visible beside the icon. */
     opacity: .75;
   }
 
-  [dir="rtl"] .tm-sort-chip svg{
+  [dir="rtl"] .ar-sort-chip svg{
     transform: scaleX(-1);
   }
 
-  .tm-sort-chip-value{
+  .ar-sort-chip-value{
     min-inline-size: 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  .tm-sort-option{
+  .ar-sort-option{
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -2688,30 +2688,30 @@ so the field stays visible beside the icon. */
     inline-size: 100%;
     min-height: 52px;
     padding-block: 12px;
-    padding-inline: var(--tm-margin-mobile);
+    padding-inline: var(--ar-margin-mobile);
     border: 0;
     background: none;
-    color: var(--tm-ink);
+    color: var(--ar-ink);
     font: inherit;
-    font-size: var(--tm-fs-body);
-    line-height: var(--tm-lh-body);
+    font-size: var(--ar-fs-body);
+    line-height: var(--ar-lh-body);
     text-align: start;
     cursor: pointer;
   }
 
-  .tm-sort-option + .tm-sort-option{
-    border-block-start: 1px solid var(--tm-line);
+  .ar-sort-option + .ar-sort-option{
+    border-block-start: 1px solid var(--ar-line);
   }
 
-  .tm-sort-option[aria-checked="true"]{
-    color: var(--tm-teal-deep);
+  .ar-sort-option[aria-checked="true"]{
+    color: var(--ar-teal-deep);
     font-weight: 700;
   }
 
   /* Tick drawn from two borders. Physical sides on purpose: a check mark is
      the same shape in Arabic as in English, so it must not mirror with the
      writing direction the way a chevron does. */
-  .tm-sort-option::after{
+  .ar-sort-option::after{
     content: "";
     flex: 0 0 auto;
     inline-size: 7px;
@@ -2723,7 +2723,7 @@ so the field stays visible beside the icon. */
     opacity: 0;
   }
 
-  .tm-sort-option[aria-checked="true"]::after{
+  .ar-sort-option[aria-checked="true"]::after{
     opacity: 1;
   }
 
@@ -2734,50 +2734,50 @@ so the field stays visible beside the icon. */
      sentinel, and the way there without a scroll gesture. So it is dressed as
      the full-width "load more" button that a thumb was already reaching for.
      ------------------------------------------------------------------------ */
-  .tm-infinite .pager{
-    margin-block: var(--tm-stack-md) 0;
+  .ar-infinite .pager{
+    margin-block: var(--ar-stack-md) 0;
   }
 
   /* The last page still renders a pager - back links and page numbers, all of
      them hidden below, which left an empty band under the final row. With
      nothing left to load there is nothing to show. */
-  .tm-infinite .pager:not(:has(.next-page)){
+  .ar-infinite .pager:not(:has(.next-page)){
     display: none;
   }
 
-  .tm-infinite .pager ul{
+  .ar-infinite .pager ul{
     display: flex;
     text-align: start;
   }
 
-  .tm-infinite .pager li{
+  .ar-infinite .pager li{
     display: none;
     margin: 0;
   }
 
-  .tm-infinite .pager li.next-page{
+  .ar-infinite .pager li.next-page{
     display: block;
     flex: 1 1 auto;
   }
 
-  .tm-infinite .pager li.next-page a{
+  .ar-infinite .pager li.next-page a{
     display: flex;
     align-items: center;
     justify-content: center;
     inline-size: 100%;
     min-height: 48px;
     padding-block: 12px;
-    border: 1px solid var(--tm-teal-border);
+    border: 1px solid var(--ar-teal-border);
     border-radius: 999px;
-    background-color: var(--tm-surface);
+    background-color: var(--ar-surface);
     background-image: none;
-    color: var(--tm-teal-deep);
-    font-size: var(--tm-fs-label);
-    line-height: var(--tm-lh-label);
+    color: var(--ar-teal-deep);
+    font-size: var(--ar-fs-label);
+    line-height: var(--ar-lh-label);
     font-weight: 600;
   }
 
-  .tm-infinite.tm-loading-more .pager li.next-page a{
+  .ar-infinite.ar-loading-more .pager li.next-page a{
     color: transparent;
     background-image: url('../images/loading.gif');
     background-position: center;
@@ -2887,8 +2887,8 @@ so the field stays visible beside the icon. */
   .item-grid{
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: var(--tm-stack-sm);
-    row-gap: var(--tm-stack-md);
+    column-gap: var(--ar-stack-sm);
+    row-gap: var(--ar-stack-md);
   }
 
   .item-grid:after{
@@ -2910,7 +2910,7 @@ so the field stays visible beside the icon. */
   }
 
   .product-list .item-box{
-    margin-block-end: var(--tm-stack-md);
+    margin-block-end: var(--ar-stack-md);
   }
 }
 
@@ -2922,7 +2922,7 @@ so the field stays visible beside the icon. */
 
   .item-grid{
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    column-gap: var(--tm-stack-md);
+    column-gap: var(--ar-stack-md);
   }
 
   :is(.home-page-category-grid, .sub-category-grid) .item-grid{
@@ -2931,7 +2931,7 @@ so the field stays visible beside the icon. */
 
   .home-page .home-page-product-grid .item-grid{
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    column-gap: var(--tm-stack-md);
+    column-gap: var(--ar-stack-md);
   }
 }
 
@@ -2955,7 +2955,7 @@ so the field stays visible beside the icon. */
        a price and the 44px circle), and it is what puts four cards in the
        876px column beside a filter panel instead of three fat ones. */
     grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-    gap: var(--tm-gutter);
+    gap: var(--ar-gutter);
   }
 
   .item-grid:after{
@@ -2980,7 +2980,7 @@ so the field stays visible beside the icon. */
   }
 
   .product-list .item-box{
-    margin-block-end: var(--tm-gutter);
+    margin-block-end: var(--ar-gutter);
   }
 }
 
@@ -2995,7 +2995,7 @@ so the field stays visible beside the icon. */
 @media (max-width: 1000px){
 
   .item-box .details{
-    padding-inline: var(--tm-stack-sm);
+    padding-inline: var(--ar-stack-sm);
   }
 
   /* The cart circle stays pinned to the row's inline end at every price length.
@@ -3024,7 +3024,7 @@ so the field stays visible beside the icon. */
   }
 
   .item-box .prices .old-price{
-    font-size: var(--tm-fs-label-sm);
+    font-size: var(--ar-fs-label-sm);
   }
 }
 
@@ -3041,7 +3041,7 @@ so the field stays visible beside the icon. */
   .variant-overview .add-to-cart-panel{
     display: flex;
     align-items: center;
-    gap: var(--tm-stack-sm);
+    gap: var(--ar-stack-sm);
   }
 
   .overview .add-to-cart-panel > *,
@@ -3103,7 +3103,7 @@ so the field stays visible beside the icon. */
    rather than a blanket rule.
 
    ponytail: order swap, not a filter sheet. Promote it to a sheet of its own
-   (the .tm-sheet popover above is the pattern) when the catalogue grows enough
+   (the .ar-sheet popover above is the pattern) when the catalogue grows enough
    filters that scrolling past the grid to reach them starts to hurt.
    -------------------------------------------------------------------------- */
 @media (max-width: 1000px){
@@ -3115,7 +3115,7 @@ so the field stays visible beside the icon. */
   .master-column-wrapper{
     display: flex;
     flex-direction: column;
-    gap: var(--tm-stack-lg);
+    gap: var(--ar-stack-lg);
   }
 
   .master-column-wrapper:after{
@@ -3213,29 +3213,29 @@ so the field stays visible beside the icon. */
 .offer-content .bestseller-label{
   padding: 5px 12px;
   border-radius: 999px;
-  font-size: var(--tm-fs-label-sm);
+  font-size: var(--ar-fs-label-sm);
   font-weight: 700;
   line-height: 1.6;
   white-space: nowrap;
-  box-shadow: var(--tm-shadow);
+  box-shadow: var(--ar-shadow);
 }
 
 /* Discount is the one that should carry weight — solid deep teal, 5.26:1. */
 .offer-content .discount-info-label{
-  background: var(--tm-teal-deep);
-  color: var(--tm-white);
+  background: var(--ar-teal-deep);
+  color: var(--ar-white);
 }
 
 /* "New" is secondary: it should register without competing with the price. */
 .offer-content .new-product-label{
-  background: var(--tm-white);
-  color: var(--tm-teal-deep);
-  box-shadow: inset 0 0 0 1px var(--tm-teal-border), var(--tm-shadow);
+  background: var(--ar-white);
+  color: var(--ar-teal-deep);
+  box-shadow: inset 0 0 0 1px var(--ar-teal-border), var(--ar-shadow);
 }
 
 .offer-content .bestseller-label{
-  background: var(--tm-warning);
-  color: var(--tm-white);
+  background: var(--ar-warning);
+  color: var(--ar-white);
 }
 
 /* --- Product page: quantity stepper ---------------------------------------
@@ -3249,7 +3249,7 @@ so the field stays visible beside the icon. */
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--tm-stack-sm);
+  gap: var(--ar-stack-sm);
 }
 
 .overview .add-to-cart-panel > *,
@@ -3260,9 +3260,9 @@ so the field stays visible beside the icon. */
 .qty-stepper{
   display: inline-flex;
   align-items: stretch;
-  border: 1px solid var(--tm-teal-border);
-  border-radius: var(--tm-radius);
-  background: var(--tm-surface);
+  border: 1px solid var(--ar-teal-border);
+  border-radius: var(--ar-radius);
+  background: var(--ar-surface);
   overflow: hidden;
 }
 
@@ -3273,7 +3273,7 @@ so the field stays visible beside the icon. */
   border-radius: 0;
   padding: 0;
   background: transparent;
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
@@ -3281,12 +3281,12 @@ so the field stays visible beside the icon. */
 
 .qty-stepper .qty-step:hover,
 .qty-stepper .qty-step:focus-visible{
-  background: var(--tm-teal-tint);
-  color: var(--tm-teal-hover);
+  background: var(--ar-teal-tint);
+  color: var(--ar-teal-hover);
 }
 
 .qty-stepper .qty-step:active{
-  background: var(--tm-teal-tint-strong);
+  background: var(--ar-teal-tint-strong);
 }
 
 .overview .qty-stepper .qty-input,
@@ -3295,33 +3295,33 @@ so the field stays visible beside the icon. */
   block-size: auto;
   min-height: 48px;
   border: 0;
-  border-inline: 1px solid var(--tm-line);
+  border-inline: 1px solid var(--ar-line);
   border-radius: 0;
   padding: 0;
   background: transparent;
   text-align: center;
-  font-size: var(--tm-fs-body);
+  font-size: var(--ar-fs-body);
   font-weight: 600;
-  color: var(--tm-ink);
+  color: var(--ar-ink);
 }
 
 .overview .qty-stepper .qty-input:focus,
 .variant-overview .qty-stepper .qty-input:focus{
   outline: 0;
-  background: var(--tm-teal-tint);
+  background: var(--ar-teal-tint);
 }
 
 /* Focus has to land on the pill, not on a child with clipped corners. */
 .qty-stepper:focus-within{
-  border-color: var(--tm-teal);
-  box-shadow: 0 0 0 3px var(--tm-teal-tint);
+  border-color: var(--ar-teal);
+  box-shadow: 0 0 0 3px var(--ar-teal-tint);
 }
 
 .overview .qty-dropdown,
 .variant-overview .qty-dropdown{
   min-height: 48px;
-  border: 1px solid var(--tm-teal-border);
-  border-radius: var(--tm-radius);
+  border: 1px solid var(--ar-teal-border);
+  border-radius: var(--ar-radius);
   /* styles.css sets `padding: 0 12px` here, which outranks the shared select
      rule and would leave the arrow sitting on top of the number. */
   padding-inline: 14px 34px;
@@ -3332,9 +3332,9 @@ so the field stays visible beside the icon. */
   min-height: 48px;
   height: auto;
   min-inline-size: 220px;
-  border-radius: var(--tm-radius);
+  border-radius: var(--ar-radius);
   padding-inline: 32px;
-  font-size: var(--tm-fs-body);
+  font-size: var(--ar-fs-body);
   text-transform: none;
 }
 
@@ -3357,22 +3357,22 @@ so the field stays visible beside the icon. */
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--tm-stack-sm);
+  gap: var(--ar-stack-sm);
   clear: both;
-  margin-block: var(--tm-stack-md) 0;
+  margin-block: var(--ar-stack-md) 0;
 }
 
 .product-share-label{
-  font-size: var(--tm-fs-label);
-  line-height: var(--tm-lh-label);
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
   font-weight: 600;
-  color: var(--tm-ink-muted);
+  color: var(--ar-ink-muted);
 }
 
 .product-share-networks{
   display: flex;
   align-items: center;
-  gap: var(--tm-stack-sm);
+  gap: var(--ar-stack-sm);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -3386,10 +3386,10 @@ so the field stays visible beside the icon. */
   inline-size: 44px;
   block-size: 44px;
   padding: 0;
-  border: 1px solid var(--tm-teal-border);
+  border: 1px solid var(--ar-teal-border);
   border-radius: 50%;
-  background: var(--tm-surface);
-  color: var(--tm-teal-deep);
+  background: var(--ar-surface);
+  color: var(--ar-teal-deep);
   cursor: pointer;
 }
 
@@ -3397,10 +3397,10 @@ so the field stays visible beside the icon. */
 .product-share-networks a:focus-visible,
 .product-share-networks .share-copy-link:hover,
 .product-share-networks .share-copy-link:focus-visible{
-  background: var(--tm-teal-deep);
-  border-color: var(--tm-teal-deep);
-  color: var(--tm-white);
-  box-shadow: var(--tm-shadow);
+  background: var(--ar-teal-deep);
+  border-color: var(--ar-teal-deep);
+  color: var(--ar-white);
+  box-shadow: var(--ar-shadow);
 }
 
 .product-share-networks svg{
@@ -3411,11 +3411,11 @@ so the field stays visible beside the icon. */
 }
 
 .share-copied-note{
-  font-size: var(--tm-fs-label-sm);
-  line-height: var(--tm-lh-label-sm);
-  color: var(--tm-success);
+  font-size: var(--ar-fs-label-sm);
+  line-height: var(--ar-lh-label-sm);
+  color: var(--ar-success);
   opacity: 0;
-  transition: opacity var(--tm-transition);
+  transition: opacity var(--ar-transition);
 }
 
 .share-copied-note.visible{
@@ -3431,7 +3431,7 @@ so the field stays visible beside the icon. */
    ========================================================================== */
 
 .attributes .attribute-squares li{
-  margin: 0 var(--tm-stack-sm) var(--tm-stack-sm) 0;
+  margin: 0 var(--ar-stack-sm) var(--ar-stack-sm) 0;
   vertical-align: top;
 }
 
@@ -3454,14 +3454,14 @@ so the field stays visible beside the icon. */
   border-radius: 50%;
   background-clip: padding-box;
   box-shadow: inset 0 1px 2px rgba(16, 32, 31, .16);
-  transition: transform var(--tm-transition), box-shadow var(--tm-transition);
+  transition: transform var(--ar-transition), box-shadow var(--ar-transition);
 }
 
 .attributes .attribute-squares li:not(.disabled):hover .attribute-square{
   transform: scale(1.08);
   box-shadow: inset 0 1px 2px rgba(16, 32, 31, .16),
-              0 0 0 2px var(--tm-surface),
-              0 0 0 3px var(--tm-teal-border);
+              0 0 0 2px var(--ar-surface),
+              0 0 0 3px var(--ar-teal-border);
 }
 
 .attributes .attribute-squares .selected-value .attribute-square-container{
@@ -3471,8 +3471,8 @@ so the field stays visible beside the icon. */
 .attributes .attribute-squares .selected-value .attribute-square,
 .attributes .attribute-squares label:has(input:focus-visible) .attribute-square{
   box-shadow: inset 0 1px 2px rgba(16, 32, 31, .16),
-              0 0 0 2px var(--tm-surface),
-              0 0 0 4px var(--tm-teal-deep);
+              0 0 0 2px var(--ar-surface),
+              0 0 0 4px var(--ar-teal-deep);
 }
 
 /* Core hides the radio with display:none, which drops it out of the tab
@@ -3505,7 +3505,7 @@ so the field stays visible beside the icon. */
   inset: 4px;
   border-radius: 50%;
   background: linear-gradient(to top right,
-              transparent calc(50% - 1px), var(--tm-error) 50%, transparent calc(50% + 1px));
+              transparent calc(50% - 1px), var(--ar-error) 50%, transparent calc(50% + 1px));
   pointer-events: none;
 }
 
@@ -3514,7 +3514,7 @@ so the field stays visible beside the icon. */
    Product page
    --------------------------------------------------------------------------
    Paired with Themes/Arabia/Views/Product/ProductTemplate.Simple.cshtml and
-   Views/Shared/_TmProductGallery.cshtml. The base sheet floats a 46%/52% pair
+   Views/Shared/_ArProductGallery.cshtml. The base sheet floats a 46%/52% pair
    under a hairline rule and gives every one of the twenty partials in the
    reading column the same weight; this section replaces the float with a grid,
    groups the column into a buy box with a quiet frame around it, and folds the
@@ -3524,17 +3524,17 @@ so the field stays visible beside the icon. */
    ========================================================================== */
 
 .product-details-page{
-  padding-block-start: var(--tm-stack-md);
+  padding-block-start: var(--ar-stack-md);
 }
 
 /* Two independent columns rather than two floats: the gallery can then stay put
    while the reading column scrolls, and neither has to be cleared. */
 .product-essential{
   display: grid;
-  gap: var(--tm-stack-lg);
+  gap: var(--ar-stack-lg);
   /* This collapses through the form and article to become the space above the
      first panel's rule, so it is one step like every other side of one. */
-  margin-block-end: var(--tm-stack-md);
+  margin-block-end: var(--ar-stack-md);
   border: 0;
   padding: 0;
 }
@@ -3559,7 +3559,7 @@ so the field stays visible beside the icon. */
    Product copy is prose at every width, so it aligns to the reading edge at
    every width -- start, so the one rule serves Arabic and English. */
 .product-essential > .overview,
-.tm-panel-body .full-description{
+.ar-panel-body .full-description{
   text-align: start;
 }
 
@@ -3575,31 +3575,31 @@ so the field stays visible beside the icon. */
      stays where the shopper left it. */
   .product-essential > .gallery{
     position: sticky;
-    inset-block-start: calc(var(--tm-header-h) + var(--tm-stack-md));
+    inset-block-start: calc(var(--ar-header-h) + var(--ar-stack-md));
   }
 }
 
 
 /* --- Gallery --------------------------------------------------------------
    One scroll-snap track at every size: swipe on a phone, arrows on a pointer,
-   tap for the full-screen dialog. See _TmProductGallery.cshtml for why this
+   tap for the full-screen dialog. See _ArProductGallery.cshtml for why this
    replaces the cloud-zoom markup the PictureZoom plugin ships.
    -------------------------------------------------------------------------- */
-.tm-gallery{
+.ar-gallery{
   display: grid;
-  gap: var(--tm-stack-sm);
+  gap: var(--ar-stack-sm);
 }
 
-.tm-gallery-stage{
+.ar-gallery-stage{
   position: relative;
-  border-radius: var(--tm-radius-lg);
-  background: var(--tm-surface-alt);
+  border-radius: var(--ar-radius-lg);
+  background: var(--ar-surface-alt);
   overflow: hidden;
 }
 
 /* Square whatever the pictures are: the buy box beside it never moves when the
    first shot decodes, and a portrait product does not resize the page. */
-.tm-gallery-track{
+.ar-gallery-track{
   display: flex;
   aspect-ratio: 1;
   margin: 0;
@@ -3611,33 +3611,33 @@ so the field stays visible beside the icon. */
   scrollbar-width: none;
 }
 
-.tm-gallery-track::-webkit-scrollbar{
+.ar-gallery-track::-webkit-scrollbar{
   display: none;
 }
 
-.tm-gallery-track:focus-visible{
-  outline: 2px solid var(--tm-teal-deep);
+.ar-gallery-track:focus-visible{
+  outline: 2px solid var(--ar-teal-deep);
   outline-offset: -2px;
 }
 
-.tm-slide{
+.ar-slide{
   box-sizing: border-box;
   flex: 0 0 100%;
   display: grid;
   place-items: center;
   margin: 0;
-  padding: var(--tm-stack-md);
+  padding: var(--ar-stack-md);
   scroll-snap-align: center;
 }
 
-.tm-slide img{
+.ar-slide img{
   max-inline-size: 100%;
   max-block-size: 100%;
   object-fit: contain;
 }
 
-.tm-gallery-open,
-.tm-gallery-arrow{
+.ar-gallery-open,
+.ar-gallery-arrow{
   position: absolute;
   z-index: 2;
   display: inline-flex;
@@ -3647,28 +3647,28 @@ so the field stays visible beside the icon. */
   block-size: 44px;
   min-height: 44px;
   padding: 0;
-  border: 1px solid var(--tm-teal-border);
+  border: 1px solid var(--ar-teal-border);
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.92);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
   cursor: pointer;
-  transition: background var(--tm-transition), color var(--tm-transition), opacity var(--tm-transition);
+  transition: background var(--ar-transition), color var(--ar-transition), opacity var(--ar-transition);
 }
 
-.tm-gallery-open:hover,
-.tm-gallery-open:focus-visible,
-.tm-gallery-arrow:hover,
-.tm-gallery-arrow:focus-visible{
-  background: var(--tm-teal-deep);
-  border-color: var(--tm-teal-deep);
-  color: var(--tm-white);
+.ar-gallery-open:hover,
+.ar-gallery-open:focus-visible,
+.ar-gallery-arrow:hover,
+.ar-gallery-arrow:focus-visible{
+  background: var(--ar-teal-deep);
+  border-color: var(--ar-teal-deep);
+  color: var(--ar-white);
 }
 
-.tm-gallery-open svg,
-.tm-gallery-arrow svg,
-.tm-lightbox-close svg{
+.ar-gallery-open svg,
+.ar-gallery-arrow svg,
+.ar-lightbox-close svg{
   inline-size: 20px;
   block-size: 20px;
   fill: none;
@@ -3678,27 +3678,27 @@ so the field stays visible beside the icon. */
   stroke-linejoin: round;
 }
 
-.tm-gallery-open{
+.ar-gallery-open{
   inset-block-end: 12px;
   inset-inline-end: 12px;
 }
 
-.tm-gallery-arrow{
+.ar-gallery-arrow{
   inset-block-start: 50%;
   translate: 0 -50%;
 }
 
-.tm-gallery-prev{
+.ar-gallery-prev{
   inset-inline-start: 12px;
 }
 
-.tm-gallery-next{
+.ar-gallery-next{
   inset-inline-end: 12px;
 }
 
 /* The chevrons are drawn pointing at a physical side; the buttons swap sides
    with the writing direction, so the glyphs have to swap with them. */
-[dir="rtl"] .tm-gallery-arrow svg{
+[dir="rtl"] .ar-gallery-arrow svg{
   scale: -1 1;
 }
 
@@ -3706,24 +3706,24 @@ so the field stays visible beside the icon. */
    over the picture; on a pointer they appear when the picture is hovered. */
 @media (hover: none){
 
-  .tm-gallery-arrow{
+  .ar-gallery-arrow{
     display: none;
   }
 }
 
 @media (hover: hover){
 
-  .tm-gallery-arrow{
+  .ar-gallery-arrow{
     opacity: 0;
   }
 
-  .tm-gallery-stage:hover .tm-gallery-arrow,
-  .tm-gallery-arrow:focus-visible{
+  .ar-gallery-stage:hover .ar-gallery-arrow,
+  .ar-gallery-arrow:focus-visible{
     opacity: 1;
   }
 }
 
-.tm-gallery-counter{
+.ar-gallery-counter{
   position: absolute;
   inset-block-end: 12px;
   inset-inline-start: 12px;
@@ -3732,15 +3732,15 @@ so the field stays visible beside the icon. */
   padding: 4px 10px;
   border-radius: 999px;
   background: rgba(16, 32, 31, 0.62);
-  color: var(--tm-white);
-  font-size: var(--tm-fs-label-sm);
-  line-height: var(--tm-lh-label-sm);
+  color: var(--ar-white);
+  font-size: var(--ar-fs-label-sm);
+  line-height: var(--ar-lh-label-sm);
   font-variant-numeric: tabular-nums;
 }
 
-.tm-gallery-thumbs{
+.ar-gallery-thumbs{
   display: flex;
-  gap: var(--tm-stack-sm);
+  gap: var(--ar-stack-sm);
   margin: 0;
   /* room for the active ring, which is a box-shadow and would be clipped */
   padding: 2px;
@@ -3751,47 +3751,47 @@ so the field stays visible beside the icon. */
   scrollbar-width: none;
 }
 
-.tm-gallery-thumbs::-webkit-scrollbar{
+.ar-gallery-thumbs::-webkit-scrollbar{
   display: none;
 }
 
-.tm-gallery-thumbs > li{
+.ar-gallery-thumbs > li{
   flex: 0 0 auto;
   margin: 0;
   scroll-snap-align: start;
 }
 
-.tm-thumb{
+.ar-thumb{
   display: block;
   inline-size: 64px;
   block-size: 64px;
   padding: 4px;
-  border: 1px solid var(--tm-line);
-  border-radius: var(--tm-radius-sm);
-  background: var(--tm-surface);
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius-sm);
+  background: var(--ar-surface);
   cursor: pointer;
-  transition: border-color var(--tm-transition), box-shadow var(--tm-transition);
+  transition: border-color var(--ar-transition), box-shadow var(--ar-transition);
 }
 
-.tm-thumb img{
+.ar-thumb img{
   inline-size: 100%;
   block-size: 100%;
   object-fit: contain;
 }
 
-.tm-thumb:hover{
-  border-color: var(--tm-teal-border);
+.ar-thumb:hover{
+  border-color: var(--ar-teal-border);
 }
 
-.tm-thumb.active,
-.tm-thumb:focus-visible{
-  border-color: var(--tm-teal-deep);
-  box-shadow: 0 0 0 1px var(--tm-teal-deep);
+.ar-thumb.active,
+.ar-thumb:focus-visible{
+  border-color: var(--ar-teal-deep);
+  box-shadow: 0 0 0 1px var(--ar-teal-deep);
 }
 
 @media (min-width: 1001px){
 
-  .tm-thumb{
+  .ar-thumb{
     inline-size: 76px;
     block-size: 76px;
   }
@@ -3799,7 +3799,7 @@ so the field stays visible beside the icon. */
 
 /* Full screen. The stage is moved into the dialog by the gallery script, so
    everything above applies here too and only the frame changes. */
-.tm-lightbox{
+.ar-lightbox{
   inline-size: 100%;
   max-inline-size: 100%;
   block-size: 100%;
@@ -3807,42 +3807,42 @@ so the field stays visible beside the icon. */
   margin: 0;
   border: 0;
   padding: 0;
-  background: var(--tm-black);
+  background: var(--ar-black);
 }
 
-.tm-lightbox::backdrop{
+.ar-lightbox::backdrop{
   background: rgba(0, 0, 0, 0.92);
 }
 
-.tm-lightbox .tm-gallery-stage{
+.ar-lightbox .ar-gallery-stage{
   block-size: 100%;
   border-radius: 0;
   background: transparent;
 }
 
-.tm-lightbox .tm-gallery-track{
+.ar-lightbox .ar-gallery-track{
   aspect-ratio: auto;
   block-size: 100%;
 }
 
 /* Clear of the close button at the top and the counter at the foot, and of the
    notch and the home indicator on a phone. */
-.tm-lightbox .tm-slide{
+.ar-lightbox .ar-slide{
   padding-block: calc(env(safe-area-inset-top, 0px) + 64px) calc(env(safe-area-inset-bottom, 0px) + 64px);
 }
 
-.tm-lightbox .tm-gallery-open{
+.ar-lightbox .ar-gallery-open{
   display: none;
 }
 
-.tm-lightbox .tm-gallery-counter{
+.ar-lightbox .ar-gallery-counter{
   inset-block-end: calc(env(safe-area-inset-bottom, 0px) + 16px);
   inset-inline: 0;
   inline-size: fit-content;
   margin-inline: auto;
 }
 
-.tm-lightbox-close{
+.ar-lightbox-close{
   position: absolute;
   z-index: 3;
   inset-block-start: calc(env(safe-area-inset-top, 0px) + 12px);
@@ -3857,12 +3857,12 @@ so the field stays visible beside the icon. */
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.12);
-  color: var(--tm-white);
+  color: var(--ar-white);
   cursor: pointer;
 }
 
-.tm-lightbox-close:hover,
-.tm-lightbox-close:focus-visible{
+.ar-lightbox-close:hover,
+.ar-lightbox-close:focus-visible{
   background: rgba(255, 255, 255, 0.24);
 }
 
@@ -3873,68 +3873,68 @@ so the field stays visible beside the icon. */
    price. One wrapping row instead, with a hairline between the groups.
    -------------------------------------------------------------------------- */
 .overview .product-name{
-  margin: 0 0 var(--tm-stack-sm);
+  margin: 0 0 var(--ar-stack-sm);
   border: 0;
   padding: 0;
 }
 
 .overview .product-name h1{
-  font-size: var(--tm-fs-headline-sm);
-  line-height: var(--tm-lh-headline-sm);
+  font-size: var(--ar-fs-headline-sm);
+  line-height: var(--ar-lh-headline-sm);
   font-weight: 700;
-  color: var(--tm-ink);
+  color: var(--ar-ink);
 }
 
 @media (min-width: 1001px){
 
   .overview .product-name h1{
-    font-size: var(--tm-fs-headline);
-    line-height: var(--tm-lh-headline);
+    font-size: var(--ar-fs-headline);
+    line-height: var(--ar-lh-headline);
   }
 }
 
-.tm-identity{
+.ar-identity{
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--tm-stack-sm) var(--tm-stack-md);
-  margin-block-end: var(--tm-stack-md);
-  font-size: var(--tm-fs-label);
-  line-height: var(--tm-lh-label);
-  color: var(--tm-ink-muted);
+  gap: var(--ar-stack-sm) var(--ar-stack-md);
+  margin-block-end: var(--ar-stack-md);
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
+  color: var(--ar-ink-muted);
 }
 
-.tm-identity > *{
+.ar-identity > *{
   margin: 0;
 }
 
-.tm-identity > * + *{
-  padding-inline-start: var(--tm-stack-md);
-  border-inline-start: 1px solid var(--tm-line);
+.ar-identity > * + *{
+  padding-inline-start: var(--ar-stack-md);
+  border-inline-start: 1px solid var(--ar-line);
 }
 
-.tm-identity .additional-details{
+.ar-identity .additional-details{
   display: flex;
   flex-wrap: wrap;
-  gap: 2px var(--tm-stack-md);
+  gap: 2px var(--ar-stack-md);
 }
 
-.tm-identity .additional-details div{
+.ar-identity .additional-details div{
   margin: 0;
 }
 
-.tm-identity .label{
+.ar-identity .label{
   font-weight: 400;
-  color: var(--tm-ink-muted);
+  color: var(--ar-ink-muted);
 }
 
-.tm-identity .value,
-.tm-identity .value a{
-  color: var(--tm-ink);
+.ar-identity .value,
+.ar-identity .value a{
+  color: var(--ar-ink);
 }
 
-.tm-identity .value a:hover{
-  color: var(--tm-teal-deep);
+.ar-identity .value a:hover{
+  color: var(--ar-teal-deep);
 }
 
 /* The rating sprite is DefaultClean's grey-and-gold pair. Two inline stars in
@@ -3953,15 +3953,15 @@ so the field stays visible beside the icon. */
   background-size: 20px 20px;
 }
 
-.tm-identity .product-reviews-overview{
+.ar-identity .product-reviews-overview{
   display: flex;
   align-items: center;
-  gap: var(--tm-stack-sm);
+  gap: var(--ar-stack-sm);
   margin: 0;
 }
 
-.tm-identity .product-review-links a{
-  color: var(--tm-teal-deep);
+.ar-identity .product-review-links a{
+  color: var(--ar-teal-deep);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -3972,69 +3972,69 @@ so the field stays visible beside the icon. */
    name straight to the thing it has to decide about. Everything reassuring —
    SKU above it, delivery and share below — stays at label size outside it.
    -------------------------------------------------------------------------- */
-.tm-buybox{
-  margin-block-end: var(--tm-stack-md);
-  border: 1px solid var(--tm-line);
-  border-radius: var(--tm-radius-lg);
-  padding: var(--tm-stack-md);
-  background: var(--tm-surface);
+.ar-buybox{
+  margin-block-end: var(--ar-stack-md);
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius-lg);
+  padding: var(--ar-stack-md);
+  background: var(--ar-surface);
 }
 
 @media (min-width: 1001px){
 
-  .tm-buybox{
-    padding: var(--tm-gutter);
+  .ar-buybox{
+    padding: var(--ar-gutter);
   }
 }
 
 /* One baseline-aligned row. The partial prints the struck price before the one
    that is actually charged, so the order is set here rather than in a fork. */
-.tm-buybox .prices{
+.ar-buybox .prices{
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px var(--tm-stack-sm);
+  gap: 4px var(--ar-stack-sm);
   margin: 0;
   overflow: visible;
 }
 
-.tm-buybox .prices > div{
+.ar-buybox .prices > div{
   margin: 0;
 }
 
-.tm-buybox .product-price,
-.tm-buybox .rental-price{
+.ar-buybox .product-price,
+.ar-buybox .rental-price{
   order: 1;
 }
 
-.tm-buybox .old-product-price,
-.tm-buybox .non-discounted-price{
+.ar-buybox .old-product-price,
+.ar-buybox .non-discounted-price{
   order: 2;
-  color: var(--tm-ink-muted);
+  color: var(--ar-ink-muted);
   text-decoration: line-through;
 }
 
-.tm-buybox .product-price span,
-.tm-buybox .product-price > span{
-  font-size: var(--tm-fs-headline-sm);
-  line-height: var(--tm-lh-headline-sm);
+.ar-buybox .product-price span,
+.ar-buybox .product-price > span{
+  font-size: var(--ar-fs-headline-sm);
+  line-height: var(--ar-lh-headline-sm);
   font-weight: 700;
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
 }
 
-.tm-buybox .old-product-price span,
-.tm-buybox .non-discounted-price span{
-  font-size: var(--tm-fs-body);
-  line-height: var(--tm-lh-body);
+.ar-buybox .old-product-price span,
+.ar-buybox .non-discounted-price span{
+  font-size: var(--ar-fs-body);
+  line-height: var(--ar-lh-body);
   font-weight: 500;
   color: inherit;
 }
 
 /* "Price:", "Old price:" and "With discount:" label three numbers the layout
    has already told apart. Removed from view, kept for the screen reader. */
-.tm-buybox .old-product-price > span:first-child,
-.tm-buybox .discounted-price > span:first-child,
-.tm-buybox .prices > div > label{
+.ar-buybox .old-product-price > span:first-child,
+.ar-buybox .discounted-price > span:first-child,
+.ar-buybox .prices > div > label{
   position: absolute;
   clip-path: inset(50%);
   inline-size: 1px;
@@ -4044,64 +4044,64 @@ so the field stays visible beside the icon. */
 }
 
 /* Per-unit price and the tax note are footnotes to the row above. */
-.tm-buybox .base-price-pangv,
-.tm-buybox .tax-shipping-info{
+.ar-buybox .base-price-pangv,
+.ar-buybox .tax-shipping-info{
   flex: 1 0 100%;
   order: 3;
   margin: 0;
-  font-size: var(--tm-fs-label-sm);
-  line-height: var(--tm-lh-label-sm);
-  color: var(--tm-ink-muted);
+  font-size: var(--ar-fs-label-sm);
+  line-height: var(--ar-lh-label-sm);
+  color: var(--ar-ink-muted);
 }
 
-.tm-buybox .tier-prices{
-  margin-block-start: var(--tm-stack-md);
+.ar-buybox .tier-prices{
+  margin-block-start: var(--ar-stack-md);
 }
 
-.tm-buybox .short-description{
-  margin-block: var(--tm-stack-md) 0;
-  font-size: var(--tm-fs-body);
-  line-height: var(--tm-lh-body);
-  color: var(--tm-ink-muted);
+.ar-buybox .short-description{
+  margin-block: var(--ar-stack-md) 0;
+  font-size: var(--ar-fs-body);
+  line-height: var(--ar-lh-body);
+  color: var(--ar-ink-muted);
 }
 
-.tm-buybox .availability{
-  margin-block: var(--tm-stack-md) 0;
+.ar-buybox .availability{
+  margin-block: var(--ar-stack-md) 0;
   overflow: visible;
 }
 
-.tm-buybox .availability .stock{
+.ar-buybox .availability .stock{
   margin: 0;
-  font-size: var(--tm-fs-label);
-  line-height: var(--tm-lh-label);
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
 }
 
-.tm-buybox .availability .stock .value{
+.ar-buybox .availability .stock .value{
   font-weight: 600;
-  color: var(--tm-ink);
+  color: var(--ar-ink);
 }
 
-.tm-buybox .attributes,
-.tm-buybox .rental-attributes{
-  margin-block: var(--tm-stack-md) 0;
+.ar-buybox .attributes,
+.ar-buybox .rental-attributes{
+  margin-block: var(--ar-stack-md) 0;
 }
 
-.tm-buybox .add-to-cart{
-  margin-block-start: var(--tm-stack-md);
+.ar-buybox .add-to-cart{
+  margin-block-start: var(--ar-stack-md);
 }
 
-.tm-buybox .add-to-cart-panel{
+.ar-buybox .add-to-cart-panel{
   margin: 0;
 }
 
 /* The label sits above the stepper, not in the row with it — on a 360px screen
    "Qty:" plus the pill plus the button never fitted on one line. */
-.tm-buybox .qty-label{
+.ar-buybox .qty-label{
   flex: 1 0 100%;
   margin: 0;
-  font-size: var(--tm-fs-label-sm);
-  line-height: var(--tm-lh-label-sm);
-  color: var(--tm-ink-muted);
+  font-size: var(--ar-fs-label-sm);
+  line-height: var(--ar-lh-label-sm);
+  color: var(--ar-ink-muted);
 }
 
 
@@ -4109,77 +4109,77 @@ so the field stays visible beside the icon. */
    Free shipping and the delivery date, below the button where they answer
    "when does it get here" instead of competing with the price.
    -------------------------------------------------------------------------- */
-.tm-assurances{
+.ar-assurances{
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--tm-stack-sm);
-  margin-block-end: var(--tm-stack-md);
+  gap: var(--ar-stack-sm);
+  margin-block-end: var(--ar-stack-md);
 }
 
-.tm-assurances:empty,
-.tm-assurances > :empty{
+.ar-assurances:empty,
+.ar-assurances > :empty{
   display: none;
 }
 
 /* The base sheet hangs 20px off the estimate-shipping block, which is invisible
    inside a centred flex line but still taller than the line — it turned the
    16px above the rule below into 36. */
-.tm-assurances > *{
+.ar-assurances > *{
   margin: 0;
 }
 
-.tm-assurances .delivery{
+.ar-assurances .delivery{
   display: flex;
   flex-wrap: wrap;
-  gap: var(--tm-stack-sm);
+  gap: var(--ar-stack-sm);
   overflow: visible;
 }
 
-.overview .tm-assurances .free-shipping,
-.tm-assurances .delivery-date{
+.overview .ar-assurances .free-shipping,
+.ar-assurances .delivery-date{
   display: inline-flex;
   align-items: center;
   margin: 0;
   border-radius: 999px;
   padding: 6px 14px;
-  background: var(--tm-teal-tint);
-  font-size: var(--tm-fs-label);
-  line-height: var(--tm-lh-label);
+  background: var(--ar-teal-tint);
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
   font-weight: 600;
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
 }
 
 /* The base sheet paints a shipping glyph into the background of this one. */
-.overview .tm-assurances .free-shipping{
+.overview .ar-assurances .free-shipping{
   background-image: none;
   padding-inline-start: 14px;
 }
 
-.tm-assurances .delivery-date .label{
+.ar-assurances .delivery-date .label{
   font-weight: 400;
   margin-inline-end: 4px;
 }
 
 
 /* --- Compare and share ---------------------------------------------------- */
-.tm-overview-foot{
+.ar-overview-foot{
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   /*ponytail: overview-buttons is empty now that compare and email-a-friend are gone,
     so space-between parked the share row against the far edge*/
   justify-content: flex-start;
-  gap: var(--tm-stack-md);
-  border-block-start: 1px solid var(--tm-line);
-  padding-block-start: var(--tm-stack-md);
+  gap: var(--ar-stack-md);
+  border-block-start: 1px solid var(--ar-line);
+  padding-block-start: var(--ar-stack-md);
 }
 
-.tm-overview-foot .overview-buttons{
+.ar-overview-foot .overview-buttons{
   margin: 0;
 }
 
-.tm-overview-foot .product-share{
+.ar-overview-foot .product-share{
   margin: 0;
 }
 
@@ -4193,64 +4193,64 @@ so the field stays visible beside the icon. */
    other, which is what made two colours of the same cup read as one block
    printed twice.
    -------------------------------------------------------------------------- */
-.tm-variants{
-  margin-block-end: var(--tm-stack-lg);
+.ar-variants{
+  margin-block-end: var(--ar-stack-lg);
 }
 
-.tm-variants .product-variant-list{
+.ar-variants .product-variant-list{
   display: grid;
-  gap: var(--tm-stack-md);
+  gap: var(--ar-stack-md);
 }
 
 /* The card is the frame, so the buy box inside it drops its own. */
-.tm-variants .product-variant-line{
+.ar-variants .product-variant-line{
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr);
   align-items: start;
-  gap: var(--tm-stack-md);
+  gap: var(--ar-stack-md);
   margin: 0;
-  border: 1px solid var(--tm-line);
-  border-radius: var(--tm-radius-lg);
-  padding: var(--tm-stack-md);
-  background: var(--tm-surface);
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius-lg);
+  padding: var(--ar-stack-md);
+  background: var(--ar-surface);
 }
 
-.tm-variants .product-variant-line:after{
+.ar-variants .product-variant-line:after{
   content: none;
 }
 
-.tm-variants .variant-picture{
+.ar-variants .variant-picture{
   inline-size: 96px;
   block-size: 96px;
   margin: 0;
-  border-radius: var(--tm-radius);
+  border-radius: var(--ar-radius);
   overflow: hidden;
 }
 
-.tm-variants .variant-overview{
+.ar-variants .variant-overview{
   inline-size: auto;
   margin: 0;
   min-inline-size: 0;
 }
 
-.tm-variants .variant-name{
-  margin: 0 0 var(--tm-stack-sm);
+.ar-variants .variant-name{
+  margin: 0 0 var(--ar-stack-sm);
   padding: 0;
-  font-size: var(--tm-fs-title);
-  line-height: var(--tm-lh-title);
+  font-size: var(--ar-fs-title);
+  line-height: var(--ar-lh-title);
   font-weight: 700;
-  color: var(--tm-ink);
+  color: var(--ar-ink);
 }
 
-.tm-variants .tm-buybox{
+.ar-variants .ar-buybox{
   border: 0;
   border-radius: 0;
   padding: 0;
   background: transparent;
 }
 
-.tm-variants .tm-assurances{
-  margin-block-start: var(--tm-stack-md);
+.ar-variants .ar-assurances{
+  margin-block-start: var(--ar-stack-md);
 }
 
 
@@ -4264,41 +4264,41 @@ so the field stays visible beside the icon. */
    below. That step is the summary's own padding, so a closed panel and the
    band around the whole stack agree. The tail keeps the larger step — nothing
    is ruled off below it. */
-.tm-panels{
-  margin-block-end: var(--tm-stack-lg);
+.ar-panels{
+  margin-block-end: var(--ar-stack-lg);
 }
 
-.tm-panel{
-  border-block-end: 1px solid var(--tm-line);
+.ar-panel{
+  border-block-end: 1px solid var(--ar-line);
 }
 
-.tm-panel:first-of-type{
-  border-block-start: 1px solid var(--tm-line);
+.ar-panel:first-of-type{
+  border-block-start: 1px solid var(--ar-line);
 }
 
-.tm-panel > summary{
+.ar-panel > summary{
   display: flex;
   align-items: center;
-  gap: var(--tm-stack-sm);
-  padding-block: var(--tm-stack-md);
-  font-size: var(--tm-fs-title);
-  line-height: var(--tm-lh-title);
+  gap: var(--ar-stack-sm);
+  padding-block: var(--ar-stack-md);
+  font-size: var(--ar-fs-title);
+  line-height: var(--ar-lh-title);
   font-weight: 700;
-  color: var(--tm-ink);
+  color: var(--ar-ink);
   cursor: pointer;
   list-style: none;
 }
 
-.tm-panel > summary::-webkit-details-marker{
+.ar-panel > summary::-webkit-details-marker{
   display: none;
 }
 
-.tm-panel > summary:hover{
-  color: var(--tm-teal-deep);
+.ar-panel > summary:hover{
+  color: var(--ar-teal-deep);
 }
 
-.tm-panel > summary:focus-visible{
-  outline: 2px solid var(--tm-teal-deep);
+.ar-panel > summary:focus-visible{
+  outline: 2px solid var(--ar-teal-deep);
   outline-offset: 2px;
 }
 
@@ -4306,45 +4306,45 @@ so the field stays visible beside the icon. */
    and there is no second asset to load. Physical borders on purpose — a
    chevron pointing down points down in both writing directions, and the
    logical pair would have mirrored it into an arrow pointing sideways. */
-.tm-panel > summary::after{
+.ar-panel > summary::after{
   content: "";
   margin-inline-start: auto;
   inline-size: 10px;
   block-size: 10px;
-  border-right: 2px solid var(--tm-teal-deep);
-  border-bottom: 2px solid var(--tm-teal-deep);
+  border-right: 2px solid var(--ar-teal-deep);
+  border-bottom: 2px solid var(--ar-teal-deep);
   rotate: 45deg;
   translate: 0 -3px;
-  transition: rotate var(--tm-transition), translate var(--tm-transition);
+  transition: rotate var(--ar-transition), translate var(--ar-transition);
 }
 
-.tm-panel[open] > summary::after{
+.ar-panel[open] > summary::after{
   rotate: -135deg;
   translate: 0 3px;
 }
 
-.tm-panel-count{
+.ar-panel-count{
   border-radius: 999px;
   padding: 2px 10px;
-  background: var(--tm-teal-tint);
-  font-size: var(--tm-fs-label-sm);
-  line-height: var(--tm-lh-label-sm);
+  background: var(--ar-teal-tint);
+  font-size: var(--ar-fs-label-sm);
+  line-height: var(--ar-lh-label-sm);
   font-weight: 700;
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
 }
 
-.tm-panel-body{
-  padding-block-end: var(--tm-stack-md);
+.ar-panel-body{
+  padding-block-end: var(--ar-stack-md);
 }
 
-.tm-panel-body > * > :last-child{
+.ar-panel-body > * > :last-child{
   margin-block-end: 0;
 }
 
 /* Each partial prints a heading of its own; inside a panel the summary is that
    heading, so the inner one only repeats it. */
-.tm-panel-body > .product-specs-box > .title,
-.tm-panel-body .product-reviews > .product-review-list > .title{
+.ar-panel-body > .product-specs-box > .title,
+.ar-panel-body .product-reviews > .product-review-list > .title{
   position: absolute;
   clip-path: inset(50%);
   inline-size: 1px;
@@ -4353,50 +4353,50 @@ so the field stays visible beside the icon. */
   white-space: nowrap;
 }
 
-.tm-panel-body .product-specs-box,
-.tm-panel-body .product-reviews{
+.ar-panel-body .product-specs-box,
+.ar-panel-body .product-reviews{
   margin: 0;
   padding: 0;
 }
 
-.tm-panel-body .product-reviews .title{
-  font-size: var(--tm-fs-body-lg);
-  line-height: var(--tm-lh-body-lg);
+.ar-panel-body .product-reviews .title{
+  font-size: var(--ar-fs-body-lg);
+  line-height: var(--ar-lh-body-lg);
   font-weight: 700;
-  color: var(--tm-ink);
+  color: var(--ar-ink);
 }
 
 /* A specification table is the one thing on this page that can be wider than
    the screen; it scrolls in its own box rather than taking the page with it. */
-.tm-panel-body .table-wrapper{
+.ar-panel-body .table-wrapper{
   overflow-x: auto;
   overscroll-behavior-x: contain;
 }
 
 /* Prose the full width of a 1440px page is ~150 characters a line and nobody
    finishes it. The table below wants every pixel, so only this is capped. */
-.tm-panel-body .full-description{
+.ar-panel-body .full-description{
   max-inline-size: 72ch;
-  font-size: var(--tm-fs-body);
-  line-height: var(--tm-lh-body-lg);
-  color: var(--tm-ink);
+  font-size: var(--ar-fs-body);
+  line-height: var(--ar-lh-body-lg);
+  color: var(--ar-ink);
 }
 
-.tm-panel-body .full-description img{
+.ar-panel-body .full-description img{
   max-inline-size: 100%;
   block-size: auto;
 }
 
 /* The base sheet boxes every cell in 1px of #ddd, which reads as a debug grid.
    Rows separated instead, the name column carrying the quiet colour. */
-.tm-panel-body .product-specs-box .data-table{
+.ar-panel-body .product-specs-box .data-table{
   inline-size: 100%;
   border-collapse: collapse;
 }
 
-.tm-panel-body .product-specs-box td{
+.ar-panel-body .product-specs-box td{
   border: 0;
-  border-block-end: 1px solid var(--tm-line);
+  border-block-end: 1px solid var(--ar-line);
   padding: 12px 0;
   text-align: start;
   vertical-align: top;
@@ -4404,44 +4404,44 @@ so the field stays visible beside the icon. */
 
 /* The header row is hidden but keeps its cells, and with them the base sheet's
    1px rule, which drew a stray line under the summary. */
-.tm-panel-body .product-specs-box thead th{
+.ar-panel-body .product-specs-box thead th{
   border: 0;
   padding: 0;
 }
 
-.tm-panel-body .product-specs-box td.spec-name{
+.ar-panel-body .product-specs-box td.spec-name{
   inline-size: 30%;
-  padding-inline-end: var(--tm-stack-md);
-  color: var(--tm-ink-muted);
+  padding-inline-end: var(--ar-stack-md);
+  color: var(--ar-ink-muted);
 }
 
-.tm-panel-body .product-specs-box td.spec-value{
-  color: var(--tm-ink);
+.ar-panel-body .product-specs-box td.spec-value{
+  color: var(--ar-ink);
 }
 
-.tm-panel-body .product-specs-box td.spec-group-name{
+.ar-panel-body .product-specs-box td.spec-group-name{
   border-block-end: 0;
-  padding-block: var(--tm-stack-md) 4px;
-  font-size: var(--tm-fs-label);
-  line-height: var(--tm-lh-label);
+  padding-block: var(--ar-stack-md) 4px;
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
   font-weight: 700;
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 /* Tags close the panel stack, so they sit under the last panel's rule and owe
    it the same step every summary gives it. */
-.tm-panels > .product-tags-box{
+.ar-panels > .product-tags-box{
   margin: 0;
-  padding-block-start: var(--tm-stack-md);
+  padding-block-start: var(--ar-stack-md);
 }
 
 /* Tags read as chips, not as a comma-separated sentence. */
 .product-tags-box .product-tags-list ul{
   display: flex;
   flex-wrap: wrap;
-  gap: var(--tm-stack-sm);
+  gap: var(--ar-stack-sm);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -4457,17 +4457,17 @@ so the field stays visible beside the icon. */
 
 .product-tags-box .product-tags-list .producttag{
   display: inline-block;
-  border: 1px solid var(--tm-teal-border);
+  border: 1px solid var(--ar-teal-border);
   border-radius: 999px;
   padding: 6px 14px;
-  background: var(--tm-surface);
-  font-size: var(--tm-fs-label);
-  line-height: var(--tm-lh-label);
-  color: var(--tm-teal-deep);
+  background: var(--ar-surface);
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
+  color: var(--ar-teal-deep);
 }
 
 .product-tags-box .product-tags-list .producttag:hover{
-  background: var(--tm-teal-tint);
+  background: var(--ar-teal-tint);
 }
 
 
@@ -4475,8 +4475,8 @@ so the field stays visible beside the icon. */
    The home page drops the rule entirely; where it survives — product details,
    the cart — it gets the same step on both sides as the panels above it. */
 .product-grid .title{
-  margin-block-end: var(--tm-stack-md);
-  padding-block-end: var(--tm-stack-md);
+  margin-block-end: var(--ar-stack-md);
+  padding-block-end: var(--ar-stack-md);
 }
 
 
@@ -4489,78 +4489,78 @@ so the field stays visible beside the icon. */
    categories are one scroll away; the thing in reach is the one the shopper
    came for.
    -------------------------------------------------------------------------- */
-.tm-buybar{
+.ar-buybar{
   display: none;
 }
 
 @media (max-width: 1000px){
 
-  .tm-buybar{
+  .ar-buybar{
     position: fixed;
     inset-inline: 0;
     inset-block-end: 0;
     z-index: 1001;
     display: flex;
     align-items: center;
-    gap: var(--tm-stack-md);
-    padding-inline: var(--tm-margin-mobile);
+    gap: var(--ar-stack-md);
+    padding-inline: var(--ar-margin-mobile);
     padding-block: 10px;
     padding-block-end: max(env(safe-area-inset-bottom, 0px), 10px);
-    border-block-start: 1px solid var(--tm-line);
-    border-start-start-radius: var(--tm-radius-lg);
-    border-start-end-radius: var(--tm-radius-lg);
+    border-block-start: 1px solid var(--ar-line);
+    border-start-start-radius: var(--ar-radius-lg);
+    border-start-end-radius: var(--ar-radius-lg);
     background: rgba(255, 255, 255, 0.94);
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
     box-shadow: 0 -4px 20px rgba(2, 120, 126, 0.10);
-    animation: tm-buybar-in 0.18s ease;
+    animation: ar-buybar-in 0.18s ease;
   }
 
   /* [hidden] is a UA display:none, which the rule above would outrank. */
-  .tm-buybar[hidden]{
+  .ar-buybar[hidden]{
     display: none;
   }
 
-  .tm-buybar-price{
+  .ar-buybar-price{
     flex: 0 1 auto;
     min-inline-size: 0;
-    font-size: var(--tm-fs-body-lg);
-    line-height: var(--tm-lh-body-lg);
+    font-size: var(--ar-fs-body-lg);
+    line-height: var(--ar-lh-body-lg);
     font-weight: 700;
-    color: var(--tm-teal-deep);
+    color: var(--ar-teal-deep);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .tm-buybar-cta{
+  .ar-buybar-cta{
     flex: 1 1 auto;
     min-inline-size: 0;
     min-height: 48px;
     height: auto;
-    border-radius: var(--tm-radius);
+    border-radius: var(--ar-radius);
     padding-inline: 16px;
-    font-size: var(--tm-fs-body);
+    font-size: var(--ar-fs-body);
     text-transform: none;
   }
 
   .mobile-tab-bar{
-    transition: transform var(--tm-transition);
+    transition: transform var(--ar-transition);
   }
 
-  body.tm-buybar-on .mobile-tab-bar{
+  body.ar-buybar-on .mobile-tab-bar{
     transform: translateY(100%);
   }
 }
 
-@keyframes tm-buybar-in{
+@keyframes ar-buybar-in{
   from{ transform: translateY(100%); }
   to{ transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce){
 
-  .tm-buybar{
+  .ar-buybar{
     animation: none;
   }
 }
@@ -4594,15 +4594,15 @@ so the field stays visible beside the icon. */
       "pic price price"
       "qty qty   total";
     align-items: center;
-    column-gap: var(--tm-stack-md);
+    column-gap: var(--ar-stack-md);
     row-gap: 2px;
     float: none;
     inline-size: auto;
-    margin: 0 0 var(--tm-stack-md);
-    border: 1px solid var(--tm-line);
-    border-radius: var(--tm-radius);
-    background: var(--tm-surface);
-    padding: var(--tm-stack-sm);
+    margin: 0 0 var(--ar-stack-md);
+    border: 1px solid var(--ar-line);
+    border-radius: var(--ar-radius);
+    background: var(--ar-surface);
+    padding: var(--ar-stack-sm);
   }
 
   .cart td{
@@ -4621,8 +4621,8 @@ so the field stays visible beside the icon. */
   .cart td.product-picture img{
     inline-size: 88px;
     block-size: 88px;
-    border-radius: var(--tm-radius-sm);
-    background: var(--tm-teal-tint);
+    border-radius: var(--ar-radius-sm);
+    background: var(--ar-teal-tint);
     object-fit: cover;
   }
 
@@ -4651,8 +4651,8 @@ so the field stays visible beside the icon. */
 
   .cart td.remove-from-cart{
     position: absolute;
-    inset-block-start: var(--tm-stack-sm);
-    inset-inline-end: var(--tm-stack-sm);
+    inset-block-start: var(--ar-stack-sm);
+    inset-inline-end: var(--ar-stack-sm);
     margin: 0;
     border: 0;
     background: none;
@@ -4662,21 +4662,21 @@ so the field stays visible beside the icon. */
   /* The row above sets the type hierarchy: the name leads, the SKU is a
      footnote, the unit price sits between them and the line total closes. */
   .cart .product a.product-name{
-    font-size: var(--tm-fs-body);
+    font-size: var(--ar-fs-body);
     font-weight: 600;
-    line-height: var(--tm-lh-body);
-    color: var(--tm-ink);
+    line-height: var(--ar-lh-body);
+    color: var(--ar-ink);
   }
 
   .cart td.sku,
   .cart td.unit-price{
-    font-size: var(--tm-fs-label);
-    color: var(--tm-ink-muted);
+    font-size: var(--ar-fs-label);
+    color: var(--ar-ink-muted);
   }
 
   .cart .td-title{
-    font-size: var(--tm-fs-label-sm);
-    color: var(--tm-ink-muted);
+    font-size: var(--ar-fs-label-sm);
+    color: var(--ar-ink-muted);
   }
 
   /* The stepper is the label. */
@@ -4690,9 +4690,9 @@ so the field stays visible beside the icon. */
   }
 
   .cart td.subtotal .product-subtotal{
-    font-size: var(--tm-fs-body-lg);
+    font-size: var(--ar-fs-body-lg);
     font-weight: 700;
-    color: var(--tm-teal-deep);
+    color: var(--ar-teal-deep);
   }
 }
 
@@ -4710,9 +4710,9 @@ so the field stays visible beside the icon. */
 .cart .product-quantity{
   display: inline-flex;
   align-items: stretch;
-  border: 1px solid var(--tm-teal-border);
-  border-radius: var(--tm-radius);
-  background: var(--tm-surface);
+  border: 1px solid var(--ar-teal-border);
+  border-radius: var(--ar-radius);
+  background: var(--ar-surface);
   overflow: hidden;
 }
 
@@ -4727,7 +4727,7 @@ so the field stays visible beside the icon. */
   min-block-size: 44px;
   border: 0;
   background: none;
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
   font-size: 20px;
   line-height: 1;
   user-select: none;
@@ -4744,7 +4744,7 @@ so the field stays visible beside the icon. */
 
 .cart .product-quantity div.up:hover,
 .cart .product-quantity div.down:hover{
-  background: var(--tm-teal-tint);
+  background: var(--ar-teal-tint);
 }
 
 .cart td.quantity input,
@@ -4752,19 +4752,19 @@ so the field stays visible beside the icon. */
   inline-size: 52px;
   min-block-size: 44px;
   border: 0;
-  border-inline: 1px solid var(--tm-line);
+  border-inline: 1px solid var(--ar-line);
   border-radius: 0;
   padding: 0;
   background: transparent;
   text-align: center;
-  font-size: var(--tm-fs-body);
+  font-size: var(--ar-fs-body);
   font-weight: 600;
-  color: var(--tm-ink);
+  color: var(--ar-ink);
 }
 
 .cart .product-quantity:focus-within{
-  border-color: var(--tm-teal);
-  box-shadow: 0 0 0 3px var(--tm-teal-tint);
+  border-color: var(--ar-teal);
+  box-shadow: 0 0 0 3px var(--ar-teal-tint);
 }
 
 /* An 11px PNG is not a target. Same x the sheet and the gallery already use,
@@ -4776,7 +4776,7 @@ so the field stays visible beside the icon. */
   border-radius: 50%;
   background: none;
   padding: 0;
-  color: var(--tm-ink-muted);
+  color: var(--ar-ink-muted);
   font-size: 0;
   cursor: pointer;
 }
@@ -4789,8 +4789,8 @@ so the field stays visible beside the icon. */
 
 .cart .remove-from-cart .remove-btn:hover,
 .cart .remove-from-cart .remove-btn:focus-visible{
-  background: var(--tm-teal-tint);
-  color: var(--tm-error);
+  background: var(--ar-teal-tint);
+  color: var(--ar-error);
 }
 
 /* --- Coupon and gift-card boxes -------------------------------------------
@@ -4798,7 +4798,7 @@ so the field stays visible beside the icon. */
    one with the button's: on a phone they read as a broken control. */
 .cart-collaterals .coupon-code{
   display: flex;
-  gap: var(--tm-stack-sm);
+  gap: var(--ar-stack-sm);
   overflow: visible;
 }
 
@@ -4818,7 +4818,7 @@ so the field stays visible beside the icon. */
 
 .cart-collaterals .coupon-code button[type="submit"]{
   flex: 0 0 auto;
-  border-radius: var(--tm-radius);
+  border-radius: var(--ar-radius);
   padding-inline: 16px;
 }
 
@@ -4864,11 +4864,11 @@ so the field stays visible beside the icon. */
   .shopping-cart-page .common-buttons{
     display: flex;
     flex-direction: column;
-    gap: var(--tm-stack-sm);
-    margin-block-end: var(--tm-stack-lg);
-    border-radius: var(--tm-radius);
-    background: var(--tm-surface-alt);
-    padding: var(--tm-stack-md);
+    gap: var(--ar-stack-sm);
+    margin-block-end: var(--ar-stack-lg);
+    border-radius: var(--ar-radius);
+    background: var(--ar-surface-alt);
+    padding: var(--ar-stack-md);
   }
 
   .shopping-cart-page .common-buttons button,
@@ -4911,8 +4911,8 @@ so the field stays visible beside the icon. */
    the category tiles and product cards around them. */
 .manufacturer-grid .picture,
 .vendor-grid .picture{
-  border-color: var(--tm-line);
-  border-radius: var(--tm-radius);
+  border-color: var(--ar-line);
+  border-radius: var(--ar-radius);
   overflow: hidden;
 }
 
@@ -4940,8 +4940,8 @@ so the field stays visible beside the icon. */
   position: static;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--tm-stack-sm);
-  margin-block-start: var(--tm-stack-md);
+  gap: var(--ar-stack-sm);
+  margin-block-start: var(--ar-stack-md);
 }
 
 .address-list-page .buttons .button-2,
@@ -4955,20 +4955,20 @@ so the field stays visible beside the icon. */
   min-height: 44px;
   min-width: 0;
   margin: 0;
-  border: 1px solid var(--tm-teal-border);
-  border-radius: var(--tm-radius);
+  border: 1px solid var(--ar-teal-border);
+  border-radius: var(--ar-radius);
   /* `background`, not `background-color`: the base sheet paints edit.png /
      remove.png / return.png behind these labels and keeps a mirrored copy of
      every one of those rules in styles.rtl.css. The label already says which
      action it is, in whichever direction the page runs.
      ponytail: text only. Add icons back as a mask-image ::before if the rows
      ever need scanning at a glance. */
-  background: var(--tm-white);
+  background: var(--ar-white);
   padding-block: 10px;
   padding-inline: 20px;
-  font-size: var(--tm-fs-label);
+  font-size: var(--ar-fs-label);
   font-weight: 600;
-  color: var(--tm-teal-deep);
+  color: var(--ar-teal-deep);
   text-transform: uppercase;
   text-align: center;
 }
@@ -4978,9 +4978,9 @@ so the field stays visible beside the icon. */
 .return-request-list-page .buttons .button-2:hover,
 .order-details-page .actions button.button-2:hover,
 .order-details-page .page-title a.button-2:hover{
-  background: var(--tm-teal-tint);
-  border-color: var(--tm-teal);
-  color: var(--tm-teal-hover);
+  background: var(--ar-teal-tint);
+  border-color: var(--ar-teal);
+  color: var(--ar-teal-hover);
 }
 
 /* The one action that should carry weight on the page keeps the solid fill:
@@ -4989,16 +4989,16 @@ so the field stays visible beside the icon. */
    "return items" on any order where reordering is not allowed. */
 .order-details-page .actions button.button-1,
 .order-details-page .page-title a.button-2.print-order-button{
-  border: 1px solid var(--tm-teal-deep);
-  background: var(--tm-teal-deep);
-  color: var(--tm-white);
+  border: 1px solid var(--ar-teal-deep);
+  background: var(--ar-teal-deep);
+  color: var(--ar-white);
 }
 
 .order-details-page .actions button.button-1:hover,
 .order-details-page .page-title a.button-2.print-order-button:hover{
-  background: var(--tm-teal-hover);
-  border-color: var(--tm-teal-hover);
-  color: var(--tm-white);
+  background: var(--ar-teal-hover);
+  border-color: var(--ar-teal-hover);
+  color: var(--ar-white);
 }
 
 /* Destructive actions read as destructive — outlined at rest so a list with a
@@ -5007,15 +5007,15 @@ so the field stays visible beside the icon. */
    either way round. */
 .address-list-page .buttons .delete-address-button,
 .order-details-page .page-title a.button-2.cancel-order-button{
-  border-color: var(--tm-error);
-  color: var(--tm-error);
+  border-color: var(--ar-error);
+  color: var(--ar-error);
 }
 
 .address-list-page .buttons .delete-address-button:hover,
 .order-details-page .page-title a.button-2.cancel-order-button:hover{
-  background: var(--tm-error);
-  border-color: var(--tm-error);
-  color: var(--tm-white);
+  background: var(--ar-error);
+  border-color: var(--ar-error);
+  color: var(--ar-white);
 }
 
 /* --- Empty results --------------------------------------------------------
@@ -5026,7 +5026,7 @@ so the field stays visible beside the icon. */
    the primary gradient.
 
    The mark is masked rather than drawn with a stroke colour, so it takes
-   var(--tm-gradient-diagonal) and the palette stays the single source of
+   var(--ar-gradient-diagonal) and the palette stays the single source of
    truth. It is decoration next to the text, never a label on the gradient.
 
    ponytail: pure CSS on the existing .no-result — no view fork. A "browse all
@@ -5037,15 +5037,15 @@ so the field stays visible beside the icon. */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--tm-stack-md);
-  margin-block: var(--tm-stack-lg);
-  padding: var(--tm-stack-lg) var(--tm-margin-mobile);
-  border: 1px dashed var(--tm-teal-border);
-  border-radius: var(--tm-radius-lg);
-  background: var(--tm-surface-alt);
-  color: var(--tm-ink);
-  font-size: var(--tm-fs-body-lg);
-  line-height: var(--tm-lh-body-lg);
+  gap: var(--ar-stack-md);
+  margin-block: var(--ar-stack-lg);
+  padding: var(--ar-stack-lg) var(--ar-margin-mobile);
+  border: 1px dashed var(--ar-teal-border);
+  border-radius: var(--ar-radius-lg);
+  background: var(--ar-surface-alt);
+  color: var(--ar-ink);
+  font-size: var(--ar-fs-body-lg);
+  line-height: var(--ar-lh-body-lg);
   font-weight: 600;
   text-align: center;
   text-wrap: balance;
@@ -5055,9 +5055,9 @@ so the field stays visible beside the icon. */
   content: "";
   inline-size: 64px;
   block-size: 64px;
-  background: var(--tm-gradient-diagonal);
-  -webkit-mask: var(--tm-mark-empty) center / contain no-repeat;
-  mask: var(--tm-mark-empty) center / contain no-repeat;
+  background: var(--ar-gradient-diagonal);
+  -webkit-mask: var(--ar-mark-empty) center / contain no-repeat;
+  mask: var(--ar-mark-empty) center / contain no-repeat;
 }
 
 /* --- Checkout: no checkout attributes --------------------------------------

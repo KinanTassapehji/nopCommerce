@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-The **Arabia** store — a fork of nopCommerce on ASP.NET Core / .NET 10 (`net10.0`, SDK pinned in `global.json`). `NopVersion.CURRENT_VERSION` and every `plugin.json` say `4.90`; the migration attributes say `"5.00"`. Solution is `src/NopCommerce.sln`. Working branch is `Arabia_release_4_90_6`, forked from the parent TmTm store at `D:\Work\TmTm\TmTm`. The storefront redesign is planned in `../ARABIA_REDESIGN_PLAN.md`.
+The **Arabia** store — a fork of nopCommerce on ASP.NET Core / .NET 10 (`net10.0`, SDK pinned in `global.json`). `NopVersion.CURRENT_VERSION` and every `plugin.json` say `4.90`; the migration attributes say `"5.00"`. Solution is `src/NopCommerce.sln`. Working branch is `Arabia_release_4_90_6`. The storefront redesign is planned in `../ARABIA_REDESIGN_PLAN.md`.
+
+The store is **العربية للأجهزة / Arabian Appliances**, a Saudi home-appliance retailer (`arabianco.com`). Brand identity, palette (`#0D77BD` blue, `#E41519` red, `#0C2536` navy) and all seeded content come from that. The parent fork this branched from carried a different brand and a Syria-only storefront; none of that should reappear in seeds, sample data, resources or CSS identifiers, which are all `ar-`/Arabia prefixed now. The one deliberate exception is `ISO3166.cs`, which is the full ISO 3166 table and names every country including Syria — it is reference data, and only Saudi Arabia is seeded as published.
 
 ## Commands
 

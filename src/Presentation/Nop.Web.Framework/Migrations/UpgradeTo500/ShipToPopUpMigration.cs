@@ -22,12 +22,12 @@ public class ShipToPopUpMigration : MigrationBase
         var localizationService = EngineContext.Current.Resolve<ILocalizationService>();
         var languageService = EngineContext.Current.Resolve<ILanguageService>();
 
-        //the "ship to" popup asks for a city, an area and a street - Syrian addresses have no postal code
+        //the "ship to" popup asks for a city, a district and a street - Saudi addresses are entered without a postal code here
         var shippingSettings = settingService.LoadSetting<ShippingSettings>();
         shippingSettings.EstimateShippingCityNameEnabled = true;
         settingService.SaveSetting(shippingSettings);
 
-        //the country picker is fixed to Syria and hidden, so the remaining fields move one step down:
+        //the country picker is fixed to Saudi Arabia and hidden, so the remaining fields move one step down:
         //the state/province list holds the governorates (the "city"), and the free text field is the area
         localizationService.AddOrUpdateLocaleResource(new Dictionary<string, string>
         {

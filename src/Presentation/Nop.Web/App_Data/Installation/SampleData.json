@@ -2,15 +2,15 @@
   "Customers": [
     {
       "FirstName": "سامر",
-      "LastName": "الحلبي",
+      "LastName": "القحطاني",
       "PhoneNumber": "0911234567",
-      "Email": "customer1@tmtmstore.com",
+      "Email": "customer1@arabianco.com",
       "FaxNumber": "",
       "Company": "شركة سامر للتجارة",
       "Address1": "شارع بغداد 24",
       "Address2": "",
-      "City": "دمشق",
-      "CountryThreeLetterIsoCode": "SYR",
+      "City": "الرياض",
+      "CountryThreeLetterIsoCode": "SAU",
       "ZipPostalCode": "",
       "Active": true,
       "CustomerRoleSystemNames": [
@@ -22,15 +22,15 @@
     },
     {
       "FirstName": "ليان",
-      "LastName": "خوري",
+      "LastName": "الغامدي",
       "PhoneNumber": "0921234567",
-      "Email": "customer2@tmtmstore.com",
+      "Email": "customer2@arabianco.com",
       "FaxNumber": "",
       "Company": "مؤسسة ليان",
       "Address1": "شارع سعد الله الجابري 8",
       "Address2": "",
-      "City": "حلب",
-      "CountryThreeLetterIsoCode": "SYR",
+      "City": "جدة",
+      "CountryThreeLetterIsoCode": "SAU",
       "ZipPostalCode": "",
       "Active": true,
       "CustomerRoleSystemNames": [
@@ -42,15 +42,15 @@
     },
     {
       "FirstName": "عمر",
-      "LastName": "الديري",
+      "LastName": "العتيبي",
       "PhoneNumber": "0931234567",
-      "Email": "customer3@tmtmstore.com",
+      "Email": "customer3@arabianco.com",
       "FaxNumber": "",
       "Company": "عمر وشركاه",
       "Address1": "شارع القوتلي 51",
       "Address2": "",
-      "City": "حمص",
-      "CountryThreeLetterIsoCode": "SYR",
+      "City": "الدمام",
+      "CountryThreeLetterIsoCode": "SAU",
       "ZipPostalCode": "",
       "Active": true,
       "CustomerRoleSystemNames": [
@@ -64,13 +64,13 @@
       "FirstName": "رنا",
       "LastName": "سعيد",
       "PhoneNumber": "0941234567",
-      "Email": "customer4@tmtmstore.com",
+      "Email": "customer4@arabianco.com",
       "FaxNumber": "",
       "Company": "رنا للتصميم",
       "Address1": "شارع الكورنيش 12",
       "Address2": "",
-      "City": "اللاذقية",
-      "CountryThreeLetterIsoCode": "SYR",
+      "City": "مكة المكرمة",
+      "CountryThreeLetterIsoCode": "SAU",
       "ZipPostalCode": "",
       "Active": true,
       "CustomerRoleSystemNames": [
@@ -82,15 +82,15 @@
     },
     {
       "FirstName": "كنان",
-      "LastName": "مراد",
+      "LastName": "الشهري",
       "PhoneNumber": "0951234567",
-      "Email": "customer5@tmtmstore.com",
+      "Email": "customer5@arabianco.com",
       "FaxNumber": "",
       "Company": "استوديو كنان",
       "Address1": "شارع تشرين 7",
       "Address2": "",
-      "City": "طرطوس",
-      "CountryThreeLetterIsoCode": "SYR",
+      "City": "المدينة المنورة",
+      "CountryThreeLetterIsoCode": "SAU",
       "ZipPostalCode": "",
       "Active": true,
       "CustomerRoleSystemNames": [
@@ -3023,7 +3023,7 @@
           {
             "ProductAttributeName": "نقش مخصص",
             "AttributeControlType": "TextBox",
-            "TextPrompt": "الاسم المراد حفره (16 حرفاً كحد أقصى)",
+            "TextPrompt": "الاسم الالشهري حفره (16 حرفاً كحد أقصى)",
             "AttributeValues": []
           }
         ],
@@ -3562,7 +3562,7 @@
   ],
   "NewsItems": [
     {
-      "Title": "متجر تمتم صار مفتوحاً",
+      "Title": "متجر العربية للأجهزة صار مفتوحاً",
       "Short": "تشكيلتنا الكاملة متاحة الآن على الإنترنت، بما نصنعه في الاستوديو وما نوفّره من صنّاع نعمل معهم.",
       "Full": "<p>كل ما نوفّره صار متاحاً للطلب عبر الإنترنت، من تشكيلة ألتو الخزفية إلى الإضاءة والتريكو والصوتيات. الطلبات قبل الساعة الثانية ظهراً تغادر في يوم العمل نفسه.</p><p>استخدم الرمز <strong>WELCOME10</strong> على أول طلب لك.</p>",
       "Published": true,
@@ -3620,17 +3620,17 @@
   ],
   "Warehouses": [
     {
-      "Name": "المستودع الرئيسي (دمشق)",
+      "Name": "المستودع الرئيسي (الرياض)",
       "Address1": "المنطقة الصناعية، عدرا",
-      "City": "دمشق",
-      "CountryThreeLetterIsoCode": "SYR",
+      "City": "الرياض",
+      "CountryThreeLetterIsoCode": "SAU",
       "ZipPostalCode": ""
     },
     {
-      "Name": "مستودع الشمال (حلب)",
+      "Name": "مستودع الغربية (جدة)",
       "Address1": "شارع النيل 40",
-      "City": "حلب",
-      "CountryThreeLetterIsoCode": "SYR",
+      "City": "جدة",
+      "CountryThreeLetterIsoCode": "SAU",
       "ZipPostalCode": ""
     }
   ],
@@ -3665,18 +3665,18 @@
       "Active": true,
       "FirstName": "نور",
       "LastName": "الأحمد",
-      "Email": "affiliate@tmtmstore.com",
+      "Email": "affiliate@arabianco.com",
       "Company": "نور للتسويق",
-      "City": "دمشق",
+      "City": "الرياض",
       "Address1": "شارع الحمرا 3",
       "ZipPostalCode": "",
       "PhoneNumber": "0961234567",
-      "CountryThreeLetterIsoCode": "SYR"
+      "CountryThreeLetterIsoCode": "SAU"
     }
   ],
   "Orders": [
     {
-      "CustomerEmail": "customer1@tmtmstore.com",
+      "CustomerEmail": "customer1@arabianco.com",
       "OrderSubtotalInclTax": 268,
       "OrderSubtotalExclTax": 268,
       "OrderTotal": 268,
@@ -3685,7 +3685,7 @@
       "PaymentStatus": "Paid",
       "ShippingStatus": "NotYetShipped",
       "PickupInStore": false,
-      "CustomerCurrencyCode": "SYP",
+      "CustomerCurrencyCode": "SAR",
       "TaxRates": "0:0;",
       "CurrencyRate": 1,
       "CustomerIp": "127.0.0.1",
@@ -3715,7 +3715,7 @@
       "ShippingRateComputationMethodSystemName": "Shipping.FixedByWeightByTotal"
     },
     {
-      "CustomerEmail": "customer2@tmtmstore.com",
+      "CustomerEmail": "customer2@arabianco.com",
       "OrderSubtotalInclTax": 240,
       "OrderSubtotalExclTax": 240,
       "OrderTotal": 240,
@@ -3724,7 +3724,7 @@
       "PaymentStatus": "Pending",
       "ShippingStatus": "NotYetShipped",
       "PickupInStore": false,
-      "CustomerCurrencyCode": "SYP",
+      "CustomerCurrencyCode": "SAR",
       "TaxRates": "0:0;",
       "CurrencyRate": 1,
       "CustomerIp": "127.0.0.1",
@@ -3754,7 +3754,7 @@
       "ShippingRateComputationMethodSystemName": "Shipping.FixedByWeightByTotal"
     },
     {
-      "CustomerEmail": "customer3@tmtmstore.com",
+      "CustomerEmail": "customer3@arabianco.com",
       "OrderSubtotalInclTax": 41,
       "OrderSubtotalExclTax": 41,
       "OrderTotal": 41,
@@ -3763,7 +3763,7 @@
       "PaymentStatus": "Pending",
       "ShippingStatus": "ShippingNotRequired",
       "PickupInStore": false,
-      "CustomerCurrencyCode": "SYP",
+      "CustomerCurrencyCode": "SAR",
       "TaxRates": "0:0;",
       "CurrencyRate": 1,
       "CustomerIp": "127.0.0.1",
@@ -3799,7 +3799,7 @@
       "PaidDateUtc": null
     },
     {
-      "CustomerEmail": "customer4@tmtmstore.com",
+      "CustomerEmail": "customer4@arabianco.com",
       "OrderSubtotalInclTax": 199,
       "OrderSubtotalExclTax": 199,
       "OrderTotal": 199,
@@ -3808,7 +3808,7 @@
       "PaymentStatus": "Paid",
       "ShippingStatus": "Shipped",
       "PickupInStore": true,
-      "CustomerCurrencyCode": "SYP",
+      "CustomerCurrencyCode": "SAR",
       "TaxRates": "0:0;",
       "CurrencyRate": 1,
       "CustomerIp": "127.0.0.1",
@@ -3872,7 +3872,7 @@
       ]
     },
     {
-      "CustomerEmail": "customer5@tmtmstore.com",
+      "CustomerEmail": "customer5@arabianco.com",
       "OrderSubtotalInclTax": 98,
       "OrderSubtotalExclTax": 98,
       "OrderTotal": 98,
@@ -3881,7 +3881,7 @@
       "PaymentStatus": "Paid",
       "ShippingStatus": "Delivered",
       "PickupInStore": false,
-      "CustomerCurrencyCode": "SYP",
+      "CustomerCurrencyCode": "SAR",
       "TaxRates": "0:0;",
       "CurrencyRate": 1,
       "CustomerIp": "127.0.0.1",

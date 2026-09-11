@@ -51,7 +51,7 @@
     }
 
     function initInfiniteScroll() {
-        var $container = $('.products-container').addClass('tm-infinite');
+        var $container = $('.products-container').addClass('ar-infinite');
         var loading = false;
 
         // 400px of lead time: the request is usually done by the time the end
@@ -79,7 +79,7 @@
                 return;
             }
             loading = true;
-            $container.addClass('tm-loading-more');
+            $container.addClass('ar-loading-more');
 
             // The 'before' handlers of _CatalogSelectors put the current sort,
             // view mode and page size on the builder, same as a pager click.
@@ -109,7 +109,7 @@
                 }
             }).always(function () {
                 loading = false;
-                $container.removeClass('tm-loading-more');
+                $container.removeClass('ar-loading-more');
                 // A short page can leave the new pager already in view.
                 watchPager();
             });

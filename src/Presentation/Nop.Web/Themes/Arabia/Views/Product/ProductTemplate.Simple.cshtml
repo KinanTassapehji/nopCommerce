@@ -122,7 +122,7 @@
                         </div>
                         @*Identity line: who made it and what to quote when asking about
                             it. One label-sized row, not several stacked ones.*@
-                        <div class="tm-identity">
+                        <div class="ar-identity">
                             <!--manufacturers-->
                             @await Html.PartialAsync("_ProductManufacturers", Model.ProductManufacturers)
                             <!--SKU, MAN, GTIN, vendor-->
@@ -132,7 +132,7 @@
 
                         @*The buy box — everything between the price and the button,
                             and nothing else. It is the card the page is built around.*@
-                        <div class="tm-buybox">
+                        <div class="ar-buybox">
                             <!--price & add to cart & estimate shipping-->
                             @{
                                 var dataDictPrice = new ViewDataDictionary(ViewData);
@@ -172,13 +172,13 @@
 
                         @*Reassurance, below the button where it answers "will it get
                             here in time" rather than competing with the price.*@
-                        <div class="tm-assurances">
+                        <div class="ar-assurances">
                             <!--delivery-->
                             @await Html.PartialAsync("_DeliveryInfo", Model)
                             @await Html.PartialAsync("_ProductEstimateShipping", Model.ProductEstimateShipping)
                         </div>
 
-                        <div class="tm-overview-foot">
+                        <div class="ar-overview-foot">
                             <!--compare-->
                             <div class="overview-buttons">
                                 @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsBefore, additionalData = Model })
@@ -195,12 +195,12 @@
         </form>
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBeforeCollateral, additionalData = Model })
 
-        <section class="product-collateral tm-panels">
+        <section class="product-collateral ar-panels">
             @if (hasDescription)
             {
-                <details class="tm-panel" id="tm-panel-description" open>
+                <details class="ar-panel" id="ar-panel-description" open>
                     <summary>@T("Products.Description")</summary>
-                    <div class="tm-panel-body">
+                    <div class="ar-panel-body">
                         <div class="full-description">
                             @Html.Raw(Model.FullDescription)
                         </div>
@@ -223,9 +223,9 @@
         stays on screen next to a sticky gallery. The button is a second trigger
         for the real one, so attribute validation, minimum quantities and the
         AJAX cart all run exactly once and exactly as they do above.*@
-    <div class="tm-buybar" hidden>
-        <span class="tm-buybar-price price-value-@Model.Id">@Html.Raw(buyBarPrice)</span>
-        <button type="button" class="button-1 tm-buybar-cta" data-target="add-to-cart-button-@Model.Id">
+    <div class="ar-buybar" hidden>
+        <span class="ar-buybar-price price-value-@Model.Id">@Html.Raw(buyBarPrice)</span>
+        <button type="button" class="button-1 ar-buybar-cta" data-target="add-to-cart-button-@Model.Id">
             @T("ShoppingCart.AddToCart")
         </button>
     </div>
@@ -236,7 +236,7 @@
         //Panels ship open so a reader without script — and a crawler — gets the
         //whole page. On a phone that is a long scroll, so all but the first fold.
         if (window.matchMedia('(max-width: 1000px)').matches) {
-            Array.prototype.slice.call(document.querySelectorAll('.tm-panels .tm-panel'))
+            Array.prototype.slice.call(document.querySelectorAll('.ar-panels .ar-panel'))
                 .slice(1)
                 .forEach(function (panel) { panel.open = false; });
         }
@@ -252,7 +252,7 @@
             var target = document.getElementById(name) || document.getElementsByName(name)[0];
             if (!target)
                 return;
-            var panel = target.closest('.tm-panel');
+            var panel = target.closest('.ar-panel');
             if (panel && !panel.open) {
                 panel.open = true;
                 target.scrollIntoView({ block: 'start', behavior: 'smooth' });
@@ -261,12 +261,12 @@
         window.addEventListener('hashchange', revealHash);
         revealHash();
 
-        var bar = document.querySelector('.tm-buybar');
-        var panel = document.querySelector('.tm-buybox .add-to-cart-panel');
+        var bar = document.querySelector('.ar-buybar');
+        var panel = document.querySelector('.ar-buybox .add-to-cart-panel');
         if (!bar || !panel || !('IntersectionObserver' in window))
             return;
 
-        bar.querySelector('.tm-buybar-cta').addEventListener('click', function (event) {
+        bar.querySelector('.ar-buybar-cta').addEventListener('click', function (event) {
             var target = document.getElementById(event.currentTarget.dataset.target);
             if (target)
                 target.click();
@@ -278,7 +278,7 @@
         new IntersectionObserver(function (entries) {
             var gone = !entries[0].isIntersecting;
             bar.hidden = !gone;
-            document.body.classList.toggle('tm-buybar-on', gone);
+            document.body.classList.toggle('ar-buybar-on', gone);
         }, { rootMargin: '0px 0px -20px 0px' }).observe(panel);
     })();
 </script>

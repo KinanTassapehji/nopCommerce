@@ -19,7 +19,7 @@ public class ArabiaThemeMigration : MigrationBase
         //do not use DI, because it produces exception on the installation process
         var settingService = EngineContext.Current.Resolve<ISettingService>();
 
-        //the theme directory was renamed TmTm -> Arabia; an installed store still points at the old
+        //the theme directory was renamed to Arabia; an installed store still points at the old
         //name, and ThemeProvider falls back to nothing, so the storefront loses its whole brand layer
         var storeInformationSettings = settingService.LoadSetting<StoreInformationSettings>();
         if (!string.Equals(storeInformationSettings.DefaultStoreTheme, "Arabia", StringComparison.OrdinalIgnoreCase))

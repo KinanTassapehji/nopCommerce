@@ -123,7 +123,7 @@
             requestAnimationFrame(function () {
                 var y = Math.max(window.scrollY, 0);
                 if (Math.abs(y - last) > minDelta) {
-                    header.classList.toggle('tm-header-hidden', y > last && y > revealFrom);
+                    header.classList.toggle('ar-header-hidden', y > last && y > revealFrom);
                     last = y;
                 }
                 ticking = false;
@@ -132,7 +132,7 @@
 
         //An open search field must never scroll away with the bar.
         header.addEventListener('focusin', function () {
-            header.classList.remove('tm-header-hidden');
+            header.classList.remove('ar-header-hidden');
         });
     })();
 </script>

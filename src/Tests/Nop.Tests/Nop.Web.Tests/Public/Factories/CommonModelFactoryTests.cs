@@ -67,7 +67,7 @@ public class CommonModelFactoryTests : BaseNopTest
     {
         var model = await _commonModelFactory.PrepareLogoModelAsync();
         model.StoreName.Should().NotBeNullOrEmpty();
-        model.StoreName.Should().Be("تمتم");
+        model.StoreName.Should().Be("العربية للأجهزة");
         model.LogoPath.Should().NotBeNullOrEmpty();
         model.LogoPath.Should()
             .Be($"http://{NopTestsDefaults.HostIpAddress}/Themes/Arabia/Content/images/logo.png");
@@ -78,7 +78,7 @@ public class CommonModelFactoryTests : BaseNopTest
     {
         var model = await _commonModelFactory.PrepareLanguageSelectorModelAsync();
 
-        //the bundled ar-SY pack sorts ahead of English, so it is the working language
+        //the bundled ar-SA pack sorts ahead of English, so it is the working language
         model.CurrentLanguageId.Should().Be(2);
         model.UseImages.Should().Be(_localizationSettings.UseImagesForLanguageSelection);
 
@@ -86,7 +86,7 @@ public class CommonModelFactoryTests : BaseNopTest
         var lang = model.AvailableLanguages.FirstOrDefault();
         lang.Should().NotBeNull();
         lang?.Name.Should().Be("العربية");
-        lang?.FlagImageFileName.Should().Be("sy.png");
+        lang?.FlagImageFileName.Should().Be("sa.png");
     }
 
     [Test]
@@ -148,7 +148,7 @@ public class CommonModelFactoryTests : BaseNopTest
     {
         var model = await _commonModelFactory.PrepareFooterModelAsync();
 
-        model.StoreName.Should().Be("تمتم");
+        model.StoreName.Should().Be("العربية للأجهزة");
         model.HidePoweredByNopCommerce.Should().Be(_storeInformationSettings.HidePoweredByNopCommerce);
     }
 

@@ -26,7 +26,7 @@ public class AddressNameLocalizationMigration : MigrationBase
             ["Address.Fields.AddressName.Placeholder"] = "Home, Work, ..."
         });
 
-        //ponytail: match on the language prefix - the pack ships as ar-SY, older installs carry ar-SA
+        //ponytail: match on the language prefix, not the exact culture - the pack ships ar-SA
         var arabic = languageService.GetAllLanguages(showHidden: true)
             .FirstOrDefault(language => language.LanguageCulture.StartsWith("ar", StringComparison.OrdinalIgnoreCase));
         if (arabic is not null)
