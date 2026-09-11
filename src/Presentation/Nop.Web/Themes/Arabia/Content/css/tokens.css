@@ -1,43 +1,49 @@
 ﻿/* ==========================================================================
    Arabia — brand tokens
-   Source of truth: "mini guidline outline.pdf" (Tia Production House, 2026)
+   Source of truth: the Arabian Appliances mark (arabianco.com), which is drawn
+   in exactly three colours: #0D77BD blue, #E41519 red, #0C2536 navy.
 
-   Brand colors are the three primary teals plus black/white. Nothing else is
-   a brand color. Values below marked "derived" are UI interaction states
-   (hover/active/tints) computed from the primaries — the guideline does not
-   define them, and they must never be used to reproduce the logo.
+   Those three plus black/white are the brand. Values marked "derived" are UI
+   interaction states (hover/active/tints) mixed from the primaries - they are
+   not brand colours and must never be used to reproduce the logo.
+
+   Contrast figures are against white and were measured, not estimated.
    ========================================================================== */
 
 :root {
-  /* --- Primary palette (guideline, exact) ------------------------------- */
-  --ar-teal-deep: #02787e;      /* contrast 5.26:1 on white — AA body text  */
-  --ar-teal: #009a95;           /* contrast 3.47:1 on white — AA large only */
-  --ar-teal-bright: #00d9cc;    /* contrast 1.78:1 — NEVER standalone       */
+  /* --- Primary palette (the mark, exact) -------------------------------- */
+  --ar-blue: #0D77BD;           /* contrast 4.78:1 on white — AA body text  */
+  --ar-red: #E41519;            /* contrast 4.75:1 on white — AA body text  */
+  --ar-navy: #0C2536;           /* contrast 15.75:1 — headings, bars, foot  */
+
+  /* --- Blue ramp (derived, for gradients and large type) ---------------- */
+  --ar-blue-mid: #1E8FD5;       /* contrast 3.53:1 on white — AA large only */
+  --ar-blue-bright: #5BB6E8;    /* contrast 2.26:1 — NEVER standalone       */
 
   /* --- Secondary palette (guideline: these two only) -------------------- */
   --ar-black: #000000;
   --ar-white: #ffffff;
 
-  /* --- Primary gradient (guideline: these three colors only) ------------
-     DECORATIVE USE ONLY. The gradient runs into #00d9cc, which carries white
-     text at just 1.78:1 — anything with a label on it must use
-     --ar-teal-deep (5.26:1) instead. Rules, strips and accents only. */
-  --ar-gradient: linear-gradient(90deg, var(--ar-teal-deep) 0%, var(--ar-teal) 55%, var(--ar-teal-bright) 100%);
-  --ar-gradient-diagonal: linear-gradient(135deg, var(--ar-teal-bright) 0%, var(--ar-teal) 45%, var(--ar-teal-deep) 100%);
+  /* --- Primary gradient -------------------------------------------------
+     DECORATIVE USE ONLY. The gradient runs into --ar-blue-bright, which carries
+     white text at just 2.26:1 — anything with a label on it must use --ar-blue
+     (4.78:1) instead. Rules, strips and accents only. */
+  --ar-gradient: linear-gradient(90deg, var(--ar-blue) 0%, var(--ar-blue-mid) 55%, var(--ar-blue-bright) 100%);
+  --ar-gradient-diagonal: linear-gradient(135deg, var(--ar-blue-bright) 0%, var(--ar-blue-mid) 45%, var(--ar-blue) 100%);
 
   /* --- Derived interaction states (not brand colors) -------------------- */
-  --ar-teal-hover: #01585c;     /* 8.23:1 with white — button/link hover    */
-  --ar-teal-active: #014a4e;    /* 10.04:1 with white — pressed state       */
-  --ar-teal-tint: #e6f4f4;      /* surfaces, table stripes, hover rows      */
-  --ar-teal-tint-strong: #cbe8e7;
-  --ar-teal-border: #b3dedc;
+  --ar-blue-hover: #0A5F97;     /* 6.78:1 with white — button/link hover    */
+  --ar-blue-active: #084E7C;    /* 8.78:1 with white — pressed state        */
+  --ar-blue-tint: #E0F2FF;      /* surfaces, table stripes, hover rows      */
+  --ar-blue-tint-strong: #C2E4FA;
+  --ar-blue-border: #A5D4F2;
 
   /* --- Neutrals --------------------------------------------------------- */
-  --ar-ink: #10201f;            /* body text — near-black, warmed to teal   */
-  --ar-ink-muted: #5c6b6a;
-  --ar-line: #dfe5e5;
+  --ar-ink: #0C2536;            /* body text — the brand navy, 15.75:1      */
+  --ar-ink-muted: #5A6B7A;      /* 5.50:1 — AA body                         */
+  --ar-line: #DDE4EA;
   --ar-surface: #ffffff;
-  --ar-surface-alt: #f6f9f9;
+  --ar-surface-alt: #F2F7FB;
 
   /* --- Status ----------------------------------------------------------- */
   --ar-error: #d51f28;
@@ -47,9 +53,9 @@
   /* --- Shape & motion --------------------------------------------------- */
   --ar-radius-sm: 6px;
   --ar-radius: 12px;
-  --ar-radius-lg: 20px;         /* echoes the logo's rounded-square icon    */
-  --ar-shadow: 0 6px 20px rgba(2, 120, 126, 0.10);
-  --ar-shadow-lg: 0 14px 38px rgba(2, 120, 126, 0.16);
+  --ar-radius-lg: 20px;         /* pill badges, category cards              */
+  --ar-shadow: 0 6px 20px rgba(12, 37, 54, 0.10);
+  --ar-shadow-lg: 0 14px 38px rgba(12, 37, 54, 0.16);
   --ar-transition: 0.18s ease;
 
   /* --- Icon marks -------------------------------------------------------
@@ -57,14 +63,14 @@
   --ar-mark-empty: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%23000%27%20stroke-width%3D%271.4%27%20stroke-linecap%3D%27round%27%3E%3Ccircle%20cx%3D%2710.5%27%20cy%3D%2710.5%27%20r%3D%276.5%27%2F%3E%3Cpath%20d%3D%27M15.4%2015.4%2021%2021M8%2010.5h5%27%2F%3E%3C%2Fsvg%3E");
 
   /* --- Logo clear space -------------------------------------------------
-     Guideline: minimum clear space on every side = height of the letter "t".
+     Minimum clear space on every side = the height of the mark's shorter leg.
      At the header lockup size that is ~14px; scale with the logo if resized. */
   --ar-logo-clear-space: 14px;
 
   /* --- Layout & type scale ----------------------------------------------
-     Ported from the TMTM Stitch comps (project "Elegant nopCommerce PWA").
      Non-colour only: the palette above stays the single source of truth for
-     colour, and the Stitch Material-3 ramp is deliberately not adopted. */
+     colour. ponytail: this is still the inherited Material-3-ish ramp; the
+     redesign plan replaces it with Starway's denser scale in phase 1. */
   --ar-stack-sm: 8px;
   --ar-stack-md: 16px;
   --ar-stack-lg: 32px;
@@ -100,8 +106,8 @@
    the forked stylesheet (141 var() usages) inherits the re-skin wholesale.
    -------------------------------------------------------------------------- */
 :root {
-  --accent-blue-color: var(--ar-teal-deep);
-  --accent-blue-active-color: var(--ar-teal-hover);
+  --accent-blue-color: var(--ar-blue);
+  --accent-blue-active-color: var(--ar-blue-hover);
   --gray-color: var(--ar-ink-muted);
   --dark-gray-color: var(--ar-ink);
   --error-red-color: var(--ar-error);

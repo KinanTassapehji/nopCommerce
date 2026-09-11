@@ -104,8 +104,8 @@ public class CustomerModelFactoryTests : WebTest
 
         model.Email.Should().Be(NopTestsDefaults.AdminEmail);
         model.Username.Should().Be(NopTestsDefaults.AdminEmail);
-        model.FirstName.Should().Be("John");
-        model.LastName.Should().Be("Smith");
+        model.FirstName.Should().Be("مدير");
+        model.LastName.Should().Be("المتجر");
 
         model = await _customerModelFactory.PrepareCustomerInfoModelAsync(new CustomerInfoModel(), _customer, true);
 

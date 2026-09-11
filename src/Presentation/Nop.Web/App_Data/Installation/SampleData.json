@@ -447,8 +447,8 @@
         "CategoryName": "المطبخ والطعام",
         "ManufacturerName": "بيت الشمال",
         "ProductPictures": [
-          "product_tm_kd_101_1.png",
-          "product_tm_kd_101_2.png"
+          "product_ar_kd_101_1.png",
+          "product_ar_kd_101_2.png"
         ],
         "ProductTags": [
           "أدوات مائدة",
@@ -523,7 +523,7 @@
         "CategoryName": "المطبخ والطعام",
         "ManufacturerName": "أطلس",
         "ProductPictures": [
-          "product_tm_kd_102.png"
+          "product_ar_kd_102.png"
         ],
         "ProductTags": [
           "مطبخ",
@@ -596,7 +596,7 @@
         "CategoryName": "المطبخ والطعام",
         "ManufacturerName": "بيت الشمال",
         "ProductPictures": [
-          "product_tm_kd_103.png"
+          "product_ar_kd_103.png"
         ],
         "ProductTags": [
           "قهوة",
@@ -657,7 +657,7 @@
         "CategoryName": "المطبخ والطعام",
         "ManufacturerName": "أطلس",
         "ProductPictures": [
-          "product_tm_kd_104.png"
+          "product_ar_kd_104.png"
         ],
         "ProductTags": [
           "مطبخ",
@@ -718,8 +718,8 @@
         "CategoryName": "المطبخ والطعام",
         "ManufacturerName": "بيت الشمال",
         "ProductPictures": [
-          "product_tm_kd_105_1.png",
-          "product_tm_kd_105_2.png"
+          "product_ar_kd_105_1.png",
+          "product_ar_kd_105_2.png"
         ],
         "ProductTags": [
           "أكواب",
@@ -754,7 +754,7 @@
             "CategoryName": "المطبخ والطعام",
             "ManufacturerName": "بيت الشمال",
             "ProductPictures": [
-              "product_tm_kd_105_s.png"
+              "product_ar_kd_105_s.png"
             ],
             "ProductTags": [
               "أكواب",
@@ -815,7 +815,7 @@
             "CategoryName": "المطبخ والطعام",
             "ManufacturerName": "بيت الشمال",
             "ProductPictures": [
-              "product_tm_kd_105_t.png"
+              "product_ar_kd_105_t.png"
             ],
             "ProductTags": [
               "أكواب",
@@ -905,7 +905,7 @@
         "CategoryName": "المفروشات والحمام",
         "ManufacturerName": "بيت الشمال",
         "ProductPictures": [
-          "product_tm_bb_201.png"
+          "product_ar_bb_201.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -1006,7 +1006,7 @@
         "CategoryName": "المفروشات والحمام",
         "ManufacturerName": "بيت الشمال",
         "ProductPictures": [
-          "product_tm_bb_202.png"
+          "product_ar_bb_202.png"
         ],
         "ProductTags": [
           "حمام",
@@ -1069,7 +1069,7 @@
         "CategoryName": "المفروشات والحمام",
         "ManufacturerName": "بيت الشمال",
         "ProductPictures": [
-          "product_tm_bb_203.png"
+          "product_ar_bb_203.png"
         ],
         "ProductTags": [
           "مفروشات",
@@ -1120,8 +1120,8 @@
         "CategoryName": "الديكور والإضاءة",
         "ManufacturerName": "ضياء",
         "ProductPictures": [
-          "product_tm_dl_301_1.png",
-          "product_tm_dl_301_2.png"
+          "product_ar_dl_301_1.png",
+          "product_ar_dl_301_2.png"
         ],
         "ProductTags": [
           "إضاءة",
@@ -1195,7 +1195,7 @@
         "CategoryName": "الديكور والإضاءة",
         "ManufacturerName": "ضياء",
         "ProductPictures": [
-          "product_tm_dl_302.png"
+          "product_ar_dl_302.png"
         ],
         "ProductTags": [
           "ديكور",
@@ -1257,7 +1257,7 @@
         "CategoryName": "الديكور والإضاءة",
         "ManufacturerName": "أطلس",
         "ProductPictures": [
-          "product_tm_dl_303.png"
+          "product_ar_dl_303.png"
         ],
         "ProductTags": [
           "سجاد",
@@ -1319,7 +1319,7 @@
         "CategoryName": "الديكور والإضاءة",
         "ManufacturerName": "ضياء",
         "ProductPictures": [
-          "product_tm_dl_304.png"
+          "product_ar_dl_304.png"
         ],
         "ProductTags": [
           "إضاءة",
@@ -1384,8 +1384,8 @@
         "CategoryName": "الصوتيات",
         "ManufacturerName": "أريا",
         "ProductPictures": [
-          "product_tm_au_401_1.png",
-          "product_tm_au_401_2.png"
+          "product_ar_au_401_1.png",
+          "product_ar_au_401_2.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -1460,7 +1460,7 @@
         "CategoryName": "الصوتيات",
         "ManufacturerName": "أريا",
         "ProductPictures": [
-          "product_tm_au_402.png"
+          "product_ar_au_402.png"
         ],
         "ProductTags": [
           "صوتيات",
@@ -1510,7 +1510,7 @@
         "CategoryName": "الصوتيات",
         "ManufacturerName": "أريا",
         "ProductPictures": [
-          "product_tm_au_403.png"
+          "product_ar_au_403.png"
         ],
         "ProductTags": [
           "صوتيات",
@@ -1561,7 +1561,7 @@
         "CategoryName": "الصوتيات",
         "ManufacturerName": "أريا",
         "ProductPictures": [
-          "product_tm_au_404.png"
+          "product_ar_au_404.png"
         ],
         "ProductTags": [
           "صوتيات",
@@ -1611,7 +1611,7 @@
         "CategoryName": "الشحن والكابلات",
         "ManufacturerName": "أريا",
         "ProductPictures": [
-          "product_tm_cc_501.png"
+          "product_ar_cc_501.png"
         ],
         "ProductTags": [
           "شحن",
@@ -1661,7 +1661,7 @@
         "CategoryName": "الشحن والكابلات",
         "ManufacturerName": "أريا",
         "ProductPictures": [
-          "product_tm_cc_502.png"
+          "product_ar_cc_502.png"
         ],
         "ProductTags": [
           "شحن",
@@ -1711,7 +1711,7 @@
         "CategoryName": "الشحن والكابلات",
         "ManufacturerName": "أريا",
         "ProductPictures": [
-          "product_tm_cc_503.png"
+          "product_ar_cc_503.png"
         ],
         "TierPrices": [
           {
@@ -1771,7 +1771,7 @@
         "CategoryName": "المنزل الذكي",
         "ManufacturerName": "ضياء",
         "ProductPictures": [
-          "product_tm_sh_601.png"
+          "product_ar_sh_601.png"
         ],
         "ProductTags": [
           "منزل ذكي",
@@ -1821,7 +1821,7 @@
         "CategoryName": "المنزل الذكي",
         "ManufacturerName": "ضياء",
         "ProductPictures": [
-          "product_tm_sh_602.png"
+          "product_ar_sh_602.png"
         ],
         "ProductTags": [
           "منزل ذكي",
@@ -1871,7 +1871,7 @@
         "CategoryName": "المنزل الذكي",
         "ManufacturerName": "ضياء",
         "ProductPictures": [
-          "product_tm_sh_603.png"
+          "product_ar_sh_603.png"
         ],
         "ProductTags": [
           "منزل ذكي"
@@ -1921,8 +1921,8 @@
         "CategoryName": "نسائي",
         "ManufacturerName": "نول",
         "ProductPictures": [
-          "product_tm_aw_701_1.png",
-          "product_tm_aw_701_2.png"
+          "product_ar_aw_701_1.png",
+          "product_ar_aw_701_2.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -2036,7 +2036,7 @@
         "CategoryName": "نسائي",
         "ManufacturerName": "نول",
         "ProductPictures": [
-          "product_tm_aw_702.png"
+          "product_ar_aw_702.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -2127,7 +2127,7 @@
         "CategoryName": "رجالي",
         "ManufacturerName": "نول",
         "ProductPictures": [
-          "product_tm_am_703.png"
+          "product_ar_am_703.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -2229,7 +2229,7 @@
         "CategoryName": "رجالي",
         "ManufacturerName": "نول",
         "ProductPictures": [
-          "product_tm_am_704.png"
+          "product_ar_am_704.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -2304,8 +2304,8 @@
         "CategoryName": "الحقائب والإكسسوارات",
         "ManufacturerName": "أطلس",
         "ProductPictures": [
-          "product_tm_ba_801_1.png",
-          "product_tm_ba_801_2.png"
+          "product_ar_ba_801_1.png",
+          "product_ar_ba_801_2.png"
         ],
         "ProductTags": [
           "حقائب",
@@ -2380,7 +2380,7 @@
         "CategoryName": "الحقائب والإكسسوارات",
         "ManufacturerName": "أطلس",
         "ProductPictures": [
-          "product_tm_ba_802.png"
+          "product_ar_ba_802.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -2466,7 +2466,7 @@
         "CategoryName": "الحقائب والإكسسوارات",
         "ManufacturerName": "نول",
         "ProductPictures": [
-          "product_tm_ba_803.png"
+          "product_ar_ba_803.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -2551,7 +2551,7 @@
         "CategoryName": "الحقائب والإكسسوارات",
         "ManufacturerName": "أطلس",
         "ProductPictures": [
-          "product_tm_ba_804.png"
+          "product_ar_ba_804.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -2625,7 +2625,7 @@
         "CategoryName": "العناية بالبشرة",
         "ManufacturerName": "مرمر",
         "ProductPictures": [
-          "product_tm_sk_901.png"
+          "product_ar_sk_901.png"
         ],
         "ProductTags": [
           "عناية بالبشرة",
@@ -2674,7 +2674,7 @@
         "CategoryName": "العناية بالبشرة",
         "ManufacturerName": "مرمر",
         "ProductPictures": [
-          "product_tm_sk_902.png"
+          "product_ar_sk_902.png"
         ],
         "ProductTags": [
           "عناية بالبشرة",
@@ -2723,7 +2723,7 @@
         "CategoryName": "العطور وعطور المنزل",
         "ManufacturerName": "مرمر",
         "ProductPictures": [
-          "product_tm_fr_903.png"
+          "product_ar_fr_903.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -2789,8 +2789,8 @@
         "CategoryName": "العطور وعطور المنزل",
         "ManufacturerName": "مرمر",
         "ProductPictures": [
-          "product_tm_fr_904_1.png",
-          "product_tm_fr_904_2.png"
+          "product_ar_fr_904_1.png",
+          "product_ar_fr_904_2.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -2859,7 +2859,7 @@
         "CategoryName": "الصحة والرياضة",
         "ManufacturerName": "أطلس",
         "ProductPictures": [
-          "product_tm_wl_905.png"
+          "product_ar_wl_905.png"
         ],
         "ProductTags": [
           "يوغا",
@@ -2909,7 +2909,7 @@
         "CategoryName": "الصحة والرياضة",
         "ManufacturerName": "أطلس",
         "ProductPictures": [
-          "product_tm_wl_906.png"
+          "product_ar_wl_906.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -2994,7 +2994,7 @@
         "CategoryName": "القرطاسية والهدايا",
         "ManufacturerName": "بيت الشمال",
         "ProductPictures": [
-          "product_tm_st_1001.png"
+          "product_ar_st_1001.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -3062,7 +3062,7 @@
         "CategoryName": "القرطاسية والهدايا",
         "ManufacturerName": "بيت الشمال",
         "ProductPictures": [
-          "product_tm_st_1002.png"
+          "product_ar_st_1002.png"
         ],
         "ProductTags": [
           "قرطاسية",
@@ -3097,7 +3097,7 @@
         "CategoryName": "القرطاسية والهدايا",
         "ManufacturerName": "أطلس",
         "ProductPictures": [
-          "product_tm_st_1003.png"
+          "product_ar_st_1003.png"
         ],
         "ProductTags": [
           "مكتب",
@@ -3160,7 +3160,7 @@
         "CategoryName": "القرطاسية والهدايا",
         "ManufacturerName": "بيت الشمال",
         "ProductPictures": [
-          "product_tm_st_1004.png"
+          "product_ar_st_1004.png"
         ],
         "ProductAttributeMapping": [
           {
@@ -3217,7 +3217,7 @@
         "CategoryName": "القرطاسية والهدايا",
         "ManufacturerName": "بيت الشمال",
         "ProductPictures": [
-          "product_tm_st_1005.png"
+          "product_ar_st_1005.png"
         ],
         "ProductTags": [
           "إيجار",
@@ -3279,7 +3279,7 @@
         "CategoryName": "منتجات رقمية",
         "ManufacturerName": "بيت الشمال",
         "ProductPictures": [
-          "product_tm_dg_1101.png"
+          "product_ar_dg_1101.png"
         ],
         "ProductTags": [
           "كتاب رقمي",
@@ -3320,7 +3320,7 @@
         "CategoryName": "منتجات رقمية",
         "ManufacturerName": "مرمر",
         "ProductPictures": [
-          "product_tm_dg_1102.png"
+          "product_ar_dg_1102.png"
         ],
         "ProductTags": [
           "إعدادات",
@@ -3371,7 +3371,7 @@
         "CategoryName": "منتجات رقمية",
         "ManufacturerName": "أريا",
         "ProductPictures": [
-          "product_tm_dg_1103.png"
+          "product_ar_dg_1103.png"
         ],
         "ProductTags": [
           "صوتيات",
@@ -3544,7 +3544,7 @@
       "UsePercentage": true,
       "DiscountPercentage": 20,
       "RequiresCouponCode": true,
-      "CouponCode": "TMTM20",
+      "CouponCode": "ARABIA20",
       "IsActive": true
     }
   ],

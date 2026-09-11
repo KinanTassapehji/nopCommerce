@@ -55,8 +55,8 @@
 
 /* --- The ring ------------------------------------------------------------
    A conic gradient masked into a ring: the brand gradient, spun. Solid
-   --ar-teal-deep leads, so the visible head of the ring is the accessible
-   teal and #00d9cc only ever appears as the decorative tail. */
+   --ar-blue leads, so the visible head of the ring is the accessible
+   blue and #5BB6E8 only ever appears as the decorative tail. */
 .ajax-loading-block-window::before,
 .products-container .ajax-products-busy::before,
 .throbber .curtain-content p::before {
@@ -70,11 +70,11 @@
   margin-inline-start: calc(var(--ar-loader-ring) / -2);
   border-radius: 50%;
   background: conic-gradient(from 90deg,
-      rgba(0, 217, 204, 0) 0deg,
-      var(--ar-teal-bright) 70deg,
-      var(--ar-teal) 170deg,
-      var(--ar-teal-deep) 280deg,
-      var(--ar-teal-deep) 360deg);
+      rgba(91, 182, 232, 0) 0deg,
+      var(--ar-blue-bright) 70deg,
+      var(--ar-blue-mid) 170deg,
+      var(--ar-blue) 280deg,
+      var(--ar-blue) 360deg);
   -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - var(--ar-loader-track)), #000 calc(100% - var(--ar-loader-track)));
   mask: radial-gradient(farthest-side, #0000 calc(100% - var(--ar-loader-track)), #000 calc(100% - var(--ar-loader-track)));
   animation: ar-loader-spin .85s linear infinite;
@@ -91,7 +91,7 @@
   margin-block-start: calc((var(--ar-loader-ring) + 34px) / -2);
   margin-inline-start: calc((var(--ar-loader-ring) + 34px) / -2);
   border-radius: 50%;
-  background: radial-gradient(circle, var(--ar-teal-bright) 0%, rgba(0, 217, 204, 0) 70%);
+  background: radial-gradient(circle, var(--ar-blue-bright) 0%, rgba(91, 182, 232, 0) 70%);
   animation: ar-loader-halo 1.7s ease-in-out infinite;
   pointer-events: none;
 }
@@ -131,7 +131,7 @@
   height: 16px;
   margin-block-start: -8px;
   border-radius: 50%;
-  background: conic-gradient(from 90deg, rgba(0, 217, 204, 0) 0deg, var(--ar-teal) 180deg, var(--ar-teal-deep) 360deg);
+  background: conic-gradient(from 90deg, rgba(91, 182, 232, 0) 0deg, var(--ar-blue-mid) 180deg, var(--ar-blue) 360deg);
   -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 2px), #000 calc(100% - 2px));
   mask: radial-gradient(farthest-side, #0000 calc(100% - 2px), #000 calc(100% - 2px));
   animation: ar-loader-spin .85s linear infinite;
@@ -170,7 +170,7 @@
    riding the top edge instead of the corner gif. */
 #ajaxBusy {
   height: 3px;
-  background: var(--ar-teal-tint, #e6f4f4);
+  background: var(--ar-blue-tint, #E0F2FF);
   pointer-events: none;
   overflow: hidden;
 }
@@ -208,7 +208,7 @@ body.ar-loading::after {
 }
 
 body.ar-loading::before {
-  background: var(--ar-teal-tint, #e6f4f4);
+  background: var(--ar-blue-tint, #E0F2FF);
 }
 
 body.ar-loading::after {
@@ -246,7 +246,7 @@ body.ar-loading::after {
 }
 
 /* The mark, but white: the curtain is dark, and the mark's own fill is
-   --ar-teal-deep. Masked rather than painted, so one asset serves both sides. */
+   --ar-blue. Masked rather than painted, so one asset serves both sides. */
 .throbber .curtain-content p::after {
   content: "";
   position: absolute;

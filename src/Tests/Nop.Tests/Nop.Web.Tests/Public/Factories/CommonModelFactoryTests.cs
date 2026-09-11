@@ -112,7 +112,7 @@ public class CommonModelFactoryTests : BaseNopTest
 
         model.RegistrationType.Should().Be(_customerSettings.UserRegistrationType);
         model.IsAuthenticated.Should().BeTrue();
-        model.CustomerName.Should().Be("John");
+        model.CustomerName.Should().Be("مدير");
         model.ShoppingCartEnabled.Should().BeTrue();
         model.AllowPrivateMessages.Should().Be(_forumSettings.AllowPrivateMessages);
         model.UnreadPrivateMessages.Should().BeEmpty();
@@ -124,7 +124,7 @@ public class CommonModelFactoryTests : BaseNopTest
     public async Task CanPrepareAdminHeaderLinksModel()
     {
         var model = await _commonModelFactory.PrepareAdminHeaderLinksModelAsync();
-        model.ImpersonatedCustomerName.Should().Be("John");
+        model.ImpersonatedCustomerName.Should().Be("مدير");
         model.IsCustomerImpersonated.Should().BeFalse();
         model.DisplayAdminLink.Should().BeTrue();
         model.EditPageUrl.Should().BeNull();
@@ -167,7 +167,7 @@ public class CommonModelFactoryTests : BaseNopTest
         model.SubjectEnabled = _commonSettings.SubjectFieldOnContactUsForm;
         model.DisplayCaptcha.Should().BeFalse();
         model.Email.Should().Be(NopTestsDefaults.AdminEmail);
-        model.FullName.Should().Be("John Smith");
+        model.FullName.Should().Be("مدير المتجر");
     }
 
     [Test]
@@ -196,7 +196,7 @@ public class CommonModelFactoryTests : BaseNopTest
         model = await _commonModelFactory.PrepareContactVendorModelAsync(model, _vendor, false);
 
         model.Email.Should().Be(NopTestsDefaults.AdminEmail);
-        model.FullName.Should().Be("John Smith");
+        model.FullName.Should().Be("مدير المتجر");
 
         model.SubjectEnabled = _commonSettings.SubjectFieldOnContactUsForm;
         model.DisplayCaptcha.Should().BeFalse();

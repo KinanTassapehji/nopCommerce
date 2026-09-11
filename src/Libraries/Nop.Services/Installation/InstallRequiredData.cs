@@ -73,7 +73,6 @@ public partial class InstallationService
                 SslEnabled = _webHelper.IsCurrentConnectionSecured(),
                 Hosts = "arabianco.com,www.arabianco.com",
                 DisplayOrder = 1,
-                //should we set some default company info?
                 CompanyName = "العربية للأجهزة",
                 CompanyAddress = "الرياض، طريق مكة المكرمة، تقاطع مع شارع العليا، ص.ب. 99 الرياض 11383، المملكة العربية السعودية",
                 CompanyPhoneNumber = "8001244080",
@@ -2194,18 +2193,20 @@ public partial class InstallationService
         var defaultAdminUserAddress = await _dataProvider.InsertEntityAsync(
             new Address
             {
-                FirstName = "John",
-                LastName = "Smith",
-                PhoneNumber = "12345678",
+                FirstName = "مدير",
+                LastName = "المتجر",
+                PhoneNumber = "8001244080",
                 Email = _installationSettings.AdminEmail,
                 FaxNumber = string.Empty,
-                Company = "Nop Solutions Ltd",
-                Address1 = "21 West 52nd Street",
+                Company = "العربية للأجهزة",
+                Address1 = "طريق مكة المكرمة، تقاطع مع شارع العليا",
                 Address2 = string.Empty,
-                City = "New York",
-                StateProvinceId = await GetFirstEntityIdAsync<StateProvince>(sp => sp.Name == "New York"),
-                CountryId = await GetFirstEntityIdAsync<Country>(c => c.ThreeLetterIsoCode == "USA"),
-                ZipPostalCode = "10021",
+                City = "الرياض",
+                //the seeded regions are Arabic; matching the English name would
+                //silently leave the admin address without a region
+                StateProvinceId = await GetFirstEntityIdAsync<StateProvince>(sp => sp.Name == "الرياض"),
+                CountryId = await GetFirstEntityIdAsync<Country>(c => c.ThreeLetterIsoCode == "SAU"),
+                ZipPostalCode = "11383",
                 CreatedOnUtc = DateTime.UtcNow
             });
 

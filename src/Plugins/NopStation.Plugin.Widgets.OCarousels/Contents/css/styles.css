@@ -68,14 +68,14 @@
   height: 44px;
   padding: 0 !important;
   margin: 0;
-  border: 1px solid var(--ar-teal-border, #b3dedc);
+  border: 1px solid var(--ar-blue-border, #A5D4F2);
   border-radius: 50%;
   background: var(--ar-surface, #fff);
-  color: var(--ar-teal-deep, #02787e);
+  color: var(--ar-blue, #0D77BD);
   font-size: 0;
   line-height: 0;
   opacity: 1;
-  box-shadow: var(--ar-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
+  box-shadow: var(--ar-shadow, 0 6px 20px rgba(12, 37, 54, 0.10));
   transition: background var(--ar-transition, 0.18s ease), border-color var(--ar-transition, 0.18s ease), color var(--ar-transition, 0.18s ease), transform var(--ar-transition, 0.18s ease);
 }
 
@@ -107,16 +107,16 @@
 .ocarousel-grid .ocarousel .owl-nav button.owl-next:hover,
 .ocarousel-grid .ocarousel .owl-nav button.owl-prev:focus,
 .ocarousel-grid .ocarousel .owl-nav button.owl-next:focus {
-  border-color: var(--ar-teal-deep, #02787e);
-  background: var(--ar-teal-deep, #02787e);
+  border-color: var(--ar-blue, #0D77BD);
+  background: var(--ar-blue, #0D77BD);
   color: var(--ar-white, #fff);
   opacity: 1;
 }
 
 .ocarousel-grid .ocarousel .owl-nav button.owl-prev:active,
 .ocarousel-grid .ocarousel .owl-nav button.owl-next:active {
-  background: var(--ar-teal-hover, #01585c);
-  border-color: var(--ar-teal-hover, #01585c);
+  background: var(--ar-blue-hover, #0A5F97);
+  border-color: var(--ar-blue-hover, #0A5F97);
   transform: scale(0.94);
 }
 
@@ -186,17 +186,17 @@
   height: 8px;
   margin: 0;
   border-radius: 999px;
-  background: var(--ar-teal-border, #b3dedc);
+  background: var(--ar-blue-border, #A5D4F2);
   transition: width var(--ar-transition, 0.18s ease), background var(--ar-transition, 0.18s ease);
 }
 
 .ocarousel-grid .ocarousel .owl-dots button.owl-dot:hover span {
-  background: var(--ar-teal, #009a95);
+  background: var(--ar-blue-mid, #1E8FD5);
 }
 
 .ocarousel-grid .ocarousel .owl-dots button.owl-dot.active span {
   width: 24px;
-  background: var(--ar-teal-deep, #02787e);
+  background: var(--ar-blue, #0D77BD);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -273,8 +273,8 @@
 
 .carousel-manufacturer .ocarousel-item > a:hover,
 .carousel-manufacturer .ocarousel-item > a:focus-visible {
-  border-color: var(--ar-teal, #009a95);
-  box-shadow: var(--ar-shadow, 0 6px 20px rgba(2, 120, 126, .1));
+  border-color: var(--ar-blue-mid, #1E8FD5);
+  box-shadow: var(--ar-shadow, 0 6px 20px rgba(12, 37, 54, .1));
   transform: translateY(-2px);
 }
 
@@ -290,7 +290,7 @@
 }
 
 .carousel-manufacturer .manufacturer-name a:hover {
-  color: var(--ar-teal-deep, #02787e);
+  color: var(--ar-blue, #0D77BD);
 }
 
 @media (prefers-reduced-motion: reduce) {

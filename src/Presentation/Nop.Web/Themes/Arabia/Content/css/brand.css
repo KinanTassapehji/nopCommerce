@@ -6,11 +6,11 @@
    Written with CSS logical properties (inline-start/end) so this one file
    serves both the LTR and RTL stylesheets.
 
-   Palette rule from the guideline: #00d9cc is never used on its own, so it
+   Palette rule from the guideline: #5BB6E8 is never used on its own, so it
    appears only inside var(--ar-gradient*). Because the gradient runs into
-   #00d9cc (1.78:1 against white), the gradient is reserved for decoration —
+   #5BB6E8 (1.78:1 against white), the gradient is reserved for decoration —
    rules, strips, accents. Any surface carrying a label uses the solid
-   --ar-teal-deep, which holds white text at 5.26:1.
+   --ar-blue, which holds white text at 4.78:1.
    ========================================================================== */
 
 /* --- Base ----------------------------------------------------------------
@@ -43,12 +43,12 @@ body{
 }
 
 a{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   transition: color var(--ar-transition);
 }
 
 a:hover{
-  color: var(--ar-teal-hover);
+  color: var(--ar-blue-hover);
 }
 
 /* Visible keyboard focus — DefaultClean leaves this to the browser default. */
@@ -57,7 +57,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible{
-  outline: 2px solid var(--ar-teal-deep);
+  outline: 2px solid var(--ar-blue);
   outline-offset: 2px;
   border-radius: var(--ar-radius-sm);
 }
@@ -95,12 +95,12 @@ used as the header's baseline. */
 
 .header-links a:hover,
 .header-selectors a:hover{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
 }
 
 /* they carry a digit. */
 .header-links .cart-qty{
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   color: var(--ar-white);
   border-radius: 999px;
   padding-inline: 8px;
@@ -123,12 +123,12 @@ used as the header's baseline. */
 }
 
 .search-box input.search-box-text:focus{
-  border-color: var(--ar-teal);
+  border-color: var(--ar-blue-mid);
   box-shadow: 0 0 0 3px rgba(0, 154, 149, 0.18);
 }
 
 .search-box .search-box-button{
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   border: 0;
   border-radius: var(--ar-radius);
   color: var(--ar-white);
@@ -197,7 +197,7 @@ input[type="tel"]:hover:not(:disabled),
 input[type="password"]:hover:not(:disabled),
 input[type="number"]:hover:not(:disabled),
 input[type="search"]:hover:not(:disabled){
-  border-color: var(--ar-teal-border);
+  border-color: var(--ar-blue-border);
 }
 
 /* Border + ring for pointer focus. The global :focus-visible outline further
@@ -210,7 +210,7 @@ input[type="password"]:focus,
 input[type="number"]:focus,
 input[type="search"]:focus,
 textarea:focus{
-  border-color: var(--ar-teal);
+  border-color: var(--ar-blue-mid);
   box-shadow: 0 0 0 3px rgba(0, 154, 149, 0.18);
   color: var(--ar-ink);
 }
@@ -237,7 +237,7 @@ select option:disabled{
 /* --- The open dropdown ----------------------------------------------------
    Chrome 135+ (customizable <select>): opting the control and its popup into
    `appearance: base-select` turns the OS list into a real styleable element,
-   so the open state gets the same card, radius and teal hover the rest of the
+   so the open state gets the same card, radius and blue hover the rest of the
    theme wears. Browsers without it ignore this whole block and keep the native
    popup — the closed field above looks identical either way.
    ponytail: no JS combobox; this is the platform doing it.
@@ -309,12 +309,12 @@ select option:disabled{
 
   select option:hover:not(:disabled),
   select option:focus:not(:disabled){
-    background-color: var(--ar-teal-tint);
+    background-color: var(--ar-blue-tint);
     outline: none;
   }
 
   select option:checked{
-    background-color: var(--ar-teal-tint-strong);
+    background-color: var(--ar-blue-tint-strong);
     font-weight: 600;
   }
 
@@ -326,7 +326,7 @@ select option:disabled{
   select option::checkmark{
     order: 1;
     margin-inline-start: auto;
-    color: var(--ar-teal-deep);
+    color: var(--ar-blue);
   }
 }
 
@@ -350,41 +350,41 @@ button,
 /* Secondary / utility buttons */
 .button-2{
   background: var(--ar-white);
-  color: var(--ar-teal-deep);
-  border: 1px solid var(--ar-teal-border);
+  color: var(--ar-blue);
+  border: 1px solid var(--ar-blue-border);
 }
 
 .button-2:hover{
-  background: var(--ar-teal-tint);
-  border-color: var(--ar-teal);
-  color: var(--ar-teal-hover);
+  background: var(--ar-blue-tint);
+  border-color: var(--ar-blue-mid);
+  color: var(--ar-blue-hover);
 }
 
-/* Primary buttons — solid deep teal keeps white label text at 5.26:1. */
+/* Primary buttons — solid --ar-blue keeps white label text at 4.78:1. */
 .button-1{
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   color: var(--ar-white);
   border: 0;
 }
 
 .button-1:hover{
-  background: var(--ar-teal-hover);
+  background: var(--ar-blue-hover);
   color: var(--ar-white);
 }
 
 .button-1:active{
-  background: var(--ar-teal-active);
+  background: var(--ar-blue-active);
   transform: translateY(1px);
 }
 
 /* The money CTAs get depth via shadow rather than a gradient fill,
-so their labels keep the 5.26:1 contrast of solid deep teal. */
+so their labels keep the 4.78:1 contrast of solid --ar-blue. */
 .button-1.add-to-cart-button,
 .button-1.checkout-button,
 .button-1.product-box-add-to-cart-button,
 .button-1.register-button,
 .button-1.login-button{
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   box-shadow: var(--ar-shadow);
 }
 
@@ -393,7 +393,7 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
 .button-1.product-box-add-to-cart-button:hover,
 .button-1.register-button:hover,
 .button-1.login-button:hover{
-  background: var(--ar-teal-hover);
+  background: var(--ar-blue-hover);
   box-shadow: var(--ar-shadow-lg);
 }
 
@@ -409,7 +409,7 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
 
 .page-title h1,
 .page-title h2{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   font-weight: 700;
 }
 
@@ -435,13 +435,13 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--ar-teal-bright);
+  background: var(--ar-blue-bright);
   z-index: 1;
 }
 
 /* --- Content blocks / sidebar --------------------------------------------- */
 .block .title{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   font-weight: 700;
 }
 
@@ -452,7 +452,7 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
 }
 
 .block a:hover{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
 }
 
 /* --- Product cards -------------------------------------------------------- */
@@ -466,7 +466,7 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
 }
 
 .item-box .product-item:hover{
-  border-color: var(--ar-teal);
+  border-color: var(--ar-blue-mid);
   box-shadow: var(--ar-shadow-lg);
   transform: translateY(-3px);
 }
@@ -500,13 +500,13 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
 }
 
 .item-box .product-title a:hover{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
 }
 
 .item-box .prices .actual-price,
 .prices .actual-price,
 .product-price span{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   font-weight: 700;
 }
 
@@ -618,7 +618,7 @@ so screen
   min-height: 44px;
   padding: 0;
   border-radius: 50%;
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   color: var(--ar-white);
   font-size: 0;
   line-height: 0;
@@ -640,7 +640,7 @@ so the glyph takes currentColor and
 
 .item-box .product-box-add-to-cart-button:hover,
 .item-box .product-box-add-to-cart-button:focus{
-  background: var(--ar-teal-hover);
+  background: var(--ar-blue-hover);
   color: var(--ar-white);
 }
 
@@ -683,9 +683,9 @@ which would
 .data-table th,
 .forum-table th,
 .compare-products-table th{
-  background: var(--ar-teal-tint);
-  color: var(--ar-teal-deep);
-  border-block-end: 2px solid var(--ar-teal-border);
+  background: var(--ar-blue-tint);
+  color: var(--ar-blue);
+  border-block-end: 2px solid var(--ar-blue-border);
 }
 
 .data-table tr:hover td{
@@ -695,19 +695,19 @@ which would
 /* --- Cart / checkout ------------------------------------------------------ */
 .cart-total .order-total,
 .cart-total .order-total strong{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   font-weight: 700;
 }
 
 .opc .step-title,
 .checkout-page .section .title{
-  background: var(--ar-teal-tint);
-  color: var(--ar-teal-deep);
+  background: var(--ar-blue-tint);
+  color: var(--ar-blue);
   border-radius: var(--ar-radius-sm);
 }
 
 .opc .allow .step-title{
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   color: var(--ar-white);
 }
 
@@ -731,7 +731,7 @@ which would
 
 /* --- Footer --------------------------------------------------------------- */
 .footer{
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   color: var(--ar-white);
   margin-block-start: 40px;
 }
@@ -755,7 +755,7 @@ which would
 
 /* Full white,
 not a tinted white: at 0.82 alpha these links measured
-   4.08:1 on the teal footer,
+   4.08:1 on the navy footer,
 under the 4.5:1 floor for 14px text. */
 .footer a,
 .footer li a{
@@ -845,7 +845,7 @@ under the 4.5:1 floor for 14px text. */
   color: rgba(255, 255, 255, 0.92);
 }
 
-/* Reversed lockup on the teal footer. */
+/* Reversed lockup on the navy footer. */
 .footer .footer-logo img{
   content: url("../images/logo-white.png");
   max-height: 50px;
@@ -854,11 +854,11 @@ under the 4.5:1 floor for 14px text. */
 /* --- Newsletter ----------------------------------------------------------- */
 .newsletter-email input[type="email"]{
   border-radius: var(--ar-radius);
-  border: 1px solid var(--ar-teal-border);
+  border: 1px solid var(--ar-blue-border);
 }
 
 .newsletter-subscribe-button{
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   color: var(--ar-white);
   border: 0;
   border-radius: var(--ar-radius);
@@ -874,8 +874,8 @@ under the 4.5:1 floor for 14px text. */
 
 .pager li.current-page span,
 .pager li a:hover{
-  background: var(--ar-teal-deep);
-  border-color: var(--ar-teal-deep);
+  background: var(--ar-blue);
+  border-color: var(--ar-blue);
   color: var(--ar-white);
 }
 
@@ -886,22 +886,22 @@ under the 4.5:1 floor for 14px text. */
 
 /* --- Scroll-to-top -------------------------------------------------------- */
 .scroll-back-button{
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   border-radius: 50%;
   box-shadow: var(--ar-shadow);
 }
 
 /* --- Scrollbars -----------------------------------------------------------
    Standard properties first (Firefox, Chrome 121+); the ::-webkit- block is
-   the fallback for Safari and older Chromium. Thumb is --ar-teal-deep, the
-   only teal that stays legible against the track at this width; the bright
-   teal appears on hover as a gradient, matching the decorative-only rule.
+   the fallback for Safari and older Chromium. Thumb is --ar-blue, the
+   only blue that stays legible against the track at this width; the bright
+   blue appears on hover as a gradient, matching the decorative-only rule.
    The scrollbar is chrome, not a label, so the gradient is safe here.
    Elements that hide their bar (breadcrumb, gallery tracks) set
    scrollbar-width:none later in this file and still win. */
 html{
   scrollbar-width: thin;
-  scrollbar-color: var(--ar-teal-deep) var(--ar-surface-alt);
+  scrollbar-color: var(--ar-blue) var(--ar-surface-alt);
 }
 
 ::-webkit-scrollbar{
@@ -914,7 +914,7 @@ html{
 }
 
 ::-webkit-scrollbar-thumb{
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   border-radius: 999px;
   /* Inset the thumb without changing the hit target: a transparent border
      over a padding-box background is the only way to do it in WebKit. */
@@ -928,7 +928,7 @@ html{
 }
 
 ::-webkit-scrollbar-thumb:active{
-  background: var(--ar-teal-active);
+  background: var(--ar-blue-active);
   background-clip: padding-box;
 }
 
@@ -960,20 +960,20 @@ which beat
 .variant-overview .button-2,
 .address-list-page .button-2{
   background-color: var(--ar-white);
-  color: var(--ar-teal-deep);
-  border: 1px solid var(--ar-teal-border);
+  color: var(--ar-blue);
+  border: 1px solid var(--ar-blue-border);
 }
 
 .overview .button-2:hover,
 .variant-overview .button-2:hover,
 .address-list-page .button-2:hover{
-  background-color: var(--ar-teal-tint);
-  color: var(--ar-teal-hover);
+  background-color: var(--ar-blue-tint);
+  color: var(--ar-blue-hover);
 }
 
 /* The collapsible footer menu inherits body ink,
 which lands at 3.2:1 on the
-   teal footer. */
+   navy footer. */
 .footer .footer-menu__title,
 .footer .footer-menu__title a,
 .footer .footer-menu__body a{
@@ -1048,7 +1048,7 @@ above the WCAG 2.2 SC 2.5.8 floor. */
     inline-size: 20px !important;
     block-size: 20px !important;
     margin-inline-end: 6px;
-    accent-color: var(--ar-teal-deep);
+    accent-color: var(--ar-blue);
     vertical-align: middle;
   }
 
@@ -1115,9 +1115,9 @@ table{
   }
 }
 
-/* --- Homepage — layout ported from the TMTM Stitch comps ------------------
+/* --- Homepage — layout inherited from the parent fork's comps -------------
    Source: Stitch project "Elegant nopCommerce PWA",
-screens "TMTM Homepage -
+screens "Homepage -
    Desktop / Mobile (Logo Updated)". Layout,
 spacing and type scale only —
    every colour still comes from tokens.css,
@@ -1218,7 +1218,7 @@ so the "HomepageText" topic that would
 }
 
 /* A brand rule marks where each band starts — the gradient is decorative, so
-   it may run into --ar-teal-bright here where a label never could. The bar is
+   it may run into --ar-blue-bright here where a label never could. The bar is
    drawn on the flex line, so it flips to the right side in RTL for free, and
    sizing it in `em` keeps it tied to the heading at every breakpoint. */
 .home-page .page-body > * > .title:before{
@@ -1283,7 +1283,7 @@ so the "HomepageText" topic that would
   aspect-ratio: 1;
   margin: 0;
   border-radius: var(--ar-radius-lg); /* echoes the logo's rounded square */
-  background: var(--ar-teal-tint);
+  background: var(--ar-blue-tint);
   overflow: hidden;
   box-shadow: var(--ar-shadow);
   transition: box-shadow var(--ar-transition), transform var(--ar-transition);
@@ -1339,7 +1339,7 @@ so the "HomepageText" topic that would
 }
 
 :is(.home-page-category-grid, .sub-category-grid) .title a:hover{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   text-decoration: none;
 }
 
@@ -1452,7 +1452,7 @@ so it needs no vertical offset of its own here. */
 }
 
 /* --- Header: the Stitch top bar -------------------------------------------
-   Source: Stitch "TMTM Homepage - Desktop (Logo Updated)" — one full-bleed
+   Source: the parent fork's "Homepage - Desktop" comp — one full-bleed
    glassy row,
 logo at the start and the actions at the end,
 replacing
@@ -1575,19 +1575,19 @@ the category bar having gone. */
 .header-links :is(.ico-account, .ico-login),
 #topcartlink .ico-cart{
   background: none;
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
 }
 
 .header-links :is(.ico-account, .ico-login):hover,
 .header-links :is(.ico-account, .ico-login):focus,
 #topcartlink .ico-cart:hover,
 #topcartlink .ico-cart:focus{
-  background: var(--ar-teal-tint);
-  color: var(--ar-teal-hover);
+  background: var(--ar-blue-tint);
+  color: var(--ar-blue-hover);
 }
 
 .search-box .search-box-button{
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   color: var(--ar-white);
 }
 
@@ -1595,14 +1595,14 @@ the category bar having gone. */
    blocking alert. The button says it instead (see the theme's _Header.cshtml). */
 .search-box .search-box-button:disabled,
 .search-box .search-box-button:disabled:hover{
-  background: var(--ar-teal-tint);
-  color: var(--ar-teal-deep);
+  background: var(--ar-blue-tint);
+  color: var(--ar-blue);
   cursor: default;
 }
 
 .search-box .search-box-button:hover:not(:disabled),
 .search-box .search-box-button:focus:not(:disabled){
-  background: var(--ar-teal-hover);
+  background: var(--ar-blue-hover);
   color: var(--ar-white);
 }
 
@@ -1646,7 +1646,7 @@ along with the pill the li was wrapped in. */
   height: 20px;
   padding-inline: 5px;
   border-radius: 999px;
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   color: var(--ar-white);
   font-size: 0;
   line-height: 1;
@@ -1674,7 +1674,7 @@ sized
 }
 
 .header-links .ico-logout:hover{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
 }
 
 /* The list that holds the links becomes the icon row. */
@@ -1925,14 +1925,14 @@ so the field stays visible beside the icon. */
     border: 0;
     border-radius: 50%;
     background: none;
-    color: var(--ar-teal-deep);
+    color: var(--ar-blue);
     cursor: pointer;
     transition: background-color var(--ar-transition), color var(--ar-transition);
   }
 
   .mobile-search-toggle:hover,
   .mobile-search-toggle:focus-visible{
-    background: var(--ar-teal-tint);
+    background: var(--ar-blue-tint);
   }
 
   .mobile-search-icon{
@@ -2004,7 +2004,7 @@ so the field stays visible beside the icon. */
 
   .search-box form:focus-within{
     background: var(--ar-surface);
-    box-shadow: inset 0 0 0 2px var(--ar-teal-deep);
+    box-shadow: inset 0 0 0 2px var(--ar-blue);
   }
 
   .search-box input.search-box-text{
@@ -2176,8 +2176,8 @@ so the field stays visible beside the icon. */
 
 .ar-sheet-close:hover,
 .ar-sheet-close:focus-visible{
-  background: var(--ar-teal-tint);
-  color: var(--ar-teal-deep);
+  background: var(--ar-blue-tint);
+  color: var(--ar-blue);
 }
 
 .ar-sheet-close svg{
@@ -2287,7 +2287,7 @@ so the field stays visible beside the icon. */
 
 .ar-sheet .menu__link:hover,
 .ar-sheet .menu__link:focus-visible{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
 }
 
 .ar-sheet .menu__item-toggle::after{
@@ -2374,7 +2374,7 @@ so the field stays visible beside the icon. */
     border-block-start: 1px solid var(--ar-line);
     border-start-start-radius: var(--ar-radius-lg);
     border-start-end-radius: var(--ar-radius-lg);
-    box-shadow: 0 -4px 20px rgba(2, 120, 126, 0.06);
+    box-shadow: 0 -4px 20px rgba(12, 37, 54, 0.06);
   }
 
   /* Nothing on the page may end up underneath the bar. */
@@ -2407,7 +2407,7 @@ so the field stays visible beside the icon. */
 
   .mobile-tab:hover,
   .mobile-tab:focus-visible{
-    color: var(--ar-teal-deep);
+    color: var(--ar-blue);
   }
 
   .mobile-tab:active{
@@ -2429,11 +2429,11 @@ so the field stays visible beside the icon. */
   }
 
   .mobile-tab.active{
-    color: var(--ar-teal-deep);
+    color: var(--ar-blue);
   }
 
   .mobile-tab.active .mobile-tab-icon-wrap{
-    background: var(--ar-teal-tint);
+    background: var(--ar-blue-tint);
   }
 
   .mobile-tab.active .mobile-tab-label{
@@ -2477,7 +2477,7 @@ so the field stays visible beside the icon. */
     block-size: 16px;
     padding-inline: 4px;
     border-radius: 999px;
-    background: var(--ar-teal-deep);
+    background: var(--ar-blue);
     box-shadow: 0 0 0 2px var(--ar-surface);
     font-size: 0;
     color: var(--ar-white);
@@ -2641,7 +2641,7 @@ so the field stays visible beside the icon. */
     margin: 0;
     padding-block: 8px;
     padding-inline: 14px;
-    border: 1px solid var(--ar-teal-border);
+    border: 1px solid var(--ar-blue-border);
     border-radius: 999px;
     background: var(--ar-surface);
     color: var(--ar-ink);
@@ -2654,8 +2654,8 @@ so the field stays visible beside the icon. */
 
   .ar-sort-chip:hover,
   .ar-sort-chip:focus-visible{
-    background: var(--ar-teal-tint);
-    border-color: var(--ar-teal);
+    background: var(--ar-blue-tint);
+    border-color: var(--ar-blue-mid);
   }
 
   .ar-sort-chip svg{
@@ -2704,7 +2704,7 @@ so the field stays visible beside the icon. */
   }
 
   .ar-sort-option[aria-checked="true"]{
-    color: var(--ar-teal-deep);
+    color: var(--ar-blue);
     font-weight: 700;
   }
 
@@ -2767,11 +2767,11 @@ so the field stays visible beside the icon. */
     inline-size: 100%;
     min-height: 48px;
     padding-block: 12px;
-    border: 1px solid var(--ar-teal-border);
+    border: 1px solid var(--ar-blue-border);
     border-radius: 999px;
     background-color: var(--ar-surface);
     background-image: none;
-    color: var(--ar-teal-deep);
+    color: var(--ar-blue);
     font-size: var(--ar-fs-label);
     line-height: var(--ar-lh-label);
     font-weight: 600;
@@ -3129,7 +3129,7 @@ so the field stays visible beside the icon. */
   }
 
   /* The bottom tab bar carries navigation on phones and tablets, so the
-     footer is dead weight there: a teal wall of links between the last
+     footer is dead weight there: a navy wall of links between the last
      product and the tab bar. Hidden outright, not collapsed.
 
      ponytail: display:none, not a separate mobile footer. Bring back a
@@ -3220,17 +3220,17 @@ so the field stays visible beside the icon. */
   box-shadow: var(--ar-shadow);
 }
 
-/* Discount is the one that should carry weight — solid deep teal, 5.26:1. */
+/* Discount is the one that should carry weight — solid --ar-blue, 4.78:1. */
 .offer-content .discount-info-label{
-  background: var(--ar-teal-deep);
+  background: var(--ar-blue);
   color: var(--ar-white);
 }
 
 /* "New" is secondary: it should register without competing with the price. */
 .offer-content .new-product-label{
   background: var(--ar-white);
-  color: var(--ar-teal-deep);
-  box-shadow: inset 0 0 0 1px var(--ar-teal-border), var(--ar-shadow);
+  color: var(--ar-blue);
+  box-shadow: inset 0 0 0 1px var(--ar-blue-border), var(--ar-shadow);
 }
 
 .offer-content .bestseller-label{
@@ -3260,7 +3260,7 @@ so the field stays visible beside the icon. */
 .qty-stepper{
   display: inline-flex;
   align-items: stretch;
-  border: 1px solid var(--ar-teal-border);
+  border: 1px solid var(--ar-blue-border);
   border-radius: var(--ar-radius);
   background: var(--ar-surface);
   overflow: hidden;
@@ -3273,7 +3273,7 @@ so the field stays visible beside the icon. */
   border-radius: 0;
   padding: 0;
   background: transparent;
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
@@ -3281,12 +3281,12 @@ so the field stays visible beside the icon. */
 
 .qty-stepper .qty-step:hover,
 .qty-stepper .qty-step:focus-visible{
-  background: var(--ar-teal-tint);
-  color: var(--ar-teal-hover);
+  background: var(--ar-blue-tint);
+  color: var(--ar-blue-hover);
 }
 
 .qty-stepper .qty-step:active{
-  background: var(--ar-teal-tint-strong);
+  background: var(--ar-blue-tint-strong);
 }
 
 .overview .qty-stepper .qty-input,
@@ -3308,19 +3308,19 @@ so the field stays visible beside the icon. */
 .overview .qty-stepper .qty-input:focus,
 .variant-overview .qty-stepper .qty-input:focus{
   outline: 0;
-  background: var(--ar-teal-tint);
+  background: var(--ar-blue-tint);
 }
 
 /* Focus has to land on the pill, not on a child with clipped corners. */
 .qty-stepper:focus-within{
-  border-color: var(--ar-teal);
-  box-shadow: 0 0 0 3px var(--ar-teal-tint);
+  border-color: var(--ar-blue-mid);
+  box-shadow: 0 0 0 3px var(--ar-blue-tint);
 }
 
 .overview .qty-dropdown,
 .variant-overview .qty-dropdown{
   min-height: 48px;
-  border: 1px solid var(--ar-teal-border);
+  border: 1px solid var(--ar-blue-border);
   border-radius: var(--ar-radius);
   /* styles.css sets `padding: 0 12px` here, which outranks the shared select
      rule and would leave the arrow sitting on top of the number. */
@@ -3386,10 +3386,10 @@ so the field stays visible beside the icon. */
   inline-size: 44px;
   block-size: 44px;
   padding: 0;
-  border: 1px solid var(--ar-teal-border);
+  border: 1px solid var(--ar-blue-border);
   border-radius: 50%;
   background: var(--ar-surface);
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   cursor: pointer;
 }
 
@@ -3397,8 +3397,8 @@ so the field stays visible beside the icon. */
 .product-share-networks a:focus-visible,
 .product-share-networks .share-copy-link:hover,
 .product-share-networks .share-copy-link:focus-visible{
-  background: var(--ar-teal-deep);
-  border-color: var(--ar-teal-deep);
+  background: var(--ar-blue);
+  border-color: var(--ar-blue);
   color: var(--ar-white);
   box-shadow: var(--ar-shadow);
 }
@@ -3461,7 +3461,7 @@ so the field stays visible beside the icon. */
   transform: scale(1.08);
   box-shadow: inset 0 1px 2px rgba(16, 32, 31, .16),
               0 0 0 2px var(--ar-surface),
-              0 0 0 3px var(--ar-teal-border);
+              0 0 0 3px var(--ar-blue-border);
 }
 
 .attributes .attribute-squares .selected-value .attribute-square-container{
@@ -3472,7 +3472,7 @@ so the field stays visible beside the icon. */
 .attributes .attribute-squares label:has(input:focus-visible) .attribute-square{
   box-shadow: inset 0 1px 2px rgba(16, 32, 31, .16),
               0 0 0 2px var(--ar-surface),
-              0 0 0 4px var(--ar-teal-deep);
+              0 0 0 4px var(--ar-blue);
 }
 
 /* Core hides the radio with display:none, which drops it out of the tab
@@ -3616,7 +3616,7 @@ so the field stays visible beside the icon. */
 }
 
 .ar-gallery-track:focus-visible{
-  outline: 2px solid var(--ar-teal-deep);
+  outline: 2px solid var(--ar-blue);
   outline-offset: -2px;
 }
 
@@ -3647,12 +3647,12 @@ so the field stays visible beside the icon. */
   block-size: 44px;
   min-height: 44px;
   padding: 0;
-  border: 1px solid var(--ar-teal-border);
+  border: 1px solid var(--ar-blue-border);
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.92);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   cursor: pointer;
   transition: background var(--ar-transition), color var(--ar-transition), opacity var(--ar-transition);
 }
@@ -3661,8 +3661,8 @@ so the field stays visible beside the icon. */
 .ar-gallery-open:focus-visible,
 .ar-gallery-arrow:hover,
 .ar-gallery-arrow:focus-visible{
-  background: var(--ar-teal-deep);
-  border-color: var(--ar-teal-deep);
+  background: var(--ar-blue);
+  border-color: var(--ar-blue);
   color: var(--ar-white);
 }
 
@@ -3780,13 +3780,13 @@ so the field stays visible beside the icon. */
 }
 
 .ar-thumb:hover{
-  border-color: var(--ar-teal-border);
+  border-color: var(--ar-blue-border);
 }
 
 .ar-thumb.active,
 .ar-thumb:focus-visible{
-  border-color: var(--ar-teal-deep);
-  box-shadow: 0 0 0 1px var(--ar-teal-deep);
+  border-color: var(--ar-blue);
+  box-shadow: 0 0 0 1px var(--ar-blue);
 }
 
 @media (min-width: 1001px){
@@ -3934,7 +3934,7 @@ so the field stays visible beside the icon. */
 }
 
 .ar-identity .value a:hover{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
 }
 
 /* The rating sprite is DefaultClean's grey-and-gold pair. Two inline stars in
@@ -3961,7 +3961,7 @@ so the field stays visible beside the icon. */
 }
 
 .ar-identity .product-review-links a{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -4019,7 +4019,7 @@ so the field stays visible beside the icon. */
   font-size: var(--ar-fs-headline-sm);
   line-height: var(--ar-lh-headline-sm);
   font-weight: 700;
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
 }
 
 .ar-buybox .old-product-price span,
@@ -4143,11 +4143,11 @@ so the field stays visible beside the icon. */
   margin: 0;
   border-radius: 999px;
   padding: 6px 14px;
-  background: var(--ar-teal-tint);
+  background: var(--ar-blue-tint);
   font-size: var(--ar-fs-label);
   line-height: var(--ar-lh-label);
   font-weight: 600;
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
 }
 
 /* The base sheet paints a shipping glyph into the background of this one. */
@@ -4294,11 +4294,11 @@ so the field stays visible beside the icon. */
 }
 
 .ar-panel > summary:hover{
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
 }
 
 .ar-panel > summary:focus-visible{
-  outline: 2px solid var(--ar-teal-deep);
+  outline: 2px solid var(--ar-blue);
   outline-offset: 2px;
 }
 
@@ -4311,8 +4311,8 @@ so the field stays visible beside the icon. */
   margin-inline-start: auto;
   inline-size: 10px;
   block-size: 10px;
-  border-right: 2px solid var(--ar-teal-deep);
-  border-bottom: 2px solid var(--ar-teal-deep);
+  border-right: 2px solid var(--ar-blue);
+  border-bottom: 2px solid var(--ar-blue);
   rotate: 45deg;
   translate: 0 -3px;
   transition: rotate var(--ar-transition), translate var(--ar-transition);
@@ -4326,11 +4326,11 @@ so the field stays visible beside the icon. */
 .ar-panel-count{
   border-radius: 999px;
   padding: 2px 10px;
-  background: var(--ar-teal-tint);
+  background: var(--ar-blue-tint);
   font-size: var(--ar-fs-label-sm);
   line-height: var(--ar-lh-label-sm);
   font-weight: 700;
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
 }
 
 .ar-panel-body{
@@ -4425,7 +4425,7 @@ so the field stays visible beside the icon. */
   font-size: var(--ar-fs-label);
   line-height: var(--ar-lh-label);
   font-weight: 700;
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -4457,17 +4457,17 @@ so the field stays visible beside the icon. */
 
 .product-tags-box .product-tags-list .producttag{
   display: inline-block;
-  border: 1px solid var(--ar-teal-border);
+  border: 1px solid var(--ar-blue-border);
   border-radius: 999px;
   padding: 6px 14px;
   background: var(--ar-surface);
   font-size: var(--ar-fs-label);
   line-height: var(--ar-lh-label);
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
 }
 
 .product-tags-box .product-tags-list .producttag:hover{
-  background: var(--ar-teal-tint);
+  background: var(--ar-blue-tint);
 }
 
 
@@ -4512,7 +4512,7 @@ so the field stays visible beside the icon. */
     background: rgba(255, 255, 255, 0.94);
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
-    box-shadow: 0 -4px 20px rgba(2, 120, 126, 0.10);
+    box-shadow: 0 -4px 20px rgba(12, 37, 54, 0.10);
     animation: ar-buybar-in 0.18s ease;
   }
 
@@ -4527,7 +4527,7 @@ so the field stays visible beside the icon. */
     font-size: var(--ar-fs-body-lg);
     line-height: var(--ar-lh-body-lg);
     font-weight: 700;
-    color: var(--ar-teal-deep);
+    color: var(--ar-blue);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -4622,7 +4622,7 @@ so the field stays visible beside the icon. */
     inline-size: 88px;
     block-size: 88px;
     border-radius: var(--ar-radius-sm);
-    background: var(--ar-teal-tint);
+    background: var(--ar-blue-tint);
     object-fit: cover;
   }
 
@@ -4692,7 +4692,7 @@ so the field stays visible beside the icon. */
   .cart td.subtotal .product-subtotal{
     font-size: var(--ar-fs-body-lg);
     font-weight: 700;
-    color: var(--ar-teal-deep);
+    color: var(--ar-blue);
   }
 }
 
@@ -4710,7 +4710,7 @@ so the field stays visible beside the icon. */
 .cart .product-quantity{
   display: inline-flex;
   align-items: stretch;
-  border: 1px solid var(--ar-teal-border);
+  border: 1px solid var(--ar-blue-border);
   border-radius: var(--ar-radius);
   background: var(--ar-surface);
   overflow: hidden;
@@ -4727,7 +4727,7 @@ so the field stays visible beside the icon. */
   min-block-size: 44px;
   border: 0;
   background: none;
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   font-size: 20px;
   line-height: 1;
   user-select: none;
@@ -4744,7 +4744,7 @@ so the field stays visible beside the icon. */
 
 .cart .product-quantity div.up:hover,
 .cart .product-quantity div.down:hover{
-  background: var(--ar-teal-tint);
+  background: var(--ar-blue-tint);
 }
 
 .cart td.quantity input,
@@ -4763,8 +4763,8 @@ so the field stays visible beside the icon. */
 }
 
 .cart .product-quantity:focus-within{
-  border-color: var(--ar-teal);
-  box-shadow: 0 0 0 3px var(--ar-teal-tint);
+  border-color: var(--ar-blue-mid);
+  box-shadow: 0 0 0 3px var(--ar-blue-tint);
 }
 
 /* An 11px PNG is not a target. Same x the sheet and the gallery already use,
@@ -4789,7 +4789,7 @@ so the field stays visible beside the icon. */
 
 .cart .remove-from-cart .remove-btn:hover,
 .cart .remove-from-cart .remove-btn:focus-visible{
-  background: var(--ar-teal-tint);
+  background: var(--ar-blue-tint);
   color: var(--ar-error);
 }
 
@@ -4955,7 +4955,7 @@ so the field stays visible beside the icon. */
   min-height: 44px;
   min-width: 0;
   margin: 0;
-  border: 1px solid var(--ar-teal-border);
+  border: 1px solid var(--ar-blue-border);
   border-radius: var(--ar-radius);
   /* `background`, not `background-color`: the base sheet paints edit.png /
      remove.png / return.png behind these labels and keeps a mirrored copy of
@@ -4968,7 +4968,7 @@ so the field stays visible beside the icon. */
   padding-inline: 20px;
   font-size: var(--ar-fs-label);
   font-weight: 600;
-  color: var(--ar-teal-deep);
+  color: var(--ar-blue);
   text-transform: uppercase;
   text-align: center;
 }
@@ -4978,9 +4978,9 @@ so the field stays visible beside the icon. */
 .return-request-list-page .buttons .button-2:hover,
 .order-details-page .actions button.button-2:hover,
 .order-details-page .page-title a.button-2:hover{
-  background: var(--ar-teal-tint);
-  border-color: var(--ar-teal);
-  color: var(--ar-teal-hover);
+  background: var(--ar-blue-tint);
+  border-color: var(--ar-blue-mid);
+  color: var(--ar-blue-hover);
 }
 
 /* The one action that should carry weight on the page keeps the solid fill:
@@ -4989,15 +4989,15 @@ so the field stays visible beside the icon. */
    "return items" on any order where reordering is not allowed. */
 .order-details-page .actions button.button-1,
 .order-details-page .page-title a.button-2.print-order-button{
-  border: 1px solid var(--ar-teal-deep);
-  background: var(--ar-teal-deep);
+  border: 1px solid var(--ar-blue);
+  background: var(--ar-blue);
   color: var(--ar-white);
 }
 
 .order-details-page .actions button.button-1:hover,
 .order-details-page .page-title a.button-2.print-order-button:hover{
-  background: var(--ar-teal-hover);
-  border-color: var(--ar-teal-hover);
+  background: var(--ar-blue-hover);
+  border-color: var(--ar-blue-hover);
   color: var(--ar-white);
 }
 
@@ -5040,7 +5040,7 @@ so the field stays visible beside the icon. */
   gap: var(--ar-stack-md);
   margin-block: var(--ar-stack-lg);
   padding: var(--ar-stack-lg) var(--ar-margin-mobile);
-  border: 1px dashed var(--ar-teal-border);
+  border: 1px dashed var(--ar-blue-border);
   border-radius: var(--ar-radius-lg);
   background: var(--ar-surface-alt);
   color: var(--ar-ink);
