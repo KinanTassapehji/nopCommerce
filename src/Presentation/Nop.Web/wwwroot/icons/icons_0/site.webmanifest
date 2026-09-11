@@ -1,16 +1,16 @@
 {
   "id": "/",
-  "name": "tmtm | تمتم",
-  "short_name": "tmtm",
-  "description": "tmtm online store",
-  "lang": "en",
-  "dir": "auto",
+  "name": "العربية للأجهزة | Arabian Appliances",
+  "short_name": "العربية للأجهزة",
+  "description": "إحتياجاتك المنزلية من الأجهزة الكهربائية تجدها تحت سقف واحد",
+  "lang": "ar",
+  "dir": "rtl",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui", "browser"],
   "orientation": "any",
-  "theme_color": "#02787e",
+  "theme_color": "#0D77BD",
   "background_color": "#ffffff",
   "categories": ["shopping"],
   "icons": [
@@ -28,20 +28,20 @@
   ],
   "shortcuts": [
     {
-      "name": "Shopping cart",
-      "short_name": "Cart",
+      "name": "سلة التسوق",
+      "short_name": "السلة",
       "url": "/cart",
       "icons": [{ "src": "/icons/icons_0/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "name": "My account",
-      "short_name": "Account",
+      "name": "حسابي",
+      "short_name": "حسابي",
       "url": "/customer/info",
       "icons": [{ "src": "/icons/icons_0/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "name": "Search",
-      "short_name": "Search",
+      "name": "البحث",
+      "short_name": "البحث",
       "url": "/search",
       "icons": [{ "src": "/icons/icons_0/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" }]
     }
