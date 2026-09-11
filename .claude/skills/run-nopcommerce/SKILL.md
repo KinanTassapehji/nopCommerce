@@ -1,6 +1,6 @@
 ---
 name: run-nopcommerce
-description: Build and run this nopCommerce store locally against the local SQL Server (server `.`, database `TmTm`), including first-time installation if the database is empty. Use when asked to run, start, launch, restart, or smoke-test the app locally, or to reinstall/reset the local store database.
+description: Build and run this nopCommerce store locally against the local SQL Server (server `.`, database `Arabia`), including first-time installation if the database is empty. Use when asked to run, start, launch, restart, or smoke-test the app locally, or to reinstall/reset the local store database.
 ---
 
 # Run nopCommerce locally
@@ -9,14 +9,14 @@ Local setup that is already known-good on this machine — don't re-derive it.
 
 | | |
 |---|---|
-| Repo root | `D:\Work\TmTm\Code` |
+| Repo root | `D:\Work\TmTm\Arabia` |
 | App project | `src/Presentation/Nop.Web` |
 | URL | `http://nomo.local:5000` — **always**, never `localhost` (no `launchSettings.json`; always pass `--urls`) |
-| DB | SQL Server 2025 at `.`, database `TmTm`, `sa` / `asdASD@1234` |
+| DB | SQL Server 2025 at `.`, database `Arabia`, `sa` / `asdASD@1234` |
 | Admin login | `admin@yourstore.com` / `asdASD@1234` |
 | Config written by installer | `src/Presentation/Nop.Web/App_Data/appsettings.json` (gitignored) |
 
-Branch `TmTm_release_4_90_6` targets **net10.0** (`global.json` pins SDK 10.0.100, `rollForward: latestFeature`; 10.0.400 is installed).
+Branch `Arabia_release_4_90_6` targets **net10.0** (`global.json` pins SDK 10.0.100, `rollForward: latestFeature`; 10.0.400 is installed).
 
 ## Already running? Just confirm it
 
@@ -42,7 +42,7 @@ Get-Process Nop.Web | Select-Object Id, StartTime
 
 ## Fast path — app installed but not running
 
-`App_Data/appsettings.json` exists and `TmTm` has ~132 tables:
+`App_Data/appsettings.json` exists and `Arabia` has ~132 tables:
 
 ```bash
 dotnet build src/NopCommerce.sln -c Debug -v minimal        # skip if nothing changed
@@ -70,7 +70,7 @@ bind error (`exit code 127`) while the old build keeps serving:
 Get-Process Nop.Web -ErrorAction SilentlyContinue | Stop-Process -Force
 ``` A code change needs a full stop → build → start; there is no hot reload in this setup.
 
-## First-time install (empty or missing `TmTm`)
+## First-time install (empty or missing `Arabia`)
 
 The app redirects everything to `/install` until `App_Data/appsettings.json` has a connection string. Drive the wizard over HTTP rather than asking the user to click through a browser.
 
@@ -94,7 +94,7 @@ curl -s -b nopcookies.txt -o install-result.html -w 'status=%{http_code} time=%{
   --data-urlencode "DataProvider=1" \
   --data-urlencode "ConnectionStringRaw=false" \
   --data-urlencode "ServerName=." \
-  --data-urlencode "DatabaseName=TmTm" \
+  --data-urlencode "DatabaseName=Arabia" \
   --data-urlencode "IntegratedSecurity=false" \
   --data-urlencode "Username=sa" \
   --data-urlencode "Password=asdASD@1234" \
@@ -109,7 +109,7 @@ curl -s -b nopcookies.txt -o install-result.html -w 'status=%{http_code} time=%{
 **A 200 here does not prove success** — a validation failure also renders 200. Verify against the database, then restart the app (the running process still believes it is uninstalled):
 
 ```bash
-sqlcmd -S . -U sa -P 'asdASD@1234' -C -d TmTm \
+sqlcmd -S . -U sa -P 'asdASD@1234' -C -d Arabia \
   -Q "SELECT COUNT(*) AS Tables FROM sys.tables; SELECT COUNT(*) AS Products FROM Product;"
 # expect ~132 tables, 47 products with sample data
 ```
@@ -117,7 +117,7 @@ sqlcmd -S . -U sa -P 'asdASD@1234' -C -d TmTm \
 ## Reset the store
 
 ```bash
-sqlcmd -S . -U sa -P 'asdASD@1234' -C -Q "ALTER DATABASE TmTm SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE TmTm;"
+sqlcmd -S . -U sa -P 'asdASD@1234' -C -Q "ALTER DATABASE Arabia SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE Arabia;"
 rm -f src/Presentation/Nop.Web/App_Data/appsettings.json \
       src/Presentation/Nop.Web/App_Data/plugins.json
 ```

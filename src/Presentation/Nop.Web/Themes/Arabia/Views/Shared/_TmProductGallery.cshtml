@@ -1,6 +1,6 @@
 ﻿@model ProductDetailsModel
 @*
-    TmTm product gallery — one component, three entry points.
+    Arabia product gallery — one component, three entry points.
 
     The store runs NopStation.PictureZoom, whose view-location expander does not
     add a location, it REPLACES the list: while it is active every request for
@@ -8,8 +8,8 @@
     nothing a theme puts in Views/Product is ever read. So the gallery lives here
     in Views/Shared, and two shims point at it:
 
-      Themes/TmTm/Views/Product/_ProductDetailsPictures.cshtml          plugin off
-      Plugins/…PictureZoom/Themes/TmTm/Views/Shared/PictureZoom.cshtml  plugin on
+      Themes/Arabia/Views/Product/_ProductDetailsPictures.cshtml          plugin off
+      Plugins/…PictureZoom/Themes/Arabia/Views/Shared/PictureZoom.cshtml  plugin on
 
     Either way the shopper gets this gallery, and no core or vendor file is edited.
 

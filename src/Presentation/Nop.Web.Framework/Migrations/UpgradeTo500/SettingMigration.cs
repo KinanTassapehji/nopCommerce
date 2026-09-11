@@ -19,7 +19,7 @@ public class SettingMigration : MigrationBase
         //do not use DI, because it produces exception on the installation process
         var settingService = EngineContext.Current.Resolve<ISettingService>();
 
-        //TmTm does not charge tax - keep every tax surface out of the UI.
+        //Arabia does not charge tax - keep every tax surface out of the UI.
         //ponytail: settings, not view surgery - every tax row/label/selector in the store is already gated by these.
         var taxSettings = settingService.LoadSetting<TaxSettings>();
         taxSettings.ActiveTaxProviderSystemName = string.Empty;

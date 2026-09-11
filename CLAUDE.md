@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-nopCommerce 5.00 (ASP.NET Core, .NET 10, `net10.0`, SDK pinned in `global.json`). Solution is `src/NopCommerce.sln`. Main branch is `develop`; commit subjects reference the tracker issue number (e.g. `#8102 ...`).
+The **Arabia** store — a fork of nopCommerce on ASP.NET Core / .NET 10 (`net10.0`, SDK pinned in `global.json`). `NopVersion.CURRENT_VERSION` and every `plugin.json` say `4.90`; the migration attributes say `"5.00"`. Solution is `src/NopCommerce.sln`. Working branch is `Arabia_release_4_90_6`, forked from the parent TmTm store at `D:\Work\TmTm\TmTm`. The storefront redesign is planned in `../ARABIA_REDESIGN_PLAN.md`.
 
 ## Commands
 
@@ -67,7 +67,7 @@ Migrations are `ForwardOnlyMigration` / `MigrationBase` and must be idempotent. 
 
 ### Presentation
 
-Controllers stay thin: they resolve permissions, call services, and delegate all view-model building to an `I*ModelFactory` (`Nop.Web/Factories/` for the store, `Nop.Web/Areas/Admin/Factories/` for admin). Cross-cutting behavior is action filters in `Nop.Web.Framework/Mvc/Filters/` (`[CheckPermission(StandardPermission.…)]`, `[AutoValidation]`, `[CheckAccessPublicStore]`, …). Views resolve through `ThemeableViewLocationExpander` so themes (`Nop.Web/Themes/DefaultClean`) and plugins can override them. Bundling is WebOptimizer (`Nop.Web.Framework/WebOptimizer`).
+Controllers stay thin: they resolve permissions, call services, and delegate all view-model building to an `I*ModelFactory` (`Nop.Web/Factories/` for the store, `Nop.Web/Areas/Admin/Factories/` for admin). Cross-cutting behavior is action filters in `Nop.Web.Framework/Mvc/Filters/` (`[CheckPermission(StandardPermission.…)]`, `[AutoValidation]`, `[CheckAccessPublicStore]`, …). Views resolve through `ThemeableViewLocationExpander` so themes (the single theme is `Nop.Web/Themes/Arabia`) and plugins can override them. Bundling is WebOptimizer (`Nop.Web.Framework/WebOptimizer`).
 
 Admin lives in the `Admin` area with its own controllers/factories/models/validators — keep admin and public concerns in their respective trees.
 

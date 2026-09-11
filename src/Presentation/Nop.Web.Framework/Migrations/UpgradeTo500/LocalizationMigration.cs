@@ -22,7 +22,7 @@ public class LocalizationMigration : MigrationBase
         //ponytail: brand name is the same in every language, so one call for all of them
         localizationService.AddOrUpdateLocaleResource(new Dictionary<string, string>
         {
-            ["Admin.PageTitle"] = "TmTm"
+            ["Admin.PageTitle"] = "Arabia"
         });
 
         //gift cards and wishlists are not used in this store

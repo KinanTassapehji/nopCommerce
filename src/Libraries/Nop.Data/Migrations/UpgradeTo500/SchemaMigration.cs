@@ -5,7 +5,7 @@ using Nop.Core.Domain.Orders;
 namespace Nop.Data.Migrations.UpgradeTo500;
 
 /// <summary>
-/// Drops the columns left behind by the features TmTm does not sell into:
+/// Drops the columns left behind by the features Arabia does not sell into:
 /// downloadable products.
 ///
 /// This is not cosmetic. The columns are NOT NULL with no default, so once the

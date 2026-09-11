@@ -167,6 +167,11 @@ public partial class InstallationService
         {
             new() {Name = "Books", DisplayOrder = 1},
             new() {Name = "Electronics & Software", DisplayOrder = 5},
+            //ponytail: the downloadable *feature* is stripped (Product has no IsDownload column any
+            //more), but SampleData.json still tags three products with this category and sample
+            //Orders reference them - without the row the whole sample install throws. Drop this line
+            //once the sample catalogue is rewritten for Arabia.
+            new() {Name = "Downloadable Products", DisplayOrder = 10},
             new() {Name = "Jewelry", DisplayOrder = 15},
             new() {Name = "Apparel", DisplayOrder = 20}
         };
@@ -1653,7 +1658,7 @@ public partial class InstallationService
             StoreClosed = false,
             //the store ships with its own theme; a fresh install that came up in
             //DefaultClean lost the branding every time until this was seeded
-            DefaultStoreTheme = "TmTm",
+            DefaultStoreTheme = "Arabia",
             AllowCustomerToSelectTheme = false,
             DisplayEuCookieLawWarning = isEurope,
             FacebookLink = "https://www.facebook.com/nopCommerce",

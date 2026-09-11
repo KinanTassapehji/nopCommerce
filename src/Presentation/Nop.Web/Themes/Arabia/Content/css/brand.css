@@ -1,5 +1,5 @@
 ﻿/* ==========================================================================
-   TmTm — brand layer
+   Arabia — brand layer
    Loaded after styles(.rtl).css. Restyles the surfaces that carry brand
    identity; everything else inherits the re-pointed DefaultClean variables.
 
@@ -3176,7 +3176,7 @@ so the field stays visible beside the icon. */
 
 /* --- Product ribbons ------------------------------------------------------
    NopStation.ProductRibbon ships flat grey blocks (#ddd, padding 15px 25px)
-   that read as unstyled placeholders. TmTm treatment: compact brand pills
+   that read as unstyled placeholders. Arabia treatment: compact brand pills
    pinned to the image corner. The plugin registers its sheet with
    AppendCssFileParts, which inserts at index 0, so brand.css wins on order
    alone — no !important needed here.
@@ -3513,7 +3513,7 @@ so the field stays visible beside the icon. */
 /* ==========================================================================
    Product page
    --------------------------------------------------------------------------
-   Paired with Themes/TmTm/Views/Product/ProductTemplate.Simple.cshtml and
+   Paired with Themes/Arabia/Views/Product/ProductTemplate.Simple.cshtml and
    Views/Shared/_TmProductGallery.cshtml. The base sheet floats a 46%/52% pair
    under a hairline rule and gives every one of the twenty partials in the
    reading column the same weight; this section replaces the float with a grid,
@@ -5061,7 +5061,7 @@ so the field stays visible beside the icon. */
 }
 
 /* --- Checkout: no checkout attributes --------------------------------------
-   TmTm sells nothing that needs gift wrapping or any other checkout attribute,
+   Arabia sells nothing that needs gift wrapping or any other checkout attribute,
    so the store has none. The base sheet reserves a 60px band for them on the
    confirm step; with nothing to put in it that band is only white space.
    ponytail: drop the reserve, not the block — restore min-height if a

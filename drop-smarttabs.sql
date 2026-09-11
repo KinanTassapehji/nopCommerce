@@ -1,19 +1,19 @@
 /*
     Removes every trace of the deleted NopStation.Plugin.Widgets.SmartTabs plugin
-    from the TmTm database. Idempotent - safe to run more than once, and safe on a
+    from the Arabia database. Idempotent - safe to run more than once, and safe on a
     database where the plugin was never installed.
 
-        sqlcmd -S . -d TmTm -E -i drop-smarttabs.sql
+        sqlcmd -S . -d Arabia -E -i drop-smarttabs.sql
 
     (-E is Windows integrated auth. For SQL auth, pass the credentials from the
     environment rather than writing them here:
-        sqlcmd -S . -d TmTm -U "$SQL_USER" -P "$SQL_PASSWORD" -i drop-smarttabs.sql)
+        sqlcmd -S . -d Arabia -U "$SQL_USER" -P "$SQL_PASSWORD" -i drop-smarttabs.sql)
 
     Run it with the store STOPPED.
 */
 
 SET NOCOUNT ON;
-USE [TmTm];
+USE [Arabia];
 GO
 
 /* --- 1. Tables ---------------------------------------------------------------
@@ -102,5 +102,5 @@ IF OBJECT_ID(N'[dbo].[MigrationVersionInfo]', N'U') IS NOT NULL
 PRINT 'migration records removed';
 GO
 
-PRINT 'SmartTabs removed from TmTm.';
+PRINT 'SmartTabs removed from Arabia.';
 GO

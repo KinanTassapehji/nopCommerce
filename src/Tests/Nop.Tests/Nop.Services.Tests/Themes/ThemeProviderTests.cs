@@ -44,9 +44,9 @@ public class ThemeProviderTests : BaseNopTest
         themeDescriptor.Should().BeNull();
         themeDescriptor = await _themeProvider.GetThemeBySystemNameAsync(null);
         themeDescriptor.Should().BeNull();
-        themeDescriptor = await _themeProvider.GetThemeBySystemNameAsync("TmTm");
+        themeDescriptor = await _themeProvider.GetThemeBySystemNameAsync("Arabia");
         themeDescriptor.Should().NotBeNull();
-        themeDescriptor.FriendlyName.Should().BeEquivalentTo("TmTm");
+        themeDescriptor.FriendlyName.Should().BeEquivalentTo("Arabia");
     }
 
 
@@ -59,7 +59,7 @@ public class ThemeProviderTests : BaseNopTest
         isExists.Should().BeFalse();
         isExists = await _themeProvider.ThemeExistsAsync(null);
         isExists.Should().BeFalse();
-        isExists = await _themeProvider.ThemeExistsAsync("TmTm");
+        isExists = await _themeProvider.ThemeExistsAsync("Arabia");
         isExists.Should().BeTrue();
     }
 }

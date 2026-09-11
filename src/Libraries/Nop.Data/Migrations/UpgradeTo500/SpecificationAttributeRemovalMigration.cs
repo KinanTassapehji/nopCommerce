@@ -9,7 +9,7 @@ namespace Nop.Data.Migrations.UpgradeTo500;
 /// Moves every product specification onto a product attribute and drops the
 /// specification tables.
 ///
-/// TmTm never sold on specifications - the four attributes in use (colour,
+/// Arabia never sold on specifications - the four attributes in use (colour,
 /// material, care, warranty) are facts about the product, not a second, parallel
 /// way of describing one. Rather than lose them with the feature, each one lands
 /// as a read-only checkbox attribute: pre-selected, disabled in the storefront,
