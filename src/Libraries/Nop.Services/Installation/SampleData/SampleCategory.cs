@@ -11,6 +11,12 @@ public partial class SampleCategory
     public string Name { get; set; }
 
     /// <summary>
+    /// Gets or sets the English name. Name itself carries the store's primary
+    /// language (Arabic); this is saved as the localized value for en-US.
+    /// </summary>
+    public string NameEn { get; set; }
+
+    /// <summary>
     /// Gets or sets the picture file name
     /// </summary>
     public string ImageFileName { get; set; }

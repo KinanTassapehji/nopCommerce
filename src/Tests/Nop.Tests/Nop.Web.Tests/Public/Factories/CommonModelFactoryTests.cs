@@ -70,7 +70,7 @@ public class CommonModelFactoryTests : BaseNopTest
         model.StoreName.Should().Be("العربية للأجهزة");
         model.LogoPath.Should().NotBeNullOrEmpty();
         model.LogoPath.Should()
-            .Be($"http://{NopTestsDefaults.HostIpAddress}/Themes/Arabia/Content/images/logo.png");
+            .Be($"http://{NopTestsDefaults.HostIpAddress}/Themes/Arabia/Content/images/logo.png?v=arabia1");
     }
 
     [Test]

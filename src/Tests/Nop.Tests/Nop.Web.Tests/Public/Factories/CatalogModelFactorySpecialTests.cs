@@ -87,8 +87,8 @@ public class CatalogModelFactorySpecialTests : WebTest
         var model = await _catalogModelFactory.PrepareCategoryModelAsync(_category, new CatalogProductsCommand());
 
         model.CategoryBreadcrumb.Any().Should().BeFalse();
-        model.SubCategories.Count.Should().Be(3);
-        //ShowProductsFromSubcategories is on, so this is the whole "المنزل والمعيشة" tree
+        model.SubCategories.Count.Should().Be(5);
+        //ShowProductsFromSubcategories is on, so this is the whole "بيلت ان" tree
         model.CatalogProductsModel.Products.Count.Should().Be(12);
     }
 
@@ -99,7 +99,7 @@ public class CatalogModelFactorySpecialTests : WebTest
 
         //capped by NumberOfProductTags above; the catalogue carries more than that
         model.Tags.Count.Should().Be(20);
-        model.TotalTags.Should().Be(68);
+        model.TotalTags.Should().Be(41);
     }
 
     [Test]

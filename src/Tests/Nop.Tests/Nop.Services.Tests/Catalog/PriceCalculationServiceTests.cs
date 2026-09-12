@@ -38,51 +38,51 @@ public class PriceCalculationServiceTests : ServiceTest
     [Test]
     public async Task CanGetFinalProductPrice()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-CC-503");
+        var product = await _productService.GetProductBySkuAsync("SWMO42L");
 
         var customer = new Customer();
         var store = new Store();
 
         var (finalPriceWithoutDiscounts, finalPrice, _, _) = await _priceCalcService.GetFinalPriceAsync(product, customer, store, 0, false);
-        finalPrice.Should().Be(19M);
+        finalPrice.Should().Be(1429M);
         finalPrice.Should().Be(finalPriceWithoutDiscounts);
 
         (finalPriceWithoutDiscounts, finalPrice, _, _) = await _priceCalcService.GetFinalPriceAsync(product, customer, store, 0, false, 3);
 
-        finalPrice.Should().Be(17M);
+        finalPrice.Should().Be(1329M);
         finalPriceWithoutDiscounts.Should().Be(finalPriceWithoutDiscounts);
     }
 
     [Test]
     public async Task CanGetFinalProductPriceWithTierPrices()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-CC-503");
+        var product = await _productService.GetProductBySkuAsync("SWMO42L");
 
         var customer = new Customer();
         var store = new Store();
 
         var (finalPriceWithoutDiscounts, finalPrice, _, _) = await _priceCalcService.GetFinalPriceAsync(product, customer, store, 0, false);
-        finalPrice.Should().Be(19M);
+        finalPrice.Should().Be(1429M);
         finalPrice.Should().Be(finalPriceWithoutDiscounts);
         (finalPriceWithoutDiscounts, finalPrice, _, _) = await _priceCalcService.GetFinalPriceAsync(product, customer, store, 0, false, 2);
-        finalPrice.Should().Be(19);
+        finalPrice.Should().Be(1429);
         finalPrice.Should().Be(finalPriceWithoutDiscounts);
         (finalPriceWithoutDiscounts, finalPrice, _, _) = await _priceCalcService.GetFinalPriceAsync(product, customer, store, 0, false, 3);
-        finalPrice.Should().Be(17);
+        finalPrice.Should().Be(1329);
         finalPrice.Should().Be(finalPriceWithoutDiscounts);
         (finalPriceWithoutDiscounts, finalPrice, _, _) = await _priceCalcService.GetFinalPriceAsync(product, customer, store, 0, false, 5);
-        finalPrice.Should().Be(15);
+        finalPrice.Should().Be(1249);
         finalPrice.Should().Be(finalPriceWithoutDiscounts);
         (finalPriceWithoutDiscounts, finalPrice, _, _) = await _priceCalcService.GetFinalPriceAsync(product, customer, store, 0, false, 7);
 
-        finalPrice.Should().Be(15);
+        finalPrice.Should().Be(1249);
         finalPrice.Should().Be(finalPriceWithoutDiscounts);
     }
 
     [Test]
     public async Task CanGetFinalProductPriceWithTierPricesByCustomerRole()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-SH-603");
+        var product = await _productService.GetProductBySkuAsync("TWW14KSW");
 
         //customer
         var customer = await _customerService.GetCustomerByEmailAsync(NopTestsDefaults.AdminEmail);
@@ -113,7 +113,7 @@ public class PriceCalculationServiceTests : ServiceTest
         foreach (var tierPrice in tierPrices)
             await _productService.DeleteTierPriceAsync(tierPrice);
 
-        rez1.Should().Be(30M);
+        rez1.Should().Be(3289M);
         rez2.Should().Be(25);
         rez3.Should().Be(25);
         rez4.Should().Be(20);
@@ -131,7 +131,7 @@ public class PriceCalculationServiceTests : ServiceTest
     [Test]
     public async Task CanGetFinalProductPriceWithAdditionalFee()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-CC-503");
+        var product = await _productService.GetProductBySkuAsync("SWMO42L");
 
         //customer
         var customer = new Customer();
@@ -139,14 +139,14 @@ public class PriceCalculationServiceTests : ServiceTest
 
         var (finalPriceWithoutDiscounts, finalPrice, _, _) = await _priceCalcService.GetFinalPriceAsync(product, customer, store, 5, false);
 
-        finalPrice.Should().Be(24M);
+        finalPrice.Should().Be(1434M);
         finalPrice.Should().Be(finalPriceWithoutDiscounts);
     }
 
     [Test]
     public async Task CanGetFinalProductPriceWithDiscount()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-CC-503");
+        var product = await _productService.GetProductBySkuAsync("SWMO42L");
         var customer = await _customerService.GetCustomerByEmailAsync(NopTestsDefaults.AdminEmail);
         var store = new Store();
 
@@ -164,8 +164,8 @@ public class PriceCalculationServiceTests : ServiceTest
         await _productService.DeleteDiscountProductMappingAsync(mapping);
         await _customerService.RemoveDiscountCouponCodeAsync(customer, "WELCOME10");
 
-        finalPrice.Should().Be(9M);
-        finalPriceWithoutDiscounts.Should().Be(19M);
+        finalPrice.Should().Be(1419M);
+        finalPriceWithoutDiscounts.Should().Be(1429M);
     }
 
     [TestCase(12.366, 12.37, RoundingType.Rounding001)]

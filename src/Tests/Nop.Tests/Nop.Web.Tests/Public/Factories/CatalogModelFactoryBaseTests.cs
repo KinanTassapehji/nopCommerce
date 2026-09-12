@@ -46,10 +46,10 @@ public class CatalogModelFactoryBaseTests : WebTest
     {
         var model = await _catalogModelFactory.PrepareSearchModelAsync(new SearchModel(), new CatalogProductsCommand());
         model.AvailableCategories.Any().Should().BeTrue();
-        model.AvailableCategories.Count.Should().Be(19);
+        model.AvailableCategories.Count.Should().Be(48);
 
         model.AvailableManufacturers.Any().Should().BeTrue();
-        model.AvailableManufacturers.Count.Should().Be(7);
+        model.AvailableManufacturers.Count.Should().Be(9);
 
         model.AvailableVendors.Any().Should().BeFalse();
 
@@ -71,11 +71,11 @@ public class CatalogModelFactoryBaseTests : WebTest
 
         model = await _catalogModelFactory.PrepareSearchModelAsync(new SearchModel
         {
-            q = "ألتو"
+            q = "هايسنس"
         }, new CatalogProductsCommand());
         _httpContextAccessor.HttpContext.Request.QueryString = queryString;
 
-        model.CatalogProductsModel.Products.Count.Should().Be(2);
+        model.CatalogProductsModel.Products.Count.Should().Be(6);
     }
 
     [Test]
@@ -91,8 +91,8 @@ public class CatalogModelFactoryBaseTests : WebTest
         model.MetaTitle.Should().Be(_category.MetaTitle);
 
         model.CategoryBreadcrumb.Any().Should().BeTrue();
-        model.CategoryBreadcrumb.FirstOrDefault()?.Name.Should().Be("المنزل والمعيشة");
-        model.SubCategories.Count.Should().Be(3);
+        model.CategoryBreadcrumb.FirstOrDefault()?.Name.Should().Be("بيلت ان");
+        model.SubCategories.Count.Should().Be(5);
     }
 
     [Test]
@@ -120,17 +120,17 @@ public class CatalogModelFactoryBaseTests : WebTest
     {
         var model = await _catalogModelFactory.PrepareCategoryNavigationModelAsync(_category.Id, 0);
 
-        model.Categories.Count.Should().Be(6);
+        model.Categories.Count.Should().Be(12);
         model.CurrentCategoryId.Should().Be(_category.Id);
 
         model = await _catalogModelFactory.PrepareCategoryNavigationModelAsync(0, _product.Id);
-        model.Categories.Count.Should().Be(6);
+        model.Categories.Count.Should().Be(12);
         var productCategories = await _categoryService.GetProductCategoriesByProductIdAsync(_product.Id);
         model.CurrentCategoryId.Should().Be(productCategories.FirstOrDefault()?.CategoryId ?? 0);
 
         model = await _catalogModelFactory.PrepareCategoryNavigationModelAsync(_category.Id, _product.Id);
 
-        model.Categories.Count.Should().Be(6);
+        model.Categories.Count.Should().Be(12);
         model.CurrentCategoryId.Should().Be(_category.Id);
     }
 
@@ -140,9 +140,9 @@ public class CatalogModelFactoryBaseTests : WebTest
         var model = await _catalogModelFactory.PrepareHomepageCategoryModelsAsync();
 
         model.Any().Should().BeTrue();
-        model.Count.Should().Be(4);
+        model.Count.Should().Be(6);
 
-        var categories = new[] { "المنزل والمعيشة", "التقنية والإكسسوارات", "الملابس", "الجمال والعناية" };
+        var categories = new[] { "بيلت ان", "غسالة ملابس", "ثلاجة", "افران", "أجهزة مطبخ", "شاشة تلفزيون" };
 
         foreach (var categoryModel in model)
             categoryModel.Name.Should().BeOneOf(categories);
@@ -185,8 +185,8 @@ public class CatalogModelFactoryBaseTests : WebTest
     {
         var model = await _catalogModelFactory.PrepareManufacturerAllModelsAsync();
         model.Any().Should().BeTrue();
-        model.Count.Should().Be(6);
-        var manufacturers = new[] { "بيت الشمال", "ضياء", "أطلس", "نول", "مرمر", "أريا" };
+        model.Count.Should().Be(8);
+        var manufacturers = new[] { "General Plus", "GL-General", "Starway", "General Tech", "Hisense", "Smart Electric", "General goldin", "Starvision" };
 
         foreach (var manufacturerModel in model)
             manufacturerModel.Name.Should().BeOneOf(manufacturers);
@@ -196,11 +196,11 @@ public class CatalogModelFactoryBaseTests : WebTest
     public async Task CanPrepareManufacturerNavigationModel()
     {
         var model = await _catalogModelFactory.PrepareManufacturerNavigationModelAsync(_manufacturer.Id);
-        model.TotalManufacturers.Should().Be(6);
+        model.TotalManufacturers.Should().Be(8);
         model.Manufacturers.Any().Should().BeTrue();
         model.Manufacturers.Count.Should().Be(2);
 
-        var manufacturers = new[] { "بيت الشمال", "ضياء" };
+        var manufacturers = new[] { "General Plus", "GL-General", "Starway", "General Tech", "Hisense", "Smart Electric", "General goldin", "Starvision" };
 
         foreach (var manufacturerModel in model.Manufacturers)
             manufacturerModel.Name.Should().BeOneOf(manufacturers);
@@ -249,7 +249,7 @@ public class CatalogModelFactoryBaseTests : WebTest
 
         model.Id.Should().Be(_productTag.Id);
         model.TagName.Should().Be(_productTag.Name);
-        model.CatalogProductsModel.Products.Count.Should().Be(2);
+        model.CatalogProductsModel.Products.Count.Should().Be(6);
     }
 
     [Test]
@@ -266,7 +266,7 @@ public class CatalogModelFactoryBaseTests : WebTest
     public async Task CanPrepareProductTagsAllModel()
     {
         var model = await _catalogModelFactory.PreparePopularProductTagsModelAsync();
-        model.Tags.Count.Should().Be(68);
+        model.Tags.Count.Should().Be(41);
     }
 
     [Test]

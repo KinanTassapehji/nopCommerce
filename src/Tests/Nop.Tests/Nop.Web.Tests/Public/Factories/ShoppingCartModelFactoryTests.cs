@@ -39,7 +39,7 @@ public class ShoppingCartModelFactoryTests : WebTest
 
         //a free-shipping product: without one the order total is null, because no
         //shipping method has been chosen for the cart
-        var cartProduct = await _producService.GetProductBySkuAsync("TM-ST-1002");
+        var cartProduct = await _producService.GetProductBySkuAsync("SWCPDD5F");
 
         _shoppingCartItem = new ShoppingCartItem
         {
@@ -109,7 +109,7 @@ public class ShoppingCartModelFactoryTests : WebTest
         model.Items.Any().Should().BeTrue();
         model.Items.Count.Should().Be(1);
         model.TotalProducts.Should().Be(1);
-        model.SubTotal.Should().Be("$27.00");
+        model.SubTotal.Should().Be("$1,429.00");
     }
 
     [Test]
@@ -117,8 +117,8 @@ public class ShoppingCartModelFactoryTests : WebTest
     {
         var model = await _shoppingCartModelFactory.PrepareOrderTotalsModelAsync(new List<ShoppingCartItem> { _shoppingCartItem }, true);
 
-        model.SubTotal.Should().Be("$27.00");
-        model.OrderTotal.Should().Be("$27.00");
+        model.SubTotal.Should().Be("$1,429.00");
+        model.OrderTotal.Should().Be("$1,429.00");
 
         model.Shipping.Should().Be("$0.00");
         //no tax applies to this cart, and TaxSettings.HideZeroTax is on, so the summary

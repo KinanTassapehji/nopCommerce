@@ -65,6 +65,17 @@ public partial class SampleProducts
         public string FullDescription { get; set; }
 
         /// <summary>
+        /// Gets or sets the English name, short and full description. The
+        /// unsuffixed properties carry the store's primary language (Arabic);
+        /// these are saved as the localized values for en-US.
+        /// </summary>
+        public string NameEn { get; set; }
+
+        public string ShortDescriptionEn { get; set; }
+
+        public string FullDescriptionEn { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether to show the product on home page
         /// </summary>
         public bool ShowOnHomepage { get; set; }

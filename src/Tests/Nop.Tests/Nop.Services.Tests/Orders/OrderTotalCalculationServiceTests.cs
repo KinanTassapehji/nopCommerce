@@ -68,13 +68,13 @@ public class OrderTotalCalculationServiceTests : ServiceTest
 
     private async Task<List<ShoppingCartItem>> GetShoppingCartAsync()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         var sci1 = new ShoppingCartItem
         {
             ProductId = product.Id,
             Quantity = 2
         };
-        product = await _productService.GetProductBySkuAsync("TM-BB-202");
+        product = await _productService.GetProductBySkuAsync("SEM11TPL");
         var sci2 = new ShoppingCartItem
         {
             ProductId = product.Id,
@@ -155,12 +155,12 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         await settingService.SaveSettingAsync(shippingSettings);
         await settingService.SaveSettingAsync(_taxSettings);
 
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.AdditionalShippingCharge = 0M;
         product.IsFreeShipping = true;
         await _productService.UpdateProductAsync(product);
 
-        product = await _productService.GetProductBySkuAsync("TM-BB-202");
+        product = await _productService.GetProductBySkuAsync("SEM11TPL");
         product.AdditionalShippingCharge = 0M;
         product.IsFreeShipping = true;
         await _productService.UpdateProductAsync(product);
@@ -324,11 +324,11 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         await TearDown();
         await SetUp();
 
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.IsFreeShipping = true;
         await _productService.UpdateProductAsync(product);
 
-        await _productService.GetProductBySkuAsync("TM-BB-202");
+        await _productService.GetProductBySkuAsync("SEM11TPL");
         product.IsFreeShipping = true;
         await _productService.UpdateProductAsync(product);
 
@@ -339,7 +339,7 @@ public class OrderTotalCalculationServiceTests : ServiceTest
     [Test]
     public async Task ShippingShouldNotBeFreeWhenSomeOfShoppingCartItemsAreNotMarkedAsFreeShipping()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.IsFreeShipping = false;
         await _productService.UpdateProductAsync(product);
         var isFreeShipping = await _orderTotalCalcService.IsFreeShippingAsync(await GetShoppingCartAsync());
@@ -351,7 +351,7 @@ public class OrderTotalCalculationServiceTests : ServiceTest
     [Test]
     public async Task ShippingShouldBeFreeWhenCustomerIsInRoleWithFreeShipping()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.IsFreeShipping = false;
         await _productService.UpdateProductAsync(product);
         var role = await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.AdministratorsRoleName);
@@ -368,7 +368,7 @@ public class OrderTotalCalculationServiceTests : ServiceTest
     [Test]
     public async Task CanGetShippingTotalWithFixedShippingRateExcludingTax()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.AdditionalShippingCharge = 21.25M;
         product.IsFreeShipping = false;
         await _productService.UpdateProductAsync(product);
@@ -391,7 +391,7 @@ public class OrderTotalCalculationServiceTests : ServiceTest
     [Test]
     public async Task CanGetShippingTotalWithFixedShippingRateIncludingTax()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.AdditionalShippingCharge = 21.25M;
         product.IsFreeShipping = false;
         await _productService.UpdateProductAsync(product);
@@ -414,7 +414,7 @@ public class OrderTotalCalculationServiceTests : ServiceTest
     [Test]
     public async Task CanGetShippingTotalsWithFixedShippingRate()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.AdditionalShippingCharge = 21.25M;
         product.IsFreeShipping = false;
         await _productService.UpdateProductAsync(product);
@@ -441,7 +441,7 @@ public class OrderTotalCalculationServiceTests : ServiceTest
     [Test]
     public async Task CanGetShippingTotalDiscountExcludingTax()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.AdditionalShippingCharge = 21.25M;
         product.IsFreeShipping = false;
         await _productService.UpdateProductAsync(product);
@@ -470,7 +470,7 @@ public class OrderTotalCalculationServiceTests : ServiceTest
     [Test]
     public async Task CanGetShippingTotalDiscountIncludingTax()
     {
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.AdditionalShippingCharge = 21.25M;
         product.IsFreeShipping = false;
         await _productService.UpdateProductAsync(product);
@@ -502,7 +502,7 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         //207 - items, 10 - shipping (fixed), 20 - payment fee
 
         TestPaymentMethod.AdditionalHandlingFee = 20M;
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.IsFreeShipping = false;
         await _productService.UpdateProductAsync(product);
 
@@ -555,7 +555,7 @@ public class OrderTotalCalculationServiceTests : ServiceTest
         taxRates[10].Should().Be(20.7M);
 
         TestPaymentMethod.AdditionalHandlingFee = 0M;
-        product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.IsFreeShipping = false;
         await _productService.UpdateProductAsync(product);
     }
@@ -591,7 +591,7 @@ public class OrderTotalCalculationServiceTests : ServiceTest
 
         await _settingService.SaveSettingAsync(_taxSettings);
 
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.IsFreeShipping = false;
         await _productService.UpdateProductAsync(product);
 
@@ -678,7 +678,7 @@ public class OrderTotalCalculationServiceTests : ServiceTest
 
         TestPaymentMethod.AdditionalHandlingFee = 20M;
 
-        var product = await _productService.GetProductBySkuAsync("TM-ST-1002");
+        var product = await _productService.GetProductBySkuAsync("SWCPDD5F");
         product.IsFreeShipping = false;
         await _productService.UpdateProductAsync(product);
 

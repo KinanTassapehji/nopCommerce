@@ -23,7 +23,7 @@ public class ProductAttributeParserTests : ServiceTest
         _productAttributeFormatter = GetService<IProductAttributeFormatter>();
 
         var product = await GetService<IProductService>()
-            .GetProductBySkuAsync("TM-AW-701");
+            .GetProductBySkuAsync("SWMB50");
         var mappings = await productAttributeService.GetProductAttributeMappingsByProductIdAsync(product.Id);
         _productAttributeMappings = await mappings.SelectAwait(async p => KeyValuePair.Create(p, await productAttributeService.GetProductAttributeValuesAsync(p.Id))).ToListAsync();
     }

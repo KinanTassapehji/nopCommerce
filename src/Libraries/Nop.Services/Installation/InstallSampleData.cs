@@ -19,6 +19,7 @@ using Nop.Core.Domain.Polls;
 using Nop.Core.Domain.Seo;
 using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Stores;
+using Nop.Services.Common;
 using Nop.Core.Domain.Vendors;
 using Nop.Services.Installation.SampleData;
 
@@ -92,6 +93,40 @@ public partial class InstallationService
             IsActive = true,
             Slug = await ValidateSeNameAsync(entity, getName(entity))
         }).ToListAsync());
+    }
+
+    /// <summary>
+    /// Saves English values for entities whose own columns carry the store's primary
+    /// language. The catalogue is seeded Arabic-first: Name holds the Arabic, and the
+    /// English goes in as a localized value for en-US, which is the language nopCommerce
+    /// installs as the default. A working language with no localized row falls back to
+    /// the column, so Arabic needs no rows of its own.
+    /// </summary>
+    /// <param name="keyGroup">Locale key group, i.e. the entity name</param>
+    /// <param name="values">Entity id, locale key and the English value</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    protected virtual async Task InsertEnglishLocalizedValuesAsync(string keyGroup, IEnumerable<(int EntityId, string Key, string Value)> values)
+    {
+        var languageId = (await Table<Language>()
+            .FirstOrDefaultAsync(language => language.LanguageCulture == NopCommonDefaults.DefaultLanguageCulture))?.Id;
+
+        if (languageId is null)
+            return;
+
+        var properties = values
+            .Where(value => value.EntityId > 0 && !string.IsNullOrWhiteSpace(value.Value))
+            .Select(value => new LocalizedProperty
+            {
+                EntityId = value.EntityId,
+                LanguageId = languageId.Value,
+                LocaleKeyGroup = keyGroup,
+                LocaleKey = value.Key,
+                LocaleValue = value.Value
+            })
+            .ToList();
+
+        if (properties.Any())
+            await _dataProvider.BulkInsertEntitiesAsync(properties);
     }
 
     /// <summary>
@@ -1176,6 +1211,10 @@ public partial class InstallationService
     /// </returns>
     protected virtual async Task<int> InsertPictureAsync(string fileName, string name)
     {
+        //not every sample entity ships a picture; 0 is what nopCommerce reads as "none"
+        if (string.IsNullOrWhiteSpace(fileName))
+            return 0;
+
         var sampleImagesPath = _fileProvider.GetAbsolutePath(NopInstallationDefaults.SampleImagesPath);
 
         var pictureBinary = await _fileProvider.ReadAllBytesAsync(_fileProvider.Combine(sampleImagesPath, fileName));
@@ -1354,11 +1393,13 @@ public partial class InstallationService
 
         var allCategories = new List<Category>();
         var categoryToInsert = new List<Category>();
+        var englishNames = new List<(Category Category, string NameEn)>();
 
         async Task saveCategory(SampleCategory sampleCategory, int parentCategoryId = 0)
         {
             var category = await createCategory(sampleCategory, parentCategoryId);
             allCategories.Add(category);
+            englishNames.Add((category, sampleCategory.NameEn));
 
             if (sampleCategory.SubCategories.Any())
             {
@@ -1375,6 +1416,10 @@ public partial class InstallationService
             await saveCategory(sampleCategory);
 
         await _dataProvider.BulkInsertEntitiesAsync(categoryToInsert);
+
+        //ids only exist after the bulk insert, so the localized rows come last
+        await InsertEnglishLocalizedValuesAsync(nameof(Category),
+            englishNames.Select(item => (item.Category.Id, nameof(Category.Name), item.NameEn)));
 
         //search engine names
         await InsertSearchEngineNamesAsync(allCategories, category => category.Name);
@@ -1420,6 +1465,10 @@ public partial class InstallationService
         var allManufacturers = await sampleManufacturers.SelectAwait(async sample => await createManufacturer(sample)).ToListAsync();
 
         await _dataProvider.BulkInsertEntitiesAsync(allManufacturers);
+
+        await InsertEnglishLocalizedValuesAsync(nameof(Manufacturer),
+            allManufacturers.Zip(sampleManufacturers, (manufacturer, sample) =>
+                (manufacturer.Id, nameof(Manufacturer.Name), sample.NameEn)));
 
         //search engine names
         await InsertSearchEngineNamesAsync(allManufacturers, manufacturer => manufacturer.Name);

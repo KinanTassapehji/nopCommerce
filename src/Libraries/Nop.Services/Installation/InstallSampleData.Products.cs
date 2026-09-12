@@ -77,6 +77,7 @@ public partial class InstallationService
     {
         //products
         var allProducts = new List<Product>();
+        var englishValues = new List<(int EntityId, string Key, string Value)>();
 
         var productTemplates = new Dictionary<string, int>();
         var taxCategories = new Dictionary<string, int>();
@@ -203,6 +204,11 @@ public partial class InstallationService
 
             await _dataProvider.InsertEntityAsync(product);
 
+            //the entity columns carry Arabic; English rides along as the en-US localized value
+            englishValues.Add((product.Id, nameof(Product.Name), sample.NameEn));
+            englishValues.Add((product.Id, nameof(Product.ShortDescription), sample.ShortDescriptionEn));
+            englishValues.Add((product.Id, nameof(Product.FullDescription), sample.FullDescriptionEn));
+
             if (!string.IsNullOrEmpty(sample.CategoryName))
                 await _dataProvider.InsertEntityAsync(new ProductCategory
                 {
@@ -309,6 +315,8 @@ public partial class InstallationService
             await insertProduct(sample);
 
         //search engine names
+        await InsertEnglishLocalizedValuesAsync(nameof(Product), englishValues);
+
         await InsertSearchEngineNamesAsync(allProducts, product => product.Name);
 
         //related products
