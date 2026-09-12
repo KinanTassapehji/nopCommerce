@@ -459,7 +459,7 @@ so their labels keep the 4.78:1 contrast of solid --ar-blue. */
 .item-box .product-item{
   background: var(--ar-surface);
   border: 1px solid var(--ar-line);
-  border-radius: var(--ar-radius-lg); /* echoes the logo's rounded square */
+  border-radius: var(--ar-radius-lg); /* pill badges, category cards */
   overflow: hidden;
   transition: box-shadow var(--ar-transition), border-color var(--ar-transition),
               transform var(--ar-transition);
@@ -730,8 +730,11 @@ which would
 }
 
 /* --- Footer --------------------------------------------------------------- */
+/* Navy, not blue: the footer carries the reversed lockup, and the mark's own
+   blue is #0D77BD - on a blue ground that half of it vanishes. Navy is also the
+   role this colour has in the palette (bars, footer) and matches the admin. */
 .footer{
-  background: var(--ar-blue);
+  background: var(--ar-navy);
   color: var(--ar-white);
   margin-block-start: 40px;
 }
@@ -753,10 +756,8 @@ which would
   font-weight: 700;
 }
 
-/* Full white,
-not a tinted white: at 0.82 alpha these links measured
-   4.08:1 on the navy footer,
-under the 4.5:1 floor for 14px text. */
+/* Full white, not a tinted white: at 0.82 alpha these links measured 4.08:1 on
+   the navy footer, under the 4.5:1 floor for 14px text. */
 .footer a,
 .footer li a{
   color: var(--ar-white);
@@ -1282,7 +1283,7 @@ so the "HomepageText" topic that would
   max-inline-size: 128px;
   aspect-ratio: 1;
   margin: 0;
-  border-radius: var(--ar-radius-lg); /* echoes the logo's rounded square */
+  border-radius: var(--ar-radius-lg); /* pill badges, category cards */
   background: var(--ar-blue-tint);
   overflow: hidden;
   box-shadow: var(--ar-shadow);

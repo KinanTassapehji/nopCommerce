@@ -16,9 +16,14 @@
 
 /* --- Top bar ------------------------------------------------------------ */
 
-/* Bootstrap .bg-dark is !important, so this has to be too. */
+/* Admin chrome is --ar-navy, not --ar-blue. The mark's own blue is #0D77BD, so
+   on a blue ground that half of the logo sits at 1.00:1 and simply disappears -
+   the lockup reads as a lone red bar. Navy clears every part of it (blue 3.29:1,
+   red 3.31:1, white lettering 15.75:1) and leaves --ar-blue free to mean one
+   thing in here: interactive.
+   Bootstrap .bg-dark is !important, so this has to be too. */
 .main-header.navbar.bg-dark {
-  background-color: var(--ar-blue) !important;
+  background-color: var(--ar-navy) !important;
 }
 
 /* The gradient is decorative only (guideline) — a 3px rule under the header
@@ -34,16 +39,16 @@
 .main-sidebar .brand-link,
 .layout-fixed .brand-link,
 .layout-navbar-fixed .wrapper .sidebar-dark-primary .brand-link:not([class*=navbar]) {
-  background-color: var(--ar-blue);
+  background-color: var(--ar-navy);
 }
 
 .main-sidebar .brand-link {
   border-bottom: 1px solid rgba(255, 255, 255, .12);
 }
 
-/* Active item: white-on-blue at 14px would be 3.5:1, so the fill is a white
-   overlay (keeps the 4.78:1 --ar-blue already gives) and --ar-blue-bright
-   is the marker bar, which carries no text. */
+/* Active item: a white overlay rather than a fill, so the navy underneath keeps
+   its 15.75:1 with the label; --ar-blue-bright is the marker bar, which carries
+   no text. */
 .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
 .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active:hover,
 .nav-sidebar .nav-treeview > .nav-item > .nav-link.active {
@@ -298,7 +303,7 @@ table.dataTable tbody tr:hover > td {
   scrollbar-color: var(--ar-blue-mid) var(--ar-blue-tint);
 }
 
-/* The sidebar ground is --ar-blue — a blue thumb on it would vanish. */
+/* The sidebar ground is --ar-navy — a blue thumb on it would vanish. */
 .main-sidebar,
 .main-sidebar * {
   scrollbar-color: rgba(255, 255, 255, .38) transparent;
