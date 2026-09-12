@@ -105,7 +105,7 @@
   height: auto;
   margin: 0;
   background: rgba(255, 255, 255, .72)
-             url('/Themes/Arabia/Content/images/brand-mark.svg') center / var(--ar-loader-mark) no-repeat;
+             url('/Themes/Arabia/Content/images/brand-mark.svg?v=arabia1') center / var(--ar-loader-mark) no-repeat;
   -webkit-backdrop-filter: blur(3px) saturate(1.05);
   backdrop-filter: blur(3px) saturate(1.05);
   animation: ar-loader-fade .18s ease both;
@@ -257,8 +257,8 @@ body.ar-loading::after {
   margin-block-start: calc(var(--ar-loader-mark) / -2);
   margin-inline-start: calc(var(--ar-loader-mark) / -2);
   background: var(--ar-white, #fff);
-  -webkit-mask: url('/Themes/Arabia/Content/images/brand-mark.svg') center / contain no-repeat;
-  mask: url('/Themes/Arabia/Content/images/brand-mark.svg') center / contain no-repeat;
+  -webkit-mask: url('/Themes/Arabia/Content/images/brand-mark.svg?v=arabia1') center / contain no-repeat;
+  mask: url('/Themes/Arabia/Content/images/brand-mark.svg?v=arabia1') center / contain no-repeat;
 }
 
 /* The gif the ring replaces. */

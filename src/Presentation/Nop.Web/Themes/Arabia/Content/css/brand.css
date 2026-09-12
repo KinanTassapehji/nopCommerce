@@ -848,7 +848,7 @@ which would
 
 /* Reversed lockup on the navy footer. */
 .footer .footer-logo img{
-  content: url("../images/logo-white.png");
+  content: url("../images/logo-white.png?v=arabia1");
   max-height: 50px;
 }
 

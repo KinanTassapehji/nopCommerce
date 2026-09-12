@@ -217,7 +217,10 @@ public partial class CommonModelFactory : ICommonModelFactory
                 //use default logo
                 var pathBase = _httpContextAccessor.HttpContext.Request.PathBase.Value ?? string.Empty;
                 var storeLocation = _mediaSettings.UseAbsoluteImagePath ? _webHelper.GetStoreLocation() : $"{pathBase}/";
-                logo = $"{storeLocation}Themes/{await _themeContext.GetWorkingThemeNameAsync()}/Content/images/logo.png";
+                //?v= is a cache buster: brand images are served with a one-year
+                //immutable Cache-Control, so replacing logo.png in place is invisible
+                //to anyone who already loaded the old one. Bump it when the logo changes.
+                logo = $"{storeLocation}Themes/{await _themeContext.GetWorkingThemeNameAsync()}/Content/images/logo.png?v=arabia1";
             }
 
             return logo;
