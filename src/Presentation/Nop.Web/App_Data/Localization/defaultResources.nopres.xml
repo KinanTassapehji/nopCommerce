@@ -16985,6 +16985,9 @@
   <LocaleResource Name="Homepage.AllProducts">
     <Value>Browse all products</Value>
   </LocaleResource>
+  <LocaleResource Name="Homepage.Brands">
+    <Value>Brands</Value>
+  </LocaleResource>
   <LocaleResource Name="Honeypot.BotDetected">
     <Value>A bot detected. Honeypot.</Value>
   </LocaleResource>
@@ -17014,6 +17017,9 @@
   </LocaleResource>
   <LocaleResource Name="Literals.Nop.Core.Http.NopRouteNames.General.ContactUs">
     <Value>Contact us</Value>
+  </LocaleResource>
+  <LocaleResource Name="Literals.Nop.Core.Http.NopRouteNames.General.MaintenanceRequest">
+    <Value>Maintenance request</Value>
   </LocaleResource>
   <LocaleResource Name="Literals.Nop.Core.Http.NopRouteNames.General.Login">
     <Value>Login</Value>
@@ -17050,6 +17056,117 @@
   </LocaleResource>
   <LocaleResource Name="Literals.Nop.Core.Http.NopRouteNames.General.Cart">
     <Value>Shopping cart</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Area">
+    <Value>Street</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Area.Hint">
+    <Value>Enter the street name</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Area.Required">
+    <Value>Street is required</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Brand">
+    <Value>Brand</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Brand.Required">
+    <Value>Brand is required</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Brand.Select">
+    <Value>Select a brand</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Button">
+    <Value>Send</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.City">
+    <Value>City</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.City.Hint">
+    <Value>Enter the city name</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.City.Required">
+    <Value>City is required</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.ContactDetails">
+    <Value>Contact us</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.DeviceDetails">
+    <Value>Device details</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.DeviceType">
+    <Value>Device type</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.DeviceType.Hint">
+    <Value>e.g. split air conditioner</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.DeviceType.Required">
+    <Value>Device type is required</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Email">
+    <Value>Email</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Email.Hint">
+    <Value>example@gmail.com</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.EmailSubject">
+    <Value>New maintenance request</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.FullName">
+    <Value>Full name</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.FullName.Hint">
+    <Value>Enter your full name</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.FullName.Required">
+    <Value>Enter your name</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.InWarranty">
+    <Value>Within the warranty period</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Location">
+    <Value>Address</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.MaintenancePolicy">
+    <Value>Maintenance policy</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.MaintenanceServices">
+    <Value>Out of warranty maintenance services</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.ModelNumber">
+    <Value>Model number</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.ModelNumber.Hint">
+    <Value>e.g. SWAC18WHC</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.ModelNumber.Required">
+    <Value>Model number is required</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Note">
+    <Value>Note: dear customers, please be advised that there is no home service for small appliance repairs and the customer should visit the nearest authorised service centre. If the appliance is not under warranty, an inspection fee of 100 SAR is charged.</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.PhoneNumber">
+    <Value>Mobile</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.PhoneNumber.Hint">
+    <Value>05XXXXXXXX</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.PhoneNumber.Invalid">
+    <Value>The mobile number must be 10 digits and start with 05.</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.PhoneNumber.Required">
+    <Value>Enter your mobile number</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Problem">
+    <Value>Write problem</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Problem.Hint">
+    <Value>Please describe the problem ...</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Problem.Required">
+    <Value>This field is required</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.YourRequestHasBeenSent">
+    <Value>The request has been successfully sent.</Value>
   </LocaleResource>
   <LocaleResource Name="Manufacturers">
     <Value>Manufacturers</Value>
@@ -17164,6 +17281,15 @@
   </LocaleResource>
   <LocaleResource Name="Mobile.Nav.Home">
     <Value>Home</Value>
+  </LocaleResource>
+  <LocaleResource Name="Nav.Brands">
+    <Value>Brands</Value>
+  </LocaleResource>
+  <LocaleResource Name="Nav.Information">
+    <Value>Information</Value>
+  </LocaleResource>
+  <LocaleResource Name="Nav.Products">
+    <Value>Products</Value>
   </LocaleResource>
   <LocaleResource Name="News">
     <Value>News</Value>
@@ -17536,6 +17662,9 @@
   </LocaleResource>
   <LocaleResource Name="PageTitle.Login">
     <Value>Login</Value>
+  </LocaleResource>
+  <LocaleResource Name="PageTitle.MaintenanceRequest">
+    <Value>Maintenance request</Value>
   </LocaleResource>
   <LocaleResource Name="PageTitle.Manufacturers">
     <Value>Manufacturers</Value>

@@ -32,6 +32,11 @@
 
     //page class
     NopHtml.AppendPageCssClassParts("html-topic-page");
+
+    //the FAQ body is authored in the admin as a plain <ul> of
+    //<li><strong>question</strong><p>answer</p></li>; the accordion is built from
+    //that shape on the client so the editable content stays plain HTML
+    var isFaq = Model.SystemName == "FAQ";
 }
 @if (Model.IsPasswordProtected)
 {
@@ -91,7 +96,42 @@
         </form>
     </div>
 }
-<div class="page topic-page" id="ph-topic">
+@if (isFaq)
+{
+    <script asp-location="Footer">
+        //rewrite the seeded Q/A list into native <details name="faq"> — the name
+        //attribute is what closes the other questions, so there is no toggle
+        //handler, no ARIA to maintain and no state to keep in sync.
+        //ponytail: browsers without exclusive <details> (pre-2024) just let more
+        //than one answer stay open. Add a click handler only if those show up.
+        document.querySelectorAll(".topic-faq .page-body ul").forEach(function (list) {
+            var items = Array.from(list.children);
+            if (!items.length || !items.every(li => li.querySelector("strong")))
+                return;
+
+            var group = document.createDocumentFragment();
+            items.forEach(function (li) {
+                var question = li.querySelector("strong");
+                var entry = document.createElement("details");
+                entry.setAttribute("name", "faq");
+
+                var summary = document.createElement("summary");
+                summary.append(...question.childNodes);
+                question.remove();
+
+                var answer = document.createElement("div");
+                answer.className = "faq-answer";
+                answer.append(...li.childNodes);
+
+                entry.append(summary, answer);
+                group.append(entry);
+            });
+
+            list.replaceWith(group);
+        });
+    </script>
+}
+<div class="page topic-page@(isFaq ? " topic-faq" : string.Empty)" id="ph-topic">
     @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CustomerTopicDetailsTop, additionalData = Model })
     <div class="page-title" id="ph-title">
         <h1>@Model.Title</h1>

@@ -1,0 +1,136 @@
+﻿@model MaintenanceRequestModel
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.MaintenanceRequest").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-maintenance-request-page");
+
+    //both topics are seeded, but a store that deleted them should not get a dead link
+    var maintenanceServicesUrl = await NopUrl.RouteTopicUrlAsync("maintenanceservices");
+    var maintenancePolicyUrl = await NopUrl.RouteTopicUrlAsync("maintenancepolicy");
+}
+@*contact-page is kept on the wrapper on purpose: the same form chrome (result,
+    message-error, button-1) is already styled for it, so this page needs no css of its own*@
+<div class="page contact-page maintenance-request-page">
+    <div class="page-title">
+        <h1>@T("PageTitle.MaintenanceRequest")</h1>
+    </div>
+    <div class="page-body">
+        @if (Model.SuccessfullySent)
+        {
+            <div class="result">
+                @Model.Result
+            </div>
+        }
+        else
+        {
+            <form asp-route="@NopRouteNames.General.MAINTENANCE_REQUEST" method="post">
+                <div asp-validation-summary="ModelOnly" class="message-error"></div>
+                <section class="fieldset">
+                    <h2 class="title">@T("MaintenanceRequest.ContactDetails")</h2>
+                    <div class="form-fields">
+                        <div class="inputs">
+                            <label asp-for="FullName" asp-postfix=":"></label>
+                            <input asp-for="FullName" placeholder="@T("MaintenanceRequest.FullName.Hint")" maxlength="64" class="fullname" />
+                            <nop-required />
+                            <span asp-validation-for="FullName"></span>
+                        </div>
+                        <div class="inputs">
+                            <label asp-for="PhoneNumber" asp-postfix=":"></label>
+                            <input asp-for="PhoneNumber" placeholder="@T("MaintenanceRequest.PhoneNumber.Hint")" maxlength="10" inputmode="numeric" class="phone" />
+                            <nop-required />
+                            <span asp-validation-for="PhoneNumber"></span>
+                        </div>
+                        <div class="inputs">
+                            <label asp-for="Email" asp-postfix=":"></label>
+                            <input asp-for="Email" placeholder="@T("MaintenanceRequest.Email.Hint")" class="email" />
+                            <span asp-validation-for="Email"></span>
+                        </div>
+                    </div>
+                </section>
+                <section class="fieldset">
+                    <h2 class="title">@T("MaintenanceRequest.Location")</h2>
+                    <div class="form-fields">
+                        <div class="inputs">
+                            <label asp-for="City" asp-postfix=":"></label>
+                            <input asp-for="City" placeholder="@T("MaintenanceRequest.City.Hint")" class="city" />
+                            <nop-required />
+                            <span asp-validation-for="City"></span>
+                        </div>
+                        <div class="inputs">
+                            <label asp-for="Area" asp-postfix=":"></label>
+                            <input asp-for="Area" placeholder="@T("MaintenanceRequest.Area.Hint")" class="area" />
+                            <nop-required />
+                            <span asp-validation-for="Area"></span>
+                        </div>
+                    </div>
+                </section>
+                <section class="fieldset">
+                    <h2 class="title">@T("MaintenanceRequest.DeviceDetails")</h2>
+                    <div class="form-fields">
+                        <div class="inputs">
+                            <label asp-for="Brand" asp-postfix=":"></label>
+                            <select asp-for="Brand">
+                                <option value="">@T("MaintenanceRequest.Brand.Select")</option>
+                                <option value="General Plus">General Plus</option>
+                                <option value="GL-General">GL-General</option>
+                                <option value="Starway">Starway</option>
+                                <option value="General Tech">General Tech</option>
+                                <option value="Hisense">Hisense</option>
+                                <option value="Smart Electric">Smart Electric</option>
+                                <option value="General goldin">General goldin</option>
+                                <option value="Starvision">Starvision</option>
+                            </select>
+                            <nop-required />
+                            <span asp-validation-for="Brand"></span>
+                        </div>
+                        <div class="inputs">
+                            <label asp-for="DeviceType" asp-postfix=":"></label>
+                            <input asp-for="DeviceType" placeholder="@T("MaintenanceRequest.DeviceType.Hint")" class="device-type" />
+                            <nop-required />
+                            <span asp-validation-for="DeviceType"></span>
+                        </div>
+                        <div class="inputs reversed">
+                            <input asp-for="InWarranty" />
+                            <label asp-for="InWarranty"></label>
+                        </div>
+                        @if (!string.IsNullOrEmpty(maintenanceServicesUrl))
+                        {
+                            <div class="inputs">
+                                <a href="@maintenanceServicesUrl" target="_blank">@T("MaintenanceRequest.MaintenanceServices")</a>
+                            </div>
+                        }
+                        <div class="inputs">
+                            <label asp-for="ModelNumber" asp-postfix=":"></label>
+                            <input asp-for="ModelNumber" placeholder="@T("MaintenanceRequest.ModelNumber.Hint")" class="model-number" />
+                            <nop-required />
+                            <span asp-validation-for="ModelNumber"></span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(maintenancePolicyUrl))
+                        {
+                            <div class="inputs">
+                                <a href="@maintenancePolicyUrl" target="_blank">@T("MaintenanceRequest.MaintenancePolicy")</a>
+                            </div>
+                        }
+                        <div class="message-error">@T("MaintenanceRequest.Note")</div>
+                        <div class="inputs">
+                            <label asp-for="Problem" asp-postfix=":"></label>
+                            <textarea asp-for="Problem" placeholder="@T("MaintenanceRequest.Problem.Hint")" class="problem"></textarea>
+                            <nop-required />
+                            <span asp-validation-for="Problem"></span>
+                        </div>
+                        @if (Model.DisplayCaptcha)
+                        {
+                            <nop-captcha />
+                        }
+                    </div>
+                </section>
+                <section class="buttons">
+                    <button type="submit" name="send-request" class="button-1 contact-us-button">@T("MaintenanceRequest.Button")</button>
+                </section>
+            </form>
+        }
+    </div>
+</div>

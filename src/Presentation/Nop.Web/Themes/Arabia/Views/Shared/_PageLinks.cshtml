@@ -1,0 +1,98 @@
+@*
+    Arabia: the navigation row beside the logo — browse first (products,
+    categories, brands), then the company pages (about, FAQ, service, contact).
+    These are the "centre links" the design comp draws beside the logo, which
+    the header shipped without because nothing in nopCommerce was rendering
+    them.
+
+    Rendered twice: in the desktop header row, and at the foot of the mobile
+    category sheet, because brand.css hides the footer (which carries the full
+    Information list) on touch. The sheet already carries the admin main menu
+    above this partial, so the two browse dropdowns are hidden there.
+
+    Titles come from the topics and categories themselves, so an admin rename
+    and the Arabic pack both carry through with no resource of their own, and a
+    topic that has been unpublished or deleted drops out of the row instead of
+    leaving a dead link behind.
+
+    The dropdowns are native <details name="ar-nav">: the shared name is what
+    closes the other one, so there is no toggle handler and no aria-expanded to
+    keep in sync. Only light dismiss needs a script.
+
+    ponytail: a fixed row, not a third MenuType. Move it onto a Main-type menu
+    if support ever needs to reorder it from admin.
+*@
+@using Nop.Core.Domain.Catalog
+@using Nop.Services.Catalog
+@using Nop.Services.Localization
+@using Nop.Services.Seo
+@using Nop.Services.Topics
+
+@inject ICategoryService categoryService
+@inject ILocalizationService localizationService
+@inject ITopicService topicService
+@inject IUrlRecordService urlRecordService
+@inject Nop.Core.IStoreContext storeContext
+
+@{
+    var store = await storeContext.GetCurrentStoreAsync();
+
+    //one query for both dropdowns: "Products" is the top level, "Categories"
+    //is the same list with its children under it
+    var categories = await categoryService.GetAllCategoriesAsync(store.Id);
+    var topLevel = categories.Where(category => category.ParentCategoryId == 0).ToList();
+
+    async Task<string> categoryUrlAsync(Category category) =>
+        await NopUrl.RouteGenericUrlAsync<Category>(new { SeName = await urlRecordService.GetSeNameAsync(category) });
+
+    var pageLinks = new List<(string Url, string Title)>();
+
+    foreach (var systemName in new[] { "AboutUs", "FAQ" })
+    {
+        if (await topicService.GetTopicBySystemNameAsync(systemName, store.Id) is not { } topic)
+            continue;
+
+        pageLinks.Add((await NopUrl.RouteTopicUrlAsync(systemName),
+            await localizationService.GetLocalizedAsync(topic, entity => entity.Title)));
+    }
+
+    pageLinks.Add((Url.RouteUrl(NopRouteNames.General.MAINTENANCE_REQUEST), T("PageTitle.MaintenanceRequest").Text));
+    pageLinks.Add((Url.RouteUrl(NopRouteNames.General.CONTACT_US), T("ContactUs").Text));
+}
+
+<nav class="header-pages" aria-label="@T("Nav.Information")">
+    @if (topLevel.Count > 0)
+    {
+        <details class="header-pages__drop" name="ar-nav">
+            <summary class="header-pages__link">@T("Nav.Products")</summary>
+            <div class="header-pages__panel">
+                @foreach (var category in topLevel)
+                {
+                    <a class="header-pages__panel-link" href="@(await categoryUrlAsync(category))">@(await localizationService.GetLocalizedAsync(category, entity => entity.Name))</a>
+                }
+            </div>
+        </details>
+
+        <details class="header-pages__drop header-pages__drop--wide" name="ar-nav">
+            <summary class="header-pages__link">@T("Categories")</summary>
+            <div class="header-pages__panel">
+                @foreach (var category in topLevel)
+                {
+                    var children = categories.Where(child => child.ParentCategoryId == category.Id).ToList();
+                    <div class="header-pages__column">
+                        <a class="header-pages__column-title" href="@(await categoryUrlAsync(category))">@(await localizationService.GetLocalizedAsync(category, entity => entity.Name))</a>
+                        @foreach (var child in children)
+                        {
+                            <a class="header-pages__panel-link" href="@(await categoryUrlAsync(child))">@(await localizationService.GetLocalizedAsync(child, entity => entity.Name))</a>
+                        }
+                    </div>
+                }
+            </div>
+        </details>
+    }
+    <a class="header-pages__link" href="@Url.RouteUrl(NopRouteNames.General.MANUFACTURERS)">@T("Nav.Brands")</a>
+    @foreach (var pageLink in pageLinks)
+    {
+        <a class="header-pages__link" href="@pageLink.Url">@pageLink.Title</a>
+    }
+</nav>

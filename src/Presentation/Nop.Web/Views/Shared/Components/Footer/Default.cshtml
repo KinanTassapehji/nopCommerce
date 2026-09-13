@@ -7,6 +7,10 @@
 @inject IWorkContext workContext
 
 <footer class="footer">
+    @*The Information menu, flattened by the Arabia theme into one slim row of
+        links above the copyright bar - about, FAQ, the service pages and the
+        policies. Nothing else links to them.*@
+    @await Component.InvokeAsync(typeof(FooterMenuViewComponent))
     <section class="footer-lower">
         <div class="footer-info">
             <span class="footer-disclaimer">@T("Content.CopyrightNotice", DateTime.Now.Year, Model.StoreName)</span>

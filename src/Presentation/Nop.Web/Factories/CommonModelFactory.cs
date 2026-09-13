@@ -455,6 +455,32 @@ public partial class CommonModelFactory : ICommonModelFactory
     }
 
     /// <summary>
+    /// Prepare the maintenance request model
+    /// </summary>
+    /// <param name="model">Maintenance request model</param>
+    /// <param name="excludeProperties">Whether to exclude populating of model properties from the entity</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the maintenance request model
+    /// </returns>
+    public virtual async Task<MaintenanceRequestModel> PrepareMaintenanceRequestModelAsync(MaintenanceRequestModel model, bool excludeProperties)
+    {
+        ArgumentNullException.ThrowIfNull(model);
+
+        if (!excludeProperties)
+        {
+            var customer = await _workContext.GetCurrentCustomerAsync();
+            model.Email = customer.Email;
+            model.FullName = await _customerService.GetCustomerFullNameAsync(customer);
+        }
+
+        //the form is mailed through the contact us template, so it reuses that captcha setting
+        model.DisplayCaptcha = _captchaSettings.Enabled && _captchaSettings.ShowOnContactUsPage;
+
+        return model;
+    }
+
+    /// <summary>
     /// Prepare the contact vendor model
     /// </summary>
     /// <param name="model">Contact vendor model</param>

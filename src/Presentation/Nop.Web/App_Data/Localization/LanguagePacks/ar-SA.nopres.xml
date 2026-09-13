@@ -16975,6 +16975,9 @@
   <LocaleResource Name="Homepage.AllProducts">
     <Value>تصفح كل المنتجات</Value>
   </LocaleResource>
+  <LocaleResource Name="Homepage.Brands">
+    <Value>العلامات التجارية</Value>
+  </LocaleResource>
   <LocaleResource Name="Honeypot.BotDetected">
     <Value>تم اكتشاف هوني بوت .</Value>
   </LocaleResource>
@@ -17037,6 +17040,117 @@
   </LocaleResource>
   <LocaleResource Name="Literals.Nop.Core.Http.NopRouteNames.General.Cart">
     <Value>سلة التسوق</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Area">
+    <Value>الحيّ</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Area.Hint">
+    <Value>ادخل اسم الحيّ</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Area.Required">
+    <Value>المنطقة مطلوب</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Brand">
+    <Value>العلامة التجارية</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Brand.Required">
+    <Value>البراند مطلوب</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Brand.Select">
+    <Value>اختر العلامة التجارية</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Button">
+    <Value>ارســـال</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.City">
+    <Value>المدينة</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.City.Hint">
+    <Value>ادخل اسم المدينة</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.City.Required">
+    <Value>المدينة مطلوبة</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.ContactDetails">
+    <Value>تواصل معنا</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.DeviceDetails">
+    <Value>تفاصيل الجهاز</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.DeviceType">
+    <Value>نوع الجهاز</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.DeviceType.Hint">
+    <Value>مثال: مكيف سبليت</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.DeviceType.Required">
+    <Value>نوع الجهاز مطلوب</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Email">
+    <Value>البريد الالكتروني</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Email.Hint">
+    <Value>example@gmail.com</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.EmailSubject">
+    <Value>طلب صيانة جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.FullName">
+    <Value>الاسم الكامل</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.FullName.Hint">
+    <Value>اكتب اسمك الكامل</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.FullName.Required">
+    <Value>الاسم مطلوب</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.InWarranty">
+    <Value>ضمن فترة الضمان</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Location">
+    <Value>العنوان</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.MaintenancePolicy">
+    <Value>سياسة الصيانة</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.MaintenanceServices">
+    <Value>خدمات الصيانة خارج الضمان</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.ModelNumber">
+    <Value>رقم الموديل</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.ModelNumber.Hint">
+    <Value>مثال: SWAC18WHC</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.ModelNumber.Required">
+    <Value>رقم الموديل مطلوب</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Note">
+    <Value>ملاحظة: عملاءنا الكرام يرجاء العلم لا يوجد خدمة منزلية لصيانة الأجهزة الصغيرة وعلى العميل التوجه لأقرب صيانة معتمد, في حال عدم وجود ضمان, سيتم احتساب 100 ريال رسوم الفحص.</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.PhoneNumber">
+    <Value>رقم الجوال</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.PhoneNumber.Hint">
+    <Value>05XXXXXXXX</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.PhoneNumber.Invalid">
+    <Value>رقم الجوال يجب أن يتكون من 10 أرقام باللغة الإنجليزية فقط, وأن يبدأ ب 05.</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.PhoneNumber.Required">
+    <Value>رقم الهاتف مطلوب</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Problem">
+    <Value>المشكلة</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Problem.Hint">
+    <Value>الرجاء شرح المشكلة ...</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.Problem.Required">
+    <Value>هذا الحقل مطلوب</Value>
+  </LocaleResource>
+  <LocaleResource Name="MaintenanceRequest.YourRequestHasBeenSent">
+    <Value>تم ارسال طلبك بنجاح</Value>
   </LocaleResource>
   <LocaleResource Name="Manufacturers">
     <Value>الشركات</Value>
@@ -17151,6 +17265,15 @@
   </LocaleResource>
   <LocaleResource Name="Mobile.Nav.Home">
     <Value>الرئيسية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Nav.Brands">
+    <Value>العلامات التجارية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Nav.Information">
+    <Value>معلومات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Nav.Products">
+    <Value>المنتجات</Value>
   </LocaleResource>
   <LocaleResource Name="News">
     <Value>الاخبار</Value>
@@ -17523,6 +17646,9 @@
   </LocaleResource>
   <LocaleResource Name="PageTitle.Login">
     <Value>تسجيل دخول</Value>
+  </LocaleResource>
+  <LocaleResource Name="PageTitle.MaintenanceRequest">
+    <Value>طلب صيانة</Value>
   </LocaleResource>
   <LocaleResource Name="PageTitle.Manufacturers">
     <Value>الشركات</Value>
@@ -19119,6 +19245,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.System.Maintenance.ShrinkDatabase.Text">
     <Value>استعادة مساحة القرص عن طريق اعادة تنظيم تخزين البيانات الفعلي</Value>
+  </LocaleResource>
+  <LocaleResource Name="Literals.Nop.Core.Http.NopRouteNames.General.MaintenanceRequest">
+    <Value>طلب صيانة</Value>
   </LocaleResource>
   <LocaleResource Name="Literals.Nop.Core.Http.NopRouteNames.General.Login">
     <Value>تسجيل الدخول</Value>

@@ -98,6 +98,11 @@ public partial class RouteProvider : BaseRouteProvider, IRouteProvider
             pattern: $"{lang}/contactus",
             defaults: new { controller = "Common", action = "ContactUs" });
 
+        //maintenance request
+        endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.General.MAINTENANCE_REQUEST,
+            pattern: $"{lang}/maintenance-request",
+            defaults: new { controller = "Common", action = "MaintenanceRequest" });
+
         //product search
         endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.General.SEARCH,
             pattern: $"{lang}/search/",

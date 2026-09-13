@@ -65,6 +65,9 @@
         <div class="header-menu">
             @await Component.InvokeAsync(typeof(MainMenuViewComponent))
         </div>
+        @*The footer carries these on desktop and is hidden here, so the sheet is
+            the only place a phone can reach about/FAQ/service.*@
+        @{ await Html.RenderPartialAsync("_PageLinks"); }
     </div>
 </div>
 

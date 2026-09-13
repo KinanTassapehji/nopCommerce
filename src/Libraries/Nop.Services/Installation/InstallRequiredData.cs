@@ -1470,7 +1470,8 @@ public partial class InstallationService
             ProductsByTagManuallyPriceRange = true,
             ProductsByTagPriceFrom = NopCatalogDefaults.DefaultPriceRangeFrom,
             ProductsByTagPriceTo = NopCatalogDefaults.DefaultPriceRangeTo,
-            ManufacturersBlockItemsToDisplay = 2,
+            //the home page brand strip shows every published brand
+            ManufacturersBlockItemsToDisplay = 8,
             DisplayTaxShippingInfoFooter = isGermany,
             DisplayTaxShippingInfoProductDetailsPage = isGermany,
             DisplayTaxShippingInfoProductBoxes = isGermany,
@@ -2298,7 +2299,7 @@ public partial class InstallationService
                     Published = true,
                     Title = "من نحن",
                     Body =
-                        "<p>اكتب هنا نبذة عن متجرك. يمكنك تعديل هذا النص من لوحة التحكم.</p>",
+                        "<h2>من نحن ؟</h2><p>تأسست الشركة العربية الدولية للأجهزة في عام 2011 في قلب مدينة الرياض النابضة بالحياة، عاصمة المملكة العربية السعودية. انطلقت الشركة في مهمة لتحقيق ثورة في عالم الأجهزة الكهربائية المنزلية. بدأت رحلتنا من رغبتنا في تحقيق التميز والابتكار، وبناء ثقة العملاء.</p><h2>لماذا العربية الدولية للأجهزة ؟</h2><p>اختيارك العربية الدولية للأجهزة يعني اختيار الابتكار، التميز والوضوح. وإليك لماذا يجب عليك اختيارنا:</p><ul><li>تقنيات متقدمة</li><li>مجموعة منتجات شاملة</li><li>الالتزام</li><li>المجتمع والبيئة</li><li>خدمة استثنائية</li></ul><h2>خدمة عملاء مميزة</h2><p>خدمة دعم العملاء وخدمة ما بعد البيع من الدرجة الأولى لدينا موجودتان لضمان رحلة سلسة معنا. خدمة العملاء هي في صميم التزامنا. في العربية للأجهزة نفهم أن الأمر لا يتعلق فقط بالمنتجات بل بالتجربة ككل. نحن نؤمن بأن الخدمة الاستثنائية تتماشى مع المنتجات عالية الجودة، ونحن ملتزمون بتقديم كليهما. رضاك هو هدفنا النهائي ودعمنا للعملاء يعكس التزامنا الثابت باحتياجاتك.</p><h2>العربية الدولية للأجهزة تقوم بنسج لوحة من التطلعات والرؤى والمهمة التي تميزنا:</h2><ul><li><strong>أعلى مستويات الجودة:</strong> نحن نضع المعايير الذهبية الجديدة في مجال الأجهزة الكهربائية، نحن هنا لنقدم منتجات تعيد تعريف جوهر الجودة والأداء.</li><li><strong>الابتكار والراحة:</strong> الابتكار هو اسمنا الأوسط، وراحتك هي الأساس الذي نعتمد عليه، هدفنا هو تحويل حياتك بأحدث التقنيات والراحة السلسة. نحن نؤمن بأنه يجب أن يكون لديك إمكانية الوصول إلى أحدث التقنيات لتصبح حياتك اليومية استثنائية.</li><li><strong>شراكات مبنية على ثقة:</strong> نؤمن بأن الثقة تشكل أساس علاقتنا مع عملائنا وشركائنا، ونسعى لبناء علاقات دائمة وموثوقة.</li><li><strong>تجاوز توقعاتكم:</strong> في العربية الدولية للأجهزة، نحن لا نلبي احتياجاتكم فحسب بل نتجاوز توقعاتكم، منتجاتنا تحقق التوازن المثالي بين الجودة والقدرة على التحمل، وتلبي رغباتكم قبل أن تدركوا أنكم بحاجتها.</li><li><strong>أبطال الاستدامة:</strong> التزامنا يتعلق بالحفاظ على الاستدامة في عالمنا، بحيث أننا نقدم حلاً لتوفير الطاقة يحمي ليس فقط البيئة ولكن أيضاً ميزانيتكم، نحن شركاؤكم في رحلة مستدامة وصديقة للبيئة.</li></ul>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2410,6 +2411,39 @@ public partial class InstallationService
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
+                    SystemName = "FAQ",
+                    IncludeInSitemap = true,
+                    IsPasswordProtected = false,
+                    DisplayOrder = 25,
+                    Published = true,
+                    Title = "الأسئلة الشائعة",
+                    Body =
+                        "<ul><li><strong>كيف احجز موعد صيانة لمنتجات شركة العربية للأجهزة ؟</strong><p>تستطيع بكل سهولة حجز موعد صيانة عن طريق الموقع الإلكتروني.</p></li><li><strong>ماهي صناعة منتجات العربية للأجهزة؟</strong><p>تورد العربية للأجهزة منتجات ذات جودة عالمية وذات صناعات متنوعة منها: صناعة تركية - صناعة صينية - صناعة هندية - صناعة بحرينية الخ.</p></li><li><strong>أين تتوفر منتجات العربية للأجهزة في المملكة العربية السعودية؟</strong><p>الرياض - مكة المكرمة - جدة - المدينة المنورة - الخبر - القصيم - جيزان - تبوك - خميس مشيط - حائل - الطائف - شقراء - القويعية - القطيف - نجران - الدوادمي - حوطة بني تميم - الخرج - المجمعة.</p></li><li><strong>هل يتوفر ضمان خاص بالمنتج بعد الشراء ؟</strong><p>نعم، جميع المنتجات يوجد لها ضمان لفترة زمنية تتراوح ما بين السنتين إلى خمسة سنوات والكمبروسر عشر سنوات.</p></li><li><strong>هل يتوفر قطع غيار لمنتجات العربية للأجهزة ؟</strong><p>نعم يتوفر لدى مراكز الصيانة في الرياض - الدمام - جيزان - جدة.</p></li><li><strong>ما هي العلامات التجارية المملوكة لشركة العربية للأجهزة ؟</strong><p>Starway - General Goldin - Starvision - Smartelctric - Gl-General - General plus.</p></li><li><strong>هل تمتلك العربية للأجهزة وكالة عالمية؟</strong><p>نعم، تمتلك وكالة حصرية لشركة هايسنس.</p></li><li><strong>ماهي أوقات ساعات العمل الرسمية لدى فريق خدمة العملاء؟</strong><p>أيام العمل لدى فريق خدمة العملاء من يوم الأحد - الخميس ابتداءً من الساعة ٨ صباحاً - ٤ مساءً.</p></li></ul>",
+                    TopicTemplateId = defaultTopicTemplate.Id
+                },
+                new() {
+                    SystemName = "MaintenancePolicy",
+                    IncludeInSitemap = false,
+                    IsPasswordProtected = false,
+                    DisplayOrder = 30,
+                    Published = true,
+                    Title = "سياسة الصيانة",
+                    Body =
+                        "<h2>سياسة الصيانة والضمان</h2><ul><li>الضمان (سنتين شامل) صيانة مجانية خلال فترة الضمان المثبت عن طريق فاتورة الشراء الأصلية المختومة والموضح عليها رقم السجل التجاري للتاجر.</li><li>ضمان الضاغط (الكمبريسور) حسب نوع الجهاز ويحسب ما يذكر في بطاقة الضمان المرفقة معه أو كتيب الاستخدام.</li><li>عند طلب الصيانة يتم التنسيق مع العميل على موعد الزيارة بحيث أن المدة تتراوح من يومين إلى سبعة أيام عمل، أما إذا كانت مدينة العميل تبعد عن مركز الصيانة بأكثر من 100 كيلومتر، سوف يتم التنسيق مع العميل على أقرب موعد متاح.</li><li>في أجهزة التكييف لا يغطي الضمان الوحدة الخارجية التي تم تركيبها على ارتفاع أكثر من ٣ متر عن الأرض وعلى العميل تحمل كافة تكاليف الصيانة اللازمة.</li><li>لا يشمل ضمان الضاغط \"الكمبريسور\" بعد انتهاء الضمان الشامل \"سنتين\" أجور الخدمة وتكاليف شحن الفريون.</li><li>خدمة الصيانة المنزلية لا تشمل الأجهزة الصغيرة إلا للمواقع التي تبعد أكثر من 100 كيلو عن مراكز خدمة الصيانة.</li><li>على العميل إبراز بطاقة طلب الصيانة (أمر الإصلاح الأصل) لاستلام الجهاز بعد عمل الصيانة اللازمة وإلا سنضطر لعدم تسليم الجهاز.</li><li>ضمان على الإصلاح لمدة شهرين من تاريخ الفاتورة لنفس العطل ويشمل رسوم الصيانة والقطع المستبدلة فقط.</li><li>على العميل التوقيع على بيان حالة الهيكل الخارجي للجهاز قبل وبعد الاستلام، ويحق لنا عدم استلام الجهاز في حال عدم التوقيع.</li><li>على العميل استلام الأجهزة في مدة أقصاها شهر واحد من تاريخ الإصلاح وفي حال عدم استلامه فإن مركز الصيانة غير مسؤول عن الجهاز ولمركز الصيانة الحق في التصرف بالجهاز.</li></ul><h2>سياسة الاستبدال والاسترجاع لقطع الغيار</h2><ul><li>ألا يكون قد مضى على تاريخ فاتورة الشراء أكثر من خمسة أيام عمل.</li><li>أن يقدم العميل أصل فاتورة الشراء مع القطعة المراد استبدالها أو إرجاعها.</li><li>أن تكون قطعة الغيار المراد استبدالها أو إرجاعها بحالتها عند بيعها وسليمة تماماً وأن تكون بحالتها الأصلية.</li><li>القطع الإلكترونية والكهربائية غير قابلة للاستبدال أو الإرجاع.</li><li>سيتم إرجاع قيمة قطعة الغيار المرتجعة من 7 إلى 14 يوم عمل.</li></ul><h2>سياسة الاستبدال والإرجاع</h2><ul><li>لا يمكن استبدال المنتج الجديد إلا بعد زيارة فريق الصيانة وإصدار تقرير مفصل من حالة المنتج، إذا كان قابلاً للإصلاح لا يتم استبدال.</li><li>عند شرائكم لأحد منتجاتنا الرجاء الاحتفاظ بأصل الفاتورة للرجوع لها عند الحاجة.</li><li>يمكن استرجاع أو استبدال القطعة إذا كانت في حالتها الأصلية وغير مستخدمة خلال سبعة أيام من تاريخ الشراء.</li><li>يتم قبول الإرجاع في حال تبين وجود خلل مصنعي في المنتج بعد بيعه، وذلك خلال مدة أقصاها 7 أيام من تاريخ الشراء، شريطة إرفاق فاتورة الشراء.</li><li>يجب أن يكون المنتج في حالته الأصلية مع جميع الإكسسوارات التي استلمها من الشركة لكي يتم الموافقة على طلب الإرجاع.</li><li>يجب على العميل توصيل المنتجات المراد إرجاعها إلى الشركة مع جميع الوثائق والإثباتات المطلوبة.</li></ul><h3>نأسف لعدم إرجاع أو استبدال المنتج نهائياً في الحالات التالية فقط</h3><ul><li>المنتج تم استعماله أو المنتج تم تركيبه.</li><li>في حال عدم تطابق الفاتورة مع المنتج لا يتم الاستبدال.</li><li>لا يتم قبول طلبات الإرجاع التي فيها سوء استخدام أو مشكلة تيار كهربائي.</li><li>لا يتم قبول الإرجاع في حال وجود اختلاف في طراز الوحدة الداخلية عن الخارجية في مكيفات الهواء المنفصلة.</li></ul><h2>الفترة الزمنية وطرق استرداد المدفوعات</h2><ul><li>يتم إرجاع المبالغ بنفس الطريقة التي تم الدفع بها.</li><li>تستغرق عملية إرجاع المبالغ عن طريق بطاقات الائتمان من 7 إلى 14 يوم.</li></ul><h2>المستثنى من الضمان</h2><ul><li>يجب دفع رسوم الكشف مقدماً بقيمة 100 ريال. في حال الموافقة على قيمة الإصلاح، يتم خصم رسوم الكشف من الإجمالي. يصدر تقرير بجميع الأجور اللازمة للإصلاح، ويجب على العميل الموافقة عليها قبل البدء. في حال عدم الموافقة على تكلفة الإصلاح فإن رسوم الكشف المدفوعة مقدماً لا يتم استرجاعها.</li><li>الضمان لا يشمل الأعطال الناتجة عن عدم الصيانة الدورية، أو التيار الكهربائي، أو عدم الالتزام بتعليمات الاستخدام، أو بيان الضمان، أو أي تشويه، أو تعديل في الرقم التسلسلي.</li><li>الكسور أو الضربات أو تعرض الجهاز لعوامل خارجية.</li><li>محاولة إصلاح الجهاز من قبل جهات غير معتمدة أو استخدام قطع غيار غير معتمدة (غير أصلية).</li><li>تنظيف الجهاز (الوحدة الخارجية أو الداخلية).</li><li>الأجزاء المستهلكة ومواد التبريد (فريون) وزيوت الضاغط والسيور أو أي أجزاء معرضة للتآكل الطبيعي والأجزاء والإلكترونيات والإطار الهيكلي.</li><li>وجود خطأ في تركيب الوحدة من قبل الموزع.</li><li>يتحمل المشتري أي تكاليف تتكبدها العربية للأجهزة في التحقيق والإصلاح لأي عيوب تثبت أنها غير مغطاة بالضمان وتصحيحها.</li></ul><h2>المركز الرئيسي</h2><p>الشركة العربية للأجهزة</p><ul><li>الرياض - الدائري الشرقي - مخرج 17 - شارع ابن عرب</li><li>ص.ب 99 - الرياض 11383</li><li>الرقم الموحد: 8001244080</li></ul>",
+                    TopicTemplateId = defaultTopicTemplate.Id
+                },
+                new() {
+                    SystemName = "MaintenanceServices",
+                    IncludeInSitemap = false,
+                    IsPasswordProtected = false,
+                    DisplayOrder = 35,
+                    Published = true,
+                    Title = "خدمات الصيانة خارج الضمان",
+                    Body =
+                        "<p>تسعيرة خدمات الصيانة خارج الضمان.</p><h2>صيانة المكيفات</h2><table><thead><tr><th>الخدمة</th><th>السعر</th></tr></thead><tbody><tr><td>مكيف دولابي</td><td>340 ريال</td></tr><tr><td>مكيف مخفي (كونسيلد)</td><td>340 ريال</td></tr><tr><td>مكيف سقفي (كاسيت)</td><td>340 ريال</td></tr><tr><td>مكيف جداري (سبيلت)</td><td>230 ريال</td></tr><tr><td>مكيف شباك</td><td>170 ريال</td></tr></tbody></table><h2>صيانة الثلاجات</h2><table><thead><tr><th>الخدمة</th><th>السعر</th></tr></thead><tbody><tr><td>ثلاجة</td><td>230 ريال</td></tr><tr><td>فريزر</td><td>230 ريال</td></tr></tbody></table><h2>صيانة الغسالات</h2><table><thead><tr><th>الخدمة</th><th>السعر</th></tr></thead><tbody><tr><td>غسالة اتوماتيك علوية</td><td>230 ريال</td></tr><tr><td>غسالة اتوماتيك امامية</td><td>230 ريال</td></tr><tr><td>غسالة حوضين</td><td>115 ريال</td></tr><tr><td>نشافة ملابس</td><td>230 ريال</td></tr><tr><td>غسالة أطباق (صحون)</td><td>230 ريال</td></tr></tbody></table><h2>صيانة الأفران</h2><table><thead><tr><th>الخدمة</th><th>السعر</th></tr></thead><tbody><tr><td>فرن</td><td>230 ريال</td></tr></tbody></table><h2>صيانة الأجهزة الصغيرة</h2><table><thead><tr><th>الخدمة</th><th>السعر</th></tr></thead><tbody><tr><td>ستائر هوائية</td><td>115 ريال</td></tr><tr><td>غاز سطحي</td><td>115 ريال</td></tr><tr><td>مكيف صحراوي</td><td>115 ريال</td></tr><tr><td>كواية بخار</td><td>115 ريال</td></tr><tr><td>برادة ماء</td><td>60 ريال</td></tr><tr><td>مكرويف</td><td>60 ريال</td></tr><tr><td>مكنسة</td><td>60 ريال</td></tr><tr><td>الثلاجات والفريزرات الصغيرة</td><td>115 ريال</td></tr><tr><td>فرن كهربائي</td><td>115 ريال</td></tr></tbody></table><h2>خدمات إضافية</h2><table><thead><tr><th>الخدمة</th><th>السعر</th></tr></thead><tbody><tr><td>تنظيف مكيف سبيلت</td><td>69 ريال</td></tr><tr><td>تنظيف مكيف شباك</td><td>50 ريال</td></tr><tr><td>تنظيف فرن</td><td>115 ريال</td></tr><tr><td>أجور فحص</td><td>100 ريال</td></tr><tr><td>تركيب مكيف سبيلت</td><td>100 ريال</td></tr><tr><td>فك مكيف سبيلت</td><td>100 ريال</td></tr></tbody></table><h3>ملاحظة</h3><p>عملاءنا الكرام يرجى العلم أنه لا يوجد خدمة منزلية لصيانة الأجهزة الصغيرة وعلى العميل التوجه لأقرب مركز صيانة معتمد. في حال عدم وجود ضمان، سيتم احتساب 100 ريال رسوم الفحص.</p>",
+                    TopicTemplateId = defaultTopicTemplate.Id
+                },
+                new() {
                     SystemName = "VendorTermsOfService",
                     IncludeInSitemap = false,
                     IsPasswordProtected = false,
@@ -2422,6 +2456,28 @@ public partial class InstallationService
             };
 
         await _dataProvider.BulkInsertEntitiesAsync(topics);
+
+        //the pages whose content comes from the live site are seeded Arabic-first;
+        //their English rides along as an en-US localized value
+        var englishTopics = new Dictionary<string, (string Title, string Body)>
+        {
+            ["AboutUs"] = ("Who We Are",
+                "<h2>Who Are We?</h2><p>Arabian Appliances Company was established in 2011 in the heart of the vibrant city of Riyadh, the capital of the Kingdom of Saudi Arabia. The company embarked on a mission to revolutionize the world of home appliances. Our journey began with our desire to achieve excellence and innovation, and build customer trust.</p><h2>Why Arabian Appliances?</h2><p>Choosing Arabian Appliances means commitment, excellence, and transparency. Why you should choose us:</p><ul><li>Integrated technologies</li><li>Comprehensive range</li><li>Commitment</li><li>Community and environment</li><li>Customer service</li></ul><h2>Outstanding Customer Service</h2><p>Our first-class after-sales customer support is here to ensure a smooth journey with us. Customer service is at the heart of our commitment. At Arabian Appliances we understand that it is not just about the products but the experience as a whole. We believe that exceptional service goes hand in hand with quality products, and we are committed to delivering both. Your satisfaction is our ultimate goal, and our customer support reflects our steadfast commitment to your needs.</p><h2>Arabian International Appliances weaves a canvas of aspirations, visions and mission that set us apart:</h2><ul><li><strong>Highest levels of quality:</strong> We are setting the new gold standards in the field of electrical appliances. We are here to provide products that redefine the essence of quality and performance.</li><li><strong>Innovation and comfort:</strong> Innovation is our middle name, and your comfort is the foundation on which we rely. Our goal is to transform your life with the latest technology and seamless comfort. We believe that you should have access to the latest technology for your daily life to become exceptional.</li><li><strong>Partnerships built on trust:</strong> We believe that trust forms the basis of our relationship with our customers and partners, and we strive to build lasting and reliable relationships.</li><li><strong>Exceed your expectations:</strong> At Arabian International Appliances, we not only meet your needs but also exceed your expectations. Our products achieve the perfect balance between quality and endurance, and meet your desires before you realize you need them.</li><li><strong>Sustainability champions:</strong> Our commitment is related to maintaining sustainability in our world. We offer an energy-saving solution that protects not only the environment but also your budget. We are your partners in a sustainable and environmentally friendly journey.</li></ul>"),
+            ["FAQ"] = ("Frequently Asked Questions",
+                "<ul><li><strong>How do I book a maintenance appointment for Arabian Appliances products?</strong><p>You can easily book a maintenance appointment through the website or by contacting customer service via the toll-free unified number (8001244080).</p></li><li><strong>What is the manufacture of Arabian Appliances products?</strong><p>Arabian Appliances supplies products of international quality from various manufacturing origins, including: Turkish - Chinese - Indian - Bahraini, etc.</p></li><li><strong>Where are Arabian Appliances products available in the Kingdom of Saudi Arabia?</strong><p>Riyadh - Mecca - Jeddah - Medina - Al-Khobar - Al-Qassim - Jizan - Tabuk - Khamis Mushayt - Hail - Taif - Shaqraa - Al-Quwayiyah - Qatif - Najran - Al-Dawadmi - Hotat Bani Tamim - Al-Kharj - Al-Majmaah.</p></li><li><strong>Is there a warranty available for the product after purchase?</strong><p>Yes, all products have a warranty for a period ranging from two to five years, and the compressor is ten years.</p></li><li><strong>Are spare parts available for Arabian Appliances products?</strong><p>Yes, they are available at the maintenance centers in Riyadh - Dammam - Jizan - Jeddah.</p></li><li><strong>What are the brands owned by Arabian Appliances Company?</strong><p>Starway - General Goldin - Starvision - Smartelctric - Gl-General - General plus.</p></li><li><strong>Does Arabian Appliances have a global agency?</strong><p>Yes, we have an exclusive agency for Hisense.</p></li><li><strong>What are the official working hours of the customer service team?</strong><p>The customer service team works from Sunday to Thursday, from 8 am to 4 pm.</p></li></ul>"),
+            ["MaintenancePolicy"] = ("Maintenance Policy",
+                "<h2>Maintenance and Warranty Policy</h2><ul><li>A comprehensive two-year warranty is provided, including free maintenance during the warranty period. To avail of this warranty, the original stamped purchase invoice is required, which must include the merchant's commercial registration number.</li><li>The compressor warranty is determined according to the device type and is specified in the warranty card attached to the product or in the user manual.</li><li>When requesting maintenance, coordination with the customer is made to schedule a visit, with a duration ranging from two to seven working days. If the customer's city is more than 100 kilometers away from the service center, coordination is made with the customer to determine the nearest available appointment.</li><li>Regarding air conditioner warranties, the outdoor unit is excluded from coverage if installed more than 3 meters above ground level. In such cases, the customer bears all necessary maintenance costs.</li><li>Home maintenance service for small appliances is provided only in locations more than 100 kilometers away from service centers.</li><li>The customer is required to present the original maintenance request card (repair order) when receiving the device after necessary maintenance. If this card is not provided, the center reserves the right not to release the device to the customer.</li><li>A warranty is provided for repairs for two months from the invoice date, covering only the same fault. This warranty includes only the maintenance fees and replaced parts.</li><li>The customer is required to sign the external condition report of the device before and after receiving it. If the customer fails to sign, the center reserves the right not to release the device to the customer.</li><li>The customer is required to collect the devices within a maximum period of one month from the date of repair. If the device is not collected within this period, the service center is not responsible for the device and reserves the right to dispose of it according to its internal policies.</li></ul><h2>Replacement and Return Policy for Spare Parts</h2><ul><li>The purchase invoice date must not exceed five working days.</li><li>The customer must present the original purchase invoice for the item to be replaced or returned.</li><li>The spare part to be exchanged or returned must be in its original condition, unused, and accompanied by all accessories received from the company.</li><li>Electronic and electrical parts are not exchangeable or returnable.</li><li>The value of the returned spare part will be refunded within 7 to 14 working days.</li></ul><h2>Replacement and Return Policy</h2><ul><li>An exchange for a new product requires a visit from the maintenance team to issue a detailed report on the product's condition. If the product is found to be repairable, it will not be exchanged.</li><li>When purchasing one of our products, please keep the original invoice for future reference.</li><li>You can return or exchange the item if it is in its original, unused condition within seven days from the date of purchase, provided you attach the purchase invoice.</li><li>The product must be in its original condition with all accessories received from the company to approve the return request.</li><li>The customer must deliver the products to be returned to the company along with all required documents and evidence.</li></ul><h3>We regret that returns or exchanges are not accepted under the following circumstances</h3><ul><li><strong>Used or installed products:</strong> if the product has been used or installed.</li><li><strong>Mismatch between invoice and product:</strong> if the invoice does not match the product.</li><li><strong>Misuse or electrical issues:</strong> if the product has been misused or damaged due to electrical problems.</li><li><strong>Mismatch between indoor and outdoor units:</strong> in split air conditioners, if there is a mismatch between the indoor and outdoor units.</li></ul><h2>Time Period and Methods for Refunding Payments</h2><ul><li>Refunds will be made using the same payment method that was used to make the purchase.</li><li>The process of refunding amounts via credit cards takes 7 to 14 days.</li></ul><h2>Excluded from Warranty</h2><ul><li>A pre-payment of 100 SAR is required for the inspection fee. If you approve the repair cost, the inspection fee will be deducted from the total amount. A report detailing all necessary repair charges will be provided, and your approval is required before proceeding. If you do not approve the repair cost, the pre-paid inspection fee is non-refundable.</li><li>The warranty does not include malfunctions resulting from lack of regular maintenance, electrical current, non-compliance with the instructions for use, the warranty statement, or any distortion or modification of the serial number.</li><li>Breaks, impacts, or exposure to external factors.</li><li>Attempting to repair the device by unauthorized parties or using unauthorized (non-original) spare parts.</li><li>Cleaning the device (external or internal unit).</li><li>Consumable parts, refrigerants (Freon), compressor oils, belts, or any parts subject to natural wear, as well as components, electronics, and the structural frame.</li><li>An error in the installation of the unit by the distributor.</li><li>The buyer is responsible for any costs incurred by the company in investigating and repairing any defects that are proven to be outside the warranty coverage, and for correcting them.</li></ul><h2>Head Office</h2><p>Arabian Appliances</p><ul><li>Riyadh - Al Sulay - Haroun Al Rasheed Road - Darin St.</li><li>P.O. Box 99, Riyadh 11383, Saudi Arabia</li><li>Tel: 8001244080</li></ul>"),
+            ["MaintenanceServices"] = ("Maintenance Services",
+                "<p>Service charges for out-of-warranty maintenance.</p><h2>Air Conditioner Maintenance</h2><table><thead><tr><th>Service</th><th>Price</th></tr></thead><tbody><tr><td>Floor Standing</td><td>340 SAR</td></tr><tr><td>Ceiling Concealed</td><td>340 SAR</td></tr><tr><td>Ceiling Cassette</td><td>340 SAR</td></tr><tr><td>Split Type</td><td>230 SAR</td></tr><tr><td>Window Type</td><td>170 SAR</td></tr></tbody></table><h2>Refrigerator Maintenance</h2><table><thead><tr><th>Service</th><th>Price</th></tr></thead><tbody><tr><td>Refrigerator</td><td>230 SAR</td></tr><tr><td>Freezer</td><td>230 SAR</td></tr></tbody></table><h2>Washing Machine Maintenance</h2><table><thead><tr><th>Service</th><th>Price</th></tr></thead><tbody><tr><td>Washing Machine, Top Load</td><td>230 SAR</td></tr><tr><td>Washing Machine, Front Load</td><td>230 SAR</td></tr><tr><td>Washing Machine (Normal)</td><td>115 SAR</td></tr><tr><td>Dryer</td><td>230 SAR</td></tr><tr><td>Dish Washer</td><td>230 SAR</td></tr></tbody></table><h2>Oven Maintenance</h2><table><thead><tr><th>Service</th><th>Price</th></tr></thead><tbody><tr><td>Gas Cooker</td><td>230 SAR</td></tr></tbody></table><h2>Small Appliance Maintenance</h2><table><thead><tr><th>Service</th><th>Price</th></tr></thead><tbody><tr><td>Air Curtain</td><td>115 SAR</td></tr><tr><td>Built-in Cooker</td><td>115 SAR</td></tr><tr><td>Desert Cooler</td><td>115 SAR</td></tr><tr><td>Steam Iron</td><td>115 SAR</td></tr><tr><td>Water Cooler</td><td>60 SAR</td></tr><tr><td>Microwave</td><td>60 SAR</td></tr><tr><td>Vacuum Cleaner</td><td>60 SAR</td></tr><tr><td>Small Refrigerator & Freezer</td><td>115 SAR</td></tr><tr><td>Electric Cooker</td><td>115 SAR</td></tr></tbody></table><h2>Additional Services</h2><table><thead><tr><th>Service</th><th>Price</th></tr></thead><tbody><tr><td>Split AC Cleaning Service</td><td>69 SAR</td></tr><tr><td>Window AC Cleaning Service</td><td>50 SAR</td></tr><tr><td>Cooker Cleaning</td><td>115 SAR</td></tr><tr><td>Check Service</td><td>100 SAR</td></tr><tr><td>Air Conditioning Installation</td><td>100 SAR</td></tr><tr><td>Removing the Air Conditioner</td><td>100 SAR</td></tr></tbody></table><h3>Note</h3><p>Dear customers, please be advised that there is no home service for small appliance repairs. Customers are required to visit the nearest authorized service center. If the appliance is not under warranty, a diagnostic fee of 100 SAR will be applied.</p>")
+        };
+
+        await InsertEnglishLocalizedValuesAsync(nameof(Topic), topics
+            .Where(topic => englishTopics.ContainsKey(topic.SystemName))
+            .SelectMany(topic => new (int, string, string)[]
+            {
+                (topic.Id, nameof(Topic.Title), englishTopics[topic.SystemName].Title),
+                (topic.Id, nameof(Topic.Body), englishTopics[topic.SystemName].Body)
+            }));
 
         //search engine names
         foreach (var topic in topics)
@@ -3549,6 +3605,21 @@ public partial class InstallationService
             new MenuItem
             {
                 MenuId = standardMainMenu.Id,
+                MenuItemType = MenuItemType.TopicPage,
+                EntityId = Table<Topic>().FirstOrDefault(t => t.SystemName == "FAQ")?.Id,
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = standardMainMenu.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.MAINTENANCE_REQUEST,
+                Title = "طلب صيانة",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = standardMainMenu.Id,
                 MenuItemType = MenuItemType.StandardPage,
                 RouteName = NopRouteNames.General.CONTACT_US,
                 Title = "Contact us",
@@ -3564,37 +3635,12 @@ public partial class InstallationService
             Published = true
         });
 
+        //Arabia: the footer is one slim row, so it carries the pages a shopper goes
+        //looking for - not the boilerplate. The sitemap and the three policy topics
+        //(shipping, privacy, conditions of use) are still published and still
+        //reachable by URL; they are just not worth a slot in the row.
         await _dataProvider.BulkInsertEntitiesAsync(
         [
-            new MenuItem
-            {
-                MenuId = footerInformation.Id,
-                MenuItemType = MenuItemType.StandardPage,
-                RouteName = NopRouteNames.General.SITEMAP,
-                Title = "Sitemap",
-                Published = true
-            },
-            new MenuItem
-            {
-                MenuId = footerInformation.Id,
-                MenuItemType = MenuItemType.TopicPage,
-                EntityId = Table<Topic>().FirstOrDefault(t => t.SystemName == "ShippingInfo")?.Id,
-                Published = true
-            },
-            new MenuItem
-            {
-                MenuId = footerInformation.Id,
-                MenuItemType = MenuItemType.TopicPage,
-                EntityId = Table<Topic>().FirstOrDefault(t => t.SystemName == "PrivacyInfo")?.Id,
-                Published = true
-            },
-            new MenuItem
-            {
-                MenuId = footerInformation.Id,
-                MenuItemType = MenuItemType.TopicPage,
-                EntityId = Table<Topic>().FirstOrDefault(t => t.SystemName == "ConditionsOfUse")?.Id,
-                Published = true
-            },
             new MenuItem
             {
                 MenuId = footerInformation.Id,
@@ -3605,9 +3651,38 @@ public partial class InstallationService
             new MenuItem
             {
                 MenuId = footerInformation.Id,
+                MenuItemType = MenuItemType.TopicPage,
+                EntityId = Table<Topic>().FirstOrDefault(t => t.SystemName == "FAQ")?.Id,
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerInformation.Id,
                 MenuItemType = MenuItemType.StandardPage,
                 RouteName = NopRouteNames.General.CONTACT_US,
                 Title = "Contact us",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerInformation.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.MAINTENANCE_REQUEST,
+                Title = "طلب صيانة",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerInformation.Id,
+                MenuItemType = MenuItemType.TopicPage,
+                EntityId = Table<Topic>().FirstOrDefault(t => t.SystemName == "MaintenanceServices")?.Id,
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerInformation.Id,
+                MenuItemType = MenuItemType.TopicPage,
+                EntityId = Table<Topic>().FirstOrDefault(t => t.SystemName == "MaintenancePolicy")?.Id,
                 Published = true
             },
         ]);
@@ -3617,7 +3692,9 @@ public partial class InstallationService
             Name = "Customer service",
             MenuType = MenuType.Footer,
             DisplayOrder = 1,
-            Published = true
+            //the Arabia footer is one slim row of links: this column repeated the
+            //header's search box and the blog/news links, so it ships unpublished
+            Published = false
         });
 
         await _dataProvider.BulkInsertEntitiesAsync(
@@ -3677,7 +3754,8 @@ public partial class InstallationService
             Name = "My account",
             MenuType = MenuType.Footer,
             DisplayOrder = 2,
-            Published = true
+            //same: the account navigation already carries these
+            Published = false
         });
 
         await _dataProvider.BulkInsertEntitiesAsync(

@@ -1,4 +1,5 @@
 ﻿using Nop.Web.Framework.Models;
+using Nop.Web.Models.Media;
 
 namespace Nop.Web.Models.Catalog;
 
@@ -21,4 +22,6 @@ public partial record ManufacturerBriefInfoModel : BaseNopEntityModel
     public string SeName { get; set; }
 
     public bool IsActive { get; set; }
+
+    public PictureModel PictureModel { get; set; }
 }

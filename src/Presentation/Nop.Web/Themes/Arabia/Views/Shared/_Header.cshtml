@@ -25,6 +25,9 @@
         <div class="header-logo">
             @await Component.InvokeAsync(typeof(LogoViewComponent))
         </div>
+        @*The company pages beside the logo. brand.css hides this copy below
+            1001px, where the same partial rides in the category sheet.*@
+        @{ await Html.RenderPartialAsync("_PageLinks"); }
         <div role="search" class="search-box store-search-box">
             @await Component.InvokeAsync(typeof(SearchBoxViewComponent))
         </div>
@@ -42,6 +45,18 @@
     </button>
     @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HeaderAfter })
 </header>
+
+<script asp-location="Footer">
+    //<details name="ar-nav"> already gives the browse dropdowns their keyboard,
+    //their aria-expanded and "opening one closes the other". The one thing it
+    //does not give is light dismiss, which is these six lines.
+    document.addEventListener("click", function (event) {
+        document.querySelectorAll(".header .header-pages__drop[open]").forEach(function (drop) {
+            if (!drop.contains(event.target))
+                drop.open = false;
+        });
+    });
+</script>
 
 <script asp-location="Footer">
     //The button owns one class on .header; brand.css does the rest, so nothing

@@ -1,0 +1,27 @@
+@model List<MenuModel>
+
+@*
+    Arabia: the branded footer is one slim bar, so the stock three collapsible
+    columns are flattened into a single wrapping row of links — no column titles,
+    no accordion, no script.
+
+    The menus themselves stay admin-editable. Only "Information" ships published:
+    the other two seeded columns ("Customer service", "My account") repeated the
+    header links, the search box and the account navigation.
+*@
+@{
+    var pageLinks = Model
+        .SelectMany(menu => menu.Items)
+        .Where(item => !string.IsNullOrEmpty(item.Url))
+        .ToList();
+}
+
+@if (pageLinks.Count > 0)
+{
+    <nav class="footer-links" aria-label="@T("Nav.Information")">
+        @foreach (var pageLink in pageLinks)
+        {
+            <a class="footer-links__link" href="@pageLink.Url">@pageLink.Title</a>
+        }
+    </nav>
+}

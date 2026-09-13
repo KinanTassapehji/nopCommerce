@@ -46,9 +46,14 @@ public static partial class NopRouteNames
         public const string CONTACT_US = "ContactUs";
 
         /// <summary>
+        /// Gets the maintenance request route name
+        /// </summary>
+        public const string MAINTENANCE_REQUEST = "MaintenanceRequest";
+
+        /// <summary>
         /// Gets the product search route name
         /// </summary>
-        public const string SEARCH = "ProductSearch";        
+        public const string SEARCH = "ProductSearch";
 
         /// <summary>
         /// Gets the compare products route name

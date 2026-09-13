@@ -6,14 +6,17 @@
 {
     <section class="block block-manufacturer-navigation">
         <h2 class="title">
-            @T("Manufacturers")
+            @T("Homepage.Brands")
         </h2>
         <div class="listbox">
             <ul class="list">
                 @foreach (var manufacturer in Model.Manufacturers)
                 {
                     <li class="@(manufacturer.IsActive ? "active" : "inactive")">
-                        <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { SeName = manufacturer.SeName }))">@manufacturer.Name</a>
+                        <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { SeName = manufacturer.SeName }))" title="@manufacturer.PictureModel.Title">
+                            <img alt="@manufacturer.PictureModel.AlternateText" src="@manufacturer.PictureModel.ImageUrl" />
+                            <span>@manufacturer.Name</span>
+                        </a>
                     </li>
                 }
             </ul>

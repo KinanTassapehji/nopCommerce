@@ -976,6 +976,7 @@ public partial class CatalogModelFactory : ICatalogModelFactory
                     Name = await _localizationService.GetLocalizedAsync(manufacturer, x => x.Name),
                     SeName = await _urlRecordService.GetSeNameAsync(manufacturer),
                     IsActive = currentManufacturer != null && currentManufacturer.Id == manufacturer.Id,
+                    PictureModel = await PrepareManufacturerPictureModelAsync(manufacturer)
                 };
                 model.Manufacturers.Add(modelMan);
             }

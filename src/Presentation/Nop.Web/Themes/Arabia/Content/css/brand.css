@@ -84,7 +84,7 @@ used as the header's baseline. */
 }
 
 .header-logo img{
-  max-height: 50px;
+  max-height: 64px;
   width: auto;
 }
 
@@ -113,6 +113,137 @@ used as the header's baseline. */
    and above it the header never carried one. .header-menu now exists only
    inside .ar-sheet, which brings its own skin.
    -------------------------------------------------------------------------- */
+
+/* --- Page links -----------------------------------------------------------
+   The comp's centre links, now that there is a source for them: the company
+   pages, from _PageLinks.cshtml. One row beside the logo on desktop; the same
+   partial again at the foot of the category sheet, because the footer that
+   carries the full Information list is hidden on touch.
+   -------------------------------------------------------------------------- */
+.header-pages{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px var(--ar-gutter);
+}
+
+.header-pages__link{
+  color: var(--ar-ink);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.header-pages__link:hover{
+  color: var(--ar-blue);
+}
+
+/* Browse dropdowns (products, categories). Native <details name="ar-nav">, so
+   the browser owns the open/close state, the keyboard and aria-expanded, and
+   the shared name closes whichever one was open — the header script only adds
+   light dismiss. The panel is absolutely positioned so opening one does not
+   reflow the logo row. */
+.header-pages__drop{
+  position: relative;
+}
+
+.header-pages__drop > summary{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.header-pages__drop > summary::marker,
+.header-pages__drop > summary::-webkit-details-marker{
+  content: "";
+  display: none;
+}
+
+/* Same border chevron as the FAQ accordion, physical sides for the same
+   reason — see the note there. */
+.header-pages__drop > summary::after{
+  content: "";
+  inline-size: 7px;
+  block-size: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--ar-transition);
+}
+
+.header-pages__drop[open] > summary{
+  color: var(--ar-blue);
+}
+
+.header-pages__drop[open] > summary::after{
+  transform: translateY(1px) rotate(225deg);
+}
+
+.header-pages__panel{
+  position: absolute;
+  inset-block-start: calc(100% + var(--ar-stack-sm));
+  inset-inline-start: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-inline-size: 220px;
+  max-block-size: min(70vh, 520px);
+  padding: var(--ar-stack-sm);
+  border: 1px solid var(--ar-blue-border);
+  border-radius: var(--ar-radius);
+  background: var(--ar-surface);
+  box-shadow: var(--ar-shadow-lg);
+  overflow-y: auto;
+}
+
+/* The full tree needs the width the flat list does not. CSS columns rather
+   than a wrapping flex row: the categories have wildly different child counts,
+   and a flex row makes every row as tall as its tallest column, which left
+   half the panel as white space. Columns pack the next group straight under
+   the last one instead. */
+.header-pages__drop--wide .header-pages__panel{
+  display: block;
+  columns: 4 180px;
+  column-gap: var(--ar-gutter);
+  inline-size: max-content;
+  max-inline-size: min(880px, 92vw);
+  padding: var(--ar-stack-md);
+}
+
+.header-pages__column{
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  break-inside: avoid;
+  margin-block-end: var(--ar-stack-md);
+}
+
+.header-pages__column-title{
+  margin-block-end: 4px;
+  padding-block-end: 4px;
+  border-block-end: 1px solid var(--ar-line);
+  color: var(--ar-navy);
+  font-weight: 700;
+  font-size: var(--ar-fs-label);
+}
+
+.header-pages__panel-link{
+  padding: 6px var(--ar-stack-sm);
+  border-radius: var(--ar-radius-sm);
+  color: var(--ar-ink);
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
+  white-space: nowrap;
+}
+
+.header-pages__panel-link:hover,
+.header-pages__panel-link:focus-visible{
+  background: var(--ar-blue-tint);
+  color: var(--ar-blue);
+}
+
 
 /* --- Search --------------------------------------------------------------- */
 .search-box input.search-box-text{
@@ -768,6 +899,17 @@ which would
   color: var(--ar-white);
 }
 
+/* The Information menu, flattened by the theme's FooterMenu view into one
+   wrapping line above the copyright bar. The slim footer is the whole point, so
+   this stays a single row of links - no columns, no titles. */
+.footer-links{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px var(--ar-gutter);
+  padding: var(--ar-stack-md) var(--ar-margin-mobile);
+}
+
 .footer-lower{
   border-block-start: 1px solid rgba(255, 255, 255, 0.18);
   color: rgba(255, 255, 255, 0.92);
@@ -999,6 +1141,7 @@ above the WCAG 2.2 SC 2.5.8 floor. */
   .header-selectors a,
   .header-menu .menu__link,
   .header-menu .menu__item-toggle,
+  .header-pages__link,
   .footer a,
   .pager li a,
   .pager li span,
@@ -1246,6 +1389,120 @@ so the "HomepageText" topic that would
                     .carousel-category,
                     .carousel-manufacturer):not(.carousel-container){
   min-height: 0;
+}
+
+/* --- Brand strip (home page, .block-manufacturer-navigation) --------------
+   The shipped component's markup is a *sidebar* block: the base sheet gives
+   `.block` a 600px cap, turns `.title` into a grey accordion bar (toggle PNG,
+   cursor: pointer) and hides `.listbox` outright below 1001px, where the
+   sidebar's own script is what opens it. On the home page there is no such
+   script and no sidebar, so the block is flattened into one always-open band
+   that reads like the category and product bands above it.
+   -------------------------------------------------------------------------- */
+.home-page .block-manufacturer-navigation{
+  max-width: none;
+  text-align: start;
+}
+
+.home-page .block-manufacturer-navigation > .title{
+  background: none;
+  cursor: auto;
+}
+
+.home-page .block-manufacturer-navigation .listbox{
+  display: block;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+
+/* One row that scrolls sideways rather than wrapping: 8 logos never fit a
+   400px screen, and the overflow is the affordance that says so. Flex
+   direction follows the document, so the row starts at the right in RTL. */
+.home-page .block-manufacturer-navigation .list{
+  display: flex;
+  gap: var(--ar-stack-sm);
+  margin: 0;
+  padding: 0;
+  padding-block-end: var(--ar-stack-sm); /* room for the scrollbar */
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x proximity;
+}
+
+.home-page .block-manufacturer-navigation .list li{
+  /* Grow into whatever the row has spare rather than pick a tile width that
+     only divides one viewport evenly; never shrink, so a narrow screen scrolls
+     instead of squeezing eight logos into 400px. */
+  flex: 1 0 140px;
+  padding: 0;
+  scroll-snap-align: start;
+}
+
+/* The tile is the manufacturer-grid box (border + theme radius), sized so
+   three of them are in view at 400px.
+
+   Every one of these logos is a wordmark wider than the tile is tall, so
+   `contain` fits them all to the WIDTH — the tile's height is pure slack, and
+   at 96px it was most of the card. The box is sized to the tallest wordmark
+   (General Plus, 2.09:1) plus its padding and no more, and the padding is
+   trimmed to the 4px that keeps the ink off the border. */
+.home-page .block-manufacturer-navigation .list a{
+  position: relative; /* anchors the visually-hidden name below */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  block-size: 76px;
+  padding: 4px;
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
+  background: var(--ar-surface);
+  color: var(--ar-ink);
+  font-size: var(--ar-fs-label-sm);
+  line-height: var(--ar-lh-label-sm);
+  text-align: center;
+  transition: border-color var(--ar-transition), box-shadow var(--ar-transition);
+}
+
+/* the base sheet marks every block list link with a square bullet */
+.home-page .block-manufacturer-navigation .list a:before{
+  display: none;
+}
+
+.home-page .block-manufacturer-navigation .list a:hover,
+.home-page .block-manufacturer-navigation .list a:focus{
+  border-color: var(--ar-blue-mid);
+  box-shadow: var(--ar-shadow);
+  color: var(--ar-blue);
+}
+
+/* The logos are wordmarks - they already say the brand name, so printing it
+   again under them was the same word twice and cost the tile a third of its
+   height. The name stays in the DOM as the link's accessible name (and its
+   title attribute); only the ink is dropped, and the image takes the tile.
+   `contain` keeps the row even if a later upload has another aspect ratio. */
+.home-page .block-manufacturer-navigation .list a > span{
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.home-page .block-manufacturer-navigation .list img{
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+
+.home-page .block-manufacturer-navigation .view-all{
+  margin-block-start: var(--ar-stack-md);
 }
 
 :is(.home-page-category-grid, .sub-category-grid) .item-grid{
@@ -1745,6 +2002,14 @@ pushing the logo out of
     text-align: start;
   }
 
+  /* Same order as the logo, so source order puts it immediately after - and the
+     margin rides on the item, not on a container gap (see .header-links-wrapper
+     below for why). */
+  .header-pages{
+    order: 1;
+    margin-inline-start: var(--ar-gutter);
+  }
+
   /* Everything from here sits at the end of the row. */
   .search-box{
     order: 2;
@@ -1887,6 +2152,14 @@ so the field stays visible beside the icon. */
     display: none;
   }
 
+  /* Same reasoning for the page links: the 64px bar holds the logo and search,
+     and the sheet carries this row instead. Scoped to the header - .ar-sheet
+     renders the same partial and keeps it. Descendant, not child: the row sits
+     inside .header-lower, and display:contents flattens boxes, not selectors. */
+  .header .header-pages{
+    display: none;
+  }
+
   .header-logo{
     order: 1;
     flex: 0 0 auto;
@@ -1902,7 +2175,7 @@ so the field stays visible beside the icon. */
   .header-logo a img{
     inline-size: auto;
     block-size: auto;
-    max-block-size: 36px;
+    max-block-size: 44px;
     max-inline-size: 38vw;
   }
 
@@ -2342,6 +2615,28 @@ so the field stays visible beside the icon. */
   padding-block: 12px;
   font-size: var(--ar-fs-label);
   font-weight: 700;
+}
+
+/* The page links at the foot of the sheet, under the category tree - stacked,
+   not the header's inline row, and separated from the tree by a rule so they do
+   not read as another category. */
+.ar-sheet .header-pages{
+  flex-direction: column;
+  gap: 0;
+  border-block-start: 1px solid var(--ar-line);
+  margin-block-start: var(--ar-stack-sm);
+  padding-inline: var(--ar-margin-mobile);
+}
+
+.ar-sheet .header-pages__link{
+  color: var(--ar-ink);
+  font-size: var(--ar-fs-label);
+}
+
+/* The sheet renders the full category tree above this partial, so the two
+   browse dropdowns would be the same links twice. */
+.ar-sheet .header-pages__drop{
+  display: none;
 }
 
 /* --- Bottom tab bar -------------------------------------------------------
@@ -5070,4 +5365,171 @@ so the field stays visible beside the icon. */
    -------------------------------------------------------------------------- */
 .checkout-page .cart-options{
   min-height: 0;
+}
+
+/* --- FAQ accordion ---------------------------------------------------------
+   The FAQ topic ships as one long bulleted list: every answer visible at once,
+   eight questions deep, and no way to scan the questions on a phone. The view
+   rewrites that list into native <details name="faq">, so the browser itself
+   opens one answer and closes the rest — this block only dresses it.
+
+   Each entry is a card rather than a bordered row: the questions are the thing
+   being scanned, and cards give the closed state enough weight to read as a
+   list of choices. The open card carries the tinted surface and a gradient
+   rule, which is decoration, never a label ground.
+   -------------------------------------------------------------------------- */
+.topic-faq .page-body{
+  display: flex;
+  flex-direction: column;
+  gap: var(--ar-stack-sm);
+}
+
+.topic-faq details{
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
+  background: var(--ar-surface);
+  overflow: hidden;
+  transition: border-color var(--ar-transition), box-shadow var(--ar-transition);
+}
+
+.topic-faq details:hover{
+  border-color: var(--ar-blue-border);
+}
+
+.topic-faq details[open]{
+  border-color: var(--ar-blue-border);
+  box-shadow: var(--ar-shadow);
+}
+
+/* The gradient rule marks the open card. Inset so it reads as an accent on the
+   card rather than a second border. */
+.topic-faq details[open] summary::before{
+  content: "";
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: var(--ar-margin-mobile);
+  block-size: 2px;
+  background: var(--ar-gradient);
+}
+
+.topic-faq summary{
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--ar-stack-md);
+  padding: var(--ar-stack-md) var(--ar-margin-mobile);
+  font-size: var(--ar-fs-body-lg);
+  line-height: var(--ar-lh-body-lg);
+  font-weight: 600;
+  color: var(--ar-navy);
+  cursor: pointer;
+  /* Both spellings: ::marker covers the modern engines, the WebKit
+     pseudo-element the older Safari that still draws a disclosure triangle. */
+  list-style: none;
+}
+
+.topic-faq summary::marker,
+.topic-faq summary::-webkit-details-marker{
+  content: "";
+  display: none;
+}
+
+.topic-faq summary:hover{
+  color: var(--ar-blue);
+}
+
+.topic-faq summary:focus-visible{
+  outline: 2px solid var(--ar-blue);
+  outline-offset: -2px;
+}
+
+/* Chevron drawn in borders rather than shipped as an image. Deliberately
+   PHYSICAL border-right/bottom, not the logical pair this file otherwise
+   prefers: the corner has to be the bottom-right one for the 45° rotation to
+   point down, and inline-end swaps that to bottom-left in RTL — which is how
+   the arrow ended up pointing sideways in Arabic. Only the margin is logical,
+   because that side really does follow the document. */
+.topic-faq summary::after{
+  content: "";
+  flex: none;
+  margin-inline-start: auto;
+  inline-size: 9px;
+  block-size: 9px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--ar-transition);
+}
+
+.topic-faq details[open] summary::after{
+  transform: translateY(2px) rotate(225deg);
+}
+
+.topic-faq .faq-answer{
+  padding: var(--ar-stack-md) var(--ar-margin-mobile);
+  color: var(--ar-ink-muted);
+  font-size: var(--ar-fs-body);
+  line-height: var(--ar-lh-body);
+}
+
+.topic-faq .faq-answer > :first-child{ margin-block-start: 0; }
+.topic-faq .faq-answer > :last-child{ margin-block-end: 0; }
+
+@media (prefers-reduced-motion: reduce){
+  .topic-faq summary::after{ transition: none; }
+}
+
+/* --- Topic pages: price tables --------------------------------------------
+   The maintenance service list is a price list — a name and a number, thirty
+   times over. It shipped as bullets, which put the price at the end of a
+   sentence and left nothing to scan down. Seeded as real tables now; this is
+   what makes them read as one.
+
+   Zebra rows rather than a grid of rules: with two columns the row is the unit,
+   and horizontal rules alone are enough to follow one across. The price column
+   is `text-align: end`, which is the right edge in LTR and the left in RTL, so
+   the numbers line up in both.
+   -------------------------------------------------------------------------- */
+.topic-page .page-body table{
+  inline-size: 100%;
+  margin-block: var(--ar-stack-md) var(--ar-stack-lg);
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  font-size: var(--ar-fs-body);
+  line-height: var(--ar-lh-body);
+}
+
+.topic-page .page-body th{
+  padding: 10px var(--ar-margin-mobile);
+  background: var(--ar-blue-tint);
+  color: var(--ar-navy);
+  font-weight: 700;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.topic-page .page-body td{
+  padding: 10px var(--ar-margin-mobile);
+  border-block-start: 1px solid var(--ar-line);
+  color: var(--ar-ink);
+  vertical-align: top;
+}
+
+.topic-page .page-body tbody tr:nth-child(even) td{
+  background: var(--ar-surface-alt);
+}
+
+/* Last column is the price in every one of these tables: keep it snug against
+   its edge and stop a two-word figure ("340 SAR") from wrapping. */
+.topic-page .page-body :is(th, td):last-child{
+  inline-size: 1%;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.topic-page .page-body tbody tr:hover td{
+  background: var(--ar-blue-tint);
 }

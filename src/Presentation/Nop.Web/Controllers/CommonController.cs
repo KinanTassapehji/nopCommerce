@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
 using Nop.Core.Domain;
 using Nop.Core.Domain.Common;
@@ -211,6 +213,70 @@ public partial class CommonController : BasePublicController
 
             model.SuccessfullySent = true;
             model.Result = await _localizationService.GetResourceAsync("ContactUs.YourEnquiryHasBeenSent");
+
+            //activity log
+            await _customerActivityService.InsertActivityAsync("PublicStore.ContactUs",
+                await _localizationService.GetResourceAsync("ActivityLog.PublicStore.ContactUs"));
+
+            return View(model);
+        }
+
+        return View(model);
+    }
+
+    //maintenance request page
+    //available even when a store is closed
+    [CheckAccessClosedStore(ignore: true)]
+    public virtual async Task<IActionResult> MaintenanceRequest()
+    {
+        var model = await _commonModelFactory.PrepareMaintenanceRequestModelAsync(new MaintenanceRequestModel(), false);
+
+        return View(model);
+    }
+
+    [HttpPost, ActionName("MaintenanceRequest")]
+    [ValidateCaptcha]
+    //available even when a store is closed
+    [CheckAccessClosedStore(ignore: true)]
+    public virtual async Task<IActionResult> MaintenanceRequestSend(MaintenanceRequestModel model, bool captchaValid)
+    {
+        //validate CAPTCHA
+        if (_captchaSettings.Enabled && _captchaSettings.ShowOnContactUsPage && !captchaValid)
+        {
+            ModelState.AddModelError("", await _localizationService.GetResourceAsync("Common.WrongCaptchaMessage"));
+        }
+
+        model = await _commonModelFactory.PrepareMaintenanceRequestModelAsync(model, true);
+
+        if (ModelState.IsValid)
+        {
+            //ponytail: no maintenance request entity - the request is mailed through the contact us template
+            var fields = new List<(string Resource, string Value)>
+            {
+                ("MaintenanceRequest.PhoneNumber", model.PhoneNumber),
+                ("MaintenanceRequest.City", model.City),
+                ("MaintenanceRequest.Area", model.Area),
+                ("MaintenanceRequest.Brand", model.Brand),
+                ("MaintenanceRequest.DeviceType", model.DeviceType),
+                ("MaintenanceRequest.ModelNumber", model.ModelNumber),
+                ("MaintenanceRequest.InWarranty", await _localizationService.GetResourceAsync(model.InWarranty ? "Common.Yes" : "Common.No"))
+            };
+
+            var body = new StringBuilder();
+            foreach (var (resource, value) in fields)
+                body.AppendFormat("<strong>{0}</strong>: {1}<br />",
+                    WebUtility.HtmlEncode(await _localizationService.GetResourceAsync(resource)),
+                    WebUtility.HtmlEncode(value));
+            body.Append("<br />");
+            body.Append(_htmlFormatter.FormatText(model.Problem, false, true, false, false, false, false));
+
+            await _workflowMessageService.SendContactUsMessageAsync((await _workContext.GetWorkingLanguageAsync()).Id,
+                model.Email, model.FullName,
+                await _localizationService.GetResourceAsync("MaintenanceRequest.EmailSubject"),
+                body.ToString());
+
+            model.SuccessfullySent = true;
+            model.Result = await _localizationService.GetResourceAsync("MaintenanceRequest.YourRequestHasBeenSent");
 
             //activity log
             await _customerActivityService.InsertActivityAsync("PublicStore.ContactUs",
