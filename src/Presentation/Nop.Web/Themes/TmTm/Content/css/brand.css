@@ -865,6 +865,12 @@ under the 4.5:1 floor for 14px text. */
 }
 
 /* --- Pager ---------------------------------------------------------------- */
+/* The home page feed grid has no trailing gap of its own, so its pager lands
+   against the last row of products. */
+.home-page-all-products .pager{
+  margin-block-start: var(--tm-stack-lg);
+}
+
 .pager li a,
 .pager li span{
   border-radius: var(--tm-radius-sm);
@@ -5069,4 +5075,19 @@ so the field stays visible beside the icon. */
    -------------------------------------------------------------------------- */
 .checkout-page .cart-options{
   min-height: 0;
+}
+
+/* --- Brand strip heading --------------------------------------------------
+   The heading links to the full brand list. It should still read as a heading,
+   not as body copy that happens to be blue, so it keeps .block .title's colour
+   instead of taking the link colour. */
+.block-manufacturer-navigation .title a{
+  color: inherit;
+  text-decoration: none;
+}
+
+.block-manufacturer-navigation .title a:hover{
+  color: var(--tm-teal-hover);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }

@@ -333,6 +333,34 @@ public partial class CatalogModelFactory : ICatalogModelFactory
     }
 
     /// <summary>
+    /// Prepare the models of the given categories, picture included
+    /// </summary>
+    /// <param name="categories">Categories</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the list of category models
+    /// </returns>
+    protected virtual async Task<List<CategoryModel>> PrepareCategoryModelsAsync(IList<Category> categories)
+    {
+        var model = new List<CategoryModel>();
+
+        foreach (var category in categories)
+            model.Add(new CategoryModel
+            {
+                Id = category.Id,
+                Name = await _localizationService.GetLocalizedAsync(category, x => x.Name),
+                Description = await _localizationService.GetLocalizedAsync(category, x => x.Description),
+                MetaKeywords = await _localizationService.GetLocalizedAsync(category, x => x.MetaKeywords),
+                MetaDescription = await _localizationService.GetLocalizedAsync(category, x => x.MetaDescription),
+                MetaTitle = await _localizationService.GetLocalizedAsync(category, x => x.MetaTitle),
+                SeName = await _urlRecordService.GetSeNameAsync(category),
+                PictureModel = await PrepareCategoryPictureModelAsync(category)
+            });
+
+        return model;
+    }
+
+    /// <summary>
     /// Prepare manufacturer picture model
     /// </summary>
     /// <param name="manufacturer">Manufacturer</param>
@@ -633,25 +661,27 @@ public partial class CatalogModelFactory : ICatalogModelFactory
         var model = await _staticCacheManager.GetAsync(categoriesCacheKey, async () =>
         {
             var homepageCategories = await _categoryService.GetAllCategoriesDisplayedOnHomepageAsync();
-            return await homepageCategories.SelectAwait(async category =>
-            {
-                var catModel = new CategoryModel
-                {
-                    Id = category.Id,
-                    Name = await _localizationService.GetLocalizedAsync(category, x => x.Name),
-                    Description = await _localizationService.GetLocalizedAsync(category, x => x.Description),
-                    MetaKeywords = await _localizationService.GetLocalizedAsync(category, x => x.MetaKeywords),
-                    MetaDescription = await _localizationService.GetLocalizedAsync(category, x => x.MetaDescription),
-                    MetaTitle = await _localizationService.GetLocalizedAsync(category, x => x.MetaTitle),
-                    SeName = await _urlRecordService.GetSeNameAsync(category),
-                    PictureModel = await PrepareCategoryPictureModelAsync(category)
-                };
-
-                return catModel;
-            }).ToListAsync();
+            return await PrepareCategoryModelsAsync(homepageCategories);
         });
 
         return model;
+    }
+
+    /// <summary>
+    /// Prepare the models of every category of the current store, picture included
+    /// </summary>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the list of category models
+    /// </returns>
+    public virtual async Task<List<CategoryModel>> PrepareAllCategoryModelsAsync()
+    {
+        //ponytail: no model cache of its own - the pictures and the category list are
+        //both cached a layer down, and this page is not on a hot path.
+        var store = await _storeContext.GetCurrentStoreAsync();
+        var categories = await _categoryService.GetAllCategoriesAsync(storeId: store.Id);
+
+        return await PrepareCategoryModelsAsync(categories);
     }
 
     /// <summary>

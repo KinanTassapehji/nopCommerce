@@ -86,6 +86,11 @@ public static partial class NopRouteNames
         public const string RECENTLY_VIEWED_PRODUCTS = "RecentlyViewedProducts";
 
         /// <summary>
+        /// Gets the categories route name
+        /// </summary>
+        public const string CATEGORIES = "CategoryList";
+
+        /// <summary>
         /// Gets the manufacturers route name
         /// </summary>
         public const string MANUFACTURERS = "ManufacturerList";

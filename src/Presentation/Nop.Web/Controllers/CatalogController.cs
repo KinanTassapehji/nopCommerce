@@ -147,6 +147,13 @@ public partial class CatalogController : BasePublicController
         return PartialView("_ProductsInGridOrLines", model);
     }
 
+    public virtual async Task<IActionResult> CategoryAll()
+    {
+        var model = await _catalogModelFactory.PrepareAllCategoryModelsAsync();
+
+        return View(model);
+    }
+
     #endregion
 
     #region Manufacturers

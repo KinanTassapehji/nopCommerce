@@ -51,6 +51,15 @@ public partial interface ICatalogModelFactory
     Task<List<CategoryModel>> PrepareHomepageCategoryModelsAsync();
 
     /// <summary>
+    /// Prepare the models of every category of the current store, picture included
+    /// </summary>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the list of category models
+    /// </returns>
+    Task<List<CategoryModel>> PrepareAllCategoryModelsAsync();
+
+    /// <summary>
     /// Prepares the category products model
     /// </summary>
     /// <param name="category">Category</param>

@@ -6,7 +6,9 @@
 {
     <section class="block block-manufacturer-navigation">
         <h2 class="title">
-            @T("Manufacturers")
+            @*the heading is the way into the full brand list - the "view all" link
+                below it only appears once there are more brands than the strip shows*@
+            <a href="@Url.RouteUrl(NopRouteNames.General.MANUFACTURERS)">@T("Manufacturers")</a>
         </h2>
         <div class="listbox">
             <ul class="list">

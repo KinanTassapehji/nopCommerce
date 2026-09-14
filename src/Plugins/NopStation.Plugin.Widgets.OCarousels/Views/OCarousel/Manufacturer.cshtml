@@ -9,9 +9,6 @@
                 <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { sename = manufacturerModel.SeName }))" title="@manufacturerModel.PictureModel.Title">
                     <img alt="@manufacturerModel.PictureModel.AlternateText" src="@manufacturerModel.PictureModel.ImageUrl" title="@manufacturerModel.PictureModel.Title" />
                 </a>
-                <div class="manufacturer-name">
-                    <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new {SeName = manufacturerModel.SeName}))">@manufacturerModel.Name</a>
-                </div>
             </div>
         }
     </div>

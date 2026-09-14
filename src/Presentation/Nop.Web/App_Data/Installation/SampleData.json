@@ -135,9 +135,9 @@
     {
       "Name": "المنزل والمعيشة",
       "ImageFileName": "category_home_living.png",
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48",
+      "PageSizeOptions": "10, 20, 50",
       "Published": true,
       "DisplayOrder": 10,
       "ShowOnHomepage": true,
@@ -149,27 +149,27 @@
         {
           "Name": "المطبخ والطعام",
           "ImageFileName": "category_kitchen_dining.png",
-          "PageSize": 12,
+          "PageSize": 10,
           "AllowCustomersToSelectPageSize": true,
-          "PageSizeOptions": "12, 24, 48",
+          "PageSizeOptions": "10, 20, 50",
           "Published": true,
           "DisplayOrder": 10
         },
         {
           "Name": "المفروشات والحمام",
           "ImageFileName": "category_bedding_bath.png",
-          "PageSize": 12,
+          "PageSize": 10,
           "AllowCustomersToSelectPageSize": true,
-          "PageSizeOptions": "12, 24, 48",
+          "PageSizeOptions": "10, 20, 50",
           "Published": true,
           "DisplayOrder": 20
         },
         {
           "Name": "الديكور والإضاءة",
           "ImageFileName": "category_decor_lighting.png",
-          "PageSize": 12,
+          "PageSize": 10,
           "AllowCustomersToSelectPageSize": true,
-          "PageSizeOptions": "12, 24, 48",
+          "PageSizeOptions": "10, 20, 50",
           "Published": true,
           "DisplayOrder": 30
         }
@@ -178,9 +178,9 @@
     {
       "Name": "التقنية والإكسسوارات",
       "ImageFileName": "category_tech.png",
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48",
+      "PageSizeOptions": "10, 20, 50",
       "Published": true,
       "DisplayOrder": 20,
       "ShowOnHomepage": true,
@@ -192,27 +192,27 @@
         {
           "Name": "الصوتيات",
           "ImageFileName": "category_audio.png",
-          "PageSize": 12,
+          "PageSize": 10,
           "AllowCustomersToSelectPageSize": true,
-          "PageSizeOptions": "12, 24, 48",
+          "PageSizeOptions": "10, 20, 50",
           "Published": true,
           "DisplayOrder": 10
         },
         {
           "Name": "الشحن والكابلات",
           "ImageFileName": "category_charging.png",
-          "PageSize": 12,
+          "PageSize": 10,
           "AllowCustomersToSelectPageSize": true,
-          "PageSizeOptions": "12, 24, 48",
+          "PageSizeOptions": "10, 20, 50",
           "Published": true,
           "DisplayOrder": 20
         },
         {
           "Name": "المنزل الذكي",
           "ImageFileName": "category_smart_home.png",
-          "PageSize": 12,
+          "PageSize": 10,
           "AllowCustomersToSelectPageSize": true,
-          "PageSizeOptions": "12, 24, 48",
+          "PageSizeOptions": "10, 20, 50",
           "Published": true,
           "DisplayOrder": 30
         }
@@ -221,9 +221,9 @@
     {
       "Name": "الملابس",
       "ImageFileName": "category_apparel.png",
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48",
+      "PageSizeOptions": "10, 20, 50",
       "Published": true,
       "DisplayOrder": 30,
       "ShowOnHomepage": true,
@@ -235,27 +235,27 @@
         {
           "Name": "نسائي",
           "ImageFileName": "category_women.png",
-          "PageSize": 12,
+          "PageSize": 10,
           "AllowCustomersToSelectPageSize": true,
-          "PageSizeOptions": "12, 24, 48",
+          "PageSizeOptions": "10, 20, 50",
           "Published": true,
           "DisplayOrder": 10
         },
         {
           "Name": "رجالي",
           "ImageFileName": "category_men.png",
-          "PageSize": 12,
+          "PageSize": 10,
           "AllowCustomersToSelectPageSize": true,
-          "PageSizeOptions": "12, 24, 48",
+          "PageSizeOptions": "10, 20, 50",
           "Published": true,
           "DisplayOrder": 20
         },
         {
           "Name": "الحقائب والإكسسوارات",
           "ImageFileName": "category_bags.png",
-          "PageSize": 12,
+          "PageSize": 10,
           "AllowCustomersToSelectPageSize": true,
-          "PageSizeOptions": "12, 24, 48",
+          "PageSizeOptions": "10, 20, 50",
           "Published": true,
           "DisplayOrder": 30
         }
@@ -264,9 +264,9 @@
     {
       "Name": "الجمال والعناية",
       "ImageFileName": "category_beauty.png",
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48",
+      "PageSizeOptions": "10, 20, 50",
       "Published": true,
       "DisplayOrder": 40,
       "ShowOnHomepage": true,
@@ -278,27 +278,27 @@
         {
           "Name": "العناية بالبشرة",
           "ImageFileName": "category_skincare.png",
-          "PageSize": 12,
+          "PageSize": 10,
           "AllowCustomersToSelectPageSize": true,
-          "PageSizeOptions": "12, 24, 48",
+          "PageSizeOptions": "10, 20, 50",
           "Published": true,
           "DisplayOrder": 10
         },
         {
           "Name": "العطور وعطور المنزل",
           "ImageFileName": "category_fragrance.png",
-          "PageSize": 12,
+          "PageSize": 10,
           "AllowCustomersToSelectPageSize": true,
-          "PageSizeOptions": "12, 24, 48",
+          "PageSizeOptions": "10, 20, 50",
           "Published": true,
           "DisplayOrder": 20
         },
         {
           "Name": "الصحة والرياضة",
           "ImageFileName": "category_wellness.png",
-          "PageSize": 12,
+          "PageSize": 10,
           "AllowCustomersToSelectPageSize": true,
-          "PageSizeOptions": "12, 24, 48",
+          "PageSizeOptions": "10, 20, 50",
           "Published": true,
           "DisplayOrder": 30
         }
@@ -307,9 +307,9 @@
     {
       "Name": "القرطاسية والهدايا",
       "ImageFileName": "category_stationery.png",
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48",
+      "PageSizeOptions": "10, 20, 50",
       "Published": true,
       "DisplayOrder": 50,
       "ShowOnHomepage": false,
@@ -322,9 +322,9 @@
     {
       "Name": "منتجات رقمية",
       "ImageFileName": "category_digital.png",
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48",
+      "PageSizeOptions": "10, 20, 50",
       "Published": true,
       "DisplayOrder": 60,
       "ShowOnHomepage": false,
@@ -339,9 +339,9 @@
     {
       "Name": "بيت الشمال",
       "ImageFileName": "manufacturer_bait_alshamal.png",
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48",
+      "PageSizeOptions": "10, 20, 50",
       "Published": true,
       "DisplayOrder": 10,
       "PriceRangeFiltering": true,
@@ -352,9 +352,9 @@
     {
       "Name": "ضياء",
       "ImageFileName": "manufacturer_diyaa.png",
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48",
+      "PageSizeOptions": "10, 20, 50",
       "Published": true,
       "DisplayOrder": 20,
       "PriceRangeFiltering": true,
@@ -365,9 +365,9 @@
     {
       "Name": "أطلس",
       "ImageFileName": "manufacturer_atlas.png",
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48",
+      "PageSizeOptions": "10, 20, 50",
       "Published": true,
       "DisplayOrder": 30,
       "PriceRangeFiltering": true,
@@ -378,9 +378,9 @@
     {
       "Name": "نول",
       "ImageFileName": "manufacturer_nawl.png",
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48",
+      "PageSizeOptions": "10, 20, 50",
       "Published": true,
       "DisplayOrder": 40,
       "PriceRangeFiltering": true,
@@ -391,9 +391,9 @@
     {
       "Name": "مرمر",
       "ImageFileName": "manufacturer_marmar.png",
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48",
+      "PageSizeOptions": "10, 20, 50",
       "Published": true,
       "DisplayOrder": 50,
       "PriceRangeFiltering": true,
@@ -404,9 +404,9 @@
     {
       "Name": "أريا",
       "ImageFileName": "manufacturer_aria.png",
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48",
+      "PageSizeOptions": "10, 20, 50",
       "Published": true,
       "DisplayOrder": 60,
       "PriceRangeFiltering": true,
@@ -3645,9 +3645,9 @@
       "PriceFrom": 0,
       "PriceTo": 500,
       "Active": true,
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48"
+      "PageSizeOptions": "10, 20, 50"
     },
     {
       "Name": "بضائع المرفأ",
@@ -3655,9 +3655,9 @@
       "Description": "حقائب ومصنوعات جلدية بكميات صغيرة، تُخاط عند الطلب.",
       "DisplayOrder": 2,
       "Active": true,
-      "PageSize": 12,
+      "PageSize": 10,
       "AllowCustomersToSelectPageSize": true,
-      "PageSizeOptions": "12, 24, 48"
+      "PageSizeOptions": "10, 20, 50"
     }
   ],
   "Affiliates": [
