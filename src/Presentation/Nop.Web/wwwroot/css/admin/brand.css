@@ -321,3 +321,35 @@ html[dir="rtl"] table.dataTable tfoot th,
 html[dir="rtl"] table.dataTable tfoot td {
   text-align: right;
 }
+
+/* --- SEO settings, hidden -----------------------------------------------
+   Search-engine settings are not part of what this store offers, so every
+   place the admin surfaces them is hidden: the "SEO" card on the product,
+   category, manufacturer, product tag, blog post, news item, topic, vendor
+   and store editors, the SEO block of General settings (all of them render
+   as data-card-name="*-seo"), the SEO row in the product editor settings
+   modal, and the System > Search engine friendly names page in the sidebar.
+
+   Hidden, not deleted, on purpose: the inputs stay in the DOM and keep
+   posting the values they already hold. Drop them from the markup instead
+   and every save would post an empty SeName, which ValidateSeNameAsync
+   regenerates from the entity name - silently rewriting any hand-written
+   slug. Deleting this block brings the whole feature back. */
+
+.card[data-card-name$="-seo"],
+.form-group.row:has(#ProductEditorSettingsModel_Seo),
+.nav-sidebar li:has(> a[href$="/Common/SeNames"]) {
+  display: none !important;
+}
+
+/* --- "Ship separately", hidden ------------------------------------------
+   Neither store splits an order into one shipment per unit, so the option is
+   hidden on the product editor's Shipping panel and in the product editor
+   settings modal that governs it. Same reasoning as the SEO block above:
+   hidden rather than removed, so the checkbox keeps posting the value the
+   product already has instead of silently clearing it on every save. */
+
+.form-group.row:has(#ShipSeparately),
+.form-group.row:has(#ProductEditorSettingsModel_ShipSeparately) {
+  display: none !important;
+}
