@@ -88,7 +88,7 @@ TOKEN=$(grep -oE 'name="__RequestVerificationToken"[^>]*value="[^"]+"' install-p
 curl -s -b nopcookies.txt -o install-result.html -w 'status=%{http_code} time=%{time_total}s\n' \
   --max-time 900 -X POST http://nomo.local:5000/install \
   --data-urlencode "__RequestVerificationToken=$TOKEN" \
-  --data-urlencode "AdminEmail=admin@yourstore.com" \
+  --data-urlencode "AdminEmail=admin@arabian.com" \
   --data-urlencode "AdminPassword=asdASD@1234" \
   --data-urlencode "ConfirmPassword=asdASD@1234" \
   --data-urlencode "DataProvider=1" \
