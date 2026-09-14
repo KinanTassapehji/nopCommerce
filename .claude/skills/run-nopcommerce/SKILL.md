@@ -13,7 +13,7 @@ Local setup that is already known-good on this machine — don't re-derive it.
 | App project | `src/Presentation/Nop.Web` |
 | URL | `http://nomo.local:5000` — **always**, never `localhost` (no `launchSettings.json`; always pass `--urls`) |
 | DB | SQL Server 2025 at `.`, database `Arabia`, `sa` / `asdASD@1234` |
-| Admin login | `admin@yourstore.com` / `asdASD@1234` |
+| Admin login | `admin@arabian.com` / `asdASD@1234` |
 | Config written by installer | `src/Presentation/Nop.Web/App_Data/appsettings.json` (gitignored) |
 
 Branch `Arabia_release_4_90_6` targets **net10.0** (`global.json` pins SDK 10.0.100, `rollForward: latestFeature`; 10.0.400 is installed).
