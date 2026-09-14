@@ -11,6 +11,13 @@
         }
         else
         {
+            @*The returnUrl stays percent-encoded, which is why an Arabic slug reads as
+                %25D8%25B3... in the address bar - RouteUrl encodes what GetRawUrl had already
+                encoded. Decoding it first is wrong, however clean it looks: the login POST signs
+                in on LoginPath, so CookieAuthenticationHandler writes the Location header itself,
+                straight from Query[ReturnUrlParameter] and without encoding it, and Kestrel throws
+                on the raw Arabic - a 500 instead of a login. MVC's own Redirect() would have
+                encoded it, but the handler gets there first.*@
             var returnUrl = Context.Request.Query.TryGetValue("returnUrl", out var url) && !StringValues.IsNullOrEmpty(url)
                 ? url.ToString()
                 : webHelper.GetRawUrl(Context.Request);
