@@ -1008,6 +1008,12 @@ which would
 }
 
 /* --- Pager ---------------------------------------------------------------- */
+/* The home page feed grid has no trailing gap of its own, so its pager lands
+   against the last row of products. */
+.home-page-all-products .pager{
+  margin-block-start: var(--ar-stack-lg);
+}
+
 .pager li a,
 .pager li span{
   border-radius: var(--ar-radius-sm);
@@ -1543,6 +1549,7 @@ so the "HomepageText" topic that would
   border-radius: var(--ar-radius-lg); /* pill badges, category cards */
   background: var(--ar-blue-tint);
   overflow: hidden;
+  isolation: isolate; /* keep the img's multiply (below) blending against this tint, not the page */
   box-shadow: var(--ar-shadow);
   transition: box-shadow var(--ar-transition), transform var(--ar-transition);
 }
@@ -1572,6 +1579,13 @@ so the "HomepageText" topic that would
   max-height: none;
   margin: 0;
   object-fit: cover;
+  /* ponytail: a couple of the category marks were exported with an opaque white
+     backdrop instead of transparency, which hid the tile's blue tint and broke
+     the row. multiply drops any white to the tint and leaves the black line art
+     alone, so the grid stays consistent whatever a future upload looks like.
+     Ceiling: only right for flat line-art marks — swap to fixing the source PNGs
+     if these tiles ever carry photography. */
+  mix-blend-mode: multiply;
 }
 
 /* Name under the mark, in ink: with the photo no longer behind it there is
@@ -1684,7 +1698,12 @@ so it needs no vertical offset of its own here. */
 
 @media (min-width: 1001px) {
 
-  :is(.home-page-category-grid, .sub-category-grid) .item-grid{
+  .sub-category-grid .item-grid{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  /* Twelve homepage categories, so four per row fills three even lines. */
+  .home-page-category-grid .item-grid{
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
@@ -5532,4 +5551,162 @@ so the field stays visible beside the icon. */
 
 .topic-page .page-body tbody tr:hover td{
   background: var(--ar-blue-tint);
+}
+
+/* --- Topic pages as documents ---------------------------------------------
+   "من نحن" and "سياسة الصيانة" are the two long ones: four or five <h2>
+   sections over thirty-odd bullets, authored in admin as plain HTML. They
+   inherited the base sheet's defaults — full-container line lengths, headings
+   the same weight as the body, and disc bullets — so the page read as a wall.
+
+   Everything here hangs off .topic-page .page-body and element selectors, so
+   it applies to whatever an admin writes in the editor without asking them for
+   a class, and the other topics (FAQ, privacy, conditions) get it too.
+
+   Logical properties throughout: the same rules serve the RTL sheet.
+   -------------------------------------------------------------------------- */
+.topic-page .page-body{
+  /* the base sheet justifies these pages. Justified Arabic stretches the
+     kashida and opens rivers between words. */
+  text-align: start;
+  color: var(--ar-ink);
+  font-size: var(--ar-fs-body-lg);
+  line-height: var(--ar-lh-body-lg);
+}
+
+/* Section heads. The page title already owns the gradient rule and its
+   terminal dot, so a second one per section would compete with it; these get a
+   start-side bar instead, which marks the sections down the page without
+   repeating the title's device. */
+.topic-page .page-body h2{
+  position: relative;
+  margin-block: var(--ar-stack-lg) var(--ar-stack-md);
+  padding-inline-start: var(--ar-stack-md);
+  color: var(--ar-navy);
+  font-size: var(--ar-fs-headline-sm);
+  line-height: var(--ar-lh-headline-sm);
+  font-weight: 700;
+}
+
+.topic-page .page-body h2:before{
+  content: "";
+  position: absolute;
+  inset-block: 2px;
+  inset-inline-start: 0;
+  inline-size: 4px;
+  border-radius: 999px;
+  background: var(--ar-gradient);
+}
+
+/* First head sits right under the page title, which brings its own margin. */
+.topic-page .page-body > h2:first-child{
+  margin-block-start: 0;
+}
+
+.topic-page .page-body h3{
+  margin-block: var(--ar-stack-md) var(--ar-stack-sm);
+  color: var(--ar-blue);
+  font-size: var(--ar-fs-title);
+  line-height: var(--ar-lh-title);
+  font-weight: 700;
+}
+
+.topic-page .page-body p{
+  margin-block: 0 var(--ar-stack-md);
+}
+
+/* Brand markers rather than discs, and enough room between items that a
+   thirty-item policy list is still scannable. */
+.topic-page .page-body :is(ul, ol){
+  margin-block: 0 var(--ar-stack-md);
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+.topic-page .page-body li{
+  position: relative;
+  padding-inline-start: calc(var(--ar-stack-md) + var(--ar-stack-sm));
+  margin-block-end: var(--ar-stack-sm);
+}
+
+.topic-page .page-body ul > li:before{
+  content: "";
+  position: absolute;
+  /* centred on the first line, whatever the line-height resolves to */
+  inset-block-start: calc((var(--ar-lh-body-lg) - 7px) / 2);
+  inset-inline-start: var(--ar-stack-sm);
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 50%;
+  background: var(--ar-blue);
+}
+
+.topic-page .page-body ol{
+  counter-reset: ar-topic-item;
+}
+
+.topic-page .page-body ol > li{
+  counter-increment: ar-topic-item;
+}
+
+.topic-page .page-body ol > li:before{
+  content: counter(ar-topic-item) ".";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--ar-blue);
+  font-weight: 700;
+}
+
+/* A paragraph nested in a list item is the FAQ answer shape and the "vision"
+   entries on من نحن — it should not take the full block gap twice. */
+.topic-page .page-body li p{
+  margin-block: var(--ar-stack-sm) 0;
+}
+
+.topic-page .page-body li:last-child{
+  margin-block-end: 0;
+}
+
+/* The lead-in on an entry ("Commitment:", "Misuse:") is the thing being
+   scanned for, so it carries the darker ink. */
+.topic-page .page-body strong{
+  color: var(--ar-navy);
+  font-weight: 700;
+}
+
+.topic-page .page-body a{
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (min-width: 1001px){
+
+  .topic-page .page-body{
+    font-size: var(--ar-fs-body-lg);
+  }
+
+  .topic-page .page-body h2{
+    font-size: var(--ar-fs-headline);
+    line-height: var(--ar-lh-headline);
+    padding-inline-start: var(--ar-stack-lg);
+  }
+
+  .topic-page .page-body h2:before{
+    inline-size: 6px;
+  }
+}
+
+/* --- Brand strip heading --------------------------------------------------
+   The heading links to the full brand list. It should still read as a heading,
+   not as body copy that happens to be blue, so it keeps .block .title's colour
+   instead of taking the link colour. */
+.block-manufacturer-navigation .title a{
+  color: inherit;
+  text-decoration: none;
+}
+
+.block-manufacturer-navigation .title a:hover{
+  color: var(--ar-blue-hover);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }

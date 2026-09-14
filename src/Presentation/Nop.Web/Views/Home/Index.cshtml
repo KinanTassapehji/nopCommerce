@@ -43,8 +43,11 @@
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBottom })
         <section class="product-grid home-page-all-products">
             @*the heading only makes sense once the first page of the feed has landed*@
-            <h2 class="title" id="home-products-title" hidden>@T("Homepage.AllProducts")</h2>
+            <h2 class="title" id="home-products-title" hidden>
+                <a href="@Url.RouteUrl(NopRouteNames.General.CATEGORIES)">@T("Homepage.AllProducts")</a>
+            </h2>
             <div class="item-grid" id="home-products-grid"></div>
+            <div id="home-products-pager"></div>
         </section>
         <div id="home-products-sentinel"></div>
     </div>
@@ -52,36 +55,61 @@
 
 <script asp-location="Footer">
     $(function () {
-        //infinite scrolling: keep appending catalog pages below the configured home page sections
+        //the all-products feed is paged on desktop and infinitely scrolled on mobile
+        //ponytail: 1000px is the theme's own mobile/desktop split; the mode is picked once, a resize
+        //across the breakpoint keeps whatever the page loaded with
         var url = '@Url.RouteUrl(NopRouteNames.Ajax.HOMEPAGE_PRODUCTS)';
-        var $grid = $('#home-products-grid'), sentinel = document.getElementById('home-products-sentinel');
+        var $grid = $('#home-products-grid'), $pager = $('#home-products-pager');
+        var sentinel = document.getElementById('home-products-sentinel');
+        var infinite = window.matchMedia('(max-width: 1000px)').matches;
         var page = 1, busy = false;
 
         var observer = new IntersectionObserver(function (entries) {
-            if (!entries[0].isIntersecting || busy)
+            if (entries[0].isIntersecting)
+                load(page);
+        }, { rootMargin: '400px' });
+
+        function load(pageNumber) {
+            if (busy)
                 return;
             busy = true;
-            $.get(url, { pageNumber: page }, function (html) {
+            $.get(url, { pageNumber: pageNumber }, function (html) {
                 if (!$.trim(html)) {
                     //no more products
                     observer.disconnect();
+                    $pager.empty();
                     return;
                 }
-                page++;
+                page = pageNumber + 1;
+                var $html = $(html);
+                if (!infinite)
+                    $grid.empty();
                 //skip products already shown by the sections above
-                $(html).filter('.item-box').each(function () {
+                $html.filter('.item-box').each(function () {
                     var id = $(this).find('[data-productid]').data('productid');
                     if (!$('[data-productid="' + id + '"]').length)
                         $grid.append(this);
                 });
                 $('#home-products-title').prop('hidden', !$grid.children().length);
+                if (!infinite)
+                    $pager.empty().append($html.filter('.pager'));
                 busy = false;
-                //re-trigger when the sentinel is still visible (short or fully skipped page)
-                observer.unobserve(sentinel);
-                observer.observe(sentinel);
+                if (infinite) {
+                    //re-trigger when the sentinel is still visible (short or fully skipped page)
+                    observer.unobserve(sentinel);
+                    observer.observe(sentinel);
+                }
             }).fail(function () { busy = false; });
-        }, { rootMargin: '400px' });
+        }
 
-        observer.observe(sentinel);
+        $pager.on('click', '[data-page]', function (e) {
+            e.preventDefault();
+            load($(this).data('page'));
+        });
+
+        if (infinite)
+            observer.observe(sentinel);
+        else
+            load(1);
     });
 </script>

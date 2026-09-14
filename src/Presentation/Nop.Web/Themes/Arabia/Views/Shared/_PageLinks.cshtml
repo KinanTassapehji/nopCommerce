@@ -1,6 +1,6 @@
 @*
     Arabia: the navigation row beside the logo — browse first (products,
-    categories, brands), then the company pages (about, FAQ, service, contact).
+    brands), then the company pages (about, FAQ, service, contact).
     These are the "centre links" the design comp draws beside the logo, which
     the header shipped without because nothing in nopCommerce was rendering
     them.
@@ -8,16 +8,16 @@
     Rendered twice: in the desktop header row, and at the foot of the mobile
     category sheet, because brand.css hides the footer (which carries the full
     Information list) on touch. The sheet already carries the admin main menu
-    above this partial, so the two browse dropdowns are hidden there.
+    above this partial, so the browse dropdown is hidden there.
 
     Titles come from the topics and categories themselves, so an admin rename
     and the Arabic pack both carry through with no resource of their own, and a
     topic that has been unpublished or deleted drops out of the row instead of
     leaving a dead link behind.
 
-    The dropdowns are native <details name="ar-nav">: the shared name is what
-    closes the other one, so there is no toggle handler and no aria-expanded to
-    keep in sync. Only light dismiss needs a script.
+    The dropdown is a native <details name="ar-nav">: the name is what closes
+    any sibling, so there is no toggle handler and no aria-expanded to keep in
+    sync. Only light dismiss needs a script.
 
     ponytail: a fixed row, not a third MenuType. Move it onto a Main-type menu
     if support ever needs to reorder it from admin.
@@ -37,8 +37,8 @@
 @{
     var store = await storeContext.GetCurrentStoreAsync();
 
-    //one query for both dropdowns: "Products" is the top level, "Categories"
-    //is the same list with its children under it
+    //"Products" is the whole tree: every top-level category as a column, its
+    //children under it
     var categories = await categoryService.GetAllCategoriesAsync(store.Id);
     var topLevel = categories.Where(category => category.ParentCategoryId == 0).ToList();
 
@@ -63,18 +63,8 @@
 <nav class="header-pages" aria-label="@T("Nav.Information")">
     @if (topLevel.Count > 0)
     {
-        <details class="header-pages__drop" name="ar-nav">
-            <summary class="header-pages__link">@T("Nav.Products")</summary>
-            <div class="header-pages__panel">
-                @foreach (var category in topLevel)
-                {
-                    <a class="header-pages__panel-link" href="@(await categoryUrlAsync(category))">@(await localizationService.GetLocalizedAsync(category, entity => entity.Name))</a>
-                }
-            </div>
-        </details>
-
         <details class="header-pages__drop header-pages__drop--wide" name="ar-nav">
-            <summary class="header-pages__link">@T("Categories")</summary>
+            <summary class="header-pages__link">@T("Nav.Products")</summary>
             <div class="header-pages__panel">
                 @foreach (var category in topLevel)
                 {

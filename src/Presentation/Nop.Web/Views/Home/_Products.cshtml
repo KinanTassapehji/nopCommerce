@@ -1,8 +1,21 @@
-﻿@model IList<ProductOverviewModel>
+﻿@model CatalogProductsModel
 
-@foreach (var item in Model)
+@foreach (var item in Model.Products)
 {
     <div class="item-box">
         @await Html.PartialAsync("_ProductBox", item)
+    </div>
+}
+
+@{
+    //ponytail: hrefs resolve against /homepage/products, the AJAX endpoint - harmless because the
+    //feed only ever exists with JS on, which intercepts data-page. Give the action a real page URL if
+    //that ever needs to survive a middle-click.
+    var pager = Html.Pager(Model).QueryParam("pagenumber");
+}
+@if (!await pager.IsEmpty())
+{
+    <div class="pager">
+        @pager
     </div>
 }

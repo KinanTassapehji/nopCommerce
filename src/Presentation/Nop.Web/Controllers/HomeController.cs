@@ -4,6 +4,7 @@ using Nop.Core.Domain.Catalog;
 using Nop.Services.Catalog;
 using Nop.Web.Factories;
 using Nop.Web.Framework.Mvc.Filters;
+using Nop.Web.Models.Catalog;
 
 namespace Nop.Web.Controllers;
 
@@ -42,13 +43,14 @@ public partial class HomeController : BasePublicController
     }
 
     /// <summary>
-    /// Gets a page of products for the infinite scrolling section of the home page
+    /// Gets a page of products for the "all products" section of the home page (paged on desktop,
+    /// infinitely scrolled on mobile - both ask for one page at a time)
     /// </summary>
     /// <param name="pageNumber">Page number (1-based)</param>
     public virtual async Task<IActionResult> Products(int pageNumber = 1)
     {
         var store = await _storeContext.GetCurrentStoreAsync();
-        var products = await _productService.SearchProductsAsync(pageIndex: pageNumber - 1,
+        var products = await _productService.SearchProductsAsync(pageIndex: Math.Max(pageNumber, 1) - 1,
             pageSize: _catalogSettings.DefaultCategoryPageSize,
             storeId: store.Id,
             visibleIndividuallyOnly: true);
@@ -57,7 +59,11 @@ public partial class HomeController : BasePublicController
         if (!products.Any())
             return Content(string.Empty);
 
-        var model = (await _productModelFactory.PrepareProductOverviewModelsAsync(products)).ToList();
+        var model = new CatalogProductsModel
+        {
+            Products = (await _productModelFactory.PrepareProductOverviewModelsAsync(products)).ToList()
+        };
+        model.LoadPagedList(products);
 
         return PartialView("_Products", model);
     }

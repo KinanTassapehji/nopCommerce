@@ -31,7 +31,7 @@ public partial class RouteProvider : BaseRouteProvider, IRouteProvider
             pattern: $"{lang}",
             defaults: new { controller = "Home", action = "Index" });
 
-        //homepage products (AJAX, infinite scrolling)
+        //homepage products (AJAX: pager on desktop, infinite scrolling on mobile)
         endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.Ajax.HOMEPAGE_PRODUCTS,
             pattern: $"homepage/products",
             defaults: new { controller = "Home", action = "Products" });
@@ -172,6 +172,11 @@ public partial class RouteProvider : BaseRouteProvider, IRouteProvider
         endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.General.PRODUCT_TAGS,
             pattern: $"{lang}/producttag/all/",
             defaults: new { controller = "Catalog", action = "ProductTagsAll" });
+
+        //categories
+        endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.General.CATEGORIES,
+            pattern: $"{lang}/category/all/",
+            defaults: new { controller = "Catalog", action = "CategoryAll" });
 
         //manufacturers
         endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.General.MANUFACTURERS,
