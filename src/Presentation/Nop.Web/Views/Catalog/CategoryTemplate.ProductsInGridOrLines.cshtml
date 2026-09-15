@@ -73,6 +73,7 @@
 <div class="page category-page">
     <div class="page-title">
         <h1>@Model.Name</h1>
+        @await Html.PartialAsync("_CatalogSelectors", Model.CatalogProductsModel)
     </div>
     <div class="page-body">
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CategoryDetailsTop, additionalData = Model })
@@ -128,7 +129,6 @@
             </div>
         }
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CategoryDetailsAfterFeaturedProducts, additionalData = Model })
-        @await Html.PartialAsync("_CatalogSelectors", Model.CatalogProductsModel)
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CategoryDetailsBeforeProductList, additionalData = Model })
         @{
             var catalogProductsViewData = new ViewDataDictionary(ViewData);

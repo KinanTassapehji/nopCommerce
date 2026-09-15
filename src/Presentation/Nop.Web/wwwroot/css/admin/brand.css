@@ -322,6 +322,46 @@ html[dir="rtl"] table.dataTable tfoot td {
   text-align: right;
 }
 
+/* --- Grid footer --------------------------------------------------------
+   The bottom layout cell is a nowrap flex row (DataTables' bs4 integration),
+   so in a narrow card — the dashboard's col-md-4 reports — the pager, the
+   page-size select and the info line don't fit: the pager buttons stack one
+   per line and the info text spills out past the card edge. Let the row wrap
+   instead; it then falls to two lines at most. */
+
+.dt-container .dt-layout-full {
+  flex-wrap: wrap;
+  row-gap: .25rem;
+}
+
+/* --- Postfixed number inputs --------------------------------------------
+   .input-postfix paints its unit (currency code, kg(s), meter(s)) as an
+   absolutely positioned ::after over the end of the field, reserving no room
+   for it, so it lands on top of the value: in the RTL admin always, since the
+   number hugs that edge, and in LTR wherever the field is narrow - the price
+   and old-price columns of the bulk product editor. Lay the row out instead
+   of stacking it: the unit becomes a flex item next to the field, so it never
+   covers the value and fits any unit length without guessing at one. */
+
+.input-postfix {
+  display: inline-flex;
+  align-items: center;
+  gap: .4em;
+  max-width: 100%;
+}
+
+.input-postfix > .form-control {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.input-postfix::after {
+  position: static;
+  padding: 0;
+  background: none;
+  white-space: nowrap;
+}
+
 /* --- SEO settings, hidden -----------------------------------------------
    Search-engine settings are not part of what this store offers, so every
    place the admin surfaces them is hidden: the "SEO" card on the product,

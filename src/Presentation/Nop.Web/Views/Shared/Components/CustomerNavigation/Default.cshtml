@@ -1,4 +1,10 @@
 ﻿@model CustomerNavigationModel
+@{
+    var logoutUrl = Url.RouteUrl(NopRouteNames.Standard.LOGOUT);
+    var logoutConfirm = JavaScriptEncoder.Default.Encode(T("Account.Logout.Confirm").Text);
+    var yesText = JavaScriptEncoder.Default.Encode(T("Common.Yes").Text);
+    var noText = JavaScriptEncoder.Default.Encode(T("Common.No").Text);
+}
 <section class="block block-account-navigation">
     <h2 class="title">
         @T("Account.Navigation")
@@ -15,7 +21,9 @@
             @*logout is an action rather than a tab, so it is not one of the
                 CustomerNavigationItems - it lives here now that the header no longer shows it*@
             <li class="customer-logout inactive">
-                <a href="@Url.RouteUrl(NopRouteNames.Standard.LOGOUT)" onclick="return confirm('@Html.Raw(JavaScriptEncoder.Default.Encode(T("Account.Logout.Confirm").Text))');">@T("Account.Logout")</a>
+                @*a themed jQuery UI dialog rather than window.confirm - the native box
+                    ignores the theme, renders LTR, and browsers let the visitor mute it*@
+                <a href="@logoutUrl" onclick="return displayConfirmation('@Html.Raw(logoutConfirm)', '@Html.Raw(yesText)', '@Html.Raw(noText)', function () { setLocation('@logoutUrl'); });">@T("Account.Logout")</a>
             </li>
             @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.AccountNavigationAfter, additionalData = Model })
         </ul>

@@ -2641,7 +2641,7 @@
     <Value>المنتجات المرتبطة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.AssociatedProducts.AddNew">
-    <Value>ضافة منتج مرتبط</Value>
+    <Value>إضافة منتج مرتبط</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.AssociatedProducts.Fields.DisplayOrder">
     <Value>الترتيب</Value>

@@ -405,7 +405,11 @@
             </div>
         }
     </div>
-    <div class="form-group row @(Model.ProductEditorSettingsModel.ProductTemplate ? null : "advanced-setting")" @(Model.AvailableProductTemplates.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null) id="nnpnlProductTemplateId">
+    @*Arabia: the store uses a single product template, so the picker is never a
+        real choice. Kept in the DOM (hidden, not removed) so ProductTemplateId
+        still posts its current value and the product-type script above can go
+        on rewriting its options.*@
+    <div class="form-group row" style="display:none" id="nnpnlProductTemplateId">
         <div class="col-md-3">
             <nop-label asp-for="ProductTemplateId" />
         </div>

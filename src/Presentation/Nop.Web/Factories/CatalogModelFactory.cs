@@ -678,8 +678,9 @@ public partial class CatalogModelFactory : ICatalogModelFactory
     {
         //ponytail: no model cache of its own - the pictures and the category list are
         //both cached a layer down, and this page is not on a hot path.
-        var store = await _storeContext.GetCurrentStoreAsync();
-        var categories = await _categoryService.GetAllCategoriesAsync(storeId: store.Id);
+        //parent 0 only: the page is a top-level directory, subcategories are reached
+        //from their parent's own page
+        var categories = await _categoryService.GetAllCategoriesByParentCategoryIdAsync(0);
 
         return await PrepareCategoryModelsAsync(categories);
     }

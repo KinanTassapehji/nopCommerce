@@ -50,12 +50,6 @@
             else
             {
                 <div class="new-wrapper register-block">
-                    <h2 class="title">
-                        @T("Account.Login.NewCustomer")
-                    </h2>
-                    <div class="text">
-                        @T("Account.Login.NewCustomerText")
-                    </div>
                     <div class="buttons">
                         <button type="button" class="button-1 register-button" onclick="location.href='@registerUrl'">@T("Account.Register")</button>
                     </div>
@@ -110,7 +104,6 @@
                 </form>
             </div>
         </div>
-        @await Component.InvokeAsync(typeof(TopicBlockViewComponent), new { systemName = "LoginRegistrationInfo" })
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.LoginBottom, additionalData = Model })
     </div>
 </div>
