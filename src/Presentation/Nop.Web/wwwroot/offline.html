@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
@@ -34,6 +34,18 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
+
+  /* Two soft teal glows, the brand gradient let loose behind the card. Fixed
+     and pointer-transparent, so they cost nothing but a paint. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(42vmax 42vmax at 85% -12%, rgba(0, 217, 204, .16), transparent 62%),
+      radial-gradient(40vmax 40vmax at -12% 112%, rgba(2, 120, 126, .14), transparent 62%);
+  }
 
   body {
     min-height: 100svh;
@@ -101,6 +113,19 @@
     100% { transform: scale(1); opacity: 0; }
   }
 
+  /* The floor the cart rolls on. A trolley suspended in mid-air reads as a
+     broken image; give it ground and the blinking wheels become motion. */
+  .mark::after {
+    content: "";
+    position: absolute;
+    bottom: 14px;
+    inset-inline: 10px;
+    height: 2px;
+    background: repeating-linear-gradient(to left, var(--line) 0 9px, transparent 9px 18px);
+    animation: roll 1s linear infinite;
+  }
+  @keyframes roll { to { background-position-x: 18px; } }
+
   /* Positioned so it paints above the rings, which are absolute siblings. */
   svg.logo { position: relative; width: 96px; height: 96px; display: block; }
   svg.logo path { fill: var(--mark); transition: fill .4s ease; }
@@ -115,6 +140,7 @@
   body.online svg.logo path { fill: var(--teal-deep); }
   body.online .wheel { animation: none; opacity: 1; }
   body.online .mark span { animation: none; opacity: 0; }
+  body.online .mark::after { animation: none; }
 
   h1 { font-size: 22px; line-height: 1.5; }
   p.lead { margin-top: 12px; font-size: 15px; line-height: 1.9; color: var(--muted); }
@@ -159,8 +185,66 @@
   }
   .tips li::before { content: "•"; color: var(--teal); margin-inline-end: 8px; }
 
+  /* --- Recently viewed ---------------------------------------------------
+     Product thumbnails live under /images/, which the service worker caches,
+     so this strip paints with no network at all: the shopper lands on a store
+     that still remembers what they were looking at instead of a dead end.
+     Filled from localStorage, written by the theme on every product page. */
+  .recent {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    text-align: start;
+  }
+  .recent h2 { font-size: 13px; font-weight: 600; color: var(--muted); }
+
+  .strip {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    padding-bottom: 6px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    /* The strip runs to the card edge on purpose — a clipped tile is the hint
+       that it scrolls. */
+    margin-inline: -24px;
+    padding-inline: 24px;
+  }
+
+  .tile {
+    flex: 0 0 106px;
+    scroll-snap-align: start;
+    padding: 8px;
+    text-decoration: none;
+    color: inherit;
+    background: var(--surface-alt);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .tile:hover { border-color: var(--teal); transform: translateY(-2px); }
+  .tile:focus-visible { outline: 2px solid var(--teal-deep); outline-offset: 2px; }
+  .tile img {
+    display: block;
+    width: 100%;
+    height: 74px;
+    object-fit: contain;
+    border-radius: 9px;
+    background: var(--surface);
+  }
+  .tname {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    max-height: 3em;
+    overflow: hidden;
+  }
+  .tprice { display: block; margin-top: 4px; font-size: 12px; font-weight: 600; color: var(--teal-deep); }
+
   @media (prefers-reduced-motion: reduce) {
-    .mark span, .wheel { animation: none; }
+    .mark span, .wheel, .mark::after { animation: none; }
     .mark span { opacity: .6; }
     * { transition: none !important; }
   }
@@ -184,6 +268,11 @@
 
     <button type="button" id="retry">إعادة المحاولة</button>
     <p class="status" id="status" role="status" aria-live="polite"></p>
+
+    <section class="recent" id="recent" hidden>
+      <h2>تصفّحته مؤخرًا</h2>
+      <div class="strip" id="strip"></div>
+    </section>
 
     <ul class="tips">
       <li>تأكّد من إيقاف وضع الطيران</li>
@@ -246,6 +335,59 @@
   });
 
   if (!navigator.onLine) say('في انتظار الاتصال…');
+
+  /* --- Recently viewed --------------------------------------------------
+     Written by the theme on every product page. Anything here is data the
+     page did not author, so the tiles are built with textContent and the
+     href is accepted only if it is a same-origin absolute path. */
+  (function recent() {
+    var items;
+    try { items = JSON.parse(localStorage.getItem('recently-viewed') || '[]'); }
+    catch (e) { return; }
+    if (!Array.isArray(items) || !items.length) return;
+
+    var strip = document.getElementById('strip');
+
+    items.slice(0, 6).forEach(function (x) {
+      if (!x || typeof x.u !== 'string' || x.u.charAt(0) !== '/' || x.u.charAt(1) === '/') return;
+
+      var a = document.createElement('a');
+      a.className = 'tile';
+      a.href = x.u;
+
+      var img = document.createElement('img');
+      img.src = x.i || '';
+      img.alt = '';
+      img.loading = 'lazy';
+
+      var name = document.createElement('span');
+      name.className = 'tname';
+      name.textContent = x.n || '';
+
+      var price = document.createElement('span');
+      price.className = 'tprice';
+      price.textContent = x.p || '';
+
+      a.append(img, name, price);
+      strip.append(a);
+    });
+
+    if (!strip.children.length) return;
+    document.getElementById('recent').hidden = false;
+
+    /* Following a tile while still offline would just land back here, which
+       reads as a broken link. Probe first, and say so if nothing changed. */
+    strip.addEventListener('click', function (e) {
+      var a = e.target.closest('a.tile');
+      if (!a) return;
+      e.preventDefault();
+      say('جارٍ التحقق من الاتصال…');
+      probe().then(function (ok) {
+        if (ok) location.href = a.href;
+        else say('لا يزال الاتصال منقطعًا.');
+      });
+    });
+  })();
 })();
 </script>
 </body>
