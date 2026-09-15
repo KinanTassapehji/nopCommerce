@@ -16,7 +16,7 @@
    Bump CACHE_VERSION to invalidate everything on the next activation.
    ============================================================================= */
 
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const STATIC_CACHE = `arabia-static-${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline.html';
 
@@ -55,6 +55,17 @@ const EXCLUDED = [
 
 /* Prefixes that are safe to cache: public, versioned, non-personalised. */
 const CACHEABLE_PREFIXES = ['/css/', '/js/', '/lib/', '/lib_npm/', '/icons/', '/themes/', '/images/'];
+
+/* Offline, a thumbnail that was never cached draws as a broken-image icon and
+   makes the whole page look failed. Serve the store's own mark on a brand tint
+   instead: the layout keeps its shape and still reads as this store. */
+const OFFLINE_IMAGE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250" role="img" aria-label="Arabian Appliances">
+  <rect width="250" height="250" rx="16" fill="#E0F2FF"/>
+  <g transform="translate(60 91) scale(2.79)">
+    <path d="M46.85,36.85h-16L16.3,0H32.09Z" fill="#E41519" opacity=".20"/>
+    <path d="M26.22,36.85H0L13.13,3.77l5.36,13.57-2.88,8.39h6.22Z" fill="#0D77BD" opacity=".26"/>
+  </g>
+</svg>`;
 
 const MAX_ENTRIES = 120;
 
@@ -155,7 +166,14 @@ self.addEventListener('fetch', event => {
     if (hit) { event.waitUntil(network); return hit; }
 
     const res = await network;
-    return res || new Response('', { status: 504, statusText: 'Offline' });
+    if (res) return res;
+
+    if (req.destination === 'image') {
+      return new Response(OFFLINE_IMAGE, {
+        headers: { 'Content-Type': 'image/svg+xml; charset=utf-8', 'Cache-Control': 'no-store' }
+      });
+    }
+    return new Response('', { status: 504, statusText: 'Offline' });
   })());
 });
 

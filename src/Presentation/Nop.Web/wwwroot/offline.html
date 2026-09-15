@@ -22,6 +22,8 @@
     --surface: #ffffff;
     --surface-alt: #F2F7FB;
     --mark: #AEBECB;            /* the logo, drained of brand colour */
+    --grid: rgba(13, 119, 189, .10);
+    --led: #E41519;             /* the standby lamp - the mark's red */
     --ring: rgba(13, 119, 189, .18);
   }
   @media (prefers-color-scheme: dark) {
@@ -29,11 +31,28 @@
       --ink: #E6F0F8; --muted: #93A7B8; --line: #1E3448;
       --surface: #0E1C27; --surface-alt: #080F16;
       --mark: #3C5468; --ring: rgba(91, 182, 232, .18);
+      --grid: rgba(91, 182, 232, .09);
     }
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
+
+  /* Arabia sells machines, so the page it falls back to is drawn like a plan:
+     a faint blueprint grid, masked to a soft centre so it never competes with
+     the card. Fixed and pointer-transparent - one paint, no layout. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 30px 30px;
+    -webkit-mask-image: radial-gradient(62vmax 62vmax at 50% 38%, #000 25%, transparent 72%);
+    mask-image: radial-gradient(62vmax 62vmax at 50% 38%, #000 25%, transparent 72%);
+  }
 
   body {
     min-height: 100svh;
@@ -55,7 +74,7 @@
     text-align: center;
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 22px;
+    border-radius: 16px;
     box-shadow: 0 16px 40px rgba(13, 119, 189, .13);
     overflow: hidden;
   }
@@ -86,10 +105,12 @@
     display: grid;
     place-items: center;
   }
+  /* Rounded squares rather than circles: the silhouette of a control panel,
+     which is what this brand actually sells. */
   .mark span {
     position: absolute;
     inset: 0;
-    border-radius: 50%;
+    border-radius: 30%;
     border: 2px solid var(--ring);
     animation: ripple 2.6s ease-out infinite;
   }
@@ -117,6 +138,25 @@
   body.online .wheel { animation: none; opacity: 1; }
   body.online .mark span { animation: none; opacity: 0; }
 
+  /* Standby lamp. Every appliance in the catalogue has one; offline, the store
+     is the appliance on standby. Red and breathing while the line is down,
+     solid brand blue the moment it is back. */
+  .led {
+    position: absolute;
+    top: 18px;
+    inset-inline-start: 18px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--led);
+    animation: standby 2s ease-in-out infinite;
+  }
+  @keyframes standby {
+    0%, 100% { opacity: .35; box-shadow: 0 0 0 0 rgba(228, 21, 25, 0); }
+    50%      { opacity: 1;   box-shadow: 0 0 0 5px rgba(228, 21, 25, .12); }
+  }
+  body.online .led { animation: none; opacity: 1; background: var(--brand-deep); box-shadow: none; }
+
   h1 { font-size: 22px; line-height: 1.5; }
   p.lead { margin-top: 12px; font-size: 15px; line-height: 1.9; color: var(--muted); }
 
@@ -129,7 +169,7 @@
     max-width: 260px;
     padding: 0 22px;
     border: 0;
-    border-radius: 14px;
+    border-radius: 10px;
     background: var(--brand-deep);
     color: #fff;
     cursor: pointer;
@@ -160,8 +200,66 @@
   }
   .tips li::before { content: "•"; color: var(--brand); margin-inline-end: 8px; }
 
+  /* --- Recently viewed ---------------------------------------------------
+     Product thumbnails live under /images/, which the service worker caches,
+     so this strip paints with no network at all: the shopper lands on a store
+     that still remembers what they were looking at instead of a dead end.
+     Filled from localStorage, written by the theme on every product page. */
+  .recent {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    text-align: start;
+  }
+  .recent h2 { font-size: 13px; font-weight: 600; color: var(--muted); }
+
+  .strip {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    padding-bottom: 6px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    /* The strip runs to the card edge on purpose - a clipped tile is the hint
+       that it scrolls. */
+    margin-inline: -24px;
+    padding-inline: 24px;
+  }
+
+  .tile {
+    flex: 0 0 106px;
+    scroll-snap-align: start;
+    padding: 8px;
+    text-decoration: none;
+    color: inherit;
+    background: var(--surface-alt);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .tile:hover { border-color: var(--brand); transform: translateY(-2px); }
+  .tile:focus-visible { outline: 2px solid var(--brand-deep); outline-offset: 2px; }
+  .tile img {
+    display: block;
+    width: 100%;
+    height: 74px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: var(--surface);
+  }
+  .tname {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    max-height: 3em;
+    overflow: hidden;
+  }
+  .tprice { display: block; margin-top: 4px; font-size: 12px; font-weight: 600; color: var(--brand-deep); }
+
   @media (prefers-reduced-motion: reduce) {
-    .mark span, .wheel { animation: none; }
+    .mark span, .wheel, .led { animation: none; }
     .mark span { opacity: .6; }
     * { transition: none !important; }
   }
@@ -169,6 +267,7 @@
 </head>
 <body>
   <main class="card">
+    <i class="led" aria-hidden="true"></i>
     <div class="mark" aria-hidden="true">
       <span></span><span></span><span></span>
       <svg class="logo" viewBox="0 0 46.85 36.85" role="img" aria-label="العربية للأجهزة">
@@ -182,6 +281,11 @@
 
     <button type="button" id="retry">إعادة المحاولة</button>
     <p class="status" id="status" role="status" aria-live="polite"></p>
+
+    <section class="recent" id="recent" hidden>
+      <h2>تصفّحته مؤخرًا</h2>
+      <div class="strip" id="strip"></div>
+    </section>
 
     <ul class="tips">
       <li>تأكّد من إيقاف وضع الطيران</li>
@@ -244,6 +348,59 @@
   });
 
   if (!navigator.onLine) say('في انتظار الاتصال…');
+
+  /* --- Recently viewed --------------------------------------------------
+     Written by the theme on every product page. Anything here is data the
+     page did not author, so the tiles are built with textContent and the
+     href is accepted only if it is a same-origin absolute path. */
+  (function recent() {
+    var items;
+    try { items = JSON.parse(localStorage.getItem('recently-viewed') || '[]'); }
+    catch (e) { return; }
+    if (!Array.isArray(items) || !items.length) return;
+
+    var strip = document.getElementById('strip');
+
+    items.slice(0, 6).forEach(function (x) {
+      if (!x || typeof x.u !== 'string' || x.u.charAt(0) !== '/' || x.u.charAt(1) === '/') return;
+
+      var a = document.createElement('a');
+      a.className = 'tile';
+      a.href = x.u;
+
+      var img = document.createElement('img');
+      img.src = x.i || '';
+      img.alt = '';
+      img.loading = 'lazy';
+
+      var name = document.createElement('span');
+      name.className = 'tname';
+      name.textContent = x.n || '';
+
+      var price = document.createElement('span');
+      price.className = 'tprice';
+      price.textContent = x.p || '';
+
+      a.append(img, name, price);
+      strip.append(a);
+    });
+
+    if (!strip.children.length) return;
+    document.getElementById('recent').hidden = false;
+
+    /* Following a tile while still offline would just land back here, which
+       reads as a broken link. Probe first, and say so if nothing changed. */
+    strip.addEventListener('click', function (e) {
+      var a = e.target.closest('a.tile');
+      if (!a) return;
+      e.preventDefault();
+      say('جارٍ التحقق من الاتصال…');
+      probe().then(function (ok) {
+        if (ok) location.href = a.href;
+        else say('لا يزال الاتصال منقطعًا.');
+      });
+    });
+  })();
 })();
 </script>
 </body>

@@ -65,6 +65,37 @@
         }
     })();
 
+    // Remember the last few products viewed, so offline.html has something to
+    // show instead of a dead end. Only the thumbnail URL is stored, and those
+    // live under /images/, which the service worker caches - so the offline
+    // page paints the tiles with no network at all. Nothing personal is kept:
+    // name, price and path are the same public data as the page itself.
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!document.querySelector('article[data-productid]')) return;
+
+        var name = document.querySelector('.product-name h1');
+        var img = document.querySelector('.gallery img');
+        if (!name || !img) return;
+
+        var price = document.querySelector('.prices .product-price');
+        var item = {
+            u: location.pathname,
+            n: name.textContent.trim(),
+            i: img.getAttribute('src'),
+            p: price ? price.textContent.trim() : ''
+        };
+
+        try {
+            var list = JSON.parse(localStorage.getItem('recently-viewed') || '[]');
+            if (!Array.isArray(list)) list = [];
+            list = list.filter(function (x) { return x && x.u !== item.u; });
+            list.unshift(item);
+            localStorage.setItem('recently-viewed', JSON.stringify(list.slice(0, 8)));
+        } catch (e) {
+            // Private mode, or storage full. The strip just stays empty.
+        }
+    });
+
     // Registered on load so it never competes with the first paint.
     // Scope is "/" because sw.js is served from the site root.
     if ('serviceWorker' in navigator) {
