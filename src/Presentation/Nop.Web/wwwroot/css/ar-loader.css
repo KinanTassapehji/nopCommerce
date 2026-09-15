@@ -295,3 +295,77 @@ body.ar-loading::after {
     animation-name: ar-loader-halo;
   }
 }
+/* --- Page transition ------------------------------------------------------
+   Everything above covers ajax. Plain navigation had nothing: the store is
+   rendered on the server, so a click leaves the browser sitting on the old
+   page, unchanged and unresponsive, for however long the next document takes
+   to build. These two pseudo-elements veil it while that happens.
+
+   Drawn on <html>, not <body>: the ajax bar above already owns body's
+   ::before/::after, and a request in flight when the user clicks away would
+   otherwise cost one of the two effects its element.
+
+   public.common.js toggles the class on beforeunload, which fires before the
+   request goes out - so the veil covers the whole wait, and the freshly
+   parsed document never carries it.
+
+   Arabia's motion is the decisive one: a blue-to-red line scans down across
+   the mark, which keeps its own two colours. TmTm's tm-loader.css breathes
+   instead. Same structure, different temperament.
+
+   The 12s outer animation is a dead man's switch. A cancelled navigation (a
+   download link, a 204) never unloads the page, and without it the veil would
+   stay up for good. */
+
+@keyframes ar-nav-veil {
+  0%       { opacity: 0; }
+  3%, 96%  { opacity: 1; }
+  100%     { opacity: 0; visibility: hidden; }
+}
+
+/* Only the first layer - the scan line - moves. The other three repeat their
+   standing positions because a keyframe has to name every layer or the
+   shorthand resets them. */
+@keyframes ar-nav-scan {
+  0%, 100% { background-position: 50% calc(50% - 52px), 50% 50%, 50% 50%, 0 0; }
+  50%      { background-position: 50% calc(50% + 52px), 50% 50%, 50% 50%, 0 0; }
+}
+
+html.ar-navigating::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 10002;
+  background:
+    linear-gradient(90deg, rgba(13, 119, 189, 0) 0%, var(--ar-blue) 34%, var(--ar-red) 72%, rgba(228, 21, 25, 0) 100%) 50% calc(50% - 52px) / 210px 2px no-repeat,
+    url('/Themes/Arabia/Content/images/brand-mark.svg?v=arabia1') 50% 50% / 120px auto no-repeat,
+    radial-gradient(circle, rgba(13, 119, 189, .16) 0%, rgba(13, 119, 189, 0) 62%) 50% 50% / 460px 460px no-repeat,
+    rgba(242, 247, 251, .94);
+  -webkit-backdrop-filter: blur(4px) saturate(1.05);
+  backdrop-filter: blur(4px) saturate(1.05);
+  animation: ar-nav-veil 12s ease .12s both,
+             ar-nav-scan 1.5s cubic-bezier(.65, 0, .35, 1) .12s infinite;
+}
+
+/* Indeterminate bar, but tricolour rather than the blue ramp the ajax
+   indicator uses: the red tip is what marks a whole page turning over. */
+html.ar-navigating::after {
+  content: "";
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 3px;
+  z-index: 10003;
+  background: linear-gradient(90deg, var(--ar-blue) 0%, var(--ar-blue-mid) 58%, var(--ar-red) 100%);
+  transform-origin: 0 50%;
+  animation: ar-nav-veil 12s ease .12s both,
+             ar-loader-sweep 1.1s ease-in-out .12s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Keep the veil - it is the feedback - and drop the movement. */
+  html.ar-navigating::before,
+  html.ar-navigating::after {
+    animation: ar-nav-veil 12s ease .12s both;
+  }
+}

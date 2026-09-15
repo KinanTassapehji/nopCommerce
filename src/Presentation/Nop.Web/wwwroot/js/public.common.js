@@ -208,3 +208,19 @@ $(document).ajaxStart(function () {
 }).ajaxStop(function () {
     $(document.body).removeClass('ar-loading');
 });
+
+//Arabia: page-transition loader. The store renders on the server, so a click
+//leaves the browser on the old page with no feedback until the next document
+//arrives; html.ar-navigating veils it, drawn by css/ar-loader.css.
+//beforeunload rather than a click handler: it fires before the request goes
+//out, covers every route into a navigation (links, form posts, setLocation)
+//and never fires for in-page anchors or new tabs.
+window.addEventListener('beforeunload', function () {
+    document.documentElement.classList.add('ar-navigating');
+});
+
+//Back/forward out of the bfcache restores the DOM exactly as it was unloaded,
+//veil included.
+window.addEventListener('pageshow', function () {
+    document.documentElement.classList.remove('ar-navigating');
+});
