@@ -97,7 +97,9 @@ public partial class NopDatePickerTagHelper : TagHelper
         monthsList.MergeAttributes(htmlAttributesDictionary, true);
         yearsList.MergeAttributes(htmlAttributesDictionary, true);
 
-        var currentCalendar = CultureInfo.CurrentCulture.Calendar;
+        //always Gregorian: an ar-SA culture would otherwise draw Hijri years here
+        //while CommonHelper.ParseDate reads them back, and the two must agree
+        var currentCalendar = new GregorianCalendar();
 
         var days = new StringBuilder();
         var months = new StringBuilder();
@@ -113,10 +115,11 @@ public partial class NopDatePickerTagHelper : TagHelper
 
         for (var i = 1; i <= 12; i++)
         {
-            months.AppendFormat("<option value='{0}'{1}>{2}</option>",
+            //the month as its number: unambiguous in any locale, and a short option
+            //keeps the three selects on one line on a phone
+            months.AppendFormat("<option value='{0}'{1}>{0}</option>",
                 i,
-                (SelectedDate.HasValue && currentCalendar.GetMonth(SelectedDate.Value) == i) ? " selected=\"selected\"" : null,
-                CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i));
+                (SelectedDate.HasValue && currentCalendar.GetMonth(SelectedDate.Value) == i) ? " selected=\"selected\"" : null);
         }
 
         years.AppendFormat("<option value='{0}'>{1}</option>", "0", await _localizationService.GetResourceAsync("Common.Year"));

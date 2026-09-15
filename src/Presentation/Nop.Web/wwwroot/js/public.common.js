@@ -111,6 +111,42 @@ function displayPopupContentFromUrl(url, title, modal, width) {
         });
 }
 
+//ponytail: jQuery UI ships on every public page already (the popup
+//notifications use it), so a real confirm box costs no new dependency - and
+//unlike window.confirm it is themeable, RTL-aware and not suppressible by the
+//browser's "prevent this page from creating additional dialogs" checkbox.
+//Returns false so it can be used inline as onclick="return displayConfirmation(...)".
+function displayConfirmation(message, okText, cancelText, onConfirm) {
+    $('<div></div>').text(message).dialog({
+        modal: true,
+        resizable: false,
+        draggable: false,
+        width: 350,
+        buttons: [
+            {
+                text: okText,
+                class: 'button-1',
+                click: function () {
+                    $(this).dialog('close');
+                    onConfirm();
+                }
+            },
+            {
+                text: cancelText,
+                class: 'button-2',
+                click: function () {
+                    $(this).dialog('close');
+                }
+            }
+        ],
+        close: function () {
+            $(this).dialog('destroy').remove();
+        }
+    });
+
+    return false;
+}
+
 function displayBarNotification(message, messagetype, timeout) {
     var notificationTimeout;
 
