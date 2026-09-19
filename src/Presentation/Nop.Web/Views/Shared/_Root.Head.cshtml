@@ -35,6 +35,11 @@
     }
     NopHtml.AppendScriptParts(ResourceLocation.Footer, "~/lib_npm/jquery-ui-dist/jquery-ui.min.js");
     NopHtml.AppendScriptParts(ResourceLocation.Footer, "~/lib_npm/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js");
+    if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ar")
+    {
+        //arabic text for the messages jquery validation supplies itself, such as the one for an invalid e-mail
+        NopHtml.AppendScriptParts(ResourceLocation.Footer, "~/lib_npm/jquery-validation/localization/messages_ar.min.js");
+    }
     NopHtml.AppendScriptParts(ResourceLocation.Footer, "~/lib_npm/jquery-validation/jquery.validate.min.js");
     NopHtml.AppendScriptParts(ResourceLocation.Footer, "~/lib_npm/jquery/jquery.min.js");
 
