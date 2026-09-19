@@ -1215,6 +1215,9 @@
   <LocaleResource Name="Address.SelectCountry">
     <Value>Select country</Value>
   </LocaleResource>
+  <LocaleResource Name="Address.SelectCity">
+    <Value>Select city</Value>
+  </LocaleResource>
   <LocaleResource Name="Address.SelectState">
     <Value>Select state</Value>
   </LocaleResource>

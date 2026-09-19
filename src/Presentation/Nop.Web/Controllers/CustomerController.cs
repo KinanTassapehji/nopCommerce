@@ -1421,6 +1421,13 @@ public partial class CustomerController : BasePublicController
         model.Address.LastName = customer.LastName;
         model.Address.Email = customer.Email;
 
+        //default the phone to the number the customer already uses - the form still lets them change it for this address
+        model.Address.PhoneNumber = !string.IsNullOrEmpty(customer.Phone)
+            ? customer.Phone
+            : (await _customerService.GetAddressesByCustomerIdAsync(customer.Id))
+                .OrderByDescending(address => address.Id)
+                .FirstOrDefault(address => !string.IsNullOrEmpty(address.PhoneNumber))?.PhoneNumber;
+
         return View(model);
     }
 
