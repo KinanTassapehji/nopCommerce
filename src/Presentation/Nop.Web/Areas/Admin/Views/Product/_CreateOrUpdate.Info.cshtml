@@ -298,7 +298,10 @@
         </div>
     </nop-nested-setting>
 
-    <div class="form-group row @(Model.ProductEditorSettingsModel.ProductType ? null : "advanced-setting")">
+    @*TmTm: one strategy only, simple products + attribute combinations. Grouped
+        products are retired, so the type picker is hidden (kept in the DOM so
+        ProductTypeId still posts and the toggleProductType script still runs).*@
+    <div class="form-group row" style="display:none">
         <div class="col-md-3">
             <nop-label asp-for="ProductTypeId" />
         </div>
