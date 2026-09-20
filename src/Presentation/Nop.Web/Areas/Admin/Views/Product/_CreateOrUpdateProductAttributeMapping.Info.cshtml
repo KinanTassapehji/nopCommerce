@@ -118,7 +118,9 @@
             <nop-label asp-for="AttributeControlTypeId" />
         </div>
         <div class="col-md-9">
-            <nop-select asp-for="AttributeControlTypeId" asp-items="@(await ((AttributeControlType)Model.AttributeControlTypeId).ToSelectListAsync())" />
+            @*Arabia: only the control types the catalogue uses (list, radio, colour/image squares,
+                text box for engraving, read-only checkboxes for info). The rest are hidden.*@
+            <nop-select asp-for="AttributeControlTypeId" asp-items="@(await ((AttributeControlType)Model.AttributeControlTypeId).ToSelectListAsync(valuesToExclude: [(int)AttributeControlType.Checkboxes, (int)AttributeControlType.MultilineTextbox, (int)AttributeControlType.Datepicker, (int)AttributeControlType.FileUpload]))" />
             <span asp-validation-for="AttributeControlTypeId"></span>
         </div>
     </div>
