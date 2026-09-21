@@ -264,6 +264,11 @@ public static partial class NopCatalogDefaults
     public static CacheKey ProductsHomepageCacheKey => new("Nop.product.homepage.");
 
     /// <summary>
+    /// Gets a key for caching the products on offer (home page deals band)
+    /// </summary>
+    public static CacheKey ProductsDealsCacheKey => new("Nop.product.deals.");
+
+    /// <summary>
     /// Key for caching identifiers of category featured products
     /// </summary>
     /// <remarks>

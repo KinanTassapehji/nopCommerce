@@ -17658,7 +17658,7 @@
     <Value>Discount</Value>
   </LocaleResource>
   <LocaleResource Name="PDFInvoice.FileName">
-    <Value>order</Value>
+    <Value>order-{0}</Value>
   </LocaleResource>
   <LocaleResource Name="Pdf.Order">
     <Value>Order #{0}</Value>
@@ -19123,5 +19123,50 @@
   </LocaleResource>
   <LocaleResource Name="Vendors.ViewAll">
     <Value>View all</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Categories">
+    <Value>Shop by category</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.ViewAll">
+    <Value>View all</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Deals">
+    <Value>Deals</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Delivery">
+    <Value>Fast delivery</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Delivery.Hint">
+    <Value>Straight to your door</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Cod">
+    <Value>Cash on delivery</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Cod.Hint">
+    <Value>Pay when your order arrives</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Genuine">
+    <Value>Genuine products</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Genuine.Hint">
+    <Value>Quality you can count on</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Support">
+    <Value>Customer care</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Support.Hint">
+    <Value>We are here to help</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Cta.Title">
+    <Value>Everything your home needs, in one place</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Cta.Text">
+    <Value>Browse the full range and find your next favourite.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Cta.Button">
+    <Value>Shop now</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.AllProducts.Loading">
+    <Value>Loading more products</Value>
   </LocaleResource>
 </Language>

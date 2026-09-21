@@ -1414,19 +1414,11 @@ public partial class CustomerController : BasePublicController
             address: null,
             excludeProperties: false,
             addressSettings: _addressSettings,
-            loadCountries: async () => await _countryService.GetAllCountriesAsync((await _workContext.GetWorkingLanguageAsync()).Id));
-
-        //the form does not ask for these - a registered customer always has them, and they are the same for every address of theirs
-        model.Address.FirstName = customer.FirstName;
-        model.Address.LastName = customer.LastName;
-        model.Address.Email = customer.Email;
-
-        //default the phone to the number the customer already uses - the form still lets them change it for this address
-        model.Address.PhoneNumber = !string.IsNullOrEmpty(customer.Phone)
-            ? customer.Phone
-            : (await _customerService.GetAddressesByCustomerIdAsync(customer.Id))
-                .OrderByDescending(address => address.Id)
-                .FirstOrDefault(address => !string.IsNullOrEmpty(address.PhoneNumber))?.PhoneNumber;
+            loadCountries: async () => await _countryService.GetAllCountriesAsync((await _workContext.GetWorkingLanguageAsync()).Id),
+            //the form does not ask for name, email or phone - they come from the customer, and the
+            //factory is the one place that knows where to find each of them
+            prePopulateWithCustomerFields: true,
+            customer: customer);
 
         return View(model);
     }

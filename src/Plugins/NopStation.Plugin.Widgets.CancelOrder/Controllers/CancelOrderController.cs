@@ -18,17 +18,20 @@ public class CancelOrderController : NopStationPublicController
 
 	private readonly CancelOrderSettings _cancelOrderSettings;
 
+	private readonly OrderSettings _orderSettings;
+
 	private readonly INotificationService _notificationService;
 
 	private readonly ILocalizationService _localizationService;
 
-	public CancelOrderController(IOrderService orderService, IWorkContext workContext, CancelOrderSettings cancelOrderSettings, INotificationService notificationService, ILocalizationService localizationService)
+	public CancelOrderController(IOrderService orderService, IWorkContext workContext, CancelOrderSettings cancelOrderSettings, INotificationService notificationService, ILocalizationService localizationService, OrderSettings orderSettings)
 	{
 		_orderService = orderService;
 		_workContext = workContext;
 		_cancelOrderSettings = cancelOrderSettings;
 		_notificationService = notificationService;
 		_localizationService = localizationService;
+		_orderSettings = orderSettings;
 	}
 
 	[HttpPost]
@@ -54,7 +57,7 @@ public class CancelOrderController : NopStationPublicController
 				Result = false
 			});
 		}
-		if (!_cancelOrderSettings.CancellableOrderStatuses.Contains(order.OrderStatusId) || !_cancelOrderSettings.CancellablePaymentStatuses.Contains(order.PaymentStatusId) || !_cancelOrderSettings.CancellableShippingStatuses.Contains(order.ShippingStatusId))
+		if (!_orderSettings.AllowCustomersCancelOrders || !_cancelOrderSettings.CancellableOrderStatuses.Contains(order.OrderStatusId) || !_cancelOrderSettings.CancellablePaymentStatuses.Contains(order.PaymentStatusId) || !_cancelOrderSettings.CancellableShippingStatuses.Contains(order.ShippingStatusId))
 		{
 			INotificationService notificationService = _notificationService;
 			notificationService.ErrorNotification(await _localizationService.GetResourceAsync("NopStation.CancelOrder.InvalidRequest"));

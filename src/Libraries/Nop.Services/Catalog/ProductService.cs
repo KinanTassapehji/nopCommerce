@@ -527,6 +527,32 @@ public partial class ProductService : IProductService
     }
 
     /// <summary>
+    /// Gets the products on offer - an old price above the selling price - biggest cut first
+    /// </summary>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the products
+    /// </returns>
+    public virtual async Task<IList<Product>> GetDiscountedProductsAsync()
+    {
+        //ponytail: "on offer" means Product.OldPrice, the one the catalogue cards already strike
+        //through. Discounts (the Discount entity) are not read here - add them when a
+        //discount-driven campaign needs a home band.
+        var products = await _productRepository.GetAllAsync(query =>
+        {
+            return from p in query
+                where p.Published &&
+                      !p.Deleted &&
+                      p.VisibleIndividually &&
+                      p.OldPrice > p.Price
+                orderby p.Price / p.OldPrice, p.DisplayOrder, p.Id
+                select p;
+        }, cache => cache.PrepareKeyForDefaultCache(NopCatalogDefaults.ProductsDealsCacheKey));
+
+        return products;
+    }
+
+    /// <summary>
     /// Gets a product
     /// </summary>
     /// <param name="productId">Product identifier</param>

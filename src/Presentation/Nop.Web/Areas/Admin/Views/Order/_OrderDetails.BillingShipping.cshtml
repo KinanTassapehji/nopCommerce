@@ -1,188 +1,215 @@
 ﻿@model OrderModel
+@inject AddressSettings addressSettings
 
 @{
     var canShipmentsView = await permissionService.AuthorizeAsync(StandardPermission.Orders.SHIPMENTS_VIEW);
 
     //this store collects a single, shipping-only address - prefer the shipping clone, which is what shipments use
     var orderAddress = !Model.PickupInStore && Model.ShippingAddress != null ? Model.ShippingAddress : Model.BillingAddress;
+
+    //an address with no country gives the geocoder no region to search, and the
+    //world map Google answers with is worse than none - so it decides both whether
+    //the map panel is drawn and where the "view on Google Maps" link lives
+    var showMap = !string.IsNullOrEmpty(Model.ShippingAddressGoogleMapsUrl) &&
+                  !string.IsNullOrEmpty(Model.ShippingAddress?.CountryName);
+
+    //One row per field the store actually asks for. AddressSettings is the same
+    //source the public address form reads, so switching a field off in
+    //Configuration > Settings > Customer settings > Address form fields drops it
+    //from this panel too, instead of leaving a column of blank labels behind.
+    //A field that is switched off but still holds a value is kept: orders placed
+    //before the setting changed must not quietly lose what the customer gave.
+    var addressFields = new[]
+    {
+        (Enabled: true, Key: "FullName", Value: $"{orderAddress.FirstName} {orderAddress.LastName}".Trim()),
+        (Enabled: true, Key: "Email", Value: orderAddress.Email),
+        (Enabled: addressSettings.PhoneEnabled, Key: "Phone", Value: orderAddress.PhoneNumber),
+        (Enabled: addressSettings.FaxEnabled, Key: "Fax", Value: orderAddress.FaxNumber),
+        (Enabled: addressSettings.CompanyEnabled, Key: "Company", Value: orderAddress.Company),
+        (Enabled: addressSettings.StreetAddressEnabled, Key: "Address1", Value: orderAddress.Address1),
+        (Enabled: addressSettings.StreetAddress2Enabled, Key: "Address2", Value: orderAddress.Address2),
+        (Enabled: addressSettings.CityEnabled, Key: "City", Value: orderAddress.City),
+        (Enabled: addressSettings.CountyEnabled, Key: "County", Value: orderAddress.County),
+        (Enabled: addressSettings.StateProvinceEnabled, Key: "StateProvince", Value: orderAddress.StateProvinceName),
+        (Enabled: addressSettings.ZipPostalCodeEnabled, Key: "ZipPostalCode", Value: orderAddress.ZipPostalCode),
+        (Enabled: addressSettings.CountryEnabled, Key: "Country", Value: orderAddress.CountryName)
+    }.Where(field => field.Enabled || !string.IsNullOrWhiteSpace(field.Value)).ToList();
+
+    //The pickup address belongs to the store, not to the customer, so there is no
+    //setting to read - show whichever parts of it are filled in.
+    var pickupFields = Model.PickupAddress == null
+        ? new List<(string Key, string Value)>()
+        : new List<(string Key, string Value)>
+        {
+            ("Address1", Model.PickupAddress.Address1),
+            ("City", Model.PickupAddress.City),
+            ("County", Model.PickupAddress.County),
+            ("ZipPostalCode", Model.PickupAddress.ZipPostalCode),
+            ("Country", Model.PickupAddress.CountryName)
+        }.Where(field => !string.IsNullOrWhiteSpace(field.Value)).ToList();
 }
 
 <div class="card-body">
     <div class="row">
+        @*Where the parcel goes sits beside how it gets there. Stock nop left this
+            column empty on every non-pickup order and pushed the shipping method
+            to a full-width card below, so the panel opened on half a screen of
+            nothing.*@
         <div class="col-md-6 card-group">
+            @if (Model.IsShippable)
+            {
+                if (Model.PickupInStore && Model.PickupAddress != null)
+                {
+                    <div class="card mb-3">
+                        <div class="card-header clearfix">
+                            @T("Admin.Orders.Fields.PickupAddress")
+                        </div>
+                        <div class="card-body">
+                            @foreach (var field in pickupFields)
+                            {
+                                <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <div class="label-wrapper">
+                                            <label class="col-form-label">
+                                                @T($"Admin.Orders.Address.{field.Key}")
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="form-text-row">
+                                            @field.Value
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.PickupAddressGoogleMapsUrl) && !string.IsNullOrEmpty(Model.PickupAddress.CountryName))
+                        {
+                            <div class="order-address-map">
+                                <iframe src="@(Model.PickupAddressGoogleMapsUrl + "&output=embed")"
+                                        title="@T("Admin.Orders.Fields.PickupAddress")"
+                                        loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+                            </div>
+                            <div class="card-footer">
+                                <div class="form-text-row">
+                                    <img alt="google maps" src="@Url.Content("~/css/admin/images/gmaps.ico")" />
+                                    <a href="@Html.Raw(Model.PickupAddressGoogleMapsUrl)" target="_blank">@T("Admin.Orders.Fields.PickupAddress.ViewOnGoogleMaps")</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+                @*No card header: the two rows below are labelled, and a
+                    "Shipping method" title over a "Shipping method" row just
+                    says it twice.*@
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <nop-label asp-for="ShippingMethod" />
+                            </div>
+                            <div class="col-md-8">
+                                @if (!Model.IsLoggedInAsVendor)
+                                {
+                                    <script>
+                                        $(function () {
+                                            toggleEditShippingMethod(false);
+                                        });
+
+                                        function toggleEditShippingMethod(editmode) {
+                                            if (editmode) {
+                                                $('#lblShippingMethod').hideElement();
+                                                $('#divShippingMethod').showElement();
+                                                $('#btnEditShippingMethod').hideElement();
+                                                $('#btnSaveShippingMethod').showElement();
+                                                $('#btnCancelShippingMethod').showElement();
+                                            } else {
+                                                $('#lblShippingMethod').showElement();
+                                                $('#divShippingMethod').hideElement();
+                                                $('#btnEditShippingMethod').showElement();
+                                                $('#btnSaveShippingMethod').hideElement();
+                                                $('#btnCancelShippingMethod').hideElement();
+                                            }
+                                        }
+                                    </script>
+                                    <div class="input-group input-group-short">
+                                        <div id="lblShippingMethod" class="input-group-text">
+                                            @Model.ShippingMethod
+                                        </div>
+                                        <div id="divShippingMethod">
+                                            <nop-editor asp-for="ShippingMethod" />
+                                        </div>
+                                        <span class="input-group-append">
+                                            <button type="submit" onclick="toggleEditShippingMethod(true);return false;" id="btnEditShippingMethod" class="btn btn-primary">
+                                                @T("Admin.Common.Edit")
+                                            </button>
+
+                                            <button type="submit" id="btnSaveShippingMethod" name="save-shipping-method" class="btn btn-primary">
+                                                @T("Admin.Common.Save")
+                                            </button>
+                                            <nop-action-confirmation asp-button-id="btnSaveShippingMethod" />
+
+                                            <button type="submit" onclick="toggleEditShippingMethod(false);return false;" id="btnCancelShippingMethod" class="btn btn-secondary">
+                                                @T("Admin.Common.Cancel")
+                                            </button>
+                                        </span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div id="lblShippingMethod">
+                                        <div class="form-text-row">@Model.ShippingMethod</div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        @if (!Model.IsLoggedInAsVendor)
+                        {
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <nop-label asp-for="ShippingStatus" />
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-text-row">@Model.ShippingStatus</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="form-text-row">@T("Admin.Orders.ShippingInfo.NotRequired")</div>
+                    </div>
+                </div>
+            }
             <div class="card mb-3">
                 <div class="card-header clearfix">
                     @T("Admin.Orders.Fields.ShippingAddress")
                 </div>
                 <div class="card-body">
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <div class="label-wrapper">
-                                <label class="col-form-label">
-                                    @T("Admin.Orders.Address.FullName")
-                                </label>
+                    @foreach (var field in addressFields)
+                    {
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <div class="label-wrapper">
+                                    <label class="col-form-label">
+                                        @T($"Admin.Orders.Address.{field.Key}")
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-text-row">
+                                    @field.Value
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-8">
-                            <div class="form-text-row">
-                                @orderAddress.FirstName @orderAddress.LastName
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <div class="label-wrapper">
-                                <label class="col-form-label">
-                                    @T("Admin.Orders.Address.Email")
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-text-row">
-                                @orderAddress.Email
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <div class="label-wrapper">
-                                <label class="col-form-label">
-                                    @T("Admin.Orders.Address.Phone")
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-text-row">
-                                @orderAddress.PhoneNumber
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <div class="label-wrapper">
-                                <label class="col-form-label">
-                                    @T("Admin.Orders.Address.Fax")
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-text-row">
-                                @orderAddress.FaxNumber
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <div class="label-wrapper">
-                                <label class="col-form-label">
-                                    @T("Admin.Orders.Address.Company")
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-text-row">
-                                @orderAddress.Company
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <div class="label-wrapper">
-                                <label class="col-form-label">
-                                    @T("Admin.Orders.Address.Address1")
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-text-row">
-                                @orderAddress.Address1
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <div class="label-wrapper">
-                                <label class="col-form-label">
-                                    @T("Admin.Orders.Address.Address2")
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-text-row">
-                                @orderAddress.Address2
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <div class="label-wrapper">
-                                <label class="col-form-label">
-                                    @T("Admin.Orders.Address.City")
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-text-row">
-                                @orderAddress.City
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <div class="label-wrapper">
-                                <label class="col-form-label">
-                                    @T("Admin.Orders.Address.County")
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-text-row">
-                                @orderAddress.County
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <div class="label-wrapper">
-                                <label class="col-form-label">
-                                    @T("Admin.Orders.Address.StateProvince")
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-text-row">
-                                @orderAddress.StateProvinceName
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <div class="label-wrapper">
-                                <label class="col-form-label">
-                                    @T("Admin.Orders.Address.ZipPostalCode")
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-text-row">
-                                @orderAddress.ZipPostalCode
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <div class="label-wrapper">
-                                <label class="col-form-label">
-                                    @T("Admin.Orders.Address.Country")
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-text-row">
-                                @orderAddress.CountryName
-                            </div>
-                        </div>
-                    </div>
+                    }
 
                     @if (!string.IsNullOrEmpty(orderAddress.FormattedCustomAddressAttributes))
                     {
@@ -199,236 +226,65 @@
                             </div>
                         </div>
                     }
-
                 </div>
 
                 @if (!Model.IsLoggedInAsVendor)
                 {
                     <div class="card-footer">
-                        <div class="form-group row">
-                            @if (!string.IsNullOrEmpty(Model.ShippingAddressGoogleMapsUrl))
+                        @*space-between rather than the mr-auto/ml-auto pair stock uses:
+                            those two are physical margins, so in the RTL admin they pushed
+                            both items into the middle of the footer instead of one to each
+                            end. Edit opens the row it sits under, so it leads; the map link
+                            closes the footer.*@
+                        <div class="form-group row justify-content-between align-items-center">
+                            <div class="col-auto">
+                                <a asp-action="AddressEdit" asp-route-addressId="@orderAddress.Id" asp-route-orderId="@Model.Id" class="btn btn-primary">@T("Admin.Common.Edit")</a>
+                            </div>
+                            @*the link normally rides with the map in the panel beside this
+                                one; an address the map cannot place has no such panel, so it
+                                keeps the link here*@
+                            @if (!string.IsNullOrEmpty(Model.ShippingAddressGoogleMapsUrl) && !showMap)
                             {
-                                <div class="col-auto mr-auto">
-                                    <div class="form-text-row mb-2">
+                                <div class="col-auto">
+                                    <div class="form-text-row">
                                         <img alt="google maps" src="@Url.Content("~/css/admin/images/gmaps.ico")" />
-                                        <a href="@Html.Raw(Model.ShippingAddressGoogleMapsUrl)" style="margin-bottom: 10px;" target="_blank">@T("Admin.Orders.Fields.ShippingAddress.ViewOnGoogleMaps")</a>
+                                        <a href="@Html.Raw(Model.ShippingAddressGoogleMapsUrl)" target="_blank">@T("Admin.Orders.Fields.ShippingAddress.ViewOnGoogleMaps")</a>
                                     </div>
                                 </div>
                             }
-                            <div class="col-auto ml-auto">
-                                <a asp-action="AddressEdit" asp-route-addressId="@orderAddress.Id" asp-route-orderId="@Model.Id" class="btn btn-primary">@T("Admin.Common.Edit")</a>
-                            </div>
                         </div>
                     </div>
                 }
             </div>
         </div>
-
-        <div class="col-md-6 card-group">
-            @if (Model.IsShippable)
-            {
-                if (Model.PickupInStore && Model.PickupAddress != null)
-                {
-
-                    <div class="card mb-3">
-                        <div class="card-header clearfix">
-                            @T("Admin.Orders.Fields.PickupAddress")
-                        </div>
-                        <div class="card-body">
-                            @if (!string.IsNullOrEmpty(Model.PickupAddress.Address1))
-                            {
-                                <div class="form-group row">
-                                    <div class="col-md-4">
-                                        <div class="label-wrapper">
-                                            <label class="col-form-label">
-                                                @T("Admin.Orders.Address.Address1")
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="form-text-row">
-                                            @Model.PickupAddress.Address1
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-
-                            @if (!string.IsNullOrEmpty(Model.PickupAddress.City))
-                            {
-                                <div class="form-group row">
-                                    <div class="col-md-4">
-                                        <div class="label-wrapper">
-                                            <label class="col-form-label">
-                                                @T("Admin.Orders.Address.City")
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="form-text-row">
-                                            @Model.PickupAddress.City
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-
-                            @if (!string.IsNullOrEmpty(Model.PickupAddress.County))
-                            {
-                                <div class="form-group row">
-                                    <div class="col-md-4">
-                                        <div class="label-wrapper">
-                                            <label class="col-form-label">
-                                                @T("Admin.Orders.Address.County")
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="form-text-row">
-                                            @Model.PickupAddress.County
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-
-                            @if (!string.IsNullOrEmpty(Model.PickupAddress.CountryName))
-                            {
-                                <div class="form-group row">
-                                    <div class="col-md-4">
-                                        <div class="label-wrapper">
-                                            <label class="col-form-label">
-                                                @T("Admin.Orders.Address.Country")
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="form-text-row">
-                                            @Model.PickupAddress.CountryName
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-
-                            @if (!string.IsNullOrEmpty(Model.PickupAddress.ZipPostalCode))
-                            {
-                                <div class="form-group row">
-                                    <div class="col-md-4">
-                                        <div class="label-wrapper">
-                                            <label class="col-form-label">
-                                                @T("Admin.Orders.Address.ZipPostalCode")
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="form-text-row">
-                                            @Model.PickupAddress.ZipPostalCode
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-
-                        </div>
-
-                        <div class="card-footer">
-                            <div class="form-group row">
-                                <div class="col-auto mr-auto">
-                                    <div class="form-text-row mb-2">
-                                        <img alt="google maps" src="@Url.Content("~/css/admin/images/gmaps.ico")" />
-                                        <a href="@Html.Raw(Model.PickupAddressGoogleMapsUrl)" style="margin-bottom: 10px;" target="_blank">@T("Admin.Orders.Fields.PickupAddress.ViewOnGoogleMaps")</a>
-                                    </div>
-                                </div>
-                            </div>
+        @*The facts read down one column; the map gets the other to itself. No
+            country means no region for the geocoder to search in, and Google answers
+            a bare district name with a world map of same-named businesses - worse
+            than no map, so that address keeps the link in the card above instead.*@
+        @if (showMap)
+        {
+            <div class="col-md-6 card-group">
+                <div class="card mb-3 order-address-map-card">
+                    <div class="card-body">
+                        <div class="order-address-map">
+                            <iframe src="@(Model.ShippingAddressGoogleMapsUrl + "&output=embed")"
+                                    title="@T("Admin.Orders.Fields.ShippingAddress")"
+                                    loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
                         </div>
                     </div>
-                }
-            }
-            else
-            {
-                <div class="form-group row mx-auto">
-                    <div class="col-auto">
-                        @T("Admin.Orders.ShippingInfo.NotRequired")
+                    <div class="card-footer">
+                        <div class="form-text-row">
+                            <img alt="google maps" src="@Url.Content("~/css/admin/images/gmaps.ico")" />
+                            <a href="@Html.Raw(Model.ShippingAddressGoogleMapsUrl)" target="_blank">@T("Admin.Orders.Fields.ShippingAddress.ViewOnGoogleMaps")</a>
+                        </div>
                     </div>
                 </div>
-            }
-        </div>
-
+            </div>
+        }
     </div>
 
     @if (Model.IsShippable)
     {
-        <div class="card card-default">
-            <div class="card-body">
-                <div class="form-group row">
-                    <div class="col-lg-3">
-                        <nop-label asp-for="ShippingMethod" />
-                    </div>
-                    <div class="col-lg-9">
-                        @if (!Model.IsLoggedInAsVendor)
-                        {
-                            <script>
-                                $(function () {
-                                    toggleEditShippingMethod(false);
-                                });
-
-                                function toggleEditShippingMethod(editmode) {
-                                    if (editmode) {
-                                        $('#lblShippingMethod').hideElement();
-                                        $('#divShippingMethod').showElement();
-                                        $('#btnEditShippingMethod').hideElement();
-                                        $('#btnSaveShippingMethod').showElement();
-                                        $('#btnCancelShippingMethod').showElement();
-                                    } else {
-                                        $('#lblShippingMethod').showElement();
-                                        $('#divShippingMethod').hideElement();
-                                        $('#btnEditShippingMethod').showElement();
-                                        $('#btnSaveShippingMethod').hideElement();
-                                        $('#btnCancelShippingMethod').hideElement();
-                                    }
-                                }
-                            </script>
-                            <div class="input-group input-group-short">
-                                <div id="lblShippingMethod" class="input-group-text">
-                                    @Model.ShippingMethod
-                                </div>
-                                <div id="divShippingMethod">
-                                    <nop-editor asp-for="ShippingMethod" />
-                                </div>
-                                <span class="input-group-append">
-                                    <button type="submit" onclick="toggleEditShippingMethod(true);return false;" id="btnEditShippingMethod" class="btn btn-primary">
-                                        @T("Admin.Common.Edit")
-                                    </button>
-
-                                    <button type="submit" id="btnSaveShippingMethod" name="save-shipping-method" class="btn btn-primary">
-                                        @T("Admin.Common.Save")
-                                    </button>
-                                    <nop-action-confirmation asp-button-id="btnSaveShippingMethod" />
-
-                                    <button type="submit" onclick="toggleEditShippingMethod(false);return false;" id="btnCancelShippingMethod" class="btn btn-secondary">
-                                        @T("Admin.Common.Cancel")
-                                    </button>
-                                </span>
-                            </div>
-                        }
-                        else
-                        {
-                            <div id="lblShippingMethod">
-                                <div class="form-text-row">@Model.ShippingMethod</div>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                @if (!Model.IsLoggedInAsVendor)
-                {
-                    <div class="form-group row">
-                        <div class="col-lg-3">
-                            <nop-label asp-for="ShippingStatus" />
-                        </div>
-                        <div class="col-lg-9">
-                            <div class="form-text-row">@Model.ShippingStatus</div>
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
         if (canShipmentsView)
         {
             <div class="card card-default">

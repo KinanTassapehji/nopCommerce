@@ -5,6 +5,11 @@
 @if (Model.Count > 0)
 {
     <section class="category-grid home-page-category-grid">
+        @*the band is the way into /category/all, which is where the whole tree lives*@
+        <h2 class="title">
+            <span>@T("Homepage.Categories")</span>
+            <a class="view-all" href="@Url.RouteUrl(NopRouteNames.General.CATEGORIES)">@T("Homepage.ViewAll")<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+        </h2>
         <div class="item-grid">
             @foreach (var item in Model)
             {

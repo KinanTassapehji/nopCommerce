@@ -316,6 +316,17 @@ label + *{
   font-size: 0;
 }
 
+.inputs-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.inputs-row .inputs{
+  flex: 1;
+  min-width: 260px;
+}
+
 .inputs:after{
   content: "";
   display: block;

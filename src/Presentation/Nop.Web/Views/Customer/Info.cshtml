@@ -84,6 +84,8 @@
                             <span asp-validation-for="Phone"></span>
                         </div>
                     }
+                    @*gender rides beside the phone: it is one control, and a row of
+                        its own for two radio buttons is a row of mostly nothing*@
                     @if (Model.GenderEnabled)
                     {
                         <div class="inputs">
@@ -105,8 +107,12 @@
                                     </span>
                                 }
                             </div>
+                            <nop-required />
+                            <span asp-validation-for="Gender"></span>
                         </div>
                     }
+                    @*...and the date of birth closes the section on a row of its own,
+                        where the three selects have the width they need*@
                     @if (Model.DateOfBirthEnabled)
                     {
                         <div class="inputs date-of-birth">

@@ -555,8 +555,19 @@ public partial class OrderModelFactory : IOrderModelFactory
 
         //payment method info
         var pm = await _paymentPluginManager.LoadPluginBySystemNameAsync(order.PaymentMethodSystemName);
-        model.PaymentMethod = pm != null ? pm.PluginDescriptor.FriendlyName : order.PaymentMethodSystemName;
+        //stock reads PluginDescriptor.FriendlyName here, which is the one name in
+        //plugin.json and never translated, so the admin said "Cash On Delivery (COD)"
+        //under an Arabic label while the storefront, the invoice and the order mail
+        //all said الدفع عند الاستلام. Same lookup they use - it falls back to the
+        //descriptor name when a language has no Plugins.FriendlyName.* resource.
+        var currentLanguage = await _workContext.GetWorkingLanguageAsync();
+        model.PaymentMethod = pm != null
+            ? await _localizationService.GetLocalizedFriendlyNameAsync(pm, currentLanguage.Id)
+            : order.PaymentMethodSystemName;
         model.PaymentStatus = await _localizationService.GetLocalizedEnumAsync(order.PaymentStatus);
+        //the localized name alone is not enough to style a status - the order summary
+        //strip colours the badge from the id, the same way the order grid does
+        model.PaymentStatusId = order.PaymentStatusId;
 
         //payment method buttons
         model.CanCancelOrder = _orderProcessingService.CanCancelOrder(order);
@@ -575,6 +586,27 @@ public partial class OrderModelFactory : IOrderModelFactory
     }
 
     /// <summary>
+    /// Build the address query behind the map on the order screen
+    /// </summary>
+    /// <param name="address">Address</param>
+    /// <param name="stateProvinceName">State or province name, already resolved</param>
+    /// <param name="countryName">Country name, already resolved</param>
+    /// <returns>The parts of the address that are filled in, comma separated</returns>
+    protected virtual string BuildAddressMapQuery(Address address, string stateProvinceName, string countryName)
+    {
+        return string.Join(", ", new[]
+        {
+            address.Address1,
+            address.Address2,
+            address.County,
+            address.City,
+            stateProvinceName,
+            address.ZipPostalCode,
+            countryName
+        }.Where(part => !string.IsNullOrWhiteSpace(part)));
+    }
+
+    /// <summary>
     /// Prepare order model shipping info
     /// </summary>
     /// <param name="model">Order model</param>
@@ -587,6 +619,7 @@ public partial class OrderModelFactory : IOrderModelFactory
         ArgumentNullException.ThrowIfNull(order);
 
         model.ShippingStatus = await _localizationService.GetLocalizedEnumAsync(order.ShippingStatus);
+        model.ShippingStatusId = order.ShippingStatusId;
         if (order.ShippingStatus == ShippingStatus.ShippingNotRequired)
             return;
 
@@ -604,8 +637,17 @@ public partial class OrderModelFactory : IOrderModelFactory
             model.ShippingAddress.StateProvinceName = (await _stateProvinceService.GetStateProvinceByAddressAsync(shippingAddress))?.Name;
             await _addressModelFactory.PrepareAddressModelAsync(model.ShippingAddress, shippingAddress);
             SetAddressFieldsAsRequired(model.ShippingAddress);
-            model.ShippingAddressGoogleMapsUrl = "https://maps.google.com/maps?f=q&hl=en&ie=UTF8&oe=UTF8&geocode=&q=" +
-                                                 $"{WebUtility.UrlEncode(shippingAddress.Address1 + " " + shippingAddress.ZipPostalCode + " " + shippingAddress.City + " " + (shippingCountry?.Name ?? string.Empty))}";
+            //hl drives the language of the map itself, which is embedded on the order
+            //screen now rather than only linked to; stock pins it to English
+            var mapLanguage = (await _workContext.GetWorkingLanguageAsync()).UniqueSeoCode;
+
+            //stock joins four fixed fields with spaces whether or not they hold
+            //anything, so an address that keeps its detail in County reached Google as
+            //"Mazzeh   " and came back centred on a restaurant in California. Every
+            //part the address actually has, comma separated, is a query a geocoder
+            //can read.
+            model.ShippingAddressGoogleMapsUrl = $"https://maps.google.com/maps?f=q&hl={mapLanguage}&ie=UTF8&oe=UTF8&geocode=&q=" +
+                                                 $"{WebUtility.UrlEncode(BuildAddressMapQuery(shippingAddress, model.ShippingAddress.StateProvinceName, shippingCountry?.Name))}";
         }
         else
         {
@@ -617,8 +659,8 @@ public partial class OrderModelFactory : IOrderModelFactory
             var pickupCountry = await _countryService.GetCountryByAddressAsync(pickupAddress);
 
             model.PickupAddress = pickupAddress.ToModel(model.PickupAddress);
-            model.PickupAddressGoogleMapsUrl = $"https://maps.google.com/maps?f=q&hl=en&ie=UTF8&oe=UTF8&geocode=&q=" +
-                                               $"{WebUtility.UrlEncode($"{pickupAddress.Address1} {pickupAddress.ZipPostalCode} {pickupAddress.City} {(pickupCountry?.Name ?? string.Empty)}")}";
+            model.PickupAddressGoogleMapsUrl = $"https://maps.google.com/maps?f=q&hl={(await _workContext.GetWorkingLanguageAsync()).UniqueSeoCode}&ie=UTF8&oe=UTF8&geocode=&q=" +
+                                               $"{WebUtility.UrlEncode(BuildAddressMapQuery(pickupAddress, null, pickupCountry?.Name))}";
         }
     }
 
@@ -928,8 +970,16 @@ public partial class OrderModelFactory : IOrderModelFactory
         await _baseAdminModelFactory.PrepareWarehousesAsync(searchModel.AvailableWarehouses);
 
         //prepare available payment methods
-        searchModel.AvailablePaymentMethods = (await _paymentPluginManager.LoadAllPluginsAsync()).Select(method =>
-            new SelectListItem { Text = method.PluginDescriptor.FriendlyName, Value = method.PluginDescriptor.SystemName }).ToList();
+        //same localized name the order screen and the storefront show, so filtering by
+        //a payment method and reading one are the same words
+        var currentLanguage = await _workContext.GetWorkingLanguageAsync();
+        searchModel.AvailablePaymentMethods = new List<SelectListItem>();
+        foreach (var method in await _paymentPluginManager.LoadAllPluginsAsync())
+            searchModel.AvailablePaymentMethods.Add(new SelectListItem
+            {
+                Text = await _localizationService.GetLocalizedFriendlyNameAsync(method, currentLanguage.Id),
+                Value = method.PluginDescriptor.SystemName
+            });
         searchModel.AvailablePaymentMethods.Insert(0, new SelectListItem { Text = await _localizationService.GetResourceAsync("Admin.Common.All"), Value = string.Empty });
 
         //prepare available billing countries

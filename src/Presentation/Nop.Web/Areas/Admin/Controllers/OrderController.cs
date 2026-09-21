@@ -798,6 +798,18 @@ public partial class OrderController : BaseAdminController
 
         try
         {
+            //cancelling is not a status write: it returns the stock to inventory and
+            //tells the customer. That used to be a separate red button beside this
+            //control; with the button gone, picking "Cancelled" here has to do the
+            //same work rather than only stamping the status column.
+            if (model.OrderStatusId == (int)OrderStatus.Cancelled && _orderProcessingService.CanCancelOrder(order))
+            {
+                await _orderProcessingService.CancelOrderAsync(order, true);
+                await LogEditOrderAsync(order.Id);
+
+                return RedirectToAction("Edit", new { id = order.Id });
+            }
+
             var prevOrderStatus = order.OrderStatus;
 
             order.OrderStatusId = model.OrderStatusId;

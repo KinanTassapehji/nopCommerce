@@ -141,18 +141,20 @@ public abstract class PdfDocument<TItem>
 
         var addressTable = PdfDocumentHelper.BuildPdfGrid(numColumns: 1, DocumentRunDirection);
 
-        var fontBold = PdfDocumentHelper.GetFont(Font, Font.Size, DocumentFontStyle.Bold);
+        var fontBold = PdfDocumentHelper.GetFont(Font, Font.Size * 1.1f, DocumentFontStyle.Bold);
+        fontBold.Color = StoreBrand.Primary;
         var label = LabelField(labelSelector, fontBold, Language);
 
         var captionCell = new PdfPCell()
         {
             HorizontalAlignment = Element.ALIGN_LEFT,
             RunDirection = DocumentRunDirection,
-            Border = 0
+            Border = 0,
+            PaddingBottom = 4
         };
 
         captionCell.AddElement(new Paragraph(label) { Alignment = Element.ALIGN_LEFT });
-        captionCell.AddElement(new LineSeparator(2f, 100f, BaseColor.LightGray, Element.ALIGN_LEFT, -4));
+        captionCell.AddElement(new LineSeparator(1.5f, 100f, StoreBrand.Primary, Element.ALIGN_LEFT, -4));
 
         addressTable.AddCell(captionCell);
 
@@ -239,9 +241,11 @@ public abstract class PdfDocument<TItem>
                     return new PdfPCell(table)
                     {
                         RunDirection = DocumentRunDirection,
-                        BorderWidthBottom = 2,
-                        BorderColorBottom = BaseColor.LightGray,
-                        MinimumHeight = 25,
+                        BorderWidthBottom = 0.7f,
+                        BorderColorBottom = StoreBrand.Line,
+                        MinimumHeight = 28,
+                        PaddingLeft = 5,
+                        PaddingRight = 5,
                         VerticalAlignment = Element.ALIGN_CENTER
                     };
                 });
@@ -271,7 +275,7 @@ public abstract class PdfDocument<TItem>
             })
             .DefaultFonts(fonts =>
             {
-                fonts.Color(System.Drawing.Color.Black);
+                fonts.Color(System.Drawing.Color.FromArgb(StoreBrand.Ink.R, StoreBrand.Ink.G, StoreBrand.Ink.B));
                 fonts.Size(fontSize);
                 fonts.Path(mainFontPath, mainFontPath);
             })
@@ -281,8 +285,12 @@ public abstract class PdfDocument<TItem>
                 {
                     if (args.CellType == CellType.HeaderCell && !string.IsNullOrWhiteSpace(args.Cell.RowData.Value?.ToString()))
                     {
-                        args.Cell.BasicProperties.BackgroundColor = BaseColor.LightGray;
-                        args.Cell.BasicProperties.CellPadding = 5;
+                        //the column heads are the one solid brand surface in the document
+                        args.Cell.BasicProperties.BackgroundColor = StoreBrand.Primary;
+                        args.Cell.BasicProperties.FontColor = StoreBrand.White;
+                        args.Cell.BasicProperties.PdfFontStyle = DocumentFontStyle.Bold;
+                        args.Cell.BasicProperties.ShowBorder = false;
+                        args.Cell.BasicProperties.CellPadding = 7;
                     }
                 });
             });

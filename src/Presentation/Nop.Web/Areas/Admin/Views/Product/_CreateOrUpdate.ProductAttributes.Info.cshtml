@@ -47,13 +47,7 @@
                         ClassName = NopColumnClassDefaults.CenterAll,
                         Encode = false
                     },
-                    new ColumnProperty(nameof(ProductAttributeMappingModel.ConditionString))
-                    {
-                        Title = T("Admin.Catalog.Products.ProductAttributes.Attributes.Condition").Text,
-                        Width = "150",
-                        ClassName = NopColumnClassDefaults.CenterAll,
-                        Encode = false
-                    },
+                    @*TmTm: Condition column dropped, conditional attributes are retired (see the mapping page).*@
                     new ColumnProperty(nameof(ProductAttributeMappingModel.Id))
                     {
                         Title = T("Admin.Common.Edit").Text,

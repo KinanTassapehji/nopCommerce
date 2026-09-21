@@ -290,14 +290,12 @@
                         @if (!Model.IsLoggedInAsVendor)
                         {
                             <td style="width: 15%;" class="text-center">
-                                <button type="submit" class="btn btn-default" name="btnEditOrderItem@(item.Id)" onclick="toggleOrderItemEdit@(item.Id)(true);return false;" id="btnEditOrderItem@(item.Id)">
+                                @*icon-only: the two labels wrap onto separate lines in a 15% column*@
+                                <button type="submit" class="btn btn-default" name="btnEditOrderItem@(item.Id)" onclick="toggleOrderItemEdit@(item.Id)(true);return false;" id="btnEditOrderItem@(item.Id)" title="@T("Admin.Common.Edit")" aria-label="@T("Admin.Common.Edit")">
                                     <i class="fas fa-pencil"></i>
-                                    @T("Admin.Common.Edit")
                                 </button>
-
-                                <button type="submit" class="btn btn-default" name="btnDeleteOrderItem@(item.Id)" id="btnDeleteOrderItem@(item.Id)">
+                                <button type="submit" class="btn btn-default" name="btnDeleteOrderItem@(item.Id)" id="btnDeleteOrderItem@(item.Id)" title="@T("Admin.Common.Delete")" aria-label="@T("Admin.Common.Delete")">
                                     <i class="far fa-trash-can"></i>
-                                    @T("Admin.Common.Delete")
                                 </button>
                                 <nop-action-confirmation asp-button-id="@("btnDeleteOrderItem" + item.Id)" />
 

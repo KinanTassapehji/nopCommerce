@@ -2620,9 +2620,15 @@ public partial class WorkflowMessageService : IWorkflowMessageService
             subject = await _localizationService.GetLocalizedAsync(messageTemplate, mt => mt.Subject, languageId);
         var body = await _localizationService.GetLocalizedAsync(messageTemplate, mt => mt.Body, languageId);
 
-        //Replace subject and body tokens 
+        //Replace subject and body tokens
         var subjectReplaced = _tokenizer.Replace(subject, tokens, false);
         var bodyReplaced = _tokenizer.Replace(body, tokens, true);
+
+        //dress the body in the store identity - logo, brand rule, card, footer.
+        //done here rather than in the templates so all of them inherit it, and an
+        //admin keeps editing plain content
+        var messageLanguage = await _languageService.GetLanguageByIdAsync(languageId);
+        bodyReplaced = await EmailLayout.WrapAsync(bodyReplaced, tokens, messageLanguage?.Rtl == true);
 
         //limit name length
         toName = CommonHelper.EnsureMaximumLength(toName, 300);

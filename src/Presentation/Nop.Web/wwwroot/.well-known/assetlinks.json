@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.tmtmsy.app",
+      "sha256_cert_fingerprints": [
+        "64:B4:AC:57:AE:1B:A3:0E:3F:80:A0:17:1E:50:29:DB:AA:2A:8B:F4:C7:56:32:F4:B5:98:FA:73:1C:06:79:59"
+      ]
+    }
+  }
+]
