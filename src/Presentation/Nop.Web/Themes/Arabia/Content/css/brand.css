@@ -823,6 +823,36 @@ which would
   background: var(--ar-surface-alt);
 }
 
+/* Order details products table. Same clamp as the cart had: the view asks for
+   an `OrderThumbPictureSize` thumbnail but `img{max-width:100%}` measures
+   against the track the auto layout hands the cell, which was barely wider
+   than the padding. Size the track, take the clamp off, and keep the SKU on
+   one line - it is one unbreakable token and was wrapping to three. */
+.order-details-page .data-table th.picture,
+.order-details-page .data-table td.picture{
+  inline-size: 140px;
+}
+
+.order-details-page .data-table td.picture img{
+  inline-size: 120px;
+  block-size: 120px;
+  max-inline-size: none;
+  border-radius: var(--ar-radius-sm);
+  background: var(--ar-surface-alt);
+  object-fit: cover;
+}
+
+.order-details-page .data-table th.sku,
+.order-details-page .data-table td.sku{
+  inline-size: 160px;
+  white-space: nowrap;
+}
+
+.order-details-page .data-table td.sku .sku-number{
+  font-size: var(--ar-fs-body);
+  color: var(--ar-ink);
+}
+
 /* --- Cart / checkout ------------------------------------------------------ */
 .cart-total .order-total,
 .cart-total .order-total strong{
@@ -842,13 +872,218 @@ which would
   color: var(--ar-white);
 }
 
-/* --- Notifications -------------------------------------------------------- */
-.bar-notification.success{
-  background: var(--ar-success);
+/* --- Notifications --------------------------------------------------------
+   DefaultClean pins a full-bleed coloured band to the top of the viewport, so
+   "تم إضافة منتج إلى سلة التسوق" arrives looking like a browser warning strip
+   rather than like the store. Restyled into a floating toast in the inline-end
+   corner: white card, the gradient hairline the header and footer already use,
+   a status disc carrying the meaning. The message itself stays on --ar-ink, so
+   it is readable at any length instead of white-on-colour.
+
+   Decoration is absolutely positioned around a plain block rather than laid
+   out with grid: jQuery's fadeIn() writes `display:block` inline when the
+   toast is shown, which would beat any display declared here. Logical
+   properties beat the physical left/right the two base sheets set, so this one
+   block serves both LTR and RTL. */
+.bar-notification-container{
+  inset-block-start: calc(var(--ar-header-h) + var(--ar-stack-md));
+  inset-inline-end: var(--ar-stack-md);
+  inset-inline-start: auto;
+  width: auto;
+  max-width: min(400px, calc(100vw - 2 * var(--ar-stack-md)));
+  z-index: 1100;
+  opacity: 1;
+  color: var(--ar-ink);
+  line-height: var(--ar-lh-body);
+  /* The container spans nothing visible; only the card itself takes clicks. */
+  pointer-events: none;
 }
 
-.bar-notification.error{
-  background: var(--ar-error);
+.bar-notification,
+.bar-notification.success,
+.bar-notification.error,
+.bar-notification.warning{
+  background: var(--ar-surface);
+}
+
+.bar-notification{
+  position: relative;
+  display: none;
+  pointer-events: auto;
+  padding-block: 18px 16px;
+  padding-inline: 58px 46px;
+  color: var(--ar-ink);
+  font-size: var(--ar-fs-label);
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
+  box-shadow: var(--ar-shadow-lg);
+  overflow: hidden;
+  animation: ar-toast-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The brand's gradient rule, same motif as the header baseline. */
+.bar-notification:before{
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 3px;
+  background: var(--ar-gradient);
+}
+
+/* Status disc — the only coloured surface, and the only thing that has to
+   read as success/error/warning at a glance. */
+.bar-notification:after{
+  content: "";
+  position: absolute;
+  inset-block-start: 17px;
+  inset-inline-start: 18px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px 14px;
+}
+
+.bar-notification.success:after{
+  background-color: var(--ar-success);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 12.8 9.5 17.8 19.5 6.5'/%3E%3C/svg%3E");
+}
+
+.bar-notification.error:after{
+  background-color: var(--ar-error);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5'/%3E%3C/svg%3E");
+}
+
+.bar-notification.warning:after{
+  background-color: var(--ar-warning);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M12 5.5v8.2M12 18.3v.2'/%3E%3C/svg%3E");
+}
+
+.bar-notification .content{
+  margin: 0;
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-body);
+}
+
+/* Several messages arrive as sibling <p>s inside one card. */
+.bar-notification .content + .content{
+  margin-block-start: 8px;
+  padding-block-start: 8px;
+  border-block-start: 1px solid var(--ar-line);
+}
+
+.bar-notification .content a{
+  color: var(--ar-blue);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.bar-notification .content a:hover{
+  color: var(--ar-blue-hover);
+}
+
+.bar-notification .close{
+  inset-block-start: 14px;
+  inset-inline-end: 12px;
+  inset-inline-start: auto;
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  border-radius: var(--ar-radius-sm);
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235A6B7A' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M7 7 17 17M17 7 7 17'/%3E%3C/svg%3E") center / 12px 12px no-repeat;
+  transition: background-color var(--ar-transition);
+}
+
+.bar-notification .close:hover{
+  background-color: var(--ar-blue-tint);
+}
+
+@keyframes ar-toast-in{
+  from{ transform: translateY(-12px) scale(0.97); }
+  to{ transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .bar-notification{
+    animation: none;
+  }
+}
+
+/* --- Empty states ---------------------------------------------------------
+   `.no-data` is one bare line of text on every page that can come up empty —
+   cart, wishlist, compare, order history, addresses, reviews. Styled once
+   here, as a centred card with a gradient mark, so all of them read as part
+   of the store rather than as a missing block. Page-scoped variants below
+   only swap the mark. */
+.no-data{
+  max-width: 560px;
+  margin-inline: auto;
+  margin-block: var(--ar-stack-lg);
+  padding: 48px var(--ar-gutter);
+  text-align: center;
+  font-size: var(--ar-fs-body-lg);
+  line-height: var(--ar-lh-body-lg);
+  color: var(--ar-ink-muted);
+  background: var(--ar-surface-alt);
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius-lg);
+}
+
+/* The base sheet scopes a margin to these two, which outranks .no-data. */
+.shopping-cart-page .no-data,
+.compare-products-page .no-data{
+  margin-block: var(--ar-stack-lg);
+  margin-inline: auto;
+}
+
+.no-data:before{
+  content: "";
+  display: block;
+  width: 88px;
+  height: 88px;
+  margin-inline: auto;
+  margin-block-end: var(--ar-stack-md);
+  border-radius: 50%;
+  box-shadow: var(--ar-shadow);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.4 12 3.8l9 4.6v7.2L12 20.2l-9-4.6z'/%3E%3Cpath d='M3 8.4 12 13l9-4.6M12 13v7.2'/%3E%3C/svg%3E") center / 40px 40px no-repeat, var(--ar-gradient-diagonal);
+}
+
+/* The cart says so in its own glyph — it is the one empty state a shopper
+   lands on mid-task rather than by browsing. */
+.shopping-cart-page .no-data:before,
+.wishlist-page .no-data:before{
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.4 3.4h2.9l2.4 11.3h10.5l2-8.1H6.1'/%3E%3Ccircle cx='9.2' cy='19.4' r='1.5'/%3E%3Ccircle cx='17.9' cy='19.4' r='1.5'/%3E%3C/svg%3E"), var(--ar-gradient-diagonal);
+}
+
+.no-data-title{
+  display: block;
+  font-size: var(--ar-fs-headline-sm);
+  line-height: var(--ar-lh-headline-sm);
+  font-weight: 700;
+  color: var(--ar-ink);
+}
+
+.no-data .button-1{
+  display: inline-block;
+  margin-block-start: var(--ar-stack-lg);
+  padding: 12px 32px;
+  font-size: var(--ar-fs-body);
+  line-height: var(--ar-lh-body);
+  text-decoration: none;
+  box-shadow: var(--ar-shadow);
+}
+
+.no-data .button-1:hover{
+  color: var(--ar-white);
+  box-shadow: var(--ar-shadow-lg);
+}
+
+@media (max-width: 600px){
+  .no-data{
+    padding: 36px var(--ar-margin-mobile);
+  }
 }
 
 /* The base sheet parks 100px under the single-column body, which stacks with
@@ -1672,19 +1907,38 @@ so the "HomepageText" topic that would
    Scoped through .home-page so these tie the base sheet's own
    ".home-page .product-grid .item-box" rules on specificity and win on order;
    the category pages keep the bordered card until that comp is ported too. */
-.home-page .home-page-product-grid .item-grid{
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: var(--ar-stack-sm);
-  row-gap: var(--ar-stack-md);
+/* The three curated bands are rails, not grids: a band costs one card of
+   height instead of a screen per row, and the card cut off at the edge is what
+   says there is more. The all-products feed below stays stacked - that one is
+   for browsing, not for glancing. */
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .item-grid{
+  display: flex;
+  gap: var(--ar-stack-sm);
+  margin-inline: calc(-1 * var(--ar-margin-mobile));
+  padding-inline: var(--ar-margin-mobile);
+  /* Room for the card's hover lift: overflow-x:auto computes overflow-y to
+     auto as well, so anything outside the box would be clipped or scroll. */
+  padding-block: 4px 12px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--ar-margin-mobile);
+  scroll-behavior: smooth;
+  scrollbar-width: none;
 }
 
-.home-page .home-page-product-grid .item-box{
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .item-grid::-webkit-scrollbar{
+  display: none;
+}
+
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .item-box{
+  flex: 0 0 min(46%, 200px);
+  scroll-snap-align: start;
   float: none;
   width: auto;
   margin: 0;
-  /* A grid item defaults to min-width:auto, which lets a long product name
-     widen its track rather than ellipse inside it. */
+  /* A flex item defaults to min-width:auto, which lets a long product name
+     widen the card rather than ellipse inside it. */
   min-width: 0;
 }
 
@@ -1693,7 +1947,7 @@ so the "HomepageText" topic that would
    card now uses the one card treatment from the top of this file — bordered,
    lifting on hover — so featured, bestsellers, new products and the category
    pages behave identically. */
-.home-page .home-page-product-grid .picture{
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .picture{
   margin: 0 0 var(--ar-stack-sm);
   background: var(--ar-surface-alt);
   overflow: hidden;
@@ -1701,11 +1955,11 @@ so the "HomepageText" topic that would
 
 /* Square well, matching every other grid — the comp's 4:5 portrait cropped 20%
    off each side of a square product shot. */
-.home-page .home-page-product-grid .picture a:before{
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .picture a:before{
   padding-top: 100%;
 }
 
-.home-page .home-page-product-grid .picture a img{
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .picture a img{
   width: 100%;
   height: 100%;
   max-width: none;
@@ -1714,12 +1968,12 @@ so the "HomepageText" topic that would
   transition: transform 0.5s ease;
 }
 
-.home-page .home-page-product-grid .item-box:hover .picture a img{
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .item-box:hover .picture a img{
   opacity: 1;
   transform: scale(1.05);
 }
 
-.home-page .home-page-product-grid .product-title{
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .product-title{
   min-height: 0;
   margin: 0 0 4px;
   font-size: var(--ar-fs-label);
@@ -1729,13 +1983,13 @@ so the "HomepageText" topic that would
 /* The base sheet makes the link a block,
 so the clip and the ellipsis have
    to sit on it rather than on the heading around it. */
-.home-page .home-page-product-grid .product-title a{
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .product-title a{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.home-page .home-page-product-grid .prices{
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .prices{
   margin: 0;
 }
 
@@ -1744,7 +1998,7 @@ so the clip and the ellipsis have
 not a layout one — and rides on the
    price line as an icon,
 so it needs no vertical offset of its own here. */
-.home-page .home-page-product-grid .add-info{
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .add-info{
   margin-block-start: var(--ar-stack-sm);
 }
 
@@ -1764,10 +2018,18 @@ so it needs no vertical offset of its own here. */
     line-height: var(--ar-lh-body);
   }
 
-  .home-page .home-page-product-grid .item-grid{
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: var(--ar-gutter);
-    row-gap: var(--ar-gutter);
+  /* Four whole cards to a view - the same four the grid used to show - and the
+     arrows say the rest is one page away. .master-wrapper-content is a fixed
+     980px here with no side padding, so the rail has nothing to bleed into. */
+  .home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .item-grid{
+    gap: var(--ar-gutter);
+    margin-inline: 0;
+    padding-inline: 0;
+    scroll-padding-inline: 0;
+  }
+
+  .home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .item-box{
+    flex-basis: calc((100% - 3 * var(--ar-gutter)) / 4);
   }
 }
 
@@ -1775,7 +2037,7 @@ so it needs no vertical offset of its own here. */
 @media (prefers-reduced-motion: reduce){
 
   :is(.home-page-category-grid, .sub-category-grid) .item-box:hover .picture,
-  .home-page .home-page-product-grid .item-box:hover .picture a img {
+  .home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .item-box:hover .picture a img {
     transform: none;
   }
 }
@@ -3220,14 +3482,14 @@ so the field stays visible beside the icon. */
    own two lines. Browsers without the unit drop the line and lose only the
    reserved gap — the clamp and the column above still hold the row together. */
 .item-box .product-title,
-.home-page .home-page-product-grid .product-title{
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .product-title{
   min-block-size: 2lh;
 }
 
 /* Overrides the homepage grid's one-line nowrap ellipsis, which cut names to
    "طقم عشاء خزفي أ…" and told the shopper almost nothing. */
 .item-box .product-title a,
-.home-page .home-page-product-grid .product-title a{
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .product-title a{
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -3298,7 +3560,7 @@ so the field stays visible beside the icon. */
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .home-page .home-page-product-grid .item-grid{
+  .home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .item-grid{
     grid-template-columns: repeat(3, minmax(0, 1fr));
     column-gap: var(--ar-stack-md);
   }
@@ -5001,14 +5263,6 @@ so the field stays visible beside the icon. */
     padding: 0;
   }
 
-  .cart td.product-picture img{
-    inline-size: 88px;
-    block-size: 88px;
-    border-radius: var(--ar-radius-sm);
-    background: var(--ar-blue-tint);
-    object-fit: cover;
-  }
-
   .cart td.product{
     grid-area: name;
     min-inline-size: 0;
@@ -5077,6 +5331,25 @@ so the field stays visible beside the icon. */
     font-weight: 700;
     color: var(--ar-blue);
   }
+}
+
+/* The view asks for an 80px thumbnail, but the base sheet's `img{max-width:
+   100%}` measures against the cell the auto table layout hands it — with the
+   cell's own padding that left 18px of an 80px picture. Size the track and
+   take the clamp off, so the thumbnail renders at the size it was generated
+   at and stays crisp. */
+.cart th.product-picture,
+.cart td.product-picture{
+  inline-size: 120px;
+}
+
+.cart td.product-picture img{
+  inline-size: 80px;
+  block-size: 80px;
+  max-inline-size: none;
+  border-radius: var(--ar-radius-sm);
+  background: var(--ar-surface-alt);
+  object-fit: cover;
 }
 
 /* A SKU is one unbreakable token; the auto table layout still gave it the
@@ -5367,18 +5640,18 @@ so the field stays visible beside the icon. */
 }
 
 /* The one action that should carry weight on the page keeps the solid fill:
-   reorder in the details actions, print at the top of the same page. The base
+   reorder in the details actions, the PDF invoice at the top of the same page. The base
    sheet gave it to `button:first-child` instead, which handed the fill to
    "return items" on any order where reordering is not allowed. */
 .order-details-page .actions button.button-1,
-.order-details-page .page-title a.button-2.print-order-button{
+.order-details-page .page-title a.button-2.pdf-invoice-button{
   border: 1px solid var(--ar-blue);
   background: var(--ar-blue);
   color: var(--ar-white);
 }
 
 .order-details-page .actions button.button-1:hover,
-.order-details-page .page-title a.button-2.print-order-button:hover{
+.order-details-page .page-title a.button-2.pdf-invoice-button:hover{
   background: var(--ar-blue-hover);
   border-color: var(--ar-blue-hover);
   color: var(--ar-white);
@@ -5877,6 +6150,7 @@ so the field stays visible beside the icon. */
 
 .login-page .customer-blocks,
 .registration-page .fieldset,
+.customer-info-page .fieldset,
 .password-recovery-page .fieldset{
   /* The 4px gradient strip is painted as a background layer rather than a
      pseudo-element: .customer-blocks is a flex column below, and a pseudo
@@ -5895,6 +6169,7 @@ so the field stays visible beside the icon. */
 /* Inside a card the grey band and its rule are one border too many. */
 .login-page .returning-wrapper .form-fields,
 .registration-page .form-fields,
+.customer-info-page .form-fields,
 .password-recovery-page .form-fields{
   border: 0;
   background: transparent;
@@ -5912,6 +6187,7 @@ so the field stays visible beside the icon. */
    while the field was a fixed 400px. */
 .login-page .inputs,
 .registration-page .inputs,
+.customer-info-page .inputs,
 .password-recovery-page .inputs{
   position: relative;
   display: flex;
@@ -5926,6 +6202,7 @@ so the field stays visible beside the icon. */
 
 .login-page .inputs > *,
 .registration-page .inputs > *,
+.customer-info-page .inputs > *,
 .password-recovery-page .inputs > *{
   order: 2;
   flex: 1 1 100%;
@@ -5933,6 +6210,7 @@ so the field stays visible beside the icon. */
 
 .login-page .inputs > label,
 .registration-page .inputs > label,
+.customer-info-page .inputs > label,
 .password-recovery-page .inputs > label{
   order: 0;
   flex: 0 0 auto;
@@ -5955,12 +6233,19 @@ so the field stays visible beside the icon. */
 .login-page .inputs input[type="email"],
 .login-page .inputs input[type="password"],
 .registration-page .inputs input[type="text"],
+.customer-info-page .inputs input[type="text"],
 .registration-page .inputs input[type="email"],
+.customer-info-page .inputs input[type="email"],
 .registration-page .inputs input[type="tel"],
+.customer-info-page .inputs input[type="tel"],
 .registration-page .inputs input[type="password"],
+.customer-info-page .inputs input[type="password"],
 .registration-page .inputs input[type="number"],
+.customer-info-page .inputs input[type="number"],
 .registration-page .inputs select,
+.customer-info-page .inputs select,
 .registration-page .inputs textarea,
+.customer-info-page .inputs textarea,
 .password-recovery-page .inputs input[type="text"],
 .password-recovery-page .inputs input[type="email"]{
   /* Overrides both the base sheet's 400px and the <=1000px "calc(100% - 22px)"
@@ -5974,6 +6259,7 @@ so the field stays visible beside the icon. */
    the field, where a full-width input had pushed it onto a line of its own. */
 .login-page .inputs > .required,
 .registration-page .inputs > .required,
+.customer-info-page .inputs > .required,
 .password-recovery-page .inputs > .required{
   order: 1;
   flex: 0 0 auto;
@@ -5985,9 +6271,11 @@ so the field stays visible beside the icon. */
 /* Errors belong under the field they are about, not centred on the card. */
 .login-page .field-validation-error,
 .registration-page .field-validation-error,
+.customer-info-page .field-validation-error,
 .password-recovery-page .field-validation-error,
 .login-page .password-error,
 .registration-page .password-error,
+.customer-info-page .password-error,
 .registration-page .username-not-available-status,
 .registration-page .vat-note{
   text-align: start;
@@ -5996,6 +6284,7 @@ so the field stays visible beside the icon. */
 
 .login-page .message-error,
 .registration-page .message-error,
+.customer-info-page .message-error,
 .password-recovery-page .message-error{
   margin: 0 0 18px;
   border: 1px solid var(--ar-error);
@@ -6008,6 +6297,7 @@ so the field stays visible beside the icon. */
 
 .login-page .message-error:empty,
 .registration-page .message-error:empty,
+.customer-info-page .message-error:empty,
 .password-recovery-page .message-error:empty{
   display: none; /* the validation summary renders even with nothing in it */
 }
@@ -6166,11 +6456,13 @@ so the field stays visible beside the icon. */
 /* --- Register ------------------------------------------------------------- */
 
 .registration-page .fieldset,
+.customer-info-page .fieldset,
 .password-recovery-page .fieldset{
   padding: 26px 30px 30px;
 }
 
-.registration-page .fieldset > .title{
+.registration-page .fieldset > .title,
+.customer-info-page .fieldset > .title{
   margin: 0 0 22px;
   padding: 0 0 14px;
   border-block-end: 1px solid var(--ar-line);
@@ -6188,38 +6480,53 @@ so the field stays visible beside the icon. */
 }
 
 /* Gender radios and the three date-of-birth selects are rows of controls, not
-   one control, so they lay out as rows rather than inheriting the label stack. */
-.registration-page .gender{
+   one control, so they lay out as rows rather than inheriting the label stack.
+   The account info page carries the same markup in a narrower column, so it is
+   scoped in too - without these the three selects overflow their half of the
+   row and land on top of the gender label. */
+:is(.registration-page, .customer-info-page) .gender{
   display: flex;
   flex-wrap: wrap;
   gap: 8px 22px;
 }
 
-.registration-page .gender span{
+:is(.registration-page, .customer-info-page) .gender span{
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 
-.registration-page .gender label.forcheckbox{
+:is(.registration-page, .customer-info-page) .gender label.forcheckbox{
   width: auto;
   margin: 0;
   font-weight: 400;
   color: var(--ar-ink);
 }
 
-.registration-page .inputs.date-of-birth{
+:is(.registration-page, .customer-info-page) .inputs.date-of-birth{
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
 }
 
-.registration-page .inputs.date-of-birth > label{
+/* The radios read as one control the height of the field beside them - gender
+   shares a row with the phone number. */
+:is(.registration-page, .customer-info-page) .inputs > .gender{
+  min-block-size: 46px;
+  align-items: center;
+}
+
+/* Three selects side by side need the whole row rather than half of one. */
+:is(.registration-page, .customer-info-page) .form-fields > .inputs.date-of-birth{
+  grid-column: 1 / -1;
+}
+
+:is(.registration-page, .customer-info-page) .inputs.date-of-birth > label{
   flex: 1 0 100%;
 }
 
-.registration-page .inputs.date-of-birth select{
+:is(.registration-page, .customer-info-page) .inputs.date-of-birth select{
   flex: 1 1 110px;
   inline-size: auto;
   margin: 0;
@@ -6247,31 +6554,36 @@ so the field stays visible beside the icon. */
 
 /* The base sheet's 20px block margin is a second gap on top of the row gap
    the .inputs flex box already provides. */
-.registration-page .attributes{
+.registration-page .attributes,
+.customer-info-page .attributes{
   margin: 0;
 }
 
-.registration-page .attributes ul{
+.registration-page .attributes ul,
+.customer-info-page .attributes ul{
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.registration-page .attributes li{
+.registration-page .attributes li,
+.customer-info-page .attributes li{
   display: flex;
   align-items: center;
   gap: 8px;
   margin: 0;
 }
 
-.registration-page .attributes li label{
+.registration-page .attributes li label,
+.customer-info-page .attributes li label{
   order: 2;       /* the markup puts the label before its own checkbox */
   width: auto;
   margin: 0;
   font-weight: 400;
 }
 
-.registration-page .attributes li input[type="checkbox"]{
+.registration-page .attributes li input[type="checkbox"],
+.customer-info-page .attributes li input[type="checkbox"]{
   order: 1;
 }
 
@@ -6279,6 +6591,7 @@ so the field stays visible beside the icon. */
    Not on the login card, where the last row is remember-me/forgot-password and
    the margin is the only thing between it and the sign-in button. */
 .registration-page .form-fields > .inputs:last-child,
+.customer-info-page .form-fields > .inputs:last-child,
 .password-recovery-page .form-fields > .inputs:last-child{
   margin-block-end: 0;
 }
@@ -6287,8 +6600,11 @@ so the field stays visible beside the icon. */
    were the one control on the card still painted in the platform's blue. */
 .login-page .inputs input[type="checkbox"],
 .registration-page .inputs input[type="checkbox"],
+.customer-info-page .inputs input[type="checkbox"],
 .registration-page .inputs input[type="radio"],
-.registration-page .attributes input[type="checkbox"]{
+.customer-info-page .inputs input[type="radio"],
+.registration-page .attributes input[type="checkbox"],
+.customer-info-page .attributes input[type="checkbox"]{
   accent-color: var(--ar-blue);
   inline-size: 18px;
   block-size: 18px;
@@ -6312,7 +6628,8 @@ so the field stays visible beside the icon. */
    inputs made the register form 1400px tall on a desktop. */
 @media (min-width: 700px){
 
-  .registration-page .form-fields{
+  .registration-page .form-fields,
+  .customer-info-page .form-fields{
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 24px;
@@ -6321,11 +6638,14 @@ so the field stays visible beside the icon. */
   /* Anything that is a row of controls, a block of text, or a decision about
      the whole form takes the full width instead of half of it. */
   .registration-page .form-fields > .inputs.date-of-birth,
+  .customer-info-page .form-fields > .inputs.date-of-birth,
   .registration-page .form-fields > .inputs.accept-consent,
   .registration-page .form-fields > .inputs.custom-attributes,
-  .registration-page .form-fields > .inputs:has(.gender),
+  .customer-info-page .form-fields > .inputs.custom-attributes,
   .registration-page .form-fields > .inputs:has(.attributes),
+  .customer-info-page .form-fields > .inputs:has(.attributes),
   .registration-page .form-fields > .inputs:has(textarea),
+  .customer-info-page .form-fields > .inputs:has(textarea),
   .registration-page .form-fields > .inputs:has(#check-availability-button),
   .registration-page .form-fields > .captcha-box{
     grid-column: 1 / -1;
@@ -6342,6 +6662,7 @@ so the field stays visible beside the icon. */
   .login-page .returning-wrapper,
   .login-page .new-wrapper,
   .registration-page .fieldset,
+  .customer-info-page .fieldset,
   .password-recovery-page .fieldset{
     padding-inline: 18px;
   }
@@ -6645,5 +6966,969 @@ so the field stays visible beside the icon. */
   .html-product-details-page .breadcrumb li:has(+ li .current-item) a{
     color: var(--ar-blue);
     font-weight: 600;
+  }
+}
+/* ==========================================================================
+   Order details — the customer's copy of the order
+   DefaultClean prints this page as centred body text over fixed 350px grey
+   boxes: the three facts a customer opens it for (what it cost, where it is,
+   when it was placed) carry no more weight than the labels beside them, the
+   money ends up in a 370px box floated against a disabled-looking grey
+   button, and the whole column is centre-aligned because `.page` is.
+
+   Re-laid with the moves the admin order screen already uses: a summary strip
+   on top, the address / payment / shipping blocks as equal cards in a grid,
+   the line items in one bordered table, and the money in a panel that closes
+   the page. The markup is stock apart from one split — Views/Order/Details
+   wraps the overview's label and value in the same .label/.value pair the
+   address list underneath already used — so this stays a stylesheet rather
+   than a forked view.
+   ========================================================================== */
+
+/* `.page` centres every line on the page; a document of facts reads from the
+   start edge. */
+.order-details-page{
+  text-align: start;
+}
+
+/* --- Title row ------------------------------------------------------------
+   Heading and its actions on one line, so the print / invoice / cancel row no
+   longer floats under a centred title. The gradient rule is anchored at the
+   inline start, which is where the heading now starts too. */
+.order-details-page .page-title{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ar-stack-sm) var(--ar-stack-md);
+}
+
+.order-details-page .page-title h1{
+  margin: 0;
+  margin-inline-end: auto;
+  font-size: var(--ar-fs-headline);
+  line-height: var(--ar-lh-headline);
+}
+
+/* --- Summary strip --------------------------------------------------------
+   The order number leads, the three facts sit as label-over-value tiles, and
+   the total closes the row in brand colour. Same shape as the strip at the
+   top of the admin order screen, so the two copies of one order look alike.
+   -------------------------------------------------------------------------- */
+.order-details-page .order-overview{
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ar-stack-md) var(--ar-gutter);
+  margin: 0 0 var(--ar-stack-lg);
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
+  background: var(--ar-surface);
+  box-shadow: var(--ar-shadow);
+  padding: var(--ar-stack-md) var(--ar-gutter);
+  /* room for the rule below, which is painted inside the radius */
+  padding-block-start: calc(var(--ar-stack-md) + 4px);
+  overflow: hidden;
+  text-align: start;
+  font-size: var(--ar-fs-body);
+  line-height: var(--ar-lh-body);
+}
+
+/* The brand rule the storefront header, the PDF invoice and the mail header
+   all carry. Decorative, so the gradient is allowed here. */
+.order-details-page .order-overview:before{
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 4px;
+  background: var(--ar-gradient);
+}
+
+.order-details-page .order-overview .order-number{
+  margin: 0;
+  text-transform: none;
+}
+
+.order-details-page .order-overview .order-number strong{
+  font-size: var(--ar-fs-headline-sm);
+  line-height: var(--ar-lh-headline-sm);
+  font-weight: 700;
+  color: var(--ar-blue);
+}
+
+.order-details-page .order-overview-content{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ar-stack-md) var(--ar-gutter);
+  margin: 0;
+  margin-inline-start: auto;
+  padding: 0;
+  list-style: none;
+}
+
+.order-details-page .order-overview-content li{
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+.order-details-page .order-overview-content .label{
+  font-size: var(--ar-fs-label-sm);
+  line-height: var(--ar-lh-label-sm);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ar-ink-muted);
+}
+
+.order-details-page .order-overview-content .value{
+  font-size: var(--ar-fs-body);
+  line-height: var(--ar-lh-body);
+  color: var(--ar-ink);
+}
+
+/* The money is the answer most of these visits are after. */
+.order-details-page .order-overview-content .order-total .value,
+.order-details-page .order-overview .order-total strong{
+  font-size: var(--ar-fs-title);
+  line-height: var(--ar-lh-title);
+  font-weight: 700;
+  color: var(--ar-blue);
+}
+
+/* --- Address, payment and shipping ---------------------------------------
+   Four blocks of the same kind, so they get one card each in a grid that
+   fits as many columns as the width allows, instead of two 350px boxes
+   centred under a heading. */
+.order-details-page .order-details-area{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  align-items: start;
+  gap: var(--ar-gutter);
+  margin-block-end: var(--ar-stack-lg);
+  overflow: visible;
+}
+
+/* The view wraps the blocks in two columns (billing+payment, shipping+method)
+   which leaves one column tall and the other half empty. `display: contents`
+   drops the wrappers out of the box tree so all of the cards are items of the
+   one grid above and share its columns. */
+.order-details-page .order-details-area > div{
+  display: contents;
+}
+
+.order-details-page .billing-info,
+.order-details-page .payment-method-info,
+.order-details-page .shipping-info,
+.order-details-page .shipping-method-info{
+  margin: 0;
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
+  background: var(--ar-surface);
+  padding: var(--ar-stack-md) var(--ar-gutter);
+}
+
+.order-details-page .order-details-area .title{
+  margin: 0 0 var(--ar-stack-sm);
+  padding: 0 0 var(--ar-stack-sm);
+  border-block-end: 1px solid var(--ar-line);
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--ar-blue);
+}
+
+.order-details-page .info-list{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-details-page .info-list li{
+  padding-block: 7px;
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
+  color: var(--ar-ink);
+}
+
+.order-details-page .info-list li + li{
+  border-block-start: 1px solid var(--ar-line);
+}
+
+/* The address loop emits one <li> per field whether or not the store collects
+   it; empty ones used to be 3px of nothing and are now a ruled blank row. */
+.order-details-page .info-list li:empty{
+  display: none;
+}
+
+/* The addressee is the heading of the block it opens. */
+.order-details-page .info-list .name{
+  font-size: var(--ar-fs-body);
+  line-height: var(--ar-lh-body);
+  font-weight: 700;
+}
+
+.order-details-page .info-list .label{
+  color: var(--ar-ink-muted);
+}
+
+.order-details-page .info-list .hint{
+  margin: 4px 0 0;
+  font-size: var(--ar-fs-label-sm);
+  color: var(--ar-ink-muted);
+}
+
+/* --- Section headings ----------------------------------------------------- */
+.order-details-page .section{
+  margin: 0 0 var(--ar-stack-lg);
+}
+
+.order-details-page .section > .title{
+  margin: 0 0 var(--ar-stack-md);
+  padding: 0;
+  font-size: var(--ar-fs-headline-sm);
+  line-height: var(--ar-lh-headline-sm);
+  font-weight: 700;
+  color: var(--ar-ink);
+  text-align: start;
+}
+
+/* The view always emits `.section.options`, empty when the order carried no
+   checkout attributes - a stack gap between the line items and the money. */
+.order-details-page .section.options:not(:has(*)){
+  display: none;
+}
+
+.order-details-page .selected-checkout-attributes,
+.order-details-page .tax-shipping-info{
+  padding: 0;
+  font-size: var(--ar-fs-label);
+  color: var(--ar-ink-muted);
+  text-align: start;
+}
+
+/* --- Line items, shipments, notes ----------------------------------------
+   One bordered table per section: hairlines between rows rather than a grid
+   of boxes, and the head in the brand tint it already used. */
+.order-details-page .table-wrapper{
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
+  background: var(--ar-surface);
+  overflow: hidden;
+}
+
+.order-details-page .data-table{
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.order-details-page .data-table th{
+  border: 0;
+  border-block-end: 1px solid var(--ar-blue-border);
+  padding: 12px 14px;
+  font-size: var(--ar-fs-label-sm);
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  text-align: start;
+}
+
+.order-details-page .data-table td{
+  border: 0;
+  border-block-start: 1px solid var(--ar-line);
+  padding: 14px;
+  vertical-align: middle;
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
+  color: var(--ar-ink);
+}
+
+.order-details-page .data-table tbody tr:first-child td{
+  border-block-start: 0;
+}
+
+.order-details-page .data-table th.quantity,
+.order-details-page .data-table td.quantity{
+  text-align: center;
+}
+
+.order-details-page .data-table th.price,
+.order-details-page .data-table th.total,
+.order-details-page .data-table td.unit-price,
+.order-details-page .data-table td.total{
+  text-align: end;
+}
+
+/* The base sheet italicises the line item; it is the name of a thing, not an
+   aside. */
+.order-details-page .data-table td.product a{
+  font-size: var(--ar-fs-body);
+  font-style: normal;
+  font-weight: 600;
+  color: var(--ar-ink);
+}
+
+.order-details-page .data-table td.product a:hover,
+.order-details-page .data-table td.product a:focus{
+  color: var(--ar-blue);
+  text-decoration: none;
+}
+
+.order-details-page .data-table .attributes,
+.order-details-page .data-table .rental-info{
+  margin-block-start: 4px;
+  font-size: var(--ar-fs-label-sm);
+  line-height: var(--ar-lh-label-sm);
+  color: var(--ar-ink-muted);
+}
+
+.order-details-page .data-table td.total .product-subtotal{
+  font-weight: 700;
+  color: var(--ar-blue);
+}
+
+/* --- Totals ---------------------------------------------------------------
+   A panel at the end edge rather than a grey box floated to the middle, with
+   the order total as the one row in brand colour — the same emphasis the PDF
+   invoice and the order mail give it. */
+.order-details-page .totals.section{
+  float: none;
+  inline-size: min(420px, 100%);
+  margin-block: 0 var(--ar-stack-lg);
+  margin-inline: auto 0;
+  padding: 0;
+}
+
+.order-details-page .total-info{
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
+  background: var(--ar-surface);
+  padding: 0;
+  overflow: hidden;
+}
+
+.order-details-page .cart-total{
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.order-details-page .cart-total td{
+  border: 0;
+  border-block-start: 1px solid var(--ar-line);
+  padding: 10px 16px;
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
+}
+
+.order-details-page .cart-total tr:first-child td{
+  border-block-start: 0;
+}
+
+.order-details-page .cart-total .cart-total-left{
+  text-align: start;
+  color: var(--ar-ink-muted);
+}
+
+.order-details-page .cart-total .cart-total-left label{
+  font-weight: 400;
+}
+
+.order-details-page .cart-total .cart-total-right{
+  text-align: end;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--ar-ink);
+}
+
+.order-details-page .cart-total tr:last-child td{
+  border-block-start: 1px solid var(--ar-blue-border);
+  background: var(--ar-blue-tint);
+  font-size: var(--ar-fs-body);
+  font-weight: 700;
+  color: var(--ar-blue);
+}
+
+.order-details-page .cart-total tr:last-child .cart-total-left label{
+  font-weight: 700;
+  color: var(--ar-blue);
+}
+
+/* --- Actions --------------------------------------------------------------
+   Reorder / return live under the totals; the CancelOrder widget renders its
+   own `.actions` row higher up the page. Both land on the end edge. */
+.order-details-page .actions{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ar-stack-sm);
+  margin-block: var(--ar-stack-md) 0;
+  text-align: start;
+}
+
+/* The widget ships an inline <style> painting this button #aaa — a body
+   stylesheet, so it wins on order against brand.css and has to be out-
+   specified rather than overridden. Same outlined-destructive treatment the
+   cancel link in the title row gets. */
+.order-details-page .actions input.button-1.cancel-button{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--ar-error);
+  border-radius: var(--ar-radius);
+  background: var(--ar-white);
+  background-image: none;
+  padding-block: 10px;
+  padding-inline: 20px;
+  font-size: var(--ar-fs-label);
+  font-weight: 600;
+  color: var(--ar-error);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.order-details-page .actions input.button-1.cancel-button:hover{
+  background: var(--ar-error);
+  color: var(--ar-white);
+}
+
+/* --- On a phone -----------------------------------------------------------
+   The base sheet blocks these tables out at 1000px, which gives one line item
+   seven stacked bands. Re-laid as the same card the cart uses: picture at the
+   inline start, name and price beside it, quantity and line total on the foot
+   row. Grid areas, so RTL flips it for free.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1000px){
+
+  .order-details-page .page-title h1{
+    font-size: var(--ar-fs-headline-sm);
+    line-height: var(--ar-lh-headline-sm);
+  }
+
+  .order-details-page .order-overview-content{
+    margin-inline-start: 0;
+  }
+
+  .order-details-page .table-wrapper{
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  .order-details-page .section.products .data-table tr{
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr) auto;
+    grid-template-areas:
+      "pic name  name"
+      "pic sku   sku"
+      "pic price price"
+      "qty qty   total";
+    align-items: center;
+    column-gap: var(--ar-stack-md);
+    row-gap: 2px;
+    float: none;
+    inline-size: auto;
+    margin: 0 0 var(--ar-stack-md);
+    border: 1px solid var(--ar-line);
+    border-radius: var(--ar-radius);
+    background: var(--ar-surface);
+    padding: var(--ar-stack-sm);
+  }
+
+  .order-details-page .section.products .data-table td{
+    border: 0;
+    padding: 0;
+    text-align: start;
+  }
+
+  .order-details-page .section.products .data-table td.picture{
+    grid-area: pic;
+    align-self: start;
+    inline-size: auto;
+  }
+
+  .order-details-page .section.products .data-table td.picture img{
+    inline-size: 80px;
+    block-size: 80px;
+  }
+
+  .order-details-page .section.products .data-table td.product{
+    grid-area: name;
+    min-inline-size: 0;
+    border: 0;
+    padding: 0;
+    text-align: start;
+  }
+
+  .order-details-page .section.products .data-table td.sku{
+    grid-area: sku;
+    inline-size: auto;
+  }
+
+  .order-details-page .section.products .data-table td.unit-price{
+    grid-area: price;
+  }
+
+  .order-details-page .section.products .data-table td.quantity{
+    grid-area: qty;
+  }
+
+  .order-details-page .section.products .data-table td.total{
+    grid-area: total;
+    text-align: end;
+  }
+
+  .order-details-page .section.products .data-table td.sku,
+  .order-details-page .section.products .data-table td.unit-price,
+  .order-details-page .section.products .data-table td.quantity{
+    font-size: var(--ar-fs-label-sm);
+    color: var(--ar-ink-muted);
+  }
+
+  /* The header row is hidden at this width, so every value states its own
+     field — the labels the view already ships for exactly this. */
+  .order-details-page .data-table .td-title{
+    font-size: var(--ar-fs-label-sm);
+    color: var(--ar-ink-muted);
+  }
+
+  .order-details-page .section.products .data-table td.total .product-subtotal{
+    font-size: var(--ar-fs-body-lg);
+  }
+
+  /* Shipments and notes are short rows: a card each, read as lines. */
+  .order-details-page .section.shipments .data-table tr,
+  .order-details-page .section.order-notes .data-table tr{
+    float: none;
+    inline-size: auto;
+    margin: 0 0 var(--ar-stack-md);
+    border: 1px solid var(--ar-line);
+    border-radius: var(--ar-radius);
+    background: var(--ar-surface);
+    padding: var(--ar-stack-sm) var(--ar-stack-md);
+  }
+
+  .order-details-page .section.shipments .data-table td,
+  .order-details-page .section.order-notes .data-table td{
+    border: 0;
+    padding-block: 4px;
+    padding-inline: 0;
+    text-align: start;
+  }
+}
+
+
+/* ==========================================================================
+   Homepage — marketing bands and the phone rails
+   The bands the view prints in order: hero, trust strip (.home-usp), category
+   heading + tiles, deals (.home-page-deals), the plugin carousels, featured,
+   the call to action (.home-cta), brands, bestsellers, the all-products feed.
+   Everything here is layout and skin; the copy is locale resources.
+   ========================================================================== */
+
+/* --- Hero: a reserved box, brand bullets ----------------------------------
+   The plugin runs autoHeight and lazy-loads every slide, so the hero opened as
+   a 21px strip and shoved the whole page down when the plate landed. Plates
+   are 1980x825; reserving that ratio means no layout shift and no flash. */
+.home-page .nop-slider .swiper-slide{
+  aspect-ratio: 1980 / 825;
+  background: var(--ar-blue-tint);
+}
+
+.home-page .nop-slider .swiper-slide a{
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.home-page .nop-slider .slider-img{
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* A pill for the active bullet, so the position reads at a glance. */
+.home-page .nop-slider .swiper-pagination-bullet{
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--ar-white);
+  opacity: 0.6;
+  transition: width var(--ar-transition), opacity var(--ar-transition);
+}
+
+.home-page .nop-slider .swiper-pagination-bullet-active{
+  width: 24px;
+  opacity: 1;
+}
+
+/* Arrows (the plugin's "show navigation" setting) as the theme's round control. */
+.home-page .nop-slider :is(.swiper-button-prev, .swiper-button-next){
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--ar-blue);
+  box-shadow: var(--ar-shadow);
+}
+
+.home-page .nop-slider :is(.swiper-button-prev, .swiper-button-next):after{
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* --- Trust strip ---------------------------------------------------------- */
+.home-usp{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ar-stack-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-usp li{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
+  background: var(--ar-surface);
+}
+
+.home-usp svg{
+  flex: none;
+  width: 40px;
+  height: 40px;
+  padding: 9px;
+  border-radius: 50%;
+  background: var(--ar-blue-tint);
+  color: var(--ar-blue);
+}
+
+.home-usp strong{
+  display: block;
+  color: var(--ar-ink);
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
+  font-weight: 700;
+}
+
+.home-usp span{
+  display: block;
+  color: var(--ar-ink-muted);
+  font-size: var(--ar-fs-label-sm);
+  line-height: var(--ar-lh-label-sm);
+}
+
+/* --- Band headings: a "view all" at the far end of the title line --------- */
+.home-page .page-body > * > .title .view-all{
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-inline-start: auto;
+  overflow: visible;
+  color: var(--ar-blue);
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.home-page .page-body > * > .title .view-all:hover{
+  color: var(--ar-blue-hover);
+  text-decoration: none;
+}
+
+.home-page .page-body > * > .title .view-all svg{
+  width: 16px;
+  height: 16px;
+}
+
+[dir="rtl"] .home-page .page-body > * > .title .view-all svg{
+  transform: scaleX(-1);
+}
+
+/* --- Band headings: rail arrows, for a mouse ------------------------------
+   A thumb swipes the rail; a wheel cannot scroll it sideways, so the desktop
+   gets a pair of buttons. Built by the homepage script, hidden below 1001px
+   and whenever the band is short enough to fit. */
+.rail-nav{
+  display: none;
+  gap: var(--ar-stack-sm);
+  margin-inline-start: auto;
+}
+
+.rail-nav button{
+  display: grid;
+  place-items: center;
+  inline-size: 36px;
+  block-size: 36px;
+  padding: 0;
+  border: 1px solid var(--ar-line);
+  border-radius: 999px;
+  background: var(--ar-surface);
+  color: var(--ar-blue);
+  cursor: pointer;
+  transition: background var(--ar-transition), color var(--ar-transition), border-color var(--ar-transition);
+}
+
+.rail-nav button:hover:not(:disabled){
+  border-color: var(--ar-blue);
+  background: var(--ar-blue);
+  color: var(--ar-white);
+}
+
+.rail-nav button:disabled{
+  opacity: 0.35;
+  cursor: default;
+}
+
+.rail-nav svg{
+  inline-size: 18px;
+  block-size: 18px;
+}
+
+/* One chevron glyph, mirrored per button and per reading direction. */
+.rail-nav .rail-prev svg{
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .rail-nav .rail-next svg{
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .rail-nav .rail-prev svg{
+  transform: none;
+}
+
+/* --- Call to action ------------------------------------------------------- */
+/* Solid brand blue under white text (4.78:1); the gradient never carries a
+   label. The brand mark sits behind as a quiet watermark. */
+.home-cta{
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ar-stack-sm);
+  overflow: hidden;
+  padding: 28px var(--ar-margin-mobile);
+  border-radius: var(--ar-radius-lg);
+  background: var(--ar-blue);
+  color: var(--ar-white);
+}
+
+.home-cta:before{
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-block: -20%;
+  inset-inline-end: -8%;
+  width: 46%;
+  background: var(--ar-white);
+  opacity: 0.1;
+  -webkit-mask: url(../images/brand-mark.svg) no-repeat center / contain;
+  mask: url(../images/brand-mark.svg) no-repeat center / contain;
+  pointer-events: none;
+}
+
+.home-cta h2{
+  margin: 0;
+  color: inherit;
+  font-size: var(--ar-fs-headline-sm);
+  line-height: var(--ar-lh-headline-sm);
+  font-weight: 700;
+}
+
+.home-cta p{
+  max-width: 48ch;
+  margin: 0;
+  font-size: var(--ar-fs-body);
+  line-height: var(--ar-lh-body);
+  opacity: 0.9;
+}
+
+.home-cta .button-1{
+  align-self: flex-start;
+  margin-block-start: var(--ar-stack-sm);
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ar-white);
+  color: var(--ar-blue);
+  font-weight: 700;
+}
+
+.home-cta .button-1:hover,
+.home-cta .button-1:focus-visible{
+  background: var(--ar-blue-tint);
+  color: var(--ar-blue-hover);
+  text-decoration: none;
+}
+
+/* --- All-products feed: loading state ------------------------------------- */
+.home-products-loader{
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: var(--ar-stack-md) 0;
+}
+
+.home-products-loader[hidden]{
+  display: none;
+}
+
+.home-products-loader span{
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ar-blue-mid);
+  animation: home-feed-dot 0.9s infinite ease-in-out;
+}
+
+.home-products-loader span:nth-child(2){
+  animation-delay: 0.15s;
+}
+
+.home-products-loader span:nth-child(3){
+  animation-delay: 0.3s;
+}
+
+@keyframes home-feed-dot{
+  0%, 80%, 100%{ transform: scale(0.6); opacity: 0.4; }
+  40%{ transform: scale(1); opacity: 1; }
+}
+
+/* The pager scrolls the band back to its own heading; clear the sticky bar. */
+.home-page-all-products{
+  scroll-margin-block-start: calc(var(--ar-header-h) + var(--ar-stack-md));
+}
+
+/* --- On a phone and a tablet ---------------------------------------------- */
+@media (max-width: 1000px){
+
+  /* The hero arrows are a mouse affordance; a thumb swipes. */
+  .home-page .nop-slider :is(.swiper-button-prev, .swiper-button-next){
+    display: none;
+  }
+
+  /* Categories as one rail of marks. Four fill the row evenly; twelve scroll,
+     and the cut-off tile at the edge is what says so. The rail bleeds into
+     the page margin so the first tile still lines up with the heading. */
+  .home-page-category-grid .item-grid{
+    display: flex;
+    gap: var(--ar-stack-md);
+    margin-inline: calc(-1 * var(--ar-margin-mobile));
+    padding-inline: var(--ar-margin-mobile);
+    padding-block-end: 4px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--ar-margin-mobile);
+    scrollbar-width: none;
+  }
+
+  .home-page-category-grid .item-grid::-webkit-scrollbar{
+    display: none;
+  }
+
+  .home-page-category-grid .item-box{
+    flex: 1 0 84px;
+    scroll-snap-align: start;
+  }
+
+  .home-page-category-grid .picture{
+    max-inline-size: 72px;
+  }
+
+  .home-page-category-grid .title{
+    font-size: var(--ar-fs-label-sm);
+    line-height: var(--ar-lh-label-sm);
+  }
+}
+
+/* --- On a desktop ---------------------------------------------------------- */
+@media (min-width: 1001px){
+
+  .rail-nav:not([hidden]){
+    display: flex;
+  }
+
+  .home-usp{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--ar-stack-md);
+  }
+
+  .home-usp li{
+    padding: 16px 20px;
+  }
+
+  .home-usp svg{
+    width: 48px;
+    height: 48px;
+    padding: 11px;
+  }
+
+  /* As many marks to a row as fit at 160px: four stretch across, twelve make
+     two even rows of six. */
+  .home-page-category-grid .item-grid{
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+
+  .home-cta{
+    flex-direction: row;
+    align-items: center;
+    gap: var(--ar-gutter);
+    padding: 40px var(--ar-margin-desktop);
+  }
+
+  .home-cta > div{
+    flex: 1;
+  }
+
+  .home-cta h2{
+    font-size: var(--ar-fs-headline);
+    line-height: var(--ar-lh-headline);
+  }
+
+  .home-cta .button-1{
+    margin: 0;
+    padding: 14px 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+
+  .home-products-loader span{
+    animation: none;
+    opacity: 0.7;
+  }
+
+  .home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .item-grid{
+    scroll-behavior: auto;
+  }
+}
+
+/* The brand strip scrolls the same way the rails above do; the scrollbar it
+   kept was the one band still showing browser chrome on a phone. */
+@media (max-width: 1000px){
+
+  .home-page .block-manufacturer-navigation .list{
+    padding-block-end: 4px;
+    scrollbar-width: none;
+  }
+
+  .home-page .block-manufacturer-navigation .list::-webkit-scrollbar{
+    display: none;
   }
 }

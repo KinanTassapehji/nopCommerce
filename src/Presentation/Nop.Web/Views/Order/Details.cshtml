@@ -31,7 +31,10 @@
     {
         <div class="page-title">
             <h1>@T("Order.OrderInformation")</h1>
-            <a href="@Url.RouteUrl(NopRouteNames.Standard.PRINT_ORDER_DETAILS, new { orderId = Model.Id })" target="_blank" class="button-2 print-order-button">@T("Order.Print")</a>
+            @*no print link: the PDF invoice is the printable copy of this page, and
+              two buttons that both mean "print this order" only ask the customer to
+              pick one. The /orderdetails/print/ route is untouched for anything that
+              still links to it.*@
             @if (!Model.PdfInvoiceDisabled)
             {
                 <a href="@Url.RouteUrl(NopRouteNames.Standard.GET_ORDER_PDF_INVOICE, new { orderId = Model.Id })" class="button-2 pdf-invoice-button">@T("Order.GetPDFInvoice")</a>
@@ -57,14 +60,19 @@
                 <strong>@T("Order.Order#")@Model.CustomOrderNumber</strong>
             </div>
             <ul class="order-overview-content">
+                @*label and value are split so the theme can stack them as a fact tile;
+                  the same .label/.value pair the address block below already uses*@
                 <li class="order-date">
-                    @T("Order.OrderDate"): @Model.CreatedOn.ToString("D")
+                    <span class="label">@T("Order.OrderDate")</span>
+                    <span class="value">@Model.CreatedOn.ToString("D")</span>
                 </li>
                 <li class="order-status">
-                    @T("Order.OrderStatus"): @Model.OrderStatusText
+                    <span class="label">@T("Order.OrderStatus")</span>
+                    <span class="value">@Model.OrderStatusText</span>
                 </li>
                 <li class="order-total">
-                    @T("Order.OrderTotal"): <strong>@Model.OrderTotal</strong>
+                    <span class="label">@T("Order.OrderTotal")</span>
+                    <span class="value"><strong>@Model.OrderTotal</strong></span>
                 </li>
             </ul>
             @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.OrderDetailsPageOverview, additionalData = Model })

@@ -17,15 +17,22 @@ public class CancelOrderViewComponent : NopStationViewComponent
 
 	private readonly CancelOrderSettings _cancelOrderSettings;
 
-	public CancelOrderViewComponent(IOrderService orderService, IWorkContext workContext, CancelOrderSettings cancelOrderSettings)
+	private readonly OrderSettings _orderSettings;
+
+	public CancelOrderViewComponent(IOrderService orderService, IWorkContext workContext, CancelOrderSettings cancelOrderSettings, OrderSettings orderSettings)
 	{
 		_orderService = orderService;
 		_workContext = workContext;
 		_cancelOrderSettings = cancelOrderSettings;
+		_orderSettings = orderSettings;
 	}
 
 	public async Task<IViewComponentResult> InvokeAsync(string widgetZone, object additionalData)
 	{
+		if (!_orderSettings.AllowCustomersCancelOrders)
+		{
+			return Content("");
+		}
 		int orderId;
 		if (additionalData.GetType() == typeof(OrderDetailsModel))
 		{

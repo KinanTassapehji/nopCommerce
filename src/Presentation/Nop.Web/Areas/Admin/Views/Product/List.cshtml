@@ -44,21 +44,6 @@
                         <span class="sr-only">&nbsp;</span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li class="dropdown-item">
-                            
-                                <button asp-action="ExportToXml" type="submit" name="exportxml-all">
-                                    <i class="far fa-file-code"></i>
-                                    @T("Admin.Common.ExportToXml.All")
-                                </button>                            
-                        </li>
-                        <li class="dropdown-item">
-                           
-                                <button type="button" id="exportxml-selected">
-                                    <i class="far fa-file-code"></i>
-                                    @T("Admin.Common.ExportToXml.Selected")
-                                </button>                            
-                        </li>
-                        <li class="dropdown-divider"></li>
                         <li class="dropdown-item">                            
                                 <button asp-action="ExportToExcel" type="submit" name="exportexcel-all">
                                     <i class="far fa-file-excel"></i>
@@ -112,6 +97,14 @@
                                                 <nop-editor asp-for="SearchProductName" />
                                             </div>
                                         </div>
+                                        <div class="form-group row" @(Model.AvailableManufacturers.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchManufacturerId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchManufacturerId" asp-items="Model.AvailableManufacturers" />
+                                            </div>
+                                        </div>
                                         <div class="form-group row" @(Model.AvailableCategories.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
                                             <div class="col-md-4">
                                                 <nop-label asp-for="SearchCategoryId" />
@@ -126,14 +119,6 @@
                                             </div>
                                             <div class="col-md-8">
                                                 <nop-editor asp-for="SearchIncludeSubCategories" />
-                                            </div>
-                                        </div>
-                                        <div class="form-group row" @(Model.AvailableManufacturers.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
-                                            <div class="col-md-4">
-                                                <nop-label asp-for="SearchManufacturerId" />
-                                            </div>
-                                            <div class="col-md-8">
-                                                <nop-select asp-for="SearchManufacturerId" asp-items="Model.AvailableManufacturers" />
                                             </div>
                                         </div>
                                         <div class="form-group row" @(Model.AvailableVendors.SelectionIsNotPossible() || Model.IsLoggedInAsVendor ? Html.Raw("style='display: none;'") : null)>
@@ -412,29 +397,6 @@
         </div>
     </div>
 
-    @*export selected (XML). We don't use GET approach because it's limited to 2K-4K chars and won't work for large number of entities*@
-    <form asp-controller="Product" asp-action="ExportXmlSelected" method="post" id="export-xml-selected-form">
-        <input type="hidden" id="selectedIds" name="selectedIds" value="" />
-    </form>
-
-<script>
-    $(function() {
-        $('#exportxml-selected').click(function (e) {
-            e.preventDefault();
-            var ids = selectedIds.join(",");
-            if (!ids) {
-                $('#exportXmlSelected-info').text("@T("Admin.Products.NoProducts")");
-                $("#exportXmlSelected").trigger("click");
-            }
-            else {
-                $('#export-xml-selected-form #selectedIds').val(ids);
-                $('#export-xml-selected-form').submit();
-                updateTable('#products-grid');
-            }
-            return false;
-        });
-    });
-</script>
 
     @*export selected (Excel). We don't use GET approach because it's limited to 2K-4K chars and won't work for large number of entities*@
     <form asp-controller="Product" asp-action="ExportExcelSelected" method="post" id="export-excel-selected-form">
@@ -460,7 +422,6 @@
         });
     </script>
 <nop-alert asp-alert-id="exportExcelSelected" />
-<nop-alert asp-alert-id="exportXmlSelected" />
 <nop-alert asp-alert-id="deleteSelectedFailed" />
 <nop-alert asp-alert-id="nothingSelectedAlert" />
 <nop-action-confirmation asp-button-id="delete-selected" />

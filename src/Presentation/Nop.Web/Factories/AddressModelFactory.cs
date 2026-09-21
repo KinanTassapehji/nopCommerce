@@ -6,6 +6,7 @@ using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
 using Nop.Services.Attributes;
 using Nop.Services.Common;
+using Nop.Services.Customers;
 using Nop.Services.Directory;
 using Nop.Services.Localization;
 using Nop.Web.Models.Common;
@@ -25,6 +26,7 @@ public partial class AddressModelFactory : IAddressModelFactory
     protected readonly IAttributeParser<AddressAttribute, AddressAttributeValue> _addressAttributeParser;
     protected readonly IAttributeService<AddressAttribute, AddressAttributeValue> _addressAttributeService;
     protected readonly ICountryService _countryService;
+    protected readonly ICustomerService _customerService;
     protected readonly ILocalizationService _localizationService;
     protected readonly IStateProvinceService _stateProvinceService;
     protected readonly IWorkContext _workContext;
@@ -39,6 +41,7 @@ public partial class AddressModelFactory : IAddressModelFactory
         IAttributeParser<AddressAttribute, AddressAttributeValue> addressAttributeParser,
         IAttributeService<AddressAttribute, AddressAttributeValue> addressAttributeService,
         ICountryService countryService,
+        ICustomerService customerService,
         ILocalizationService localizationService,
         IStateProvinceService stateProvinceService,
         IWorkContext workContext)
@@ -49,6 +52,7 @@ public partial class AddressModelFactory : IAddressModelFactory
         _addressAttributeParser = addressAttributeParser;
         _addressAttributeService = addressAttributeService;
         _countryService = countryService;
+        _customerService = customerService;
         _localizationService = localizationService;
         _stateProvinceService = stateProvinceService;
         _workContext = workContext;
@@ -216,7 +220,15 @@ public partial class AddressModelFactory : IAddressModelFactory
             model.ZipPostalCode = customer.ZipPostalCode;
             model.City = customer.City;
             model.County = customer.County;
-            model.PhoneNumber = customer.Phone;
+            //registration never asks for a phone - CustomerSettings.PhoneEnabled is off - so
+            //Customer.Phone is empty for every customer and copying it alone fills in nothing.
+            //The number they last gave on an address is the one they actually use. Editing it on
+            //this form still only ever writes the address being created, never the customer.
+            model.PhoneNumber = !string.IsNullOrEmpty(customer.Phone)
+                ? customer.Phone
+                : (await _customerService.GetAddressesByCustomerIdAsync(customer.Id))
+                    .OrderByDescending(customerAddress => customerAddress.Id)
+                    .FirstOrDefault(customerAddress => !string.IsNullOrEmpty(customerAddress.PhoneNumber))?.PhoneNumber;
             model.FaxNumber = customer.Fax;
 
             if (_addressSettings.PrePopulateCountryByCustomer)

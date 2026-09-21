@@ -1,4 +1,4 @@
-@model OrderModel
+﻿@model OrderModel
 
 @using Nop.Core.Domain.Tax;
 @using Nop.Core.Domain.Orders;
@@ -113,28 +113,23 @@
                                 <div class="font-weight-bold">@Model.OrderStatus</div>
                             </div>
                             <div class="input-group-btn">
-                                @if (Model.CanCancelOrder)
-                                {
-                                    <button type="submit" name="cancelorder" id="cancelorder" class="btn btn-danger" style="margin-right: 3px;">
-                                        @T("Admin.Orders.Fields.OrderStatus.Cancel")
-                                    </button>
-                                    <nop-action-confirmation asp-button-id="cancelorder" />
-                                }
-                                <button type="submit" name="btnChangeOrderStatus" onclick="toggleChangeOrderStatus(true);return false;" id="btnChangeOrderStatus" class="btn btn-primary" >
+                                <button type="submit" name="btnChangeOrderStatus" onclick="toggleChangeOrderStatus(true);return false;" id="btnChangeOrderStatus" class="btn btn-primary mr-1" >
                                     @T("Admin.Orders.Fields.OrderStatus.Change")
                                 </button>
+                                @*no separate "cancel order" button: "Cancelled" is one of the
+                                  statuses in the editor beside this, and two controls for one
+                                  outcome only ask which one is the real cancel. The status
+                                  editor runs the full cancellation - see ChangeOrderStatus.*@
+                                @*inline, so opening the editor swaps the button out instead of stacking rows under it*@
                                 <div id="pnlChangeOrderStatus">
-                                    <nop-select asp-for="OrderStatusId" asp-items="@(await ((OrderStatus) Model.OrderStatusId).ToSelectListAsync())" class="mt-1"/>
-                                    <button type="submit" name="btnSaveOrderStatus" id="btnSaveOrderStatus" class="btn btn-primary mt-1 mr-1" >
+                                    <nop-select asp-for="OrderStatusId" asp-items="@(await ((OrderStatus) Model.OrderStatusId).ToSelectListAsync())" class="mr-1"/>
+                                    <button type="submit" name="btnSaveOrderStatus" id="btnSaveOrderStatus" class="btn btn-primary mr-1" >
                                         @T("Admin.Common.Save")
                                     </button>
                                     <nop-action-confirmation asp-button-id="btnSaveOrderStatus" />
-                                    <button type="submit" name="btnCancelOrderStatus" onclick="toggleChangeOrderStatus(false);return false;" id="btnCancelOrderStatus" class="btn btn-secondary mt-1" >
+                                    <button type="submit" name="btnCancelOrderStatus" onclick="toggleChangeOrderStatus(false);return false;" id="btnCancelOrderStatus" class="btn btn-secondary" >
                                         @T("Admin.Common.Cancel")
                                     </button>
-                                    <div class="input-group-btn-hint">
-                                        <em>@T("Admin.Orders.Fields.OrderStatus.Change.ForAdvancedUsers")</em>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -735,33 +730,6 @@
     }
     <div class="card card-default">
         <div class="card-body">
-            <div class="form-group row">
-                <div class="col-md-3">
-                    <nop-label asp-for="StoreName" />
-                </div>
-                <div class="col-md-9">
-                    <div class="form-text-row">@Model.StoreName</div>
-                </div>
-            </div>
-            @if (!Model.IsLoggedInAsVendor)
-            {
-                <div class="form-group row">
-                    <div class="col-md-3">
-                        <nop-label asp-for="OrderGuid" />
-                    </div>
-                    <div class="col-md-9">
-                        <div class="form-text-row">@Model.OrderGuid</div>
-                    </div>
-                </div>
-            }
-            <div class="form-group row">
-                <div class="col-md-3">
-                    <nop-label asp-for="CustomerIp" />
-                </div>
-                <div class="col-md-9">
-                    <div class="form-text-row">@Model.CustomerIp</div>
-                </div>
-            </div>
 
             @if (!string.IsNullOrEmpty(Model.VatNumber))
             {

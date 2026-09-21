@@ -32,14 +32,16 @@
                 center: @Model.Center.ToString().ToLower(),
                 startPosition: @Model.StartPosition,
                 responsive: {
+                    @*two cards to a phone row, the same count as every grid on the site: one card per
+                        swipe was a screen per product*@
                     0: {
-                        items: 1
+                        items: 2
                     },
                     576: {
-                        items: 1
+                        items: 2
                     },
                     768: {
-                        items: 2
+                        items: 3
                     },
                     992: {
                         items: 4

@@ -119,7 +119,7 @@ public class CashOnDeliveryPaymentProcessor : BasePlugin, IPaymentMethod, IPlugi
 	{
 		CashOnDeliveryPaymentSettings settings = new CashOnDeliveryPaymentSettings
 		{
-			DescriptionText = "<p>In cases where an order is placed, an authorized representative will contact you, personally or over telephone, to confirm the order.<br />After the order is confirmed, it will be processed.<br />Orders once confirmed, cannot be cancelled.</p><p>P.S. You can edit this text from admin panel.</p>",
+			DescriptionText = "<p>في حال تقديم الطلب، سيقوم أحد ممثلينا المعتمدين بالتواصل معكم، شخصياً أو عبر الهاتف، لتأكيد الطلب.<br />بعد تأكيد الطلب، سيتم البدء بمعالجته.<br />لا يمكن إلغاء الطلبات بعد تأكيدها.</p><p>ملاحظة: يمكنكم تعديل هذا النص من لوحة التحكم.</p>",
 			SkipPaymentInfo = false
 		};
 		await _settingService.SaveSettingAsync(settings);

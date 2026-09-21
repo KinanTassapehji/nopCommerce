@@ -93,6 +93,20 @@ else
 <script src="~/lib_npm/datatables.net/js/dataTables.min.js"></script>
 <script src="~/lib_npm/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="~/lib_npm/moment/min/moment-with-locales.min.js"></script>
+<script>
+    //ponytail: moment's Arabic locales print Arabic-Indic digits and 24h time; .NET prints Latin digits with ص/م, so match it
+    (function () {
+        var current = moment.locale();
+        ['ar', 'ar-sa'].forEach(function (locale) {
+            moment.updateLocale(locale, {
+                preparse: function (string) { return string; },
+                postformat: function (string) { return string; },
+                longDateFormat: { L: 'D/\u200FM/\u200FYYYY', LT: 'h:mm A', LTS: 'h:mm:ss A' }
+            });
+        });
+        moment.locale(current);
+    })();
+</script>
 <script src="~/lib_npm/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
 <script src="~/lib_npm/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
 <script asp-location="Footer">

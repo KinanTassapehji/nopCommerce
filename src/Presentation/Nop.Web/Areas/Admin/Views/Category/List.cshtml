@@ -21,30 +21,10 @@
             <i class="fas fa-square-plus"></i>
             @T("Admin.Common.AddNew")
         </a>
-        <div class="btn-group">
-            <button type="button" class="btn btn-success">
-                <i class="fas fa-download"></i>
-                @T("Admin.Common.Export")
-            </button>
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-                <span class="sr-only">&nbsp;</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li class="dropdown-item">
-                    <a asp-action="ExportXml">
-                        <i class="far fa-file-code"></i>
-                        @T("Admin.Common.ExportToXml")
-                    </a>
-                </li>
-                <li class="dropdown-item">
-                    <a asp-action="ExportXlsx">
-                        <i class="far fa-file-excel"></i>
-                        @T("Admin.Common.ExportToExcel")
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <a asp-action="ExportXlsx" class="btn btn-success">
+            <i class="far fa-file-excel"></i>
+            @T("Admin.Common.ExportToExcel")
+        </a>
         <button type="button" name="importexcel" class="btn bg-olive" data-toggle="modal" data-target="#importexcel-window">
             <i class="fas fa-upload"></i>
             @T("Admin.Common.Import")

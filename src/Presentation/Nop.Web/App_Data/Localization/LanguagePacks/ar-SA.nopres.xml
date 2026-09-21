@@ -1159,7 +1159,7 @@
     <Value>الدولة مطلوبة</Value>
   </LocaleResource>
   <LocaleResource Name="Address.Fields.County">
-    <Value>المقاطعة / المنطقة</Value>
+    <Value>المنطقة</Value>
   </LocaleResource>
   <LocaleResource Name="Address.Fields.County.Required">
     <Value>المقاطعة / المنطقة مطلوبة.</Value>
@@ -12215,7 +12215,7 @@
     <Value>تم إلغاء هذا الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.OrderStatus.Change">
-    <Value>تغيير الوضع</Value>
+    <Value>تغيير حالة الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.OrderStatus.Change.ForAdvancedUsers">
     <Value>هذا الخيار مخصص فقط للمستخدمين المتقدمين (لا يوصى بتغييره يدويًا). يجب تنفيذ جميع الإجراءات المناسبة (مثل تعديل المخزون ، إرسال رسائل البريد الإلكتروني للإشعار ، نقاط المكافآت ، تنشيط / إلغاء تنشيط بطاقة الهدايا ، إلخ) يدويًا في هذه الحالة.</Value>
@@ -17771,7 +17771,7 @@
     <Value>الخصم</Value>
   </LocaleResource>
   <LocaleResource Name="PDFInvoice.FileName">
-    <Value>الطلب</Value>
+    <Value>order-{0}</Value>
   </LocaleResource>
   <LocaleResource Name="Pdf.Order">
     <Value>الطلب #{0}</Value>
@@ -22870,5 +22870,50 @@
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationproduct360view">
     <Value>العرض 360 للمنتج من NopStation. إدارة العرض 360 للمنتج</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Categories">
+    <Value>تسوق حسب الفئة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.ViewAll">
+    <Value>عرض الكل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Deals">
+    <Value>عروض وخصومات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Delivery">
+    <Value>توصيل سريع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Delivery.Hint">
+    <Value>إلى باب منزلك</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Cod">
+    <Value>الدفع عند الاستلام</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Cod.Hint">
+    <Value>ادفع عند وصول طلبك</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Genuine">
+    <Value>منتجات أصلية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Genuine.Hint">
+    <Value>جودة تعتمد عليها</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Support">
+    <Value>خدمة العملاء</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Usp.Support.Hint">
+    <Value>نحن هنا لمساعدتك</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Cta.Title">
+    <Value>كل ما يحتاجه منزلك في مكان واحد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Cta.Text">
+    <Value>تصفح المجموعة الكاملة واكتشف ما يناسبك.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.Cta.Button">
+    <Value>تسوق الآن</Value>
+  </LocaleResource>
+  <LocaleResource Name="Homepage.AllProducts.Loading">
+    <Value>جارٍ تحميل المزيد من المنتجات</Value>
   </LocaleResource>
 </Language>

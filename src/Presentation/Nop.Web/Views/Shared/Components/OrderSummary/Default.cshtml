@@ -380,7 +380,8 @@
     else
     {
         <div class="no-data">
-            @T("ShoppingCart.CartIsEmpty")
+            <span class="no-data-title">@T("ShoppingCart.CartIsEmpty")</span>
+            <a class="button-1" href="@Url.RouteUrl("Homepage")">@T("ShoppingCart.ContinueShopping")</a>
         </div>
     }
     @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.OrderSummaryContentAfter, additionalData = Model })

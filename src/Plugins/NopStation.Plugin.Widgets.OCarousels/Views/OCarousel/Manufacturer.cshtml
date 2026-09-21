@@ -37,23 +37,24 @@
                 center: @Model.Center.ToString().ToLower(),
                 startPosition: @Model.StartPosition,
                 responsive: {
+                    @*logos are small marks: a phone shows two, a laptop the whole strip*@
                     0: {
-                        items: 1
-                    },
-                    576: {
-                        items: 1
-                    },
-                    768: {
                         items: 2
                     },
-                    992: {
+                    576: {
+                        items: 3
+                    },
+                    768: {
                         items: 4
+                    },
+                    992: {
+                        items: 5
                     },
                     1200: {
-                        items: 4
+                        items: 6
                     },
                     1500: {
-                        items: 4
+                        items: 6
                     }
                 }
             });

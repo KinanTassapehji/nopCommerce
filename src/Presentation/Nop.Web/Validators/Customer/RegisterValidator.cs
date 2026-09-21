@@ -124,6 +124,10 @@ public partial class RegisterValidator : BaseNopValidator<RegisterModel>
         {
             RuleFor(x => x.City).NotEmpty().WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.City.Required"));
         }
+        if (customerSettings.GenderEnabled)
+        {
+            RuleFor(x => x.Gender).NotEmpty().WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.Gender.Required"));
+        }
         if (customerSettings.PhoneRequired && customerSettings.PhoneEnabled)
         {
             RuleFor(x => x.Phone).NotEmpty().WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.Phone.Required"));

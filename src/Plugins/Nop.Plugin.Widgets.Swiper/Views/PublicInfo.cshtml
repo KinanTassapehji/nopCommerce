@@ -11,8 +11,12 @@
 {
     <div class="swiper nop-slider">
         <div class="swiper-wrapper">
+            @{ var firstSlide = true; }
             @foreach (var slide in Model.Slides)
             {
+                //the first plate is the largest paint on the page: it loads eagerly whatever the setting says
+                slide.LazyLoading = slide.LazyLoading && !firstSlide;
+                firstSlide = false;
                 @await Html.PartialAsync("~/Plugins/Widgets.Swiper/Views/_PublicInfo.Slide.cshtml", slide)
             }
         </div>

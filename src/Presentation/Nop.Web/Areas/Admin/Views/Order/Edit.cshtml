@@ -1,4 +1,7 @@
 @model OrderModel
+@using Nop.Core.Domain.Orders
+@using Nop.Core.Domain.Payments
+@using Nop.Core.Domain.Shipping
 
 @{
     //page title
@@ -61,6 +64,93 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="form-horizontal">
+
+                    @*At-a-glance strip. Stock nop spreads the facts an order is
+                        opened for - number, date, customer, the three statuses,
+                        the total - down four collapsible cards, so answering "is
+                        it paid, has it shipped" starts with scrolling. The badge
+                        classes are the ones the order grid already renders, so a
+                        status reads the same in the list and here.*@
+                    @{
+                        var orderStatusColor = Model.OrderStatusId switch
+                        {
+                            (int)OrderStatus.Pending => "yellow",
+                            (int)OrderStatus.Processing => "blue",
+                            (int)OrderStatus.Complete => "green",
+                            (int)OrderStatus.Cancelled => "red",
+                            _ => string.Empty
+                        };
+
+                        var paymentStatusColor = Model.PaymentStatusId switch
+                        {
+                            (int)PaymentStatus.Pending => "yellow",
+                            (int)PaymentStatus.Authorized => "blue",
+                            (int)PaymentStatus.Paid => "green",
+                            (int)PaymentStatus.PartiallyRefunded => "blue",
+                            (int)PaymentStatus.Refunded => "red",
+                            (int)PaymentStatus.Voided => "red",
+                            _ => string.Empty
+                        };
+
+                        var shippingStatusColor = Model.ShippingStatusId switch
+                        {
+                            (int)ShippingStatus.NotYetShipped => "yellow",
+                            (int)ShippingStatus.PartiallyShipped => "blue",
+                            (int)ShippingStatus.Shipped => "blue",
+                            (int)ShippingStatus.Delivered => "green",
+                            _ => string.Empty
+                        };
+                    }
+
+                    <div class="card card-default order-summary">
+                        <div class="card-body">
+                            <div class="order-summary-grid">
+                                <div class="order-summary-item">
+                                    <span class="order-summary-label">@T("Admin.Orders.Fields.CustomOrderNumber")</span>
+                                    <span class="order-summary-value order-summary-lead">@Model.CustomOrderNumber</span>
+                                </div>
+                                <div class="order-summary-item">
+                                    <span class="order-summary-label">@T("Admin.Orders.Fields.CreatedOn")</span>
+                                    <span class="order-summary-value">@Model.CreatedOn</span>
+                                </div>
+                                <div class="order-summary-item">
+                                    <span class="order-summary-label">@T("Admin.Orders.Fields.Customer")</span>
+                                    <span class="order-summary-value">
+                                        <a asp-controller="Customer" asp-action="Edit" asp-route-id="@Model.CustomerId">@Model.CustomerInfo</a>
+                                    </span>
+                                </div>
+                                <div class="order-summary-item">
+                                    <span class="order-summary-label">@T("Admin.Orders.Fields.OrderStatus")</span>
+                                    <span class="order-summary-value">
+                                        <span class="grid-report-item @orderStatusColor">@Model.OrderStatus</span>
+                                    </span>
+                                </div>
+                                <div class="order-summary-item">
+                                    <span class="order-summary-label">@T("Admin.Orders.Fields.PaymentStatus")</span>
+                                    <span class="order-summary-value">
+                                        <span class="grid-report-item @paymentStatusColor">@Model.PaymentStatus</span>
+                                    </span>
+                                </div>
+                                @if (Model.IsShippable)
+                                {
+                                    <div class="order-summary-item">
+                                        <span class="order-summary-label">@T("Admin.Orders.Fields.ShippingStatus")</span>
+                                        <span class="order-summary-value">
+                                            <span class="grid-report-item @shippingStatusColor">@Model.ShippingStatus</span>
+                                        </span>
+                                    </div>
+                                }
+                                <div class="order-summary-item">
+                                    <span class="order-summary-label">@T("Admin.Orders.Fields.PaymentMethod")</span>
+                                    <span class="order-summary-value">@Model.PaymentMethod</span>
+                                </div>
+                                <div class="order-summary-item order-summary-total">
+                                    <span class="order-summary-label">@T("Admin.Orders.Fields.OrderTotal")</span>
+                                    <span class="order-summary-value order-summary-lead">@Html.Raw(Model.OrderTotal)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <nop-cards id="order-cards">
                         <nop-card asp-name="order-info" asp-icon="fas fa-info" asp-title="@T("Admin.Orders.Info")" asp-hide-block-attribute-name="@hideInfoBlockAttributeName" asp-hide="@hideInfoBlock" asp-advanced="false">@await Html.PartialAsync("_OrderDetails.Info", Model)</nop-card>

@@ -33,19 +33,6 @@
                     </button>
                     <ul class="dropdown-menu" role="menu">
                         <li class="dropdown-item">
-                            <button asp-action="ExportXml" type="submit" name="exportxml-all">
-                                <i class="far fa-file-code"></i>
-                                @T("Admin.Common.ExportToXml.All")
-                            </button>
-                        </li>
-                        <li class="dropdown-item">
-                            <button type="button" id="exportxml-selected">
-                                <i class="far fa-file-code"></i>
-                                @T("Admin.Common.ExportToXml.Selected")
-                            </button>
-                        </li>
-                        <li class="dropdown-divider"></li>
-                        <li class="dropdown-item">
                             <button asp-action="ExportExcel" type="submit" name="exportexcel-all">
                                 <i class="far fa-file-excel"></i>
                                 @T("Admin.Common.ExportToExcel.All")
@@ -509,30 +496,6 @@
     </div>
 </div>
 
-@*export selected (XML). We don't use GET approach because it's limited to 2K-4K chars and won't work for large number of entities*@
-<form asp-controller="Order" asp-action="ExportXmlSelected" method="post" id="export-xml-selected-form">
-    <input type="hidden" id="selectedIds" name="selectedIds" value="" />
-</form>
-
-<script>
-    $(function() {
-        $('#exportxml-selected').click(function (e) {
-            e.preventDefault();
-            var ids = selectedIds.join(",");
-            if (!ids) {
-                $('#exportXmlSelected-info').text("@T("Admin.Orders.NoOrders")");
-                $("#exportXmlSelected").trigger("click");
-            }
-            else {
-                $('#export-xml-selected-form #selectedIds').val(ids);
-                $('#export-xml-selected-form').submit();
-                updateTable('#orders-grid');
-            }
-            return false;
-        });
-    });
-</script>
-<nop-alert asp-alert-id="exportXmlSelected" />
 
 @*export selected (Excel). We don't use GET approach because it's limited to 2K-4K chars and won't work for large number of entities*@
 <form asp-controller="Order" asp-action="ExportExcelSelected" method="post" id="export-excel-selected-form">

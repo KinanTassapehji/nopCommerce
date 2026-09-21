@@ -309,19 +309,6 @@ table.dataTable tbody tr:hover > td {
   scrollbar-color: rgba(255, 255, 255, .38) transparent;
 }
 
-/* --- RTL grid headers ---------------------------------------------------
-   The vendor DataTables sheet hardcodes text-align:left on thead/tfoot
-   cells, so in Arabic every grid header hangs off the far edge from its
-   own data. Flip it once here; dt-head-center / dt-head-right / the
-   sortable-header flex order carry a class, so they still win. */
-
-html[dir="rtl"] table.dataTable thead th,
-html[dir="rtl"] table.dataTable thead td,
-html[dir="rtl"] table.dataTable tfoot th,
-html[dir="rtl"] table.dataTable tfoot td {
-  text-align: right;
-}
-
 /* --- Grid footer --------------------------------------------------------
    The bottom layout cell is a nowrap flex row (DataTables' bs4 integration),
    so in a narrow card — the dashboard's col-md-4 reports — the pager, the
@@ -392,4 +379,836 @@ html[dir="rtl"] table.dataTable tfoot td {
 .form-group.row:has(#ShipSeparately),
 .form-group.row:has(#ProductEditorSettingsModel_ShipSeparately) {
   display: none !important;
+}
+
+/* --- Modern layer: palette bridge ---------------------------------------
+   The block after this one is shared verbatim with the TmTm admin, so it
+   never names a store token. These aliases are the only difference between
+   the two copies — keep them, and a change to the layer below patches
+   across with `git -C Arabia diff | git -C TmTm apply`.
+
+   The two *-rgb values are triplets, not colours: rgba() needs the channels
+   separately and a var() holding "#0D77BD" cannot be used inside one. */
+
+:root {
+  --adm-accent: var(--ar-blue);
+  --adm-accent-border: var(--ar-blue-border);
+  --adm-accent-tint: var(--ar-blue-tint);
+  --adm-accent-rgb: 13, 119, 189;     /* --ar-blue       */
+  --adm-shadow-rgb: 12, 37, 54;       /* --ar-navy, --ar-shadow tint */
+
+  --adm-ink: var(--ar-ink);
+  --adm-ink-muted: var(--ar-ink-muted);
+  --adm-line: var(--ar-line);
+  --adm-surface-alt: var(--ar-surface-alt);
+}
+
+/* ==========================================================================
+   Modern layer
+
+   Everything below is shape, depth, spacing and motion — no brand colour is
+   decided here, it is read from the --adm-* aliases above. That is the whole
+   point: this block is byte-identical in both stores, so a change is written
+   once and carried across with `git diff | git apply`.
+
+   AdminLTE/Bootstrap 4 ship a 2014 look: 0px-radius inputs, a 1px grey box
+   around every cell, zebra stripes, flat cards. The rules here replace that
+   with the current dashboard idiom — soft radii, hairline separators, one
+   elevation ramp, hover/focus transitions — without touching a single
+   semantic colour.
+
+   No physical left/right anywhere: the same file is served to the RTL admin,
+   so corners and offsets use logical properties only.
+   ========================================================================== */
+
+/* --- Shape & depth scale ------------------------------------------------ */
+
+:root {
+  --adm-r-xs: 6px;              /* menu items, chips                        */
+  --adm-r-sm: 8px;              /* inputs, buttons, badges                  */
+  --adm-r: 12px;                /* cards, dropdowns                         */
+  --adm-r-lg: 16px;             /* modals                                   */
+
+  /* One elevation ramp, tinted with the brand rather than pure black — grey
+     shadows on a tinted ground read as dirt. */
+  --adm-sh-1: 0 1px 2px rgba(var(--adm-shadow-rgb), .06),
+              0 1px 3px rgba(var(--adm-shadow-rgb), .05);
+  --adm-sh-2: 0 2px 6px rgba(var(--adm-shadow-rgb), .07),
+              0 8px 20px rgba(var(--adm-shadow-rgb), .08);
+  --adm-sh-3: 0 4px 12px rgba(var(--adm-shadow-rgb), .10),
+              0 18px 44px rgba(var(--adm-shadow-rgb), .14);
+
+  --adm-t: .16s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* --- Cards --------------------------------------------------------------
+   AdminLTE's card is a hard 3px-radius box under a near-black 1px+3px
+   shadow. Swap it for a hairline border plus a soft tinted lift, and let it
+   rise on hover so a page of panels has some depth. */
+
+.card {
+  border: 1px solid var(--adm-line);
+  border-radius: var(--adm-r);
+  box-shadow: var(--adm-sh-1);
+  transition: box-shadow var(--adm-t);
+}
+
+.card:hover {
+  box-shadow: var(--adm-sh-2);
+}
+
+/* The coloured top rule of "card card-primary card-outline" — the standard
+   admin panel — keeps its weight; the radius above rounds it. */
+.card.card-outline,
+.card.card-primary,
+.card.card-secondary,
+.card.card-info {
+  border-top-width: 3px;
+}
+
+.card-header {
+  border-bottom: 1px solid var(--adm-line);
+  border-start-start-radius: calc(var(--adm-r) - 1px);
+  border-start-end-radius: calc(var(--adm-r) - 1px);
+  padding: .9rem 1.15rem;
+}
+
+.card-footer {
+  border-top: 1px solid var(--adm-line);
+  border-end-start-radius: calc(var(--adm-r) - 1px);
+  border-end-end-radius: calc(var(--adm-r) - 1px);
+  background-color: var(--adm-surface-alt);
+}
+
+.card-title {
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+/* A collapsed card is header-only, so the header carries both pairs. */
+.card.collapsed-card .card-header {
+  border-bottom-color: transparent;
+  border-end-start-radius: calc(var(--adm-r) - 1px);
+  border-end-end-radius: calc(var(--adm-r) - 1px);
+}
+
+/* --- Dashboard stat tiles ----------------------------------------------
+   The small-box / info-box row is the first thing anyone sees on login, so
+   it gets the same radius and lift as everything else. */
+
+.small-box,
+.info-box {
+  border-radius: var(--adm-r);
+  box-shadow: var(--adm-sh-1);
+  transition: transform var(--adm-t), box-shadow var(--adm-t);
+}
+
+.small-box:hover,
+.info-box:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--adm-sh-2);
+}
+
+.small-box > .inner h3 {
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+
+.small-box .icon > i {
+  opacity: .28;
+}
+
+.small-box > .small-box-footer {
+  border-end-start-radius: var(--adm-r);
+  border-end-end-radius: var(--adm-r);
+}
+
+/* --- Buttons ------------------------------------------------------------ */
+
+.btn {
+  border-radius: var(--adm-r-sm);
+  font-weight: 500;
+  padding: .42rem .95rem;
+  transition: background-color var(--adm-t), border-color var(--adm-t),
+              box-shadow var(--adm-t), transform var(--adm-t);
+}
+
+.btn:active,
+.btn:not(:disabled):not(.disabled):active {
+  transform: translateY(1px);
+}
+
+.btn-sm {
+  border-radius: var(--adm-r-xs);
+}
+
+/* Grouped buttons: Bootstrap squares the inner edges with physical
+   properties, which the RTL sheet then flips. Restate it logically so both
+   directions square the same edges. */
+.btn-group > .btn:not(:first-child),
+.btn-group > .btn-group:not(:first-child) > .btn {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+.btn-group > .btn:not(:last-child):not(.dropdown-toggle),
+.btn-group > .btn-group:not(:last-child) > .btn {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+/* --- Inputs & selects ---------------------------------------------------
+   styles.css pins `.form-control { border-radius: 0 }` — that one line is
+   most of why the admin reads as old. */
+
+.form-control,
+.custom-select,
+.input-group-text,
+.form-control-sm,
+.custom-select-sm,
+textarea.form-control {
+  border-radius: var(--adm-r-sm);
+  border-color: var(--adm-line);
+  transition: border-color var(--adm-t), box-shadow var(--adm-t);
+}
+
+.form-control:hover:not(:focus):not([readonly]),
+.custom-select:hover:not(:focus) {
+  border-color: var(--adm-accent-border);
+}
+
+/* Same logical restatement as the button group, for the same reason. */
+.input-group > .form-control:not(:last-child),
+.input-group > .custom-select:not(:last-child),
+.input-group > .input-group-prepend > .btn,
+.input-group > .input-group-prepend > .input-group-text {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.input-group > .form-control:not(:first-child),
+.input-group > .custom-select:not(:first-child),
+.input-group > .input-group-append > .btn,
+.input-group > .input-group-append > .input-group-text {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+/* .input-postfix (above) lays its unit out as a flex sibling rather than an
+   addon, so that field keeps its full radius — nothing to square there. */
+
+/* --- select2 ------------------------------------------------------------
+   styles.css pins these to `border-radius: 0px`, and the vendor dropdown is
+   a hard 4px box with a grey border and no shadow.
+
+   The !important is NopStation.Core/contents/css/style.css, which ships
+   `.select2-container--default .select2-selection--single {
+   border-radius: 0 !important }`. That file is vendor and gets overwritten on
+   every plugin update, so the counter-!important lives here instead. */
+
+.select2-blue .select2-container--default .select2-selection--single,
+.select2-blue .select2-container--default .select2-selection--multiple,
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+  border-radius: var(--adm-r-sm) !important;
+  border-color: var(--adm-line);
+  transition: border-color var(--adm-t), box-shadow var(--adm-t);
+}
+
+.select2-container--default .select2-selection--single:hover,
+.select2-container--default .select2-selection--multiple:hover {
+  border-color: var(--adm-accent-border);
+}
+
+.select2-container--open .select2-selection--single,
+.select2-container--open .select2-selection--multiple {
+  box-shadow: 0 0 0 .2rem rgba(var(--adm-accent-rgb), .18);
+}
+
+.select2-dropdown {
+  border: 1px solid var(--adm-line);
+  border-radius: var(--adm-r);
+  box-shadow: var(--adm-sh-2);
+  overflow: hidden;
+  padding-block: 4px;
+}
+
+.select2-container--default .select2-results__option {
+  padding: 7px 12px;
+  margin-inline: 4px;
+  border-radius: var(--adm-r-xs);
+  transition: background-color var(--adm-t);
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field {
+  border-radius: var(--adm-r-xs);
+  border-color: var(--adm-line);
+}
+
+/* The multi-select tokens are chips, so they should look like chips. */
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  border-radius: var(--adm-r-xs);
+  padding: 2px 8px;
+}
+
+/* --- Dropdown menus -----------------------------------------------------
+   The complaint that started this: square panels with hover bands running
+   edge to edge. */
+
+.dropdown-menu {
+  border: 1px solid var(--adm-line);
+  border-radius: var(--adm-r);
+  box-shadow: var(--adm-sh-2);
+  padding: 6px;
+  margin-top: 6px;
+  font-size: inherit;
+}
+
+.dropdown-menu > li > a,
+.dropdown-menu .dropdown-item,
+.dropdown-menu button,
+.dropdown-menu > li > button {
+  border-radius: var(--adm-r-xs);
+  padding: 7px 12px;
+  /* styles.css pins these to text-align:left, which strands them in Arabic */
+  text-align: start;
+  transition: background-color var(--adm-t), color var(--adm-t);
+}
+
+.dropdown-menu > li {
+  border-radius: var(--adm-r-xs);
+}
+
+.dropdown-menu li:hover,
+.dropdown-menu a:hover,
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+  background-color: var(--adm-accent-tint);
+  color: var(--adm-ink);
+}
+
+.dropdown-divider {
+  border-top-color: var(--adm-line);
+  margin-block: 4px;
+}
+
+/* --- Tabs ---------------------------------------------------------------
+   Boxed tabs with a 2px rule on top is the 2014 pattern. An underline on the
+   active tab reads as current and costs less ink. */
+
+.nav-tabs {
+  border-bottom: 1px solid var(--adm-line);
+}
+
+.nav-tabs .nav-link {
+  border: 0;
+  border-radius: var(--adm-r-xs) var(--adm-r-xs) 0 0;
+  padding: .6rem 1rem;
+  font-weight: 500;
+  color: var(--adm-ink-muted);
+  transition: background-color var(--adm-t), color var(--adm-t),
+              box-shadow var(--adm-t);
+}
+
+.nav-tabs .nav-link:hover {
+  border: 0;
+  background-color: var(--adm-accent-tint);
+}
+
+ul.nav-tabs li.nav-item a.nav-link.active,
+.nav-tabs .nav-link.active {
+  /* replaces the 2px top rule set higher up in this file */
+  border: 0;
+  background-color: transparent;
+  box-shadow: inset 0 -2px 0 var(--adm-accent);
+  font-weight: 600;
+}
+
+.nav-tabs-custom > .tab-content,
+.nav-tabs-custom > .nav-tabs,
+.nav-tabs-custom .nav-tabs-custom {
+  border-color: var(--adm-line);
+}
+
+/* --- Tables -------------------------------------------------------------
+   The grids ship as `table-bordered table-striped`: a 1px box around every
+   cell plus zebra rows. Modern grids carry horizontal hairlines only and let
+   hover do the row tracking — far less noise at the same density. */
+
+.table thead th,
+.table thead td,
+table.dataTable thead th,
+table.dataTable thead td,
+div.row.justify-content-between.dt-layout-table thead,
+.table-bordered > thead > tr > th,
+.table-bordered > thead > tr > td {
+  /* styles.rtl.css paints the header #e3e3e3 under a white gradient, which
+     is the one bit of chrome that is heavier in Arabic than in English. */
+  background-color: var(--adm-surface-alt);
+  background-image: none;
+  color: var(--adm-ink-muted);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+/* The scroll-head clone carries its own grey on the row, under the cells. */
+div.dt-scroll-head > div > table > thead > tr {
+  background-color: var(--adm-surface-alt);
+}
+
+.table thead th,
+table.dataTable thead th,
+table.dataTable thead td {
+  padding-block: .75rem;
+}
+
+/* Header labels centred over their column - this replaces the RTL-only
+   text-align fix that used to live higher up in this file, which existed
+   because the vendor sheet hardcodes left and stranded every Arabic header.
+   Centre answers both directions at once.
+
+   `table.dataTable.table` carries two classes on purpose: DataTables
+   right-aligns numeric headers through `th.dt-type-numeric`, and a
+   one-class selector loses to it. The inner .dt-column-header is a flex row
+   (title + sort arrows) pinned to space-between, so text-align alone would
+   leave the label where it was. */
+table.dataTable.table thead th,
+table.dataTable.table thead td,
+table.dataTable.table tfoot th,
+table.dataTable.table tfoot td {
+  text-align: center;
+}
+
+table.dataTable thead > tr > th div.dt-column-header,
+table.dataTable thead > tr > td div.dt-column-header,
+table.dataTable tfoot > tr > th div.dt-column-footer,
+table.dataTable tfoot > tr > td div.dt-column-footer {
+  justify-content: center;
+}
+
+/* Vertical rules off, horizontal hairline on. styles.css states this with
+   the full `.table-bordered > thead > tr > th` chain, so undoing it takes
+   the same shape — a bare `.table-bordered th` loses on specificity. */
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > th,
+.table-bordered > tfoot > tr > th,
+.table-bordered > thead > tr > td,
+.table-bordered > tbody > tr > td,
+.table-bordered > tfoot > tr > td,
+.table > thead > tr > th,
+.table > tbody > tr > td,
+table.dataTable tbody td,
+table.dataTable tbody th {
+  border: 0;
+  border-bottom: 1px solid var(--adm-line);
+}
+
+.table-bordered,
+.table > thead > tr > th {
+  border: 0;
+}
+
+.table > thead > tr > th {
+  border-bottom: 1px solid var(--adm-line);
+}
+
+.table > tbody > tr > td,
+table.dataTable tbody td {
+  padding-block: .7rem;
+}
+
+/* The last row's rule would double up with the card border under it. */
+.table > tbody > tr:last-child > td,
+table.dataTable > tbody > tr:last-child > td {
+  border-bottom: 0;
+}
+
+/* Zebra off. Two sources: DataTables paints it as an inset 9999px box shadow
+   on each cell rather than a background, and styles.rtl.css paints its own on
+   every even row — so the Arabic admin needs both cancelled. */
+table.dataTable.table.table-striped > tbody > tr:nth-of-type(2n+1) > * {
+  box-shadow: none;
+}
+
+.table-bordered tr:nth-child(even) {
+  background-color: transparent;
+}
+
+/* DataTables' own row hover is the same trick in flat grey, and it paints
+   over the brand tint set higher up in this file. Rather than out-specify
+   it, hand it the brand: these two custom properties are the RGB triplets
+   it builds its overlays from. */
+:root {
+  --dt-row-hover: var(--adm-accent-rgb);
+  --dt-row-selected: var(--adm-accent-rgb);
+}
+
+table.dataTable tbody tr > td {
+  transition: background-color var(--adm-t), box-shadow var(--adm-t);
+}
+
+table.dataTable thead .dt-column-order {
+  opacity: .55;
+}
+
+/* --- Grid footer: pager, page size, info -------------------------------- */
+
+.pagination .page-item .page-link {
+  border-radius: var(--adm-r-xs);
+  border-color: transparent;
+  margin-inline: 2px;
+  min-width: 34px;
+  text-align: center;
+  transition: background-color var(--adm-t), color var(--adm-t);
+}
+
+.pagination .page-item .page-link:hover {
+  background-color: var(--adm-accent-tint);
+}
+
+.pagination .page-item.disabled .page-link {
+  background-color: transparent;
+  opacity: .45;
+}
+
+/* --- Modals ------------------------------------------------------------- */
+
+.modal-content {
+  border: 0;
+  border-radius: var(--adm-r-lg);
+  box-shadow: var(--adm-sh-3);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: var(--adm-line);
+  padding: 1rem 1.25rem;
+}
+
+.modal-header .modal-title {
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+.modal-backdrop.show {
+  opacity: .4;
+}
+
+/* --- Badges & alerts ---------------------------------------------------- */
+
+.badge {
+  border-radius: var(--adm-r-xs);
+  font-weight: 600;
+  padding: .32em .6em;
+}
+
+.alert {
+  border: 0;
+  border-radius: var(--adm-r);
+  box-shadow: var(--adm-sh-1);
+}
+
+/* --- Sidebar ------------------------------------------------------------
+   Full-bleed square rows are the other half of the classic look. Inset pills
+   read as a current app; the 3px marker bar set higher up in this file would
+   poke out of a rounded corner, so on the pill it becomes a fill instead. */
+
+/* `.nav-legacy` is on the menu's own <ul> (Menu.cshtml) and is carried here
+   only to outrank AdminLTE's `.nav-legacy.nav-sidebar .nav-item > .nav-link
+   { border-radius: 0 }` — four classes, which the plain selector loses to
+   however late this file is loaded. */
+.nav-sidebar.nav-legacy > .nav-item > .nav-link,
+.nav-sidebar.nav-legacy .nav-treeview > .nav-item > .nav-link {
+  border-radius: var(--adm-r-sm);
+  margin-inline: 8px;
+  padding: .6rem .85rem;
+  transition: background-color var(--adm-t), color var(--adm-t);
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active:hover,
+.nav-sidebar .nav-treeview > .nav-item > .nav-link.active,
+[dir="rtl"] .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+[dir="rtl"] .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active:hover,
+[dir="rtl"] .nav-sidebar .nav-treeview > .nav-item > .nav-link.active {
+  background-color: rgba(255, 255, 255, .18);
+  box-shadow: none;
+}
+
+.nav-sidebar .nav-link > p > .right,
+.nav-sidebar .nav-link > .right {
+  transition: transform var(--adm-t);
+}
+
+/* AdminLTE marks the active item with a 3px bootstrap-blue border on the
+   inline edge - #007bff, a colour in neither store's palette, and it hangs
+   off the corner of the rounded pill above. The fill is the marker. */
+.sidebar-dark-primary .nav-sidebar.nav-legacy > .nav-item > .nav-link.active,
+.sidebar-light-primary .nav-sidebar.nav-legacy > .nav-item > .nav-link.active {
+  border-color: transparent;
+}
+
+.sidebar-form .admin-search-box {
+  border-radius: var(--adm-r-sm);
+}
+
+.brand-link {
+  padding-block: .9rem;
+}
+
+/* --- Top bar ------------------------------------------------------------ */
+
+.main-header.navbar {
+  box-shadow: var(--adm-sh-1);
+}
+
+.main-header .nav-link {
+  border-radius: var(--adm-r-sm);
+  transition: background-color var(--adm-t);
+}
+
+/* --- Page header -------------------------------------------------------- */
+
+.content-header h1 {
+  font-weight: 600;
+  letter-spacing: -.02em;
+}
+
+.sticky-header-layout .content-header.is-pinned {
+  border-bottom-color: var(--adm-line);
+  box-shadow: var(--adm-sh-1);
+}
+
+/* --- Scrollbars ---------------------------------------------------------
+   The `scrollbar-color` pair higher up covers Firefox; this covers Chrome,
+   which ignores it in favour of the ::-webkit- pseudo-elements. */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--adm-accent-border);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--adm-accent);
+}
+
+/* The sidebar ground is dark — a tint thumb on it would vanish. */
+.main-sidebar ::-webkit-scrollbar-thumb,
+.main-sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, .38);
+}
+
+/* --- Motion opt-out ----------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .small-box,
+  .info-box,
+  .btn {
+    transition: none;
+  }
+
+  .small-box:hover,
+  .info-box:hover,
+  .btn:active,
+  .btn:not(:disabled):not(.disabled):active {
+    transform: none;
+  }
+}
+
+/* --- Order details ------------------------------------------------------
+   The order screen is read far more often than it is edited, and stock nop
+   lays it out as one label-per-row ladder, four collapsible cards deep. Two
+   moves: the summary strip above the cards carries the facts the page is
+   opened for, and the rows inside the cards become a fact table — half the
+   height, hairline-separated, label column capped so a value does not float
+   off across a wide screen.
+
+   Scoped to the strip and to #order-cards, so no other admin form shifts. */
+
+.order-summary-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 14px 32px;
+}
+
+.order-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* The money answers the most common question, so it ends the strip. */
+.order-summary-total {
+  margin-inline-start: auto;
+  text-align: end;
+}
+
+.order-summary-label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--adm-ink-muted);
+}
+
+.order-summary-value {
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+
+.order-summary-lead {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--adm-ink);
+}
+
+/* The status pills the order grid renders — restyled here rather than in the
+   strip's own class so a status looks the same in the list and on the order. */
+span.grid-report-item {
+  display: inline-block;
+  border-radius: var(--adm-r-xs);
+  padding: .3em .7em;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Rows inside the order cards are a read-out, not a form. */
+#order-cards .card-body .form-group.row {
+  margin-bottom: 0;
+  padding-block: 6px;
+  /* not baseline: the label column is a .label-wrapper carrying the help icon,
+     so its first baseline sits a line below the value's and every value hung
+     under its own label instead of beside it */
+  align-items: center;
+}
+
+#order-cards .card-body .form-group.row + .form-group.row {
+  border-top: 1px solid var(--adm-line);
+}
+
+/* A col-md-3 label column is a third of the card: on a wide screen the value
+   lands an inch from the word it belongs to. Cap the label, flex the value. */
+#order-cards .card-body .form-group.row > [class*="col-md-3"],
+#order-cards .card-body .form-group.row > [class*="col-md-4"],
+#order-cards .card-body .form-group.row > [class*="col-lg-3"] {
+  flex: 0 0 auto;
+  width: 200px;
+  max-width: 45%;
+}
+
+#order-cards .card-body .form-group.row > [class*="col-md-8"],
+#order-cards .card-body .form-group.row > [class*="col-md-9"],
+#order-cards .card-body .form-group.row > [class*="col-lg-9"] {
+  flex: 1 1 0;
+  width: auto;
+  max-width: none;
+}
+
+#order-cards .card-body .col-form-label {
+  padding-block: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--adm-ink-muted);
+}
+
+#order-cards .card-body .form-text-row {
+  padding-top: 0;
+  min-height: 0;
+}
+
+/* --- Order details: two-up fact rows -------------------------------------
+   One short label/value pair per line leaves two thirds of a wide card empty,
+   so pair them up. Below lg the stock single column is already right. */
+
+@media (min-width: 992px) {
+  #order-cards .card.card-default > .card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 40px;
+  }
+
+  #order-cards .card.card-default > .card-body > .form-group.row {
+    margin-inline: 0;
+  }
+
+  /* only the short label/value rows pair up - grids, tables and lone buttons
+     keep the full card */
+  #order-cards .card.card-default > .card-body > *:not(.form-group.row) {
+    grid-column: 1 / -1;
+  }
+
+  /* the separator rule hairlines every row but the first; in two columns the
+     first line is two rows, so the second one has to be exempt too */
+  #order-cards .card.card-default > .card-body > .form-group.row:nth-child(2) {
+    border-top: 0;
+  }
+}
+
+/* The status editor opens where the "change status" button was, rather than
+   stacking a select and two buttons as fresh rows underneath it. Guarded on
+   .d-none because this admin's .d-none is not !important. */
+#pnlChangeOrderStatus:not(.d-none) {
+  display: inline-flex;
+  align-items: center;
+}
+
+#pnlChangeOrderStatus select {
+  width: auto;
+  min-width: 140px;
+}
+
+/* --- The address on a map ------------------------------------------------
+   The order screen linked the shipping address out to Google Maps and left the
+   question ("where is this?") one click away on every order. Embedded instead,
+   at a height that shows the street without taking the panel over. */
+
+.order-address-map {
+  margin-block-start: 10px;
+  border: 1px solid var(--adm-line);
+  border-radius: var(--adm-r-xs);
+  overflow: hidden;
+  background-color: var(--adm-surface-alt);
+}
+
+.order-address-map iframe {
+  display: block;
+  width: 100%;
+  height: 240px;
+  border: 0;
+}
+
+/* In its own panel the map is the panel: it fills the card the facts column
+   sets the height of, rather than sitting in the top 240px of white. */
+.order-address-map-card .card-body {
+  display: flex;
+  padding: 0;
+}
+
+.order-address-map-card .order-address-map {
+  flex: 1 1 auto;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.order-address-map-card .order-address-map iframe {
+  height: 100%;
+  min-height: 240px;
 }

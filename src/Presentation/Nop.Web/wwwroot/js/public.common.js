@@ -260,3 +260,24 @@ window.addEventListener('beforeunload', function () {
 window.addEventListener('pageshow', function () {
     document.documentElement.classList.remove('ar-navigating');
 });
+
+
+/* ponytail: the native alert() is a blocking browser dialog that looks nothing
+   like the store. Route every storefront alert - core views, theme and plugin
+   scripts alike - through the themed notification bar instead, so one override
+   covers the lot rather than rewriting each call site. Multi-line or array
+   messages (the one-page checkout joins its validation errors with a newline)
+   become one row each. Encoded: displayBarNotification writes innerHTML. */
+window.alert = function (message) {
+    var lines = [];
+
+    (Array.isArray(message) ? message : [message]).forEach(function (part) {
+        String(part === undefined || part === null ? '' : part).split('\n').forEach(function (line) {
+            line = line.trim();
+            if (line.length > 0)
+                lines.push(htmlEncode(line));
+        });
+    });
+
+    displayBarNotification(lines, 'error', 0);
+};
