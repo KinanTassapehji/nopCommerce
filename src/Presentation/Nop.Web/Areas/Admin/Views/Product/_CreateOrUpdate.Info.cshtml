@@ -421,7 +421,10 @@
             <span asp-validation-for="ProductTemplateId"></span>
         </div>
     </div>
-    <div class="form-group row @(Model.ProductEditorSettingsModel.VisibleIndividually ? null : "advanced-setting")" id="group-visible-individually">
+    @*TmTm: every product is simple, so "Visible individually" is always on. Hidden
+        (kept in the DOM so the checked value still posts); the id is dropped so
+        toggleProductType's showElement() can't reveal it again.*@
+    <div class="form-group row" style="display:none">
         <div class="col-md-3">
             <nop-label asp-for="VisibleIndividually" />
         </div>

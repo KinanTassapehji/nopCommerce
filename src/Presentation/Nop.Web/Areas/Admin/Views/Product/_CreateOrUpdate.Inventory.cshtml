@@ -257,7 +257,9 @@
                 <span asp-validation-for="ProductAvailabilityRangeId"></span>
             </div>
         </div>
-        <div class="form-group row @(Model.ProductEditorSettingsModel.MinimumCartQuantity ? null : "advanced-setting")">
+        @*TmTm: minimum order quantity is always 1 and allowed quantities is unused.
+            Both rows are hidden (kept in the DOM so their values still post).*@
+        <div class="form-group row" style="display:none">
             <div class="col-md-3">
                 <nop-label asp-for="OrderMinimumQuantity" />
             </div>
@@ -275,7 +277,7 @@
                 <span asp-validation-for="OrderMaximumQuantity"></span>
             </div>
         </div>
-        <div class="form-group row @(Model.ProductEditorSettingsModel.AllowedQuantities ? null : "advanced-setting")">
+        <div class="form-group row" style="display:none">
             <div class="col-md-3">
                 <nop-label asp-for="AllowedQuantities" />
             </div>
