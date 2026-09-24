@@ -123,6 +123,20 @@
         var platform = detectPlatform();
         console.log('[FCM] Detected platform:', platform);
 
+        // Inside the Android app (a TWA) the permission is the app's own: Chrome
+        // delegates it, so asking shows the one native Android dialog. The in-page
+        // banner in front of that made it two prompts. The app opens the site with
+        // an android-app:// referrer (and ?source=pwa) on launch only, so the
+        // answer is kept per tab - sessionStorage, not localStorage, because the
+        // TWA shares its storage with the phone's ordinary Chrome.
+        var inApp = false;
+        try {
+            inApp = document.referrer.indexOf('android-app://') === 0 ||
+                new URLSearchParams(location.search).get('source') === 'pwa' ||
+                sessionStorage.getItem('fcm_in_app') === 'true';
+            if (inApp) sessionStorage.setItem('fcm_in_app', 'true');
+        } catch (e) { }
+
         var swRegistration = null;
 
         function registerToken() {
@@ -205,13 +219,28 @@
                 console.log('[FCM] Service worker registered, scope:', registration.scope);
                 console.log('[FCM] Notification.permission:', Notification.permission);
 
-                if (!isAuthenticated) {
-                    console.log('[FCM] User not authenticated, skipping');
+                if (Notification.permission === 'denied') {
+                    console.log('[FCM] Notifications denied by user');
                     return;
                 }
 
-                if (Notification.permission === 'denied') {
-                    console.log('[FCM] Notifications denied by user');
+                // The app asks on first launch, signed in or not - the token is
+                // registered once the customer signs in (the 'granted' branch below).
+                if (inApp && Notification.permission === 'default') {
+                    console.log('[FCM] In app, requesting permission directly');
+                    Notification.requestPermission().then(function (permission) {
+                        console.log('[FCM] Permission result:', permission);
+                        if (permission === 'granted' && isAuthenticated) {
+                            registerToken();
+                        }
+                    }).catch(function (err) {
+                        console.error('[FCM] Permission request error:', err);
+                    });
+                    return;
+                }
+
+                if (!isAuthenticated) {
+                    console.log('[FCM] User not authenticated, skipping');
                     return;
                 }
 
