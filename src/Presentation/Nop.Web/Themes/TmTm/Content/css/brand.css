@@ -1331,6 +1331,21 @@ so the header sits directly
   .master-wrapper-page {
     padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
   }
+
+  /* A long press on a label should feel like an app, not raise Chrome's
+     copy/translate bar. Fields stay selectable so typing and paste still work. */
+  body {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  input,
+  textarea,
+  [contenteditable] {
+    -webkit-user-select: text;
+    user-select: text;
+  }
 }
 
 /* Stop the whole page rubber-banding behind the app shell. */

@@ -25,5 +25,14 @@
     sheet that replaced the stacked navbar. Hidden from 1001px up, where the
     desktop header takes over. See _MobileNav.cshtml and brand.css.*@
 @{ await Html.RenderPartialAsync("_MobileNav"); }
+<script asp-location="Footer">
+    //Installed app only: a long press on a link or image should not raise
+    //Chrome's open/copy/download menu. Fields keep theirs for paste.
+    if (window.matchMedia('(display-mode: standalone)').matches)
+        document.addEventListener('contextmenu', function (event) {
+            if (!event.target.closest('input, textarea, [contenteditable]'))
+                event.preventDefault();
+        });
+</script>
 @await Component.InvokeAsync(typeof(EuCookieLawViewComponent))
 @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.BodyEndHtmlTagBefore })
