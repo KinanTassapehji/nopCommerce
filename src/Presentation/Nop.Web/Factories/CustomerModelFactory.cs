@@ -612,13 +612,7 @@ public partial class CustomerModelFactory : ICustomerModelFactory
             });
         }
 
-        model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
-        {
-            RouteName = NopRouteNames.Standard.CUSTOMER_CHANGE_PASSWORD,
-            Title = await _localizationService.GetResourceAsync("Account.ChangePassword"),
-            Tab = (int)CustomerNavigationEnum.ChangePassword,
-            ItemClass = "change-password"
-        });
+        //change password is reached from the customer info page, not from its own tab
 
         if (_customerSettings.AllowCustomersToUploadAvatars)
         {
