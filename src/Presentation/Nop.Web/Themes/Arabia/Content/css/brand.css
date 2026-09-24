@@ -6886,6 +6886,166 @@ so the field stays visible beside the icon. */
 }
 
 
+/* --- Account pages on a phone: the sections as chips, always open ----------
+   The base sheet collapses every sidebar block behind its title below
+   1001px, so the account navigation was one grey "حسابي" bar - and nothing
+   about it said that orders and addresses lived behind a tap. The sections
+   come out as the same scrolling chip row the catalogue pages use for
+   categories, so what the account holds is visible without knowing to look.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1000px){
+
+  .block-account-navigation{
+    max-width: none;
+    min-height: 0;
+    margin: 0 !important; /* the base sheet sets margin:auto !important */
+  }
+
+  /* The heading goes with the accordion: the footer binds its slideToggle to
+     every `.block .title`, so with no title the row cannot be collapsed. The
+     page's own <h1> already says which section you are in. */
+  .block-account-navigation > .title{
+    display: none;
+  }
+
+  .block-account-navigation .listbox{
+    display: block;
+    border: 0;
+    padding: 0;
+  }
+
+  .block-account-navigation .list{
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    padding-block-end: 2px;
+  }
+
+  .block-account-navigation .list::-webkit-scrollbar{
+    display: none;
+  }
+
+  .block-account-navigation .list li{
+    display: contents;
+  }
+
+  /* Same chip as the category row above. */
+  .block-account-navigation .list a{
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding-block: 8px;
+    padding-inline: 14px;
+    border: 1px solid var(--ar-blue-border);
+    border-radius: 999px;
+    background: var(--ar-surface);
+    color: var(--ar-ink);
+    font-size: var(--ar-fs-label);
+    line-height: var(--ar-lh-label);
+    font-weight: 600;
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+
+  .block-account-navigation .list a:before{
+    content: none;
+  }
+
+  .block-account-navigation .list .active > a{
+    border-color: var(--ar-blue);
+    background: var(--ar-blue);
+    color: var(--ar-white);
+  }
+
+  .block-account-navigation .list a:hover,
+  .block-account-navigation .list a:focus-visible{
+    border-color: var(--ar-blue-mid);
+    background: var(--ar-blue-tint);
+    color: var(--ar-ink);
+  }
+
+  .block-account-navigation .list .active > a:hover,
+  .block-account-navigation .list .active > a:focus-visible{
+    background: var(--ar-blue-hover);
+    color: var(--ar-white);
+  }
+}
+
+
+/* --- Logout, every width: an exit, not one more section -------------------
+   It sat in the account list looking exactly like العناوين or الطلبات, so the
+   one destructive link read as another page. Error colour, an exit icon in
+   place of the list bullet, and on the sidebar a rule above it. */
+.block-account-navigation .list .customer-logout{
+  margin-block-start: 8px;
+  padding-block-start: 8px;
+  border-block-start: 1px solid var(--ar-line);
+}
+
+.block-account-navigation .list .customer-logout > a{
+  display: inline-flex;
+  align-items: center;
+  color: var(--ar-error);
+  font-weight: 600;
+}
+
+.block-account-navigation .list .customer-logout > a:hover,
+.block-account-navigation .list .customer-logout > a:focus-visible{
+  color: var(--ar-error);
+  text-decoration: underline;
+}
+
+/* The base bullet is a 5px absolutely-positioned square; this reuses the
+   slot for the icon. Material "logout", mirrored in RTL so the arrow points
+   out of the door in the reading direction. */
+.block-account-navigation .list .customer-logout > a:before{
+  content: "";
+  position: static;
+  flex: 0 0 auto;
+  inline-size: 18px;
+  block-size: 18px;
+  margin-inline-end: 8px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.block-account-navigation .list .customer-logout > a:dir(rtl):before{
+  transform: scaleX(-1);
+}
+
+@media (max-width: 1000px){
+
+  /* The rule above is a sidebar separator; in the chip row the gap does it. */
+  .block-account-navigation .list .customer-logout{
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  /* A ghost chip in the error colour, set apart from the sections by
+     extra space - it leaves the account rather than opening part of it. */
+  .block-account-navigation .list .customer-logout > a{
+    margin-inline-start: 8px;
+    border-color: currentColor;
+    background: transparent;
+    color: var(--ar-error);
+  }
+
+  .block-account-navigation .list .customer-logout > a:hover,
+  .block-account-navigation .list .customer-logout > a:focus-visible{
+    border-color: var(--ar-error);
+    background: var(--ar-error);
+    color: var(--ar-white);
+    text-decoration: none;
+  }
+}
+
+
 /* --- The product's category on a phone -------------------------------------
    The breadcrumb is hidden on mobile further up this file, because on a
    catalogue page the <h1> already says where you are. A product page is the
@@ -8107,6 +8267,56 @@ so the field stays visible beside the icon. */
   line-height: var(--ar-lh-title);
   font-weight: 700;
   color: var(--ar-blue);
+}
+
+/* The base sheet centres .page-body on a phone, and the address lines
+   inherited it - each one centred on its own, so street, area and city
+   zigzagged down the card. */
+.address-list-page .address-list{
+  text-align: start;
+}
+
+/* --- Addresses on a phone ---------------------------------------------------
+   "Add new" sat under every card, a scroll past the whole list away; it is the
+   page's primary action, so it leads the page at full width. Edit and delete
+   split the card footer evenly into two thumb-sized targets instead of two
+   small buttons huddled in one corner. */
+@media (max-width: 1000px){
+
+  .address-list-page .page-body{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .address-list-page .add-button{
+    order: -1;
+    margin-block-end: var(--ar-stack-md);
+  }
+
+  .address-list-page .add-button .button-1{
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .address-list-page .add-button .button-1:before{
+    content: "+";
+    margin-inline-end: 8px;
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .address-list-page .address-list{
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ar-stack-md);
+  }
+
+  .address-list-page .address-list .buttons{
+    flex-wrap: nowrap;
+  }
+
+  .address-list-page .address-list .buttons .button-2{
+    flex: 1 1 0;
+  }
 }
 
 /* --- Period filter and "add new" ------------------------------------------

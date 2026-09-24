@@ -352,22 +352,32 @@
                     </div>
                 </section>
             }
-            @* ponytail: inside the form only for placement - the selector navigates on
-                change, its value is not bound by the info post *@
-            <section class="fieldset customer-language">
-                <h2 class="title">
-                    @T("Languages.Selector.Label")
-                </h2>
-                <div class="form-fields">
-                    <div class="inputs">
-                        @await Component.InvokeAsync(typeof(LanguageSelectorViewComponent))
-                    </div>
-                </div>
-            </section>
             <section class="buttons">
                 <button type="submit" id="save-info-button" name="save-info-button" class="button-1 save-customer-info-button">@T("Common.Save")</button>
             </section>
         </form>
+        @*password and language act on their own, not through the info post, so
+            they sit after the form's save button rather than above it*@
+        <section class="fieldset customer-password">
+            <h2 class="title">
+                @T("Account.ChangePassword")
+            </h2>
+            <div class="form-fields">
+                <div class="buttons">
+                    <a href="@Url.RouteUrl(NopRouteNames.Standard.CUSTOMER_CHANGE_PASSWORD)" class="button-2 change-password-button">@T("Account.ChangePassword")</a>
+                </div>
+            </div>
+        </section>
+        <section class="fieldset customer-language">
+            <h2 class="title">
+                @T("Languages.Selector.Label")
+            </h2>
+            <div class="form-fields">
+                <div class="inputs">
+                    @await Component.InvokeAsync(typeof(LanguageSelectorViewComponent))
+                </div>
+            </div>
+        </section>
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CustomerInfoBottom, additionalData = Model })
     </div>
 </div>
