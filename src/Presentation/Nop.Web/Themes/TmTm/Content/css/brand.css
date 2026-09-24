@@ -6091,11 +6091,6 @@ so the field stays visible beside the icon. */
   margin: 0;
 }
 
-/* "Use my location" is a button, not a field: it keeps its own width. */
-.address-edit-page .address-map .address-map-locate{
-  flex: 0 0 auto;
-}
-
 .address-edit-page .address-map .address-map-canvas{
   border: 1px solid var(--tm-line);
   border-radius: var(--tm-radius);
