@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Language Name="اللغة الانجليزية" SupportedVersion="4.90">
+<Language Name="اللغة الإنجليزية" SupportedVersion="4.90">
   <LocaleResource Name="Account.AccountActivation">
     <Value>تفعيل الحساب</Value>
   </LocaleResource>
@@ -10,7 +10,7 @@
     <Value>تم تفعيل حسابك من قبل</Value>
   </LocaleResource>
   <LocaleResource Name="Account.Administration">
-    <Value>ادارة الحساب</Value>
+    <Value>إدارة الحساب</Value>
   </LocaleResource>
   <LocaleResource Name="Account.Avatar">
     <Value>صورة رمزية</Value>
@@ -67,7 +67,7 @@
     <Value>يجب تغيير كلمة المرور لأغراض أمنية.</Value>
   </LocaleResource>
   <LocaleResource Name="Account.ChangePassword.PasswordIsExpired">
-    <Value>لقد انتهت صلاحية كلمة المرور الخاصة بك. يرجى انشاء كلمة مرور جديد</Value>
+    <Value>لقد انتهت صلاحية كلمة المرور الخاصة بك. يرجى إنشاء كلمة مرور جديد</Value>
   </LocaleResource>
   <LocaleResource Name="Account.ChangePassword.Success">
     <Value>تم تغيير كلمة المرور</Value>
@@ -538,7 +538,7 @@
     <Value>إستعادة كلمة المرور</Value>
   </LocaleResource>
   <LocaleResource Name="Account.PasswordRecovery.Tooltip">
-    <Value>يرجى إدخال عنوان البريد الالكتروني أدناه. سوف تسقبل بريد به رابط لإعادة تعيين كلمة المرور الخاصة بك.</Value>
+    <Value>يرجى إدخال عنوان البريد الإلكتروني أدناه. سوف تسقبل بريد به رابط لإعادة تعيين كلمة المرور الخاصة بك.</Value>
   </LocaleResource>
   <LocaleResource Name="Account.PasswordRecovery.WrongToken">
     <Value>رمز إعادة تعيين كلمة المرور غير صحيح</Value>
@@ -706,7 +706,7 @@
     <Value>تمت إضافة نوع مراجعة جديد (ID = {0})</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.AddNewSetting">
-    <Value>تم إضافة اعدادات جديدة ('{0}')</Value>
+    <Value>تم إضافة إعدادات جديدة ('{0}')</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.AddNewStateProvince">
     <Value>تم إضافة مدينة جديدة (رقم = {0})</Value>
@@ -1060,19 +1060,19 @@
     <Value>تم تثبيت إضافة جديدة (FriendlyName: '{0}': {1})</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.PublicStore.AddBlogComment">
-    <Value>تم اضافة تعليق على المدونة</Value>
+    <Value>تم إضافة تعليق على المدونة</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.PublicStore.AddNewsComment">
-    <Value>تم اضافة تعليق على الخبر</Value>
+    <Value>تم إضافة تعليق على الخبر</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.PublicStore.AddProductReview">
-    <Value>تم اضافة تقييم منتج ('{0}')</Value>
+    <Value>تم إضافة تقييم منتج ('{0}')</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.PublicStore.AddToCompareList">
-    <Value>تم اضافة منتج للمقارنة ('{0}')</Value>
+    <Value>تم إضافة منتج للمقارنة ('{0}')</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.PublicStore.AddToShoppingCart">
-    <Value>تم اضافة منتج لعربة التسوق ('{0}')</Value>
+    <Value>تم إضافة منتج لعربة التسوق ('{0}')</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.PublicStore.PasswordChanged">
     <Value>متجر عام. قام العميل بتغيير كلمة المرور</Value>
@@ -1093,7 +1093,7 @@
     <Value>تم عمل طلب جديد (رقم = {0})</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.PublicStore.SendPM">
-    <Value>تم ارسال رسالة ('{0}')</Value>
+    <Value>تم إرسال رسالة ('{0}')</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.PublicStore.ViewCategory">
     <Value>تم مشاهدة قسم ('{0}')</Value>
@@ -1114,7 +1114,7 @@
     <Value>تم تحميل رمز Fvicon جديد ورموز التطبيق للمتجر (رقم = '{0}')</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.UploadNewPlugin">
-    <Value>تم رفع اضافة (بإسم: '{0}')</Value>
+    <Value>تم رفع إضافة (بإسم: '{0}')</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.UploadNewTheme">
     <Value>تم رفع تصميم (بإسم: '{0}')</Value>
@@ -1237,13 +1237,13 @@
     <Value>بيانات العنوان الإضافية</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.AddressAttributes.Added">
-    <Value>البيانات الجديدة تم اضافتها </Value>
+    <Value>البيانات الجديدة تم إضافتها </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.AddressAttributes.AddNew">
-    <Value>قم باضافة بيانات عنوان جديدة</Value>
+    <Value>قم بإضافة بيانات عنوان جديدة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.AddressAttributes.BackToList">
-    <Value>الرجوع الى بيانات العنوان</Value>
+    <Value>الرجوع إلى بيانات العنوان</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.AddressAttributes.Deleted">
     <Value>تم مسح البيان</Value>
@@ -1252,7 +1252,7 @@
     <Value>إذا كانت حقول النموذج الافتراضي غير كافية لاحتياجاتك، يمكنك إدارة بيانات العنوان الإضافية أدناه.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.AddressAttributes.EditAttributeDetails">
-    <Value>تعديل تفاصيل العنوان الاضافية</Value>
+    <Value>تعديل تفاصيل العنوان الإضافية</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.AddressAttributes.Fields.AttributeControlType">
     <Value>نوع التحكم</Value>
@@ -1279,7 +1279,7 @@
     <Value>إسم سمة العنوان</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.AddressAttributes.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.AddressAttributes.Info">
     <Value>معلومات السمة</Value>
@@ -1315,7 +1315,7 @@
     <Value>أسم قيمة العنوان</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.AddressAttributes.Values.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.AddressAttributes.Values.SaveBeforeEdit">
     <Value>يجب حفظ سمة العنوان قبل أن تتمكن من إضافة قيم لسمة العنوان هذه.</Value>
@@ -1447,7 +1447,7 @@
     <Value>المسوقين</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Affiliates.Added">
-    <Value>تم اضافة مسوق جديد بنجاح</Value>
+    <Value>تم إضافة مسوق جديد بنجاح</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Affiliates.AddNew">
     <Value>اضف مسوق جديد</Value>
@@ -1555,7 +1555,7 @@
     <Value>البحث حسب حالة طلب محددة، على سبيل المثال، مكتمل.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Affiliates.Orders.OrderTotal">
-    <Value>اجمالى الطلب</Value>
+    <Value>إجمالى الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Affiliates.Orders.PaymentStatus">
     <Value>حالة الدفع</Value>
@@ -1645,10 +1645,10 @@
     <Value>سمات الدفع</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.CheckoutAttributes.Added">
-    <Value>البيانات الجديدة تم اضافتها </Value>
+    <Value>البيانات الجديدة تم إضافتها </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.CheckoutAttributes.AddNew">
-    <Value>اضافة سمة دفع جديدة</Value>
+    <Value>إضافة سمة دفع جديدة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.CheckoutAttributes.BackToList">
     <Value>العودة لقائمة سمات الدفع</Value>
@@ -1750,7 +1750,7 @@
     <Value>أسم سمة الدفع</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.CheckoutAttributes.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.CheckoutAttributes.Fields.ShippableProductRequired">
     <Value>مطلوب منتج قابل للشحن</Value>
@@ -1780,7 +1780,7 @@
     <Value>قيم السمات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.CheckoutAttributes.Values.AddNew">
-    <Value>اضافة قيمة سمة دفع جديدة</Value>
+    <Value>إضافة قيمة سمة دفع جديدة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.CheckoutAttributes.Values.EditValueDetails">
     <Value>عدل قيمة سمة الدفع</Value>
@@ -1810,7 +1810,7 @@
     <Value>أسم سمة الدفع</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.CheckoutAttributes.Values.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.CheckoutAttributes.Values.Fields.PriceAdjustment">
     <Value>تعديل السعر</Value>
@@ -1831,7 +1831,7 @@
     <Value>سمات المنتجات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.ProductAttributes.Added">
-    <Value>البيانات الجديدة تم اضافتها </Value>
+    <Value>البيانات الجديدة تم إضافتها </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.ProductAttributes.AddNew">
     <Value>اضف سمة منتجات جديدة</Value>
@@ -1861,7 +1861,7 @@
     <Value>إسم سمة المنتج</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.ProductAttributes.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.ProductAttributes.Info">
     <Value>التفاصيل</Value>
@@ -1900,7 +1900,7 @@
     <Value>اسم قيمة السمة على سبيل المثال 'الأزرق' لسمات اللون.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.ProductAttributes.PredefinedValues.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.ProductAttributes.PredefinedValues.Fields.PriceAdjustment">
     <Value>تعديل السعر</Value>
@@ -1996,7 +1996,7 @@
     <Value>حدد خصومات لتطبيقها على هذه الفئة. يمكنك إدارة الخصومات عن طريق تحديد خصومات من قائمة العروض الترويجية.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Categories.Fields.Discounts.NoDiscounts">
-    <Value>لا يوجد خصومات متوفرة. يرجى اضافة خصم واحد على الأقل قبل اختياره.</Value>
+    <Value>لا يوجد خصومات متوفرة. يرجى إضافة خصم واحد على الأقل قبل اختياره.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Categories.Fields.DisplayOrder">
     <Value>الترتيب</Value>
@@ -2041,7 +2041,7 @@
     <Value>إسم القسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Categories.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Categories.Fields.PageSize">
     <Value>حجم المنتجات فى الصفحة</Value>
@@ -2182,7 +2182,7 @@
     <Value>المنتج</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Categories.Products.SaveBeforeEdit">
-    <Value>يرجى حفظ القسم قبل اضافة منتجات له</Value>
+    <Value>يرجى حفظ القسم قبل إضافة منتجات له</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Categories.Updated">
     <Value>تم تحديث القسم بنجاح</Value>
@@ -2236,7 +2236,7 @@
     <Value>الشركات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Manufacturers.Added">
-    <Value>تم اضافة الشركة بنجاح</Value>
+    <Value>تم إضافة الشركة بنجاح</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Manufacturers.AddNew">
     <Value>اضف شركة</Value>
@@ -2275,7 +2275,7 @@
     <Value>حدد خصومات تطبق على هذه الشركة المصنعة. يمكنك إدارة الخصومات عن طريق تحديد خصومات من قائمة العروض الترويجية.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Manufacturers.Fields.Discounts.NoDiscounts">
-    <Value>لا يوجد خصومات متوفرة. يرجى اضافة خصم واحد على الأقل قبل اختياره.</Value>
+    <Value>لا يوجد خصومات متوفرة. يرجى إضافة خصم واحد على الأقل قبل اختياره.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Manufacturers.Fields.DisplayOrder">
     <Value>الترتيب</Value>
@@ -2326,7 +2326,7 @@
     <Value>إسم الشركة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Manufacturers.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Manufacturers.Fields.PageSize">
     <Value>حجم المنتجات فى الصفحة</Value>
@@ -2473,7 +2473,7 @@
     <Value>انشأ فى</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductReviews.Fields.CreatedOn.Hint">
-    <Value>تاريخ انشاء التقييم</Value>
+    <Value>تاريخ إنشاء التقييم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductReviews.Fields.Customer">
     <Value>العميل</Value>
@@ -2581,7 +2581,7 @@
     <Value>المنتجات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Added">
-    <Value>تم اضافة منتج جديد بنجاح</Value>
+    <Value>تم إضافة منتج جديد بنجاح</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.AddNew">
     <Value>اضف منتج جديد</Value>
@@ -2797,7 +2797,7 @@
     <Value>ادخل الوحدة المرجعية.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.BasepriceEnabled">
-    <Value>PAngV (base price) اتاحة اختيار</Value>
+    <Value>PAngV (base price) إتاحة اختيار</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.BasepriceEnabled.Hint">
     <Value>تحقق لعرض السعر الأساسي للمنتج. وهذا مطلوب وفقا للقانون الألماني (بانغف). إذا كنت تبيع 500ml من البيرة ل 1،50 اليورو، ثم لديك لعرض السعر الأساسي: 3.00 يورو لكل 1L.</Value>
@@ -2851,7 +2851,7 @@
     <Value>حدد خصومات هذا المنتج. يمكنك إدارة الخصومات عن طريق تحديد خصومات من قائمة العروض الترويجية</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.Discounts.NoDiscounts">
-    <Value>لا يوجد خصومات متوفرة. يرجى اضافة خصم واحد على الأقل قبل اختياره.</Value>
+    <Value>لا يوجد خصومات متوفرة. يرجى إضافة خصم واحد على الأقل قبل اختياره.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.DisplayAttributeCombinationImagesOnly">
     <Value>عرض الصور المرفوعة فقط لتركيبة السمة</Value>
@@ -3019,7 +3019,7 @@
     <Value>اسم المنتج</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.NotifyAdminForQuantityBelow">
     <Value>تنبيه عند كمية</Value>
@@ -3070,7 +3070,7 @@
     <Value>نطاق توفر المنتج</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.ProductAvailabilityRange.Hint">
-    <Value>اختر نطاق توافر المنتج الذي يشير إلى الوقت المتوقع أن يكون المنتج متاحًا عند نفاد المخزون (على سبيل المثال متوفر في 10 إلى 14 يومًا). يمكنك إدارة نطاقات توافر المنتج عن طريق تحديد تهيئة اعدادات الشحن والتواريخ والنطاقات.</Value>
+    <Value>اختر نطاق توافر المنتج الذي يشير إلى الوقت المتوقع أن يكون المنتج متاحًا عند نفاد المخزون (على سبيل المثال متوفر في 10 إلى 14 يومًا). يمكنك إدارة نطاقات توافر المنتج عن طريق تحديد تهيئة إعدادات الشحن والتواريخ والنطاقات.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.ProductAvailabilityRange.None">
     <Value>لا يوجد</Value>
@@ -3259,7 +3259,7 @@
     <Value>تحميل المنتجات كملف PDF</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.List.GoDirectlyToSku">
-    <Value>الانتقال مباشرة الى كود المخزن </Value>
+    <Value>الانتقال مباشرة إلى كود المخزن </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.List.GoDirectlyToSku.Hint">
     <Value>ادخل كود المنتج المخزنى واضغط الذهاب</Value>
@@ -3436,7 +3436,7 @@
     <Value>مجموعات السمات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.ProductAttributes.AttributeCombinations.AddNew">
-    <Value>اضافة مجموعة</Value>
+    <Value>إضافة مجموعة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.ProductAttributes.AttributeCombinations.AddTitle">
     <Value>حدد مجموعة جديدة وادخل التفاصيل باسفل</Value>
@@ -3541,13 +3541,13 @@
     <Value>السمات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.ProductAttributes.Attributes.Added">
-    <Value>البيانات الجديدة تم اضافتها </Value>
+    <Value>البيانات الجديدة تم إضافتها </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.ProductAttributes.Attributes.AddNew">
     <Value>اضف سمة جديدة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.ProductAttributes.Attributes.AlreadyExists">
-    <Value>هذه السمة تم اضافتها من قبل</Value>
+    <Value>هذه السمة تم إضافتها من قبل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.ProductAttributes.Attributes.AlreadyExistsInCombination">
     <Value>هذه السمة موجودة بالفعل في المجموعة: '{0}'.</Value>
@@ -3735,7 +3735,7 @@
     <Value>اسم قيمة السمة على سبيل المثال 'الأزرق' لسمات اللون.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.ProductAttributes.Attributes.Values.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.ProductAttributes.Attributes.Values.Fields.Picture">
     <Value>الصورة او الشعار</Value>
@@ -3877,7 +3877,7 @@
     <Value>اسعار الجملة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.TierPrices.AddNew">
-    <Value>اضافة سعر جملة جديد</Value>
+    <Value>إضافة سعر جملة جديد</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.TierPrices.Edit">
     <Value>تعديل السعر</Value>
@@ -3970,7 +3970,7 @@
     <Value>اسم علامة المنتج</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductTags.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductTags.Fields.ProductCount">
     <Value>منتجات لها علامات</Value>
@@ -3985,7 +3985,7 @@
     <Value>علامة المنتج المعلومات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductTags.Seo">
-    <Value>اعدادات محرك البحث</Value>
+    <Value>إعدادات محرك البحث</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductTags.TaggedProducts">
     <Value>يتم استخدامها بواسطة منتجات</Value>
@@ -4039,7 +4039,7 @@
     <Value>هل انت متأكد؟</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.Cancel">
-    <Value>الغاء</Value>
+    <Value>إلغاء</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.Change">
     <Value>تعديل</Value>
@@ -4069,7 +4069,7 @@
     <Value>---</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.ExcelFile">
-    <Value>ملف اكسيل</Value>
+    <Value>ملف إكسيل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.Export">
     <Value>تصدير</Value>
@@ -4078,13 +4078,13 @@
     <Value>تصدير CSV</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.ExportToExcel">
-    <Value>تصدير لاكسيل</Value>
+    <Value>تصدير لإكسيل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.ExportToExcel.All">
-    <Value>تصدير لاكسيل الكل</Value>
+    <Value>تصدير لإكسيل الكل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.ExportToExcel.Selected">
-    <Value>تصدير لاكسيل المختار</Value>
+    <Value>تصدير لإكسيل المختار</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.ExportToXml">
     <Value>تصدير XML</Value>
@@ -4099,7 +4099,7 @@
     <Value>الذهاب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.Hide">
-    <Value>اخفاء</Value>
+    <Value>إخفاء</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.Import">
     <Value>استيراد</Value>
@@ -4108,7 +4108,7 @@
     <Value>استيراد من CSV</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.ImportFromExcel">
-    <Value>استيراد من اكسيل</Value>
+    <Value>استيراد من إكسيل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.ImportFromExcel.ManyRecordsWarning">
     <Value>يتطلب الاستيراد الكثير من موارد الذاكرة. لهذا السبب لا ينصح باستيراد أكثر من 500 - 1000 سجل في وقت واحد. إذا كان لديك المزيد من السجلات، فمن الأفضل تقسيمها إلى ملفات إكسيل متعددة والاستيراد بشكل منفصل.</Value>
@@ -4117,7 +4117,7 @@
     <Value>لا</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.NoCancel">
-    <Value>لا , الغاء</Value>
+    <Value>لا , إلغاء</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.Ok">
     <Value>موافق</Value>
@@ -4141,10 +4141,10 @@
     <Value>اختار</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.SEO">
-    <Value>اعدادات محرك البحث</Value>
+    <Value>إعدادات محرك البحث</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.Show">
-    <Value>اظهار</Value>
+    <Value>إظهار</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.Standard">
     <Value>اساسي</Value>
@@ -4174,7 +4174,7 @@
     <Value>ملف مضغوط</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration">
-    <Value>اعدادات</Value>
+    <Value>إعدادات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.ACL">
     <Value>قائمة الصلاحيات</Value>
@@ -4315,7 +4315,7 @@
     <Value>مدة انتهاء تنفيذ الامر مع قاعدة البيانات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.AppSettings.Data.SQLCommandTimeout.Hint">
-    <Value>تحديد وقت الانتظار (بالثواني) قبل إنهاء محاولة تنفيذ الأمر وانشاء الخطأ. بمبدئيا، لا يتم تحديد قيمة مبدئيه للمزود المتسخدم لقاعدة البيانات الحالي. حدد قيمة 0 لاستخدام المهلة اللانهائية.</Value>
+    <Value>تحديد وقت الانتظار (بالثواني) قبل إنهاء محاولة تنفيذ الأمر وإنشاء الخطأ. بمبدئيا، لا يتم تحديد قيمة مبدئيه للمزود المتسخدم لقاعدة البيانات الحالي. حدد قيمة 0 لاستخدام المهلة اللانهائية.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.AppSettings.Data.WithNoLock">
     <Value>استخدام NOLOCK</Value>
@@ -4411,7 +4411,7 @@
     <Value>تكوين التثبيت</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.AppSettings.Installation.DisabledPlugins">
-    <Value>الاضافات المعطلة</Value>
+    <Value>الإضافات المعطلة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.AppSettings.Installation.DisabledPlugins.Hint">
     <Value>حدد قائمة من الإضافات (مفصولة بفواصل) تم تجاهلها أثناء التثبيت.</Value>
@@ -4495,7 +4495,7 @@
     <Value>تعديل الدولة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Countries.ExportToCsv">
-    <Value>تصدير المحافظات الى CSV</Value>
+    <Value>تصدير المحافظات إلى CSV</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Countries.Fields.AllowsBilling">
     <Value>السماح بالدفع</Value>
@@ -4528,7 +4528,7 @@
     <Value>اسم الدولة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Countries.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Countries.Fields.NumberOfStates">
     <Value>عدد المحافظات</Value>
@@ -4621,7 +4621,7 @@
     <Value>اسم المحافظة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Countries.States.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Countries.States.Fields.Published">
     <Value>النشر</Value>
@@ -4633,7 +4633,7 @@
     <Value>يلزمك حفظ البلد قبل أن تتمكن من إضافة ولايات لصفحة البلد هذه.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Countries.UnpublishSelected">
-    <Value>الغاء نشر المختار</Value>
+    <Value>إلغاء نشر المختار</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Countries.Updated">
     <Value>تم تحديث الدولة بنجاح.</Value>
@@ -4642,7 +4642,7 @@
     <Value>العملات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Currencies.Added">
-    <Value>تم اضافة عملة بنجاح.</Value>
+    <Value>تم إضافة عملة بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Currencies.AdditionalConfirm">
     <Value><![CDATA[<p> تحذير. لا يُنصح بالقيام بذلك على المواقع الحية بسبب: لانه لا يتم تلقائيًا تحويل أسعار المنتج أو إجمالي الطلبات أو أسعار الشحن إلى عملة جديدة ولا يتم تحديث أسعار صرف العملات تلقائيًا ]]></Value>
@@ -4678,7 +4678,7 @@
     <Value>انشأ فى</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Currencies.Fields.CreatedOn.Hint">
-    <Value>تاريخ انشاء العملة</Value>
+    <Value>تاريخ إنشاء العملة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Currencies.Fields.CurrencyCode">
     <Value>رمز العملة</Value>
@@ -4690,7 +4690,7 @@
     <Value>يجب أن يكون رمز العملة أقل من أو يساوي 5 أحرف.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Currencies.Fields.CurrencyCode.Required">
-    <Value>يرجى ادخال رمز العملة.</Value>
+    <Value>يرجى إدخال رمز العملة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Currencies.Fields.CurrencyRateAutoUpdateEnabled">
     <Value>تحديث تلقائي للاسعار</Value>
@@ -4759,7 +4759,7 @@
     <Value>يجب أن يكون الاسم أقل من أو يساوي 50 حرفا.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Currencies.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Currencies.Fields.Published">
     <Value>النشر</Value>
@@ -4798,7 +4798,7 @@
     <Value>حسابات البريد</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.EmailAccounts.Added">
-    <Value>تم اضافة حساب بريد الكتروني بنجاح</Value>
+    <Value>تم إضافة حساب بريد إلكتروني بنجاح</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.EmailAccounts.AddNew">
     <Value>اضف حساب بريد</Value>
@@ -4906,7 +4906,7 @@
     <Value>مخرج SMTP والطبيعى هو 25.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.EmailAccounts.Fields.SendTestEmailTo">
-    <Value>ارسال بريد تجربة الى</Value>
+    <Value>إرسال بريد تجربة إلى</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.EmailAccounts.Fields.SendTestEmailTo.Hint">
     <Value>أرسل رسالة اختبار للتأكد من تهيئة كل شيء بشكل صحيح.</Value>
@@ -4936,7 +4936,7 @@
     <Value>ارسل بريد إختباري</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.EmailAccounts.SendTestEmail.Success">
-    <Value>تم ارسال البريد بنجاح</Value>
+    <Value>تم إرسال البريد بنجاح</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.EmailAccounts.Updated">
     <Value>تم تحديث حساب البريد الإلكتروني بنجاح.</Value>
@@ -4951,7 +4951,7 @@
     <Value>اللغة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Languages.Added">
-    <Value>تم ادخال لغة جديدة بنجاح.</Value>
+    <Value>تم إدخال لغة جديدة بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Languages.AddNew">
     <Value>ادخل لغة جديدة</Value>
@@ -5014,7 +5014,7 @@
     <Value>اسم اللغة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Languages.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Languages.Fields.Published">
     <Value>النشر</Value>
@@ -5065,7 +5065,7 @@
     <Value>أدخل اسم مورد الإعدادات المحلية.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Languages.Resources.Fields.Name.Required">
-    <Value>يرجي ادخال الاسم</Value>
+    <Value>يرجي إدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Languages.Resources.Fields.Value">
     <Value>القيمة</Value>
@@ -5074,7 +5074,7 @@
     <Value>أدخل قيمة مورد الإعدادات المحلية.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Languages.Resources.Fields.Value.Required">
-    <Value>يرجى ادخال القيمة.</Value>
+    <Value>يرجى إدخال القيمة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Languages.Resources.NameAlreadyExists">
     <Value>يوجد اسم متشهابه: {0}</Value>
@@ -5116,7 +5116,7 @@
     <Value>يرجي اختيار الدول الغير متاح بها طريقة الدفع</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Payment.MethodRestrictions.Updated">
-    <Value>تم تحديث الاعدادات بنجاح</Value>
+    <Value>تم تحديث الإعدادات بنجاح</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Payment.Methods">
     <Value>طرق الدفع</Value>
@@ -5149,13 +5149,13 @@
     <Value>تدعم الارتجاع</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Payment.Methods.Fields.SupportVoid">
-    <Value>تدعم الالغاء</Value>
+    <Value>تدعم الإلغاء</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Payment.Methods.Fields.SystemName">
     <Value>الاسم الكودي</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.AdditionalInfo">
-    <Value>معلومات اضافية</Value>
+    <Value>معلومات إضافية</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.ApplyChanges">
     <Value>أعد تشغيل التطبيق لتطبيق التغييرات</Value>
@@ -5176,7 +5176,7 @@
     <Value>التثبيت اليدوي للإضافة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Description.Step1">
-    <Value>رفع الى مجلد الخاص بك</Value>
+    <Value>رفع إلى مجلد الخاص بك</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Description.Step2">
     <Value>أعد تشغيل التطبيق (أو انقر على زر "إعادة تحميل قائمة الإضافات").</Value>
@@ -5197,7 +5197,7 @@
     <Value>تجاهل التغييرات على المكونات الإضافية ...</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.EditDetails">
-    <Value>تعديل الاضافة</Value>
+    <Value>تعديل الإضافة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Fields.Author">
     <Value>المؤلف</Value>
@@ -5209,7 +5209,7 @@
     <Value>حذف</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Fields.Delete.Progress">
-    <Value>مسح الاضافة...</Value>
+    <Value>مسح الإضافة...</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Fields.DisplayOrder">
     <Value>الترتيب</Value>
@@ -5221,7 +5221,7 @@
     <Value>الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Fields.FriendlyName.Hint">
-    <Value>اسم الاضافة</Value>
+    <Value>اسم الإضافة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Fields.FriendlyName.Required">
     <Value>مطلوب اسم الإضافة</Value>
@@ -5260,13 +5260,13 @@
     <Value>الاسم الكودي</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Fields.Uninstall">
-    <Value>الغاء الثبيت</Value>
+    <Value>إلغاء الثبيت</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Fields.Uninstall.Progress">
     <Value>إلغاء تثبيت المكون الإضافي...</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Fields.Version">
-    <Value>الاصدار</Value>
+    <Value>الإصدار</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.FriendlyName">
     <Value>اسم الإضافة</Value>
@@ -5281,7 +5281,7 @@
     <Value>البحث بالمجموعة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Info">
-    <Value>تفاصيل الاضافة</Value>
+    <Value>تفاصيل الإضافة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.LoadMode">
     <Value>نوع التحميل</Value>
@@ -5290,16 +5290,16 @@
     <Value>البحث بنوع التحميل.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Local">
-    <Value>الاضافات المحلية</Value>
+    <Value>الإضافات المحلية</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Misc.BackToList">
-    <Value>العودة لقائمة الاضافات</Value>
+    <Value>العودة لقائمة الإضافات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Misc.Configure">
     <Value>تهيئة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.OfficialFeed">
-    <Value>كل الاضافات و التصاميم</Value>
+    <Value>كل الإضافات و التصاميم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.OfficialFeed.Category">
     <Value>القسم</Value>
@@ -5332,28 +5332,28 @@
     <Value>البحث بالسعر</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.OfficialFeed.SupportedVersions">
-    <Value>يدعم الاصدارات</Value>
+    <Value>يدعم الإصدارات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.OfficialFeed.Version">
-    <Value>الاصدار</Value>
+    <Value>الإصدار</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.OfficialFeed.Version.Hint">
-    <Value>البحث بالاصدار.</Value>
+    <Value>البحث بالإصدار.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.ReloadList">
-    <Value>اعادة تحميل الاضافات</Value>
+    <Value>إعادة تحميل الإضافات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.ReloadList.Progress">
-    <Value>اعادة تحميل الاضافات...</Value>
+    <Value>إعادة تحميل الإضافات...</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.SearchProvider.BackToList">
-    <Value>العودة لقائمة الاضافات</Value>
+    <Value>العودة لقائمة الإضافات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.SearchProvider.Configure">
     <Value>تهيئة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Upload">
-    <Value>تحميل اضافة</Value>
+    <Value>تحميل إضافة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Upload.Hint1">
     <Value>يجب أن يحتوي الأرشيف على مكون أساسي واحد فقط أو دليل موضوع (تم تجميعه بالفعل للمكون الإضافي). على سبيل المثال، payments.PayPalDirect.</Value>
@@ -5368,25 +5368,25 @@
     <Value>يمكنك أيضًا تحميل مكون إضافي أو سمة باستخدام FTP إذا كانت هذه الطريقة لا تناسبك.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Upload.Progress">
-    <Value>رفع الاضافات او التصاميم...</Value>
+    <Value>رفع الإضافات او التصاميم...</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Uploaded">
-    <Value>{0} اضافة و {1} تصميم تم رفعهم</Value>
+    <Value>{0} إضافة و {1} تصميم تم رفعهم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings">
-    <Value>الاعدادات</Value>
+    <Value>الإعدادات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.AllSettings">
-    <Value>كل الاعدادات (متقدم)</Value>
+    <Value>كل الإعدادات (متقدم)</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.AllSettings.Fields.Name">
-    <Value>اسم الاعداد</Value>
+    <Value>اسم الإعداد</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.AllSettings.Fields.Name.Hint">
     <Value>أدخل اسم الإعداد.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.AllSettings.Fields.Name.Required">
-    <Value>ادخل اسم الاعداد.</Value>
+    <Value>ادخل اسم الإعداد.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.AllSettings.Fields.Store">
     <Value>متجر</Value>
@@ -5419,7 +5419,7 @@
     <Value>البحث بالقيمة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Blog">
-    <Value>اعدادات المدونة</Value>
+    <Value>إعدادات المدونة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Blog.AllowNotRegisteredUsersToLeaveComments">
     <Value>السماح بالزوار بكتابة تعليقاتهم</Value>
@@ -5446,10 +5446,10 @@
     <Value>حدد هذا الإعداد لتمكين المدونة في متجرك.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Blog.NotifyAboutNewBlogComments">
-    <Value>اشعار بالتعليقات الجديدة للمدونة</Value>
+    <Value>إشعار بالتعليقات الجديدة للمدونة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Blog.NotifyAboutNewBlogComments.Hint">
-    <Value>اشعار بالتعليقات الجديدة للمدونة</Value>
+    <Value>إشعار بالتعليقات الجديدة للمدونة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Blog.NumberOfTags">
     <Value>عدد التعليقات (السحابية)</Value>
@@ -6814,7 +6814,7 @@
     <Value>أدخل اسم مستوى الفلترة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.FilterLevel.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.FilterLevel.Updated">
     <Value>تم تحديث مستوى الفلترة بنجاح.</Value>
@@ -7072,7 +7072,7 @@
     <Value>تحقق لتسجيل تغييرات ملف تعريف المستخدم (إذا تم تمكين هذه الميزة في متجرك).</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon">
-    <Value>الاعدادات العامة</Value>
+    <Value>الإعدادات العامة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.AdminArea.UseRichEditorInMessageTemplates">
     <Value>استخدم محررًا منسقًا في قوالب الرسائل</Value>
@@ -7141,13 +7141,13 @@
     <Value>الأمن</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.BlockTitle.SEO">
-    <Value>اعدادات محرك البحث</Value>
+    <Value>إعدادات محرك البحث</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.BlockTitle.Sitemap">
     <Value>خريطة الموقع</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.BlockTitle.SocialMedia">
-    <Value>وسائل الاعلام الاجتماعية</Value>
+    <Value>وسائل الإعلام الاجتماعية</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.BlockTitle.Translation">
     <Value>ترجمة</Value>
@@ -7921,7 +7921,7 @@
     <Value>إرفاق فاتورة PDF ("تم معالجة الطلب" بالبريد الإلكتروني)</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.AttachPdfInvoiceToOrderProcessingEmail.Hint">
-    <Value>ارفاق الفاتورة PDF بالبريد الإلكتروني "معالجة الطلب" الذي يتم إرساله إلى العميل.</Value>
+    <Value>إرفاق الفاتورة PDF بالبريد الإلكتروني "معالجة الطلب" الذي يتم إرساله إلى العميل.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.AutoUpdateOrderTotalsOnEditingOrder">
     <Value>مجاميع ترتيب التحديث التلقائي</Value>
@@ -7963,13 +7963,13 @@
     <Value>{ID} -  معرف الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.CustomOrderNumberMask.Description.MM">
-    <Value>{MM} - شهر من تاريخ انشاء الطلب </Value>
+    <Value>{MM} - شهر من تاريخ إنشاء الطلب </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.CustomOrderNumberMask.Description.YY">
     <Value>{YY} -آخر رقمين من سنة من تاريخ إنشاء الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.CustomOrderNumberMask.Description.YYYY">
-    <Value>{YYYY} - سنة من تاريخ انشاء الطلب</Value>
+    <Value>{YYYY} - سنة من تاريخ إنشاء الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.CustomOrderNumberMask.Hint">
     <Value>قناع رقم الأمر ، لإنشاء رقم أمر مخصص. على سبيل المثال ، RE- {YYYY} - {MM}. اترك هذا الحقل فارغًا إذا كنت لا تريد استخدام أرقام الطلبات المخصصة.</Value>
@@ -8080,7 +8080,7 @@
     <Value>اسم إجراء طلب المرتجعات.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.ReturnRequestActions.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.ReturnRequestActions.Updated">
     <Value>تم تحديث إجراء طلب المرتجعات بنجاح.</Value>
@@ -8140,7 +8140,7 @@
     <Value>اسم سبب طلب الإرجاع.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.ReturnRequestReasons.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.ReturnRequestReasons.Updated">
     <Value>تم تحديث سبب طلب الإرجاع بنجاح.</Value>
@@ -8224,7 +8224,7 @@
     <Value>اللوحات و انواع المنتج</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.Button">
-    <Value>الاعدادات</Value>
+    <Value>الإعدادات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.CallForPrice">
     <Value>الاتصال للسعر</Value>
@@ -8287,7 +8287,7 @@
     <Value>حدد الحقول التي تريد رؤيتها في صفحة تفاصيل المنتج في الوضع "الأساسي".</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.ModalTitle">
-    <Value>الاعدادات</Value>
+    <Value>الإعدادات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.NotifyAdminForQuantityBelow">
     <Value>تنبيه عند كمية</Value>
@@ -8299,7 +8299,7 @@
     <Value>السعر القديم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.PAngV">
-    <Value>PAngV (base price) اتاحة اختيار</Value>
+    <Value>PAngV (base price) إتاحة اختيار</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.ProductAttributes">
     <Value>سمات المنتجات</Value>
@@ -8329,7 +8329,7 @@
     <Value>منتجات ذات صلة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.Seo">
-    <Value>اعدادات محرك البحث</Value>
+    <Value>إعدادات محرك البحث</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.ShipSeparately">
     <Value>تشحن بشكل منفصل</Value>
@@ -8693,7 +8693,7 @@
     <Value>أدخل اسم تاريخ التسليم.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.DeliveryDates.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.DeliveryDates.Hint">
     <Value>قائمة تواريخ التسليم التي ستكون متاحة على صفحة تفاصيل المنتج.</Value>
@@ -8732,7 +8732,7 @@
     <Value>أدخل اسم البعد.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.Measures.Dimensions.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.Measures.Dimensions.Fields.Ratio">
     <Value>نسبة إلى البعد الأساسي</Value>
@@ -8777,7 +8777,7 @@
     <Value>أدخل اسم الوزن.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.Measures.Weights.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.Measures.Weights.Fields.Ratio">
     <Value>نسبة إلى الوزن الأساسي</Value>
@@ -8837,7 +8837,7 @@
     <Value>أدخل اسم طريقة الشحن.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.Methods.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.Methods.Manage">
     <Value>إدارة طرق الشحن</Value>
@@ -8870,7 +8870,7 @@
     <Value>الاسم الكودي</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.PickupPoints">
-    <Value>نقاط الارسال</Value>
+    <Value>نقاط الإرسال</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.ProductAvailabilityRanges">
     <Value>نطاقات توافر المنتج</Value>
@@ -8903,7 +8903,7 @@
     <Value>أدخل اسم نطاق توفر المنتج.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.ProductAvailabilityRanges.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.ProductAvailabilityRanges.Hint">
     <Value>قائمة خيارات نطاق التوفر التي ستكون متوفرة في تفاصيل المنتج.</Value>
@@ -8984,7 +8984,7 @@
     <Value>أدخل اسم المستودع.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.Warehouses.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.Warehouses.Updated">
     <Value>تم تحديث المستودع بنجاح.</Value>
@@ -9086,7 +9086,7 @@
     <Value>أدخل اسم متجرك على سبيل المثال متجرك.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Stores.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Stores.Fields.SslEnabled">
     <Value>SSL</Value>
@@ -9404,7 +9404,7 @@
     <Value>الموضوعات (الصفحات)</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement">
-    <Value>ادارة المحتوى</Value>
+    <Value>إدارة المحتوى</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Blog">
     <Value>مدونة</Value>
@@ -9470,7 +9470,7 @@
     <Value>لغة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Blog.BlogPosts.Fields.Language.Hint">
-    <Value>لغة الادخال فى  هذه المدونة . سيشاهد العميل فقط إدخالات المدونة للغة المحددة.</Value>
+    <Value>لغة الإدخال فى  هذه المدونة . سيشاهد العميل فقط إدخالات المدونة للغة المحددة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Blog.BlogPosts.Fields.LimitedToStores">
     <Value>يقتصر على المتاجر</Value>
@@ -10250,7 +10250,7 @@
     <Value>ارسل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Test.SendTo">
-    <Value>ارسال بريد تجربة الى</Value>
+    <Value>إرسال بريد تجربة إلى</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Test.SendTo.Hint">
     <Value>أرسل رسالة اختبار للتأكد من تهيئة كل شيء بشكل صحيح.</Value>
@@ -10862,7 +10862,7 @@
     <Value>سمات مخصصة للعملاء</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerAttributes.Added">
-    <Value>البيانات الجديدة تم اضافتها </Value>
+    <Value>البيانات الجديدة تم إضافتها </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerAttributes.AddNew">
     <Value>أضف سمة جديدة للعميل</Value>
@@ -10904,7 +10904,7 @@
     <Value>اسم سمة الزبون.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerAttributes.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerAttributes.Info">
     <Value>معلومات السمة</Value>
@@ -10940,7 +10940,7 @@
     <Value>إسم سمة العميل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerAttributes.Values.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerAttributes.Values.SaveBeforeEdit">
     <Value>يجب حفظ سمة العميل قبل أن تتمكن من إضافة قيم لصفحة سمة العميل هذه.</Value>
@@ -11003,7 +11003,7 @@
     <Value>اسم دور العميل.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerRoles.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerRoles.Fields.OverrideTaxDisplayType">
     <Value>تجاوز نوع عرض الضريبة الافتراضي</Value>
@@ -11192,7 +11192,7 @@
     <Value>اختار مجموعة العملاء لهذا العميل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Fields.CustomerRoles.NoRoles">
-    <Value>لا تتوفر مجموعات العملاء. يرجى انشاء مجموعة عملاء واحدى على الأقل قبل اختيارها.</Value>
+    <Value>لا تتوفر مجموعات العملاء. يرجى إنشاء مجموعة عملاء واحدى على الأقل قبل اختيارها.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Fields.DateOfBirth">
     <Value>تاريخ الميلاد</Value>
@@ -11369,7 +11369,7 @@
     <Value>الرقم البريدي مطلوب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Gdpr">
-    <Value>الناتج المحلي الاجمالي</Value>
+    <Value>الناتج المحلي الإجمالي</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Gdpr.Delete">
     <Value>حذف دائم</Value>
@@ -11486,7 +11486,7 @@
     <Value>تاريخ التسجيل إلى</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.List.SearchRegistrationDateTo.Hint">
-    <Value>التسجيل الى تاريخ للبحث.</Value>
+    <Value>التسجيل إلى تاريخ للبحث.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.List.SearchUsername">
     <Value>إسم المستخدم</Value>
@@ -11522,7 +11522,7 @@
     <Value>حالة الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Orders.OrderTotal">
-    <Value>اجمالى الطلب</Value>
+    <Value>إجمالى الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Orders.PaymentStatus">
     <Value>حالة الدفع</Value>
@@ -11543,7 +11543,7 @@
     <Value>تم إرسال بريد التنشيط بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.SendEmail">
-    <Value>ارسل بريد الكتروني</Value>
+    <Value>ارسل بريد إلكتروني</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.SendEmail.Body">
     <Value>هيئة البريد الإلكتروني</Value>
@@ -11582,7 +11582,7 @@
     <Value>أدخل رسالة PM.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.SendPM.Sent">
-    <Value>تم ارسال PM بنجاح</Value>
+    <Value>تم إرسال PM بنجاح</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.SendPM.Subject">
     <Value>الموضوع</Value>
@@ -11978,7 +11978,7 @@
     <Value>العنوان 2</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Address.BackToOrder">
-    <Value>ارجع الى طلب التفاصيل</Value>
+    <Value>ارجع إلى طلب التفاصيل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Address.City">
     <Value>المدينة</Value>
@@ -12044,10 +12044,10 @@
     <Value>معلومات عنوان الفوترة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.Capture">
-    <Value>الامساك</Value>
+    <Value>الإمساك</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.CaptureTransactionID">
-    <Value>الامساك  بمعرف المعاملة</Value>
+    <Value>الإمساك  بمعرف المعاملة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.CaptureTransactionID.Hint">
     <Value>تم الحصول على معرف المعاملة المتلقاة من بوابة الدفع الخاصة بك.</Value>
@@ -12149,7 +12149,7 @@
     <Value>قم بتحرير الخصم الفرعي لهذا الطلب.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.Edit.OrderTotal">
-    <Value>اجمالى الطلب</Value>
+    <Value>إجمالى الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.Edit.OrderTotal.Hint">
     <Value>عدّل التكلفة الإجمالية لهذا الطلب.</Value>
@@ -12209,7 +12209,7 @@
     <Value>حالة الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.OrderStatus.Cancel">
-    <Value>الغاء الطلب</Value>
+    <Value>إلغاء الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.OrderStatus.CancelledNotification">
     <Value>تم إلغاء هذا الطلب</Value>
@@ -12248,7 +12248,7 @@
     <Value>مدفوع الضرائب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.OrderTotal">
-    <Value>اجمالى الطلب</Value>
+    <Value>إجمالى الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.OrderTotal.Hint">
     <Value>التكلفة الإجمالية لهذا الطلب (تشمل الخصومات والشحن والضرائب).</Value>
@@ -12386,7 +12386,7 @@
     <Value>رقم ضريبة القيمة المضافة المستخدم (ضريبة القيمة المضافة للاتحاد الأوروبي).</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.Void">
-    <Value>تدعم الالغاء</Value>
+    <Value>تدعم الإلغاء</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Fields.VoidOffline">
     <Value>ملغي (غير متصل)</Value>
@@ -12569,7 +12569,7 @@
     <Value>العودة لقائمة المنتجات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Products.AddNew.BackToOrder">
-    <Value>ارجع الى طلب التفاصيل</Value>
+    <Value>ارجع إلى طلب التفاصيل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Products.AddNew.Name">
     <Value>الاسم</Value>
@@ -12671,7 +12671,7 @@
     <Value>تمت إضافة الشحنة الجديدة بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Shipments.AddNew">
-    <Value>اضافة شحنة</Value>
+    <Value>إضافة شحنة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Shipments.AddNew.Title">
     <Value>أضف شحنة جديدة للطلب #{0}</Value>
@@ -12686,7 +12686,7 @@
     <Value>تعليق مدير النظام</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Shipments.BackToOrder">
-    <Value>ارجع الى طلب التفاصيل</Value>
+    <Value>ارجع إلى طلب التفاصيل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Shipments.CanDeliver">
     <Value>مستلم</Value>
@@ -12965,7 +12965,7 @@
     <Value>حذف الصورة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Plugins">
-    <Value>الاضافات</Value>
+    <Value>الإضافات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Plugins.Errors.InstallDependsOn">
     <Value>يعتمد المكون على المكونات الإضافية التالية التي يجب تثبيتها مسبقًا: </Value>
@@ -13112,7 +13112,7 @@
     <Value>ارسل بريد إختباري</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Promotions.Campaigns.TestEmailSentToCustomers">
-    <Value>تم ارسال البريد بنجاح</Value>
+    <Value>تم إرسال البريد بنجاح</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Promotions.Campaigns.Updated">
     <Value>تم تحديث الحملة بنجاح.</Value>
@@ -13274,7 +13274,7 @@
     <Value>اسم الخصم.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Promotions.Discounts.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Promotions.Discounts.Fields.RequiresCouponCode">
     <Value>يتطلب رمز القسيمة</Value>
@@ -13316,7 +13316,7 @@
     <Value>رقم الطلب #</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Promotions.Discounts.History.OrderTotal">
-    <Value>اجمالى الطلب</Value>
+    <Value>إجمالى الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Promotions.Discounts.IgnoreDiscounts.Warning">
     <Value>من أجل استخدام هذه الوظيفة ، يجب عليك تعطيل الإعداد التالي: تكوين إعدادات كتالوج تجاهل الخصومات (على مستوى الموقع).</Value>
@@ -13601,7 +13601,7 @@
     <Value>أدخل اسم نوع الاشتراك.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Promotions.NewsLetterSubscriptionType.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Promotions.NewsLetterSubscriptionType.Fields.TickedByDefault">
     <Value>تم تمييزه افتراضيًا</Value>
@@ -13640,7 +13640,7 @@
     <Value>عدد الطلبات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Customers.BestBy.Fields.OrderTotal">
-    <Value>اجمالى الطلب</Value>
+    <Value>إجمالى الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Customers.BestBy.OrderStatus">
     <Value>حالة الطلب</Value>
@@ -13814,7 +13814,7 @@
     <Value>الدولة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Sales.Country.Fields.SumOrders">
-    <Value>اجمالى الطلب</Value>
+    <Value>إجمالى الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Sales.Country.Fields.TotalOrders">
     <Value>عدد الطلبات</Value>
@@ -14042,7 +14042,7 @@
     <Value>يجب أن تكون الكمية مساوية أو أكبر من الكمية المراد إرجاعها إلى المخزون: {0}.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ReturnRequests.Fields.Quantity.Required">
-    <Value>الكمية اجبارية.</Value>
+    <Value>الكمية إجبارية.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ReturnRequests.Fields.ReasonForReturn">
     <Value>سبب العودة</Value>
@@ -14183,7 +14183,7 @@
     <Value>نوع الجهاز</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Email">
-    <Value>البريد الالكتروني</Value>
+    <Value>البريد الإلكتروني</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.FullName">
     <Value>الاسم الكامل</Value>
@@ -14240,10 +14240,10 @@
     <Value>البحث بنوع الجهاز.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Email">
-    <Value>البريد الالكتروني</Value>
+    <Value>البريد الإلكتروني</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Email.Hint">
-    <Value>البحث بالبريد الالكتروني.</Value>
+    <Value>البحث بالبريد الإلكتروني.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.EndDate">
     <Value>تاريخ النهاية</Value>
@@ -14426,7 +14426,7 @@
     <Value>اسم نوع المراجعة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Settings.ReviewType.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Settings.ReviewType.Fields.VisibleToAllCustomers">
     <Value>مرئي لجميع العملاء</Value>
@@ -14507,7 +14507,7 @@
     <Value>تم نقل المنتجات {0} {1}</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.StockQuantityHistory.Messages.EditWarehouse.New">
-    <Value>الى {0}</Value>
+    <Value>إلى {0}</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.StockQuantityHistory.Messages.EditWarehouse.Old">
     <Value>من {0}</Value>
@@ -14813,7 +14813,7 @@
     <Value>مسار الملف إلى المرفق.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.QueuedEmails.Fields.Bcc">
-    <Value>نسخة مخفية من الايميل </Value>
+    <Value>نسخة مخفية من الإيميل </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.QueuedEmails.Fields.Bcc.Hint">
     <Value>Bcc عنوان.</Value>
@@ -15368,10 +15368,10 @@
     <Value>لاستخدام هذه الوظيفة ، يجب عليك تعطيل الإعداد التالي: إعدادات الكتالوج تجاهل قواعد "الحد لكل متجر".</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.Warnings.PluginMainAssemblyNotFound">
-    <Value>{0}: لم يتم العثور على المكون الرئيسي, لذلك لا يمكن تحميل هذه الاضافه</Value>
+    <Value>{0}: لم يتم العثور على المكون الرئيسي, لذلك لا يمكن تحميل هذه الإضافه</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.Warnings.PluginNotCompatibleWithCurrentVersion">
-    <Value>{0}: هذه الاضافه غير متوافقه مع النسخه الحاليه لذلك لا يمكن تحميل هذه الاضافه</Value>
+    <Value>{0}: هذه الإضافه غير متوافقه مع النسخه الحاليه لذلك لا يمكن تحميل هذه الإضافه</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.Warnings.PluginNotEnabled">
     <Value>قم بإلغاء تثبيت البرنامج الإضافي الذي لا تستخدمه وحذفه</Value>
@@ -15515,7 +15515,7 @@
     <Value>اسم البائع.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Vendors.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Vendors.Fields.PageSize">
     <Value>حجم المنتجات فى الصفحة</Value>
@@ -15608,7 +15608,7 @@
     <Value>اختار</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Vendors.VendorAttributes.Added">
-    <Value>البيانات الجديدة تم اضافتها </Value>
+    <Value>البيانات الجديدة تم إضافتها </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Vendors.VendorAttributes.AddNew">
     <Value>إضافة سمة بائع جديد</Value>
@@ -15650,7 +15650,7 @@
     <Value>اسم سمة البائع.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Vendors.VendorAttributes.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Vendors.VendorAttributes.Info">
     <Value>معلومات السمة</Value>
@@ -15686,7 +15686,7 @@
     <Value>اسم قيمة سمة البائع.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Vendors.VendorAttributes.Values.Fields.Name.Required">
-    <Value>قم بادخال الاسم</Value>
+    <Value>قم بإدخال الاسم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Vendors.VendorAttributes.Values.SaveBeforeEdit">
     <Value>تحتاج إلى حفظ سمة البائع قبل أن تتمكن من إضافة قيم لها.</Value>
@@ -15923,7 +15923,7 @@
     <Value>عربة التسوق</Value>
   </LocaleResource>
   <LocaleResource Name="Checkout.Progress.Complete">
-    <Value>انهاء</Value>
+    <Value>إنهاء</Value>
   </LocaleResource>
   <LocaleResource Name="Checkout.Progress.Confirm">
     <Value>تأكيد</Value>
@@ -16025,10 +16025,10 @@
     <Value>العودة</Value>
   </LocaleResource>
   <LocaleResource Name="Common.Cancel">
-    <Value>الغاء</Value>
+    <Value>إلغاء</Value>
   </LocaleResource>
   <LocaleResource Name="Common.Close">
-    <Value>اغلاق</Value>
+    <Value>إغلاق</Value>
   </LocaleResource>
   <LocaleResource Name="Common.Config">
     <Value>تهيئة</Value>
@@ -16070,7 +16070,7 @@
     <Value>مسح</Value>
   </LocaleResource>
   <LocaleResource Name="Common.Hide">
-    <Value>اخفاء</Value>
+    <Value>إخفاء</Value>
   </LocaleResource>
   <LocaleResource Name="Common.LoadingNextStep">
     <Value>جار تحميل الخطوة التالية ...</Value>
@@ -16085,7 +16085,7 @@
     <Value>لا</Value>
   </LocaleResource>
   <LocaleResource Name="Common.NoCancel">
-    <Value>لا , الغاء</Value>
+    <Value>لا , إلغاء</Value>
   </LocaleResource>
   <LocaleResource Name="Common.Notification">
     <Value>إشعار</Value>
@@ -16106,7 +16106,7 @@
     <Value>بحث</Value>
   </LocaleResource>
   <LocaleResource Name="Common.Show">
-    <Value>اظهار</Value>
+    <Value>إظهار</Value>
   </LocaleResource>
   <LocaleResource Name="Common.Upload">
     <Value>تحميل</Value>
@@ -16142,7 +16142,7 @@
     <Value>بريدك الإلكتروني</Value>
   </LocaleResource>
   <LocaleResource Name="ContactUs.Email.Hint">
-    <Value>أدخل عنوان بريدك الالكتروني.</Value>
+    <Value>أدخل عنوان بريدك الإلكتروني.</Value>
   </LocaleResource>
   <LocaleResource Name="ContactUs.Email.Required">
     <Value>ادخل بريد إلكتروني</Value>
@@ -16187,7 +16187,7 @@
     <Value>بريدك الإلكتروني</Value>
   </LocaleResource>
   <LocaleResource Name="ContactVendor.Email.Hint">
-    <Value>أدخل عنوان بريدك الالكتروني.</Value>
+    <Value>أدخل عنوان بريدك الإلكتروني.</Value>
   </LocaleResource>
   <LocaleResource Name="ContactVendor.Email.Required">
     <Value>ادخل بريد إلكتروني</Value>
@@ -16307,7 +16307,7 @@
     <Value>لا شيىء</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Catalog.LowStockActivity.Unpublish">
-    <Value>اخفاء</Value>
+    <Value>إخفاء</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Catalog.ManageInventoryMethod.DontManageStock">
     <Value>لا تتبع المخزون</Value>
@@ -16622,7 +16622,7 @@
     <Value>ملغى</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Orders.OrderStatus.Complete">
-    <Value>انهاء</Value>
+    <Value>إنهاء</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Orders.OrderStatus.Pending">
     <Value>فى الانتظار</Value>
@@ -16649,7 +16649,7 @@
     <Value>رفض الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Orders.ReturnRequestStatus.ReturnAuthorized">
-    <Value>تمت الاعادة</Value>
+    <Value>تمت الإعادة</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Orders.ShoppingCartType.ShoppingCart">
     <Value>سلة التسوق</Value>
@@ -16676,7 +16676,7 @@
     <Value>reCAPTCHA v2 ("أنا لست روبوت" مربع الاختيار)</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Security.CaptchaType.ReCaptchaV3">
-    <Value>reCAPTCHA الاصدار ٣</Value>
+    <Value>reCAPTCHA الإصدار ٣</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Security.PasswordFormat.Clear">
     <Value>مسح</Value>
@@ -16808,7 +16808,7 @@
     <Value>فيس بوك</Value>
   </LocaleResource>
   <LocaleResource Name="Footer.FollowUs.Instagram">
-    <Value>انستجرام</Value>
+    <Value>إنستجرام</Value>
   </LocaleResource>
   <LocaleResource Name="Footer.FollowUs.RSS">
     <Value>RSSخدمة </Value>
@@ -16823,10 +16823,10 @@
     <Value>واتساب</Value>
   </LocaleResource>
   <LocaleResource Name="Footer.TaxShipping.ExclTax">
-    <Value><![CDATA[جميع الأسعار غير شاملة الضرائب. ازالة  <a href="{0}">الشحن</a>]]></Value>
+    <Value><![CDATA[جميع الأسعار غير شاملة الضرائب. إزالة  <a href="{0}">الشحن</a>]]></Value>
   </LocaleResource>
   <LocaleResource Name="Footer.TaxShipping.InclTax">
-    <Value><![CDATA[ جميع الأسعار شاملة الضرائب. ازالة <a href="{0}">الشحن</a>]]></Value>
+    <Value><![CDATA[ جميع الأسعار شاملة الضرائب. إزالة <a href="{0}">الشحن</a>]]></Value>
   </LocaleResource>
   <LocaleResource Name="FormattedAttributes.PriceAdjustment">
     <Value> [{0}{1}{2}]</Value>
@@ -16874,7 +16874,7 @@
     <Value>بواسطة</Value>
   </LocaleResource>
   <LocaleResource Name="Forum.Cancel">
-    <Value>الغاء</Value>
+    <Value>إلغاء</Value>
   </LocaleResource>
   <LocaleResource Name="Forum.DeletePost">
     <Value>مسح مشاركة</Value>
@@ -17009,7 +17009,7 @@
     <Value>بحث مفصل</Value>
   </LocaleResource>
   <LocaleResource Name="Forum.Search.LimitResultsToPrevious">
-    <Value>تحديثد النتائج الى السابق:</Value>
+    <Value>تحديثد النتائج إلى السابق:</Value>
   </LocaleResource>
   <LocaleResource Name="Forum.Search.LimitResultsToPrevious.1day">
     <Value>يوم واحد</Value>
@@ -17102,10 +17102,10 @@
     <Value>عدد المشاركات</Value>
   </LocaleResource>
   <LocaleResource Name="Forum.UnwatchForum">
-    <Value>اخراج المنتدى من الاشعارات</Value>
+    <Value>إخراج المنتدى من الإشعارات</Value>
   </LocaleResource>
   <LocaleResource Name="Forum.UnwatchTopic">
-    <Value>اخراج الموضوع من الاشعارات</Value>
+    <Value>إخراج الموضوع من الإشعارات</Value>
   </LocaleResource>
   <LocaleResource Name="Forum.Views">
     <Value>مشاهدة</Value>
@@ -17126,10 +17126,10 @@
     <Value>لا يمكنك التصويت للمشاركة الخاص بك</Value>
   </LocaleResource>
   <LocaleResource Name="Forum.WatchForum">
-    <Value>اشعار المنتدى</Value>
+    <Value>إشعار المنتدى</Value>
   </LocaleResource>
   <LocaleResource Name="Forum.WatchTopic">
-    <Value>اشعار الموضوع</Value>
+    <Value>إشعار الموضوع</Value>
   </LocaleResource>
   <LocaleResource Name="Gdpr.Consent.Newsletter">
     <Value>النشرة البريدية</Value>
@@ -17243,7 +17243,7 @@
     <Value>اختر العلامة التجارية</Value>
   </LocaleResource>
   <LocaleResource Name="MaintenanceRequest.Button">
-    <Value>ارســـال</Value>
+    <Value>إرســـال</Value>
   </LocaleResource>
   <LocaleResource Name="MaintenanceRequest.City">
     <Value>المدينة</Value>
@@ -17270,7 +17270,7 @@
     <Value>نوع الجهاز مطلوب</Value>
   </LocaleResource>
   <LocaleResource Name="MaintenanceRequest.Email">
-    <Value>البريد الالكتروني</Value>
+    <Value>البريد الإلكتروني</Value>
   </LocaleResource>
   <LocaleResource Name="MaintenanceRequest.Email.Hint">
     <Value>example@gmail.com</Value>
@@ -17333,7 +17333,7 @@
     <Value>هذا الحقل مطلوب</Value>
   </LocaleResource>
   <LocaleResource Name="MaintenanceRequest.YourRequestHasBeenSent">
-    <Value>تم ارسال طلبك بنجاح</Value>
+    <Value>تم إرسال طلبك بنجاح</Value>
   </LocaleResource>
   <LocaleResource Name="Manufacturers">
     <Value>الشركات</Value>
@@ -17405,7 +17405,7 @@
     <Value>إجمالي الطلب:</Value>
   </LocaleResource>
   <LocaleResource Name="Messages.Order.PaymentMethodAdditionalFee">
-    <Value>رسوم اضافية لطريقة الدفع:</Value>
+    <Value>رسوم إضافية لطريقة الدفع:</Value>
   </LocaleResource>
   <LocaleResource Name="Messages.Order.Product(s)">
     <Value>منتج</Value>
@@ -17513,7 +17513,7 @@
     <Value>ادخل بريدك هنا...</Value>
   </LocaleResource>
   <LocaleResource Name="Newsletter.Email.Wrong">
-    <Value>ادخل بريد الكتروني صحيح</Value>
+    <Value>ادخل بريد إلكتروني صحيح</Value>
   </LocaleResource>
   <LocaleResource Name="Newsletter.Options.Send">
     <Value>ارسل</Value>
@@ -17534,19 +17534,19 @@
     <Value>اشترك فى النشرة البريدية</Value>
   </LocaleResource>
   <LocaleResource Name="Newsletter.SubscribeEmailSent">
-    <Value>شكرا لك على الاشتراك! تم إرسال رسالة تأكيد الى بريديك. نحن نقدر اهتمامك.</Value>
+    <Value>شكرا لك على الاشتراك! تم إرسال رسالة تأكيد إلى بريديك. نحن نقدر اهتمامك.</Value>
   </LocaleResource>
   <LocaleResource Name="Newsletter.Title">
     <Value>النشرة البريدية</Value>
   </LocaleResource>
   <LocaleResource Name="Newsletter.UnsubscribeEmailSent">
-    <Value>تم إرسال رسالة تأكيد الى بريدك. شكرا لكم!</Value>
+    <Value>تم إرسال رسالة تأكيد إلى بريدك. شكرا لكم!</Value>
   </LocaleResource>
   <LocaleResource Name="Order.BillingAddress">
     <Value>عنوان الدفع</Value>
   </LocaleResource>
   <LocaleResource Name="Order.Cancel">
-    <Value>الغاء الطلب</Value>
+    <Value>إلغاء الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Order.Cancel.Failed">
     <Value>فشل في إلغاء الطلب</Value>
@@ -17756,10 +17756,10 @@
     <Value>الضريبة {0}%</Value>
   </LocaleResource>
   <LocaleResource Name="Order.TaxShipping.ExclTax">
-    <Value><![CDATA[جميع الأسعار غير شاملة الضرائب. ازالة  <a href="{0}">الشحن</a>]]></Value>
+    <Value><![CDATA[جميع الأسعار غير شاملة الضرائب. إزالة  <a href="{0}">الشحن</a>]]></Value>
   </LocaleResource>
   <LocaleResource Name="Order.TaxShipping.InclTax">
-    <Value><![CDATA[ جميع الأسعار شاملة الضرائب. ازالة <a href="{0}">الشحن</a>]]></Value>
+    <Value><![CDATA[ جميع الأسعار شاملة الضرائب. إزالة <a href="{0}">الشحن</a>]]></Value>
   </LocaleResource>
   <LocaleResource Name="Order.TotalDiscount">
     <Value>الخصم</Value>
@@ -17963,7 +17963,7 @@
     <Value>ملاحظات الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Pdf.OrderTotal">
-    <Value>اجمالى الطلب</Value>
+    <Value>إجمالى الطلب</Value>
   </LocaleResource>
   <LocaleResource Name="Pdf.PaymentMethodAdditionalFee">
     <Value>طريقة دفع الرسوم الإضافية</Value>
@@ -18065,7 +18065,7 @@
     <Value>الرسائل الشخصية</Value>
   </LocaleResource>
   <LocaleResource Name="PrivateMessages.Send.CancelButton">
-    <Value>الغاء</Value>
+    <Value>إلغاء</Value>
   </LocaleResource>
   <LocaleResource Name="PrivateMessages.Send.Message">
     <Value>الرسالة:</Value>
@@ -18215,7 +18215,7 @@
     <Value>ارسل الصديق</Value>
   </LocaleResource>
   <LocaleResource Name="Products.EmailAFriend.Button">
-    <Value>ارسل بريد الكتروني</Value>
+    <Value>ارسل بريد إلكتروني</Value>
   </LocaleResource>
   <LocaleResource Name="Products.EmailAFriend.FriendEmail">
     <Value>بريد الصديق</Value>
@@ -18227,7 +18227,7 @@
     <Value>ادخل بريد الصديق</Value>
   </LocaleResource>
   <LocaleResource Name="Products.EmailAFriend.OnlyRegisteredUsers">
-    <Value>يمكن للعملاء المسجلين فقط ارسال للصديق</Value>
+    <Value>يمكن للعملاء المسجلين فقط إرسال للصديق</Value>
   </LocaleResource>
   <LocaleResource Name="Products.EmailAFriend.PersonalMessage">
     <Value>الرسالة</Value>
@@ -18236,7 +18236,7 @@
     <Value>أدخل الرسالة (اختياري).</Value>
   </LocaleResource>
   <LocaleResource Name="Products.EmailAFriend.SuccessfullySent">
-    <Value>تم ارسال رسالتك.</Value>
+    <Value>تم إرسال رسالتك.</Value>
   </LocaleResource>
   <LocaleResource Name="Products.EmailAFriend.Title">
     <Value>ارسل الصديق</Value>
@@ -18245,7 +18245,7 @@
     <Value>البريد الإلكتروني</Value>
   </LocaleResource>
   <LocaleResource Name="Products.EmailAFriend.YourEmailAddress.Hint">
-    <Value>أدخل عنوان بريدك الالكتروني.</Value>
+    <Value>أدخل عنوان بريدك الإلكتروني.</Value>
   </LocaleResource>
   <LocaleResource Name="Products.EmailAFriend.YourEmailAddress.Required">
     <Value>ادخل البريد الإلكتروني</Value>
@@ -18371,7 +18371,7 @@
     <Value>تمت إضافة المنتج إلى مقارنة المنتج</Value>
   </LocaleResource>
   <LocaleResource Name="Products.ProductHasBeenAddedToCompareList.Link">
-    <Value><![CDATA[تمت اضافة المنتج إلى  <a href="{0}">مقارنة المنتجات</a>]]></Value>
+    <Value><![CDATA[تمت إضافة المنتج إلى  <a href="{0}">مقارنة المنتجات</a>]]></Value>
   </LocaleResource>
   <LocaleResource Name="Products.ProductHasBeenAddedToTheCart">
     <Value>تمت إضافة المنتج إلى سلة التسوق الخاصة بك</Value>
@@ -18719,61 +18719,61 @@
     <Value>لوحة التحكم. وسوم المنتج. عرض</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Configuration.ManageACL">
-    <Value>منطقة الادارة. ACL. إدارة</Value>
+    <Value>منطقة الإدارة. ACL. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Configuration.ManageCountries">
-    <Value>منطقة الادارة. الدول. إدارة</Value>
+    <Value>منطقة الإدارة. الدول. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Configuration.ManageCurrencies">
-    <Value>منطقة الادارة. العملات. إدارة</Value>
+    <Value>منطقة الإدارة. العملات. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Configuration.ManageEmailAccounts">
-    <Value>منطقة الادارة. حسابات البريد الإلكتروني. إدارة</Value>
+    <Value>منطقة الإدارة. حسابات البريد الإلكتروني. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Configuration.ManageLanguages">
-    <Value>منطقة الادارة. اللغات. إدارة</Value>
+    <Value>منطقة الإدارة. اللغات. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Configuration.ManagePaymentMethods">
-    <Value>منطقة الادارة. طرق الدفع. إدارة</Value>
+    <Value>منطقة الإدارة. طرق الدفع. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Configuration.ManagePlugins">
-    <Value>منطقة الادارة. الإضافات. إدارة</Value>
+    <Value>منطقة الإدارة. الإضافات. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Configuration.ManageSettings">
-    <Value>منطقة الادارة. إعدادات. إدارة</Value>
+    <Value>منطقة الإدارة. إعدادات. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Configuration.ManageShippingSettings">
-    <Value>منطقة الادارة. إعدادات التوصيل. إدارة</Value>
+    <Value>منطقة الإدارة. إعدادات التوصيل. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Configuration.ManageStores">
-    <Value>منطقة الادارة. المتاجر. إدارة</Value>
+    <Value>منطقة الإدارة. المتاجر. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Configuration.ManageTaxSettings">
-    <Value>منطقة الادارة. إعدادات الضرائب. إدارة</Value>
+    <Value>منطقة الإدارة. إعدادات الضرائب. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Configuration.ManageWidgets">
-    <Value>منطقة الادارة. الويدجيت. إدارة</Value>
+    <Value>منطقة الإدارة. الويدجيت. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.ContentManagement.BlogCommentsCreateEditDelete">
-    <Value>منطقة الادارة. تعليقات المدونة. إنشاء، تحرير، حذف</Value>
+    <Value>منطقة الإدارة. تعليقات المدونة. إنشاء، تحرير، حذف</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.ContentManagement.BlogCommentsView">
-    <Value>منطقة الادارة. تعليقات المدونة. عرض</Value>
+    <Value>منطقة الإدارة. تعليقات المدونة. عرض</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.ContentManagement.BlogCreateEditDelete">
-    <Value>منطقة الادارة. المدونة. إنشاء، تحرير، حذف</Value>
+    <Value>منطقة الإدارة. المدونة. إنشاء، تحرير، حذف</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.ContentManagement.BlogView">
-    <Value>منطقة الادارة. المدونة. عرض</Value>
+    <Value>منطقة الإدارة. المدونة. عرض</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.ContentManagement.ForumsCreateEditDelete">
-    <Value>منطقة الادارة. المنتديات. إنشاء، تحرير، حذف</Value>
+    <Value>منطقة الإدارة. المنتديات. إنشاء، تحرير، حذف</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.ContentManagement.ForumsView">
-    <Value>منطقة الادارة. المنتديات. عرض</Value>
+    <Value>منطقة الإدارة. المنتديات. عرض</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.ContentManagement.MessageTemplatesCreateEditDelete">
-    <Value>منطقة الادارة. قوالب الرسائل. إنشاء، تحرير، حذف</Value>
+    <Value>منطقة الإدارة. قوالب الرسائل. إنشاء، تحرير، حذف</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.ContentManagement.MessageTemplatesView">
     <Value>منطقة الإدارة. قوالب الرسائل. عرض</Value>
@@ -19220,10 +19220,10 @@
     <Value>كود المخزن</Value>
   </LocaleResource>
   <LocaleResource Name="ShoppingCart.TaxShipping.ExclTax">
-    <Value><![CDATA[جميع الأسعار غير شاملة الضرائب. ازالة  <a href="{0}">الشحن</a>]]></Value>
+    <Value><![CDATA[جميع الأسعار غير شاملة الضرائب. إزالة  <a href="{0}">الشحن</a>]]></Value>
   </LocaleResource>
   <LocaleResource Name="ShoppingCart.TaxShipping.InclTax">
-    <Value><![CDATA[ جميع الأسعار شاملة الضرائب. ازالة <a href="{0}">الشحن</a>]]></Value>
+    <Value><![CDATA[ جميع الأسعار شاملة الضرائب. إزالة <a href="{0}">الشحن</a>]]></Value>
   </LocaleResource>
   <LocaleResource Name="ShoppingCart.TextboxMaximumLength">
     <Value>{0} : الحد الأقصى للطول هو {1} حرف</Value>
@@ -19376,7 +19376,7 @@
     <Value>البريد الإلكتروني</Value>
   </LocaleResource>
   <LocaleResource Name="Vendors.ApplyAccount.Email.Hint">
-    <Value>أدخل عنوان بريدك الالكتروني.</Value>
+    <Value>أدخل عنوان بريدك الإلكتروني.</Value>
   </LocaleResource>
   <LocaleResource Name="Vendors.ApplyAccount.Email.Required">
     <Value>البريد الإلكتروني مطلوب</Value>
@@ -19427,7 +19427,7 @@
     <Value>جاري المعالجة...</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.Maintenance.ShrinkDatabase.Text">
-    <Value>استعادة مساحة القرص عن طريق اعادة تنظيم تخزين البيانات الفعلي</Value>
+    <Value>استعادة مساحة القرص عن طريق إعادة تنظيم تخزين البيانات الفعلي</Value>
   </LocaleResource>
   <LocaleResource Name="Literals.Nop.Core.Http.NopRouteNames.General.MaintenanceRequest">
     <Value>طلب صيانة</Value>

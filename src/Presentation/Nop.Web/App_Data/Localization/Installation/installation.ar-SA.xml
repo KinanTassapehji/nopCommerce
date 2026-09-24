@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Language Name="عربي" IsDefault="false" IsRightToLeft="true">
   <LocaleResource Name="AdminEmail">
-    <Value>البريد الالكتروني لمدير الموقع</Value>
+    <Value>البريد الإلكتروني لمدير الموقع</Value>
   </LocaleResource>
   <LocaleResource Name="AdminEmailRequired">
-    <Value>ادخل البريد الالكتروني لمدير الموقع</Value>
+    <Value>ادخل البريد الإلكتروني لمدير الموقع</Value>
   </LocaleResource>
   <LocaleResource Name="AdminPassword">
     <Value>كلمة المرور لحساب المدير</Value>
@@ -37,7 +37,7 @@
     <Value>سلسلة الاتصال</Value>
   </LocaleResource>
   <LocaleResource Name="ConnectionStringRequired">
-    <Value>يجب ادخال سلسلة الاتصال الخاصة بـSQL</Value>
+    <Value>يجب إدخال سلسلة الاتصال الخاصة بـSQL</Value>
   </LocaleResource>
   <LocaleResource Name="ConnectionStringWrongFormat">
     <Value>سلسلة الاتصال الخاصة بـSQL غير صحيحة</Value>

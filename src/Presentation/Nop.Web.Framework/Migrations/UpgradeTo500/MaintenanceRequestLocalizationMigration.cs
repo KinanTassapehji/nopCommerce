@@ -78,7 +78,7 @@ public class MaintenanceRequestLocalizationMigration : MigrationBase
             ["MaintenanceRequest.Brand"] = "العلامة التجارية",
             ["MaintenanceRequest.Brand.Required"] = "البراند مطلوب",
             ["MaintenanceRequest.Brand.Select"] = "اختر العلامة التجارية",
-            ["MaintenanceRequest.Button"] = "ارســـال",
+            ["MaintenanceRequest.Button"] = "إرســـال",
             ["MaintenanceRequest.City"] = "المدينة",
             ["MaintenanceRequest.City.Hint"] = "ادخل اسم المدينة",
             ["MaintenanceRequest.City.Required"] = "المدينة مطلوبة",
@@ -87,7 +87,7 @@ public class MaintenanceRequestLocalizationMigration : MigrationBase
             ["MaintenanceRequest.DeviceType"] = "نوع الجهاز",
             ["MaintenanceRequest.DeviceType.Hint"] = "مثال: مكيف سبليت",
             ["MaintenanceRequest.DeviceType.Required"] = "نوع الجهاز مطلوب",
-            ["MaintenanceRequest.Email"] = "البريد الالكتروني",
+            ["MaintenanceRequest.Email"] = "البريد الإلكتروني",
             ["MaintenanceRequest.Email.Hint"] = "example@gmail.com",
             ["MaintenanceRequest.EmailSubject"] = "طلب صيانة جديد",
             ["MaintenanceRequest.FullName"] = "الاسم الكامل",
@@ -108,7 +108,7 @@ public class MaintenanceRequestLocalizationMigration : MigrationBase
             ["MaintenanceRequest.Problem"] = "المشكلة",
             ["MaintenanceRequest.Problem.Hint"] = "الرجاء شرح المشكلة ...",
             ["MaintenanceRequest.Problem.Required"] = "هذا الحقل مطلوب",
-            ["MaintenanceRequest.YourRequestHasBeenSent"] = "تم ارسال طلبك بنجاح",
+            ["MaintenanceRequest.YourRequestHasBeenSent"] = "تم إرسال طلبك بنجاح",
             ["PageTitle.MaintenanceRequest"] = "طلب صيانة",
         }, arabic.Id);
     }
