@@ -94,6 +94,10 @@
         var sentinel = document.getElementById('home-products-sentinel');
         var infinite = window.matchMedia('(max-width: 1000px)').matches;
         var page = 1, busy = false;
+        //what the bands above already show - read once, while the feed is still empty, so every
+        //page is cut from the same list and the pager's totals hold
+        var excludedIds = $.map($('[data-productid]'), function (el) { return $(el).data('productid'); }).join(',');
+
         var observer = new IntersectionObserver(function (entries) {
             if (entries[0].isIntersecting)
                 load(page);
@@ -104,7 +108,7 @@
                 return;
             busy = true;
             $loader.prop('hidden', false);
-            $.get(url, { pageNumber: pageNumber }, function (html) {
+            $.get(url, { pageNumber: pageNumber, excludedIds: excludedIds }, function (html) {
                 $loader.prop('hidden', true);
                 if (!$.trim(html)) {
                     //no more products
@@ -116,12 +120,7 @@
                 var $html = $(html);
                 if (!infinite)
                     $grid.empty();
-                //skip products already shown by the sections above
-                $html.filter('.item-box').each(function () {
-                    var id = $(this).find('[data-productid]').data('productid');
-                    if (!$('[data-productid="' + id + '"]').length)
-                        $grid.append(this);
-                });
+                $grid.append($html.filter('.item-box'));
                 $('#home-products-title').prop('hidden', !$grid.children().length);
                 if (!infinite)
                     $pager.empty().append($html.filter('.pager'));
