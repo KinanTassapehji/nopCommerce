@@ -17,7 +17,7 @@ using Widgets.FirebasePushNotification.Models;
 
 namespace Widgets.FirebasePushNotification;
 
-public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin, IConsumer<ThirdPartyPluginsMenuItemCreatedEvent>
+public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin, IConsumer<AdminMenuCreatedEvent>
 {
 	private readonly IWebHelper _webHelper;
 
@@ -64,6 +64,7 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 	public override async Task UpdateAsync(string currentVersion, string targetVersion)
 	{
 		//4.80.1: Arabic text reached ar-SA only, so TmTm (ar-SY) got English; the Data JSON box became a Link field
+		//4.80.2: the Arabic menu entry and page title are just "الإشعارات"
 		await AddResourcesAsync();
 		await base.UpdateAsync(currentVersion, targetVersion);
 	}
@@ -106,7 +107,7 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 		});
 		foreach (var resource in new Dictionary<string, string>
 		{
-			["Plugins.Widgets.FirebasePushNotification.Broadcast.PageTitle"] = "إرسال إشعار جماعي",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.PageTitle"] = "الإشعارات",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Custom"] = "إرسال إشعار مخصص",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Target"] = "الجهة المستهدفة",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.SendToAll"] = "إرسال إلى جميع المستخدمين",
@@ -142,7 +143,7 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 		await base.UninstallAsync();
 	}
 
-	public async Task HandleEventAsync(ThirdPartyPluginsMenuItemCreatedEvent eventMessage)
+	public async Task HandleEventAsync(AdminMenuCreatedEvent eventMessage)
 	{
 		AdminMenuItem pluginMenuItem = new AdminMenuItem
 		{
@@ -152,10 +153,12 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 			Url = _webHelper.GetStoreLocation() + "Admin/FirebasePushNotification/SendBroadcast",
 			PermissionNames = new List<string>(1) { "Configuration.ManageWidgets" }
 		};
-		AdminMenuItem thirdPartyPluginsNode = eventMessage.MenuItem;
-		if (thirdPartyPluginsNode != null && !thirdPartyPluginsNode.ContainsSystemName(pluginMenuItem.SystemName))
+		//under Customers, not Plugins: notifications go to customers. Top level only - Reports has
+		//a "Customers" child of its own that a tree search would find first
+		var customersNode = eventMessage.RootMenuItem.ChildNodes.FirstOrDefault(node => node.SystemName == "Customers");
+		if (customersNode != null && !customersNode.ContainsSystemName(pluginMenuItem.SystemName))
 		{
-			thirdPartyPluginsNode.ChildNodes.Add(pluginMenuItem);
+			customersNode.ChildNodes.Add(pluginMenuItem);
 		}
 		await Task.CompletedTask;
 	}
