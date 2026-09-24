@@ -93,27 +93,25 @@
                                 @Model.Order.ShippingAddress.FirstName @Model.Order.ShippingAddress.LastName
                             </li>
                             <li class="email">
-                                @T("Order.Shipments.Email"): @Model.Order.ShippingAddress.Email
+                                <span class="label">@T("Order.Shipments.Email"):</span>
+                                <span class="value">@Model.Order.ShippingAddress.Email</span>
                             </li>
                             <li class="phone">
-                                @T("Order.Shipments.Phone"): @Model.Order.ShippingAddress.PhoneNumber
+                                <span class="label">@T("Order.Shipments.Phone"):</span>
+                                <span class="value">@Model.Order.ShippingAddress.PhoneNumber</span>
                             </li>
                             <li class="fax">
-                                @T("Order.Shipments.Fax"): @Model.Order.ShippingAddress.FaxNumber
+                                <span class="label">@T("Order.Shipments.Fax"):</span>
+                                <span class="value">@Model.Order.ShippingAddress.FaxNumber</span>
                             </li>
                             @if (!string.IsNullOrEmpty(Model.Order.ShippingAddress.Company))
                             {
                                 <li class="company">
-                                    @Model.Order.ShippingAddress.Company
+                                    <span class="label">@T("Address.Fields.Company"):</span>
+                                    <span class="value">@Model.Order.ShippingAddress.Company</span>
                                 </li>
                             }
-                            @foreach (var item in Model.Order.ShippingAddress.AddressFields)
-                            {
-                                @if (!string.IsNullOrEmpty(item.Value))
-                                {
-                                    <li class=@item.Key.ToString().ToLower()>@item.Value</li>
-                                }
-                            }
+                            @await Html.PartialAsync("_AddressFields", Model.Order.ShippingAddress.AddressFields)
                         </ul>
                     }
                     else

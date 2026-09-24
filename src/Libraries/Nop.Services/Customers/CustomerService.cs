@@ -269,6 +269,7 @@ public partial class CustomerService : ICustomerService
     /// <param name="createdFromUtc">Created date from (UTC); pass null to load all records</param>
     /// <param name="createdToUtc">Created date to (UTC); pass null to load all records</param>
     /// <param name="countryId">Billing country identifier; pass null to load all records</param>
+    /// <param name="includeGuests">Whether to include customers who are not registered</param>
     /// <param name="pageIndex">Page index</param>
     /// <param name="pageSize">Page size</param>
     /// <returns>
@@ -278,7 +279,7 @@ public partial class CustomerService : ICustomerService
     public virtual async Task<IPagedList<Customer>> GetCustomersWithShoppingCartsAsync(ShoppingCartType? shoppingCartType = null,
         int storeId = 0, int? productId = null,
         DateTime? createdFromUtc = null, DateTime? createdToUtc = null, int? countryId = null,
-        int pageIndex = 0, int pageSize = int.MaxValue)
+        bool includeGuests = true, int pageIndex = 0, int pageSize = int.MaxValue)
     {
         //get all shopping cart items
         var items = _shoppingCartRepository.Table;
@@ -310,6 +311,11 @@ public partial class CustomerService : ICustomerService
                 join a in _customerAddressRepository.Table on c.BillingAddressId equals a.Id
                 where a.CountryId == countryId
                 select c;
+
+        //filter out guests (customers not in the registered role)
+        if (!includeGuests)
+            customers = customers.Where(c => _customerCustomerRoleMappingRepository.Table.Any(m => m.CustomerId == c.Id &&
+                _customerRoleRepository.Table.Any(r => r.Id == m.CustomerRoleId && r.SystemName == NopCustomerDefaults.RegisteredRoleName)));
 
         var customersWithCarts = from c in customers
             join item in items on c.Id equals item.CustomerId

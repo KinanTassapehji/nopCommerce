@@ -1,4 +1,5 @@
 @model CustomerAddressModel
+@{ Model.Address.PublicFieldsOnly = true; }
 
 <div asp-validation-summary="ModelOnly"></div>
 <input type="hidden" asp-for="CustomerId"/>

@@ -677,8 +677,6 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.ZipPostalCodeRequired, options => options.Ignore());
         CreateMap<AddressModel, Address>()
             .ForMember(entity => entity.CreatedOnUtc, options => options.Ignore())
-            //ponytail: the customer names their own addresses in the public store, admin never edits it - do not wipe it
-            .ForMember(entity => entity.AddressName, options => options.Ignore())
             .ForMember(entity => entity.CustomAttributes, options => options.Ignore());
 
         CreateMap<AddressAttribute, AddressAttributeModel>()
@@ -699,6 +697,11 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateMap<Setting, SettingModel>()
             .ForMember(setting => setting.AvailableStores, options => options.Ignore())
             .ForMember(setting => setting.Store, options => options.Ignore());
+
+        CreateMap<MaintenanceRequest, MaintenanceRequestModel>()
+            .ForMember(model => model.AvailableStatuses, options => options.Ignore())
+            .ForMember(model => model.CreatedOn, options => options.Ignore())
+            .ForMember(model => model.StatusName, options => options.Ignore());
     }
 
     /// <summary>

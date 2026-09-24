@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -646,8 +647,15 @@ public partial class OrderModelFactory : IOrderModelFactory
             //"Mazzeh   " and came back centred on a restaurant in California. Every
             //part the address actually has, comma separated, is a query a geocoder
             //can read.
+            //a pin the customer dropped is exact; the typed fields are only a guess for
+            //the geocoder, and without a country they are not even that
+            var locationAttributeId = await _settingService.GetSettingByKeyAsync<int>("googlemappicker.locationattributeid");
+            var pin = Regex.Match(model.ShippingAddress.CustomAddressAttributes.FirstOrDefault(attribute => attribute.Id == locationAttributeId)?.DefaultValue ?? "",
+                @"(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\)?\s*$");
+            model.ShippingAddressMapPinned = pin.Success;
+
             model.ShippingAddressGoogleMapsUrl = $"https://maps.google.com/maps?f=q&hl={mapLanguage}&ie=UTF8&oe=UTF8&geocode=&q=" +
-                                                 $"{WebUtility.UrlEncode(BuildAddressMapQuery(shippingAddress, model.ShippingAddress.StateProvinceName, shippingCountry?.Name))}";
+                                                 $"{WebUtility.UrlEncode(pin.Success ? $"{pin.Groups[1].Value},{pin.Groups[2].Value}" : BuildAddressMapQuery(shippingAddress, model.ShippingAddress.StateProvinceName, shippingCountry?.Name))}";
         }
         else
         {

@@ -8,8 +8,6 @@
 }
 
 @{
-    var bestsellerSummaryColumnNumber = 2;
-
     const string hideSearchBlockAttributeName = "BestsellersPage.HideSearchBlock";
     var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
 }
@@ -122,6 +120,8 @@
                 <div class="card-body">
                     <nop-doc-reference asp-string-resource="@T("Admin.Documentation.Reference.Reports", Docs.Reports + Utm.OnAdmin)" />
 
+                    <div id="salesreport-summary" class="grid-summary"></div>
+
                     @await Html.PartialAsync("Table", new DataTablesModel
                     {
                         Name = "salesreport-grid",
@@ -130,7 +130,6 @@
                         Length = Model.PageSize,
                         LengthMenu = Model.AvailablePageSizes,
                         FooterCallback = !Model.IsLoggedInAsVendor ? "bestsellerfootercallback" : null,
-                        FooterColumns = !Model.IsLoggedInAsVendor ? 4 : 0,
                         Filters = new List<FilterParameter>
                         {
                             new FilterParameter(nameof(Model.StartDate), typeof(DateTime?)),
@@ -189,9 +188,7 @@
                                     data: postData,
                                     success: function (data, textStatus, jqXHR) {
                                         if (data) {
-                                            var reportSummary = '<div><strong>@T("Admin.Reports.Sales.Bestsellers.Total").Text: </strong> <span>' + data['aggregatortotal'] + '</span></div>';
-                                            var orderTotalsColumn = $('#salesreport-grid').DataTable().column(@(bestsellerSummaryColumnNumber));
-                                            $(orderTotalsColumn.footer()).html(reportSummary);
+                                            $('#salesreport-summary').html('<span class="grid-summary-item is-total"><span>@T("Admin.Reports.Sales.Bestsellers.Total").Text</span><b>' + data['aggregatortotal'] + '</b></span>');
                                         }
                                     }
                                 });

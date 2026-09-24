@@ -56,6 +56,22 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 	{
 		_migrationManager.ApplyUpMigrations(Assembly.GetExecutingAssembly());
 		await _settingService.SaveSettingAsync(new FirebasePushNotificationSettings());
+		await AddResourcesAsync();
+
+		await base.InstallAsync();
+	}
+
+	public override async Task UpdateAsync(string currentVersion, string targetVersion)
+	{
+		//4.80.1: Arabic text reached ar-SA only, so TmTm (ar-SY) got English; the Data JSON box became a Link field
+		await AddResourcesAsync();
+		await base.UpdateAsync(currentVersion, targetVersion);
+	}
+
+	//English text for every language first, then the Arabic one overwritten -
+	//ar-SA in Arabia, ar-SY in TmTm.
+	private async Task AddResourcesAsync()
+	{
 		await _localizationService.AddOrUpdateLocaleResourceAsync(new Dictionary<string, string>
 		{
 			["Plugins.Widgets.FirebasePushNotification.Fields.ApiKey"] = "API Key",
@@ -74,9 +90,13 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.BodyEn"] = "Body (English)",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.TitleAr"] = "Title (Arabic)",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.BodyAr"] = "Body (Arabic)",
-			["Plugins.Widgets.FirebasePushNotification.Broadcast.DataJson"] = "Data JSON",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.Link"] = "Link to open (optional)",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.LinkHint"] = "The page that opens when the notification is tapped. Open it on the store, copy the address from the browser and paste it here. Leave empty for the home page.",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Send"] = "Send Notification",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.SearchPlaceholder"] = "Search and select a user",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.InputTooShort"] = "Please enter 2 or more characters",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.NoResults"] = "No users found",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.Searching"] = "Searching...",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Result"] = "Notification request processed for {0} user(s), sent to {1} device(s).",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Errors.TitleBodyRequired"] = "Please enter title and body in both English and Arabic.",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Errors.SelectUser"] = "Please select a user or choose send to all users.",
@@ -84,8 +104,6 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 			["Plugins.Widgets.FirebasePushNotification.Test.Sent"] = "Test notification sent.",
 			["Plugins.Widgets.FirebasePushNotification.Test.Failed"] = "Unable to send test notification."
 		});
-		//Arabic values for the broadcast page; the dictionary above seeds every
-		//language with the English text, this overwrites ar-SA.
 		foreach (var resource in new Dictionary<string, string>
 		{
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.PageTitle"] = "إرسال إشعار جماعي",
@@ -98,9 +116,13 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.BodyEn"] = "النص (بالإنجليزية)",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.TitleAr"] = "العنوان (بالعربية)",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.BodyAr"] = "النص (بالعربية)",
-			["Plugins.Widgets.FirebasePushNotification.Broadcast.DataJson"] = "بيانات JSON",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.Link"] = "الرابط عند الضغط (اختياري)",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.LinkHint"] = "الصفحة التي تُفتح عند الضغط على الإشعار. افتحها في المتجر وانسخ عنوانها من المتصفح والصقه هنا. اتركه فارغاً لفتح الصفحة الرئيسية.",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Send"] = "إرسال الإشعار",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.SearchPlaceholder"] = "ابحث واختر مستخدماً",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.InputTooShort"] = "يرجى إدخال حرفين أو أكثر",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.NoResults"] = "لا يوجد مستخدمون مطابقون",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.Searching"] = "جارٍ البحث...",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Result"] = "تمت معالجة طلب الإشعار لعدد {0} من المستخدمين، وتم الإرسال إلى {1} من الأجهزة.",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Errors.TitleBodyRequired"] = "يرجى إدخال العنوان والنص باللغتين العربية والإنجليزية.",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Errors.SelectUser"] = "يرجى اختيار مستخدم أو تحديد الإرسال إلى جميع المستخدمين.",
@@ -108,9 +130,8 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 			["Plugins.Widgets.FirebasePushNotification.Test.Sent"] = "تم إرسال الإشعار التجريبي.",
 			["Plugins.Widgets.FirebasePushNotification.Test.Failed"] = "تعذر إرسال الإشعار التجريبي."
 		})
-			await _localizationService.AddOrUpdateLocaleResourceAsync(resource.Key, resource.Value, "ar-SA");
-
-		await base.InstallAsync();
+		foreach (var culture in new[] { "ar-SA", "ar-SY" }) //a culture the store lacks is skipped
+			await _localizationService.AddOrUpdateLocaleResourceAsync(resource.Key, resource.Value, culture);
 	}
 
 	public override async Task UninstallAsync()

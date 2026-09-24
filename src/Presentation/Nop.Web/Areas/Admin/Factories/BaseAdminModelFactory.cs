@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Discounts;
@@ -59,6 +60,7 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
     protected readonly ITopicTemplateService _topicTemplateService;
     protected readonly IVendorService _vendorService;
     protected readonly IWarehouseService _warehouseService;
+    protected readonly IWorkContext _workContext;
     protected readonly TranslationSettings _translationSettings;
 
     #endregion
@@ -88,6 +90,7 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         ITopicTemplateService topicTemplateService,
         IVendorService vendorService,
         IWarehouseService warehouseService,
+        IWorkContext workContext,
         TranslationSettings translationSettings)
     {
         _categoryService = categoryService;
@@ -113,6 +116,7 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         _topicTemplateService = topicTemplateService;
         _vendorService = vendorService;
         _warehouseService = warehouseService;
+        _workContext = workContext;
         _translationSettings = translationSettings;
     }
 
@@ -253,9 +257,12 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
 
         //prepare available activity log types
         var availableActivityTypes = await _customerActivityService.GetAllActivityTypesAsync();
+        var languageId = (await _workContext.GetWorkingLanguageAsync()).Id;
         foreach (var activityType in availableActivityTypes)
         {
-            items.Add(new SelectListItem { Value = activityType.Id.ToString(), Text = activityType.Name });
+            //Name is plain DB text; translate by system keyword, falling back to Name
+            var text = await _localizationService.GetResourceAsync($"Admin.ActivityLogType.{activityType.SystemKeyword}", languageId, false, activityType.Name);
+            items.Add(new SelectListItem { Value = activityType.Id.ToString(), Text = text });
         }
 
         //insert special item for the default value

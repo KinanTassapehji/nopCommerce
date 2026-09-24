@@ -143,6 +143,7 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
             createdFromUtc: searchModel.StartDate,
             createdToUtc: searchModel.EndDate,
             countryId: searchModel.BillingCountryId,
+            includeGuests: searchModel.IncludeGuests,
             pageIndex: searchModel.Page - 1, pageSize: searchModel.PageSize);
 
         //prepare list model

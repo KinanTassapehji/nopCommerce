@@ -37,9 +37,19 @@
                             @T("Account.CustomerOrders.OrderNumber"): @order.CustomOrderNumber
                         </h2>
                         <ul class="info">
-                            <li>@T("Account.CustomerOrders.OrderStatus"): <span class="order-status @order.OrderStatusEnum.ToString().ToLowerInvariant()">@order.OrderStatus</span></li>
-                            <li>@T("Account.CustomerOrders.OrderDate"): <span class="order-date">@order.CreatedOn.ToString()</span></li>
-                            <li>@T("Account.CustomerOrders.OrderTotal"): <span class="order-total">@order.OrderTotal</span></li>
+                            <li class="status">
+                                <span class="label">@T("Account.CustomerOrders.OrderStatus"):</span>
+                                <span class="order-status @order.OrderStatusEnum.ToString().ToLowerInvariant()">@order.OrderStatus</span>
+                            </li>
+                            <li class="date">
+                                <span class="label">@T("Account.CustomerOrders.OrderDate"):</span>
+                                @*"D" is the format the order details page already prints this date in*@
+                                <span class="value order-date">@order.CreatedOn.ToString("D")</span>
+                            </li>
+                            <li class="total">
+                                <span class="label">@T("Account.CustomerOrders.OrderTotal"):</span>
+                                <span class="value order-total">@order.OrderTotal</span>
+                            </li>
                         </ul>
                         <div class="buttons">
                             @if (order.IsReturnRequestAllowed)

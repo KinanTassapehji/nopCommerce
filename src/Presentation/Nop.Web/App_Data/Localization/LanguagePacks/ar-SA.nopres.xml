@@ -1321,13 +1321,13 @@
     <Value>يجب حفظ سمة العنوان قبل أن تتمكن من إضافة قيم لسمة العنوان هذه.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.Fields.Address1">
-    <Value>العنوان 1</Value>
+    <Value>الشارع</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.Fields.Address1.Hint">
-    <Value>ادخل العنوان 1</Value>
+    <Value>أدخل الشارع.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.Fields.Address1.Required">
-    <Value>العنوان 1 مطلوب</Value>
+    <Value>الشارع مطلوب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.Fields.Address2">
     <Value>العنوان 2</Value>
@@ -1366,13 +1366,13 @@
     <Value>الدولة مطلوبة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.Fields.County">
-    <Value>المقاطعة / المنطقة</Value>
+    <Value>المنطقة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.Fields.County.Hint">
-    <Value>أدخل مقاطعة / منطقة.</Value>
+    <Value>أدخل المنطقة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.Fields.County.Required">
-    <Value>المقاطعة / المنطقة مطلوبة.</Value>
+    <Value>المنطقة مطلوبة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.Fields.Email">
     <Value>البريد الإلكتروني</Value>
@@ -11645,7 +11645,7 @@
     <Value>لم يتم تحديد عملاء</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.OnlineCustomers">
-    <Value>العملاء عبر الإنترنت</Value>
+    <Value>الزوار المتواجدون الآن</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.OnlineCustomers.Fields.CustomerInfo">
     <Value>بيانات المستخدم</Value>
@@ -11972,7 +11972,7 @@
     <Value>الطلبات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Address.Address1">
-    <Value>العنوان 1</Value>
+    <Value>الشارع</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Address.Address2">
     <Value>العنوان 2</Value>
@@ -11990,7 +11990,7 @@
     <Value>الدولة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Address.County">
-    <Value>المقاطعة / المنطقة</Value>
+    <Value>المنطقة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Address.CustomAttributes">
     <Value>سمات مخصصة</Value>
@@ -14141,7 +14141,169 @@
     <Value>تم تحديث طلب المرتجعات بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Sales">
-    <Value>مبيعات</Value>
+    <Value>المبيعات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests">
+    <Value>طلبات الصيانة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.BackToList">
+    <Value>العودة إلى قائمة طلبات الصيانة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Customer">
+    <Value>العميل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Deleted">
+    <Value>تم حذف طلب الصيانة بنجاح.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Device">
+    <Value>الجهاز</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.EditDetails">
+    <Value>طلب صيانة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.AdminComment">
+    <Value>ملاحظة الإدارة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.AdminComment.Hint">
+    <Value>ملاحظة داخلية للموظفين، لا يراها العميل.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Area">
+    <Value>الحيّ</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Brand">
+    <Value>العلامة التجارية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.City">
+    <Value>المدينة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.CreatedOn">
+    <Value>تاريخ الطلب</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.DeviceType">
+    <Value>نوع الجهاز</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Email">
+    <Value>البريد الالكتروني</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.FullName">
+    <Value>الاسم الكامل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.InWarranty">
+    <Value>ضمن فترة الضمان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.ModelNumber">
+    <Value>رقم الموديل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.PhoneNumber">
+    <Value>رقم الجوال</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Problem">
+    <Value>المشكلة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Status">
+    <Value>الحالة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Status.Hint">
+    <Value>حالة الطلب.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Handling">
+    <Value>المتابعة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.AdminComment">
+    <Value>ملاحظة الإدارة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.AdminComment.Hint">
+    <Value>البحث في ملاحظات الموظفين.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Area">
+    <Value>الحيّ</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Area.Hint">
+    <Value>البحث بالحيّ.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Brand">
+    <Value>العلامة التجارية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Brand.Hint">
+    <Value>عرض طلبات هذه العلامة التجارية فقط.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.City">
+    <Value>المدينة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.City.Hint">
+    <Value>البحث بالمدينة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.DeviceType">
+    <Value>نوع الجهاز</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.DeviceType.Hint">
+    <Value>البحث بنوع الجهاز.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Email">
+    <Value>البريد الالكتروني</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Email.Hint">
+    <Value>البحث بالبريد الالكتروني.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.EndDate">
+    <Value>تاريخ النهاية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.EndDate.Hint">
+    <Value>آخر يوم في الفترة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.FullName">
+    <Value>الاسم الكامل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.FullName.Hint">
+    <Value>البحث باسم العميل.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.InWarranty">
+    <Value>الضمان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.InWarranty.Hint">
+    <Value>عرض الأجهزة ضمن فترة الضمان أو خارجها فقط.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Keywords">
+    <Value>كلمات البحث</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Keywords.Hint">
+    <Value>البحث في كل حقول الطلب دفعة واحدة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.ModelNumber">
+    <Value>رقم الموديل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.ModelNumber.Hint">
+    <Value>البحث برقم الموديل.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.PhoneNumber">
+    <Value>رقم الجوال</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.PhoneNumber.Hint">
+    <Value>البحث برقم الجوال.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Problem">
+    <Value>المشكلة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Problem.Hint">
+    <Value>البحث في وصف المشكلة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.StartDate">
+    <Value>تاريخ البداية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.StartDate.Hint">
+    <Value>أول يوم في الفترة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Status">
+    <Value>الحالة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Status.Hint">
+    <Value>عرض الطلبات بهذه الحالة فقط.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Problem">
+    <Value>المشكلة كما وصفها العميل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Updated">
+    <Value>تم تحديث طلب الصيانة بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.SalesReport.Average">
     <Value>مجموع الطلب</Value>
@@ -14286,6 +14448,12 @@
   </LocaleResource>
   <LocaleResource Name="Admin.ShoppingCartType.EndDate.Hint">
     <Value>تاريخ انتهاء البحث (عند إضافة منتج إلى سلة التسوق).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ShoppingCartType.IncludeGuests">
+    <Value>تضمين الزوار</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ShoppingCartType.IncludeGuests.Hint">
+    <Value>حدد لعرض سلال الزوار غير المسجلين أيضاً.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ShoppingCartType.Product">
     <Value>المنتج</Value>
@@ -16194,6 +16362,18 @@
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Catalog.RentalPricePeriod.Years">
     <Value>سنوات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.MaintenanceRequestStatus.Cancelled">
+    <Value>ملغي</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.MaintenanceRequestStatus.Completed">
+    <Value>منجز</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.MaintenanceRequestStatus.InProgress">
+    <Value>قيد التنفيذ</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.MaintenanceRequestStatus.New">
+    <Value>جديد</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Customers.CustomerNameFormat.ShowEmails">
     <Value>عرض البريد الإلكتروني</Value>
@@ -22915,5 +23095,530 @@
   </LocaleResource>
   <LocaleResource Name="Homepage.AllProducts.Loading">
     <Value>جارٍ تحميل المزيد من المنتجات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewAddressAttribute">
+    <Value>إضافة سمة عنوان جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewAddressAttributeValue">
+    <Value>إضافة قيمة سمة عنوان جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewAffiliate">
+    <Value>إضافة مسوق جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewBlogPost">
+    <Value>إضافة تدوينة جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewCampaign">
+    <Value>إضافة حملة جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewCategory">
+    <Value>إضافة قسم جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewCheckoutAttribute">
+    <Value>إضافة سمة دفع جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewCountry">
+    <Value>إضافة دولة جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewCurrency">
+    <Value>إضافة عملة جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewCustomerAttributeValue">
+    <Value>إضافة قيمة سمة عميل جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewCustomerAttribute">
+    <Value>إضافة سمة عميل جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewCustomerRole">
+    <Value>إضافة دور عميل جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewCustomer">
+    <Value>إضافة عميل جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewDiscount">
+    <Value>إضافة خصم جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewEmailAccount">
+    <Value>إضافة حساب بريد إلكتروني جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewFilterLevelValue">
+    <Value>إضافة قيمة مستوى تصفية جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewLanguage">
+    <Value>إضافة لغة جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewManufacturer">
+    <Value>إضافة شركة جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewMeasureDimension">
+    <Value>إضافة وحدة قياس أبعاد جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewMeasureWeight">
+    <Value>إضافة وحدة قياس وزن جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewMenuItem">
+    <Value>إضافة عنصر قائمة جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewMenu">
+    <Value>إضافة قائمة جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewNews">
+    <Value>إضافة خبر جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewProductAttribute">
+    <Value>إضافة سمة منتج جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewProduct">
+    <Value>إضافة منتج جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewReviewType">
+    <Value>إضافة نوع مراجعة جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewSetting">
+    <Value>إضافة إعداد جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewSpecAttributeGroup">
+    <Value>إضافة مجموعة سمات مواصفات جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewSpecAttribute">
+    <Value>إضافة سمة مواصفات جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewStateProvince">
+    <Value>إضافة ولاية أو محافظة جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewStore">
+    <Value>إضافة متجر جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewTopic">
+    <Value>إضافة موضوع جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewVendorAttributeValue">
+    <Value>إضافة قيمة سمة بائع جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewVendorAttribute">
+    <Value>إضافة سمة بائع جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewVendor">
+    <Value>إضافة بائع جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewWarehouse">
+    <Value>إضافة مستودع جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddNewWidget">
+    <Value>إضافة عنصر واجهة جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.AddSubscriptionType">
+    <Value>إضافة نوع اشتراك جديد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteActivityLog">
+    <Value>حذف سجل النشاط</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteAddressAttributeValue">
+    <Value>حذف قيمة سمة عنوان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteAddressAttribute">
+    <Value>حذف سمة عنوان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteAffiliate">
+    <Value>حذف مسوق</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteBlogPostComment">
+    <Value>حذف تعليق على تدوينة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteBlogPost">
+    <Value>حذف تدوينة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteCampaign">
+    <Value>حذف حملة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteCategory">
+    <Value>حذف قسم</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteCheckoutAttribute">
+    <Value>حذف سمة دفع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteCountry">
+    <Value>حذف دولة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteCurrency">
+    <Value>حذف عملة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteCustomerAttributeValue">
+    <Value>حذف قيمة سمة عميل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteCustomerAttribute">
+    <Value>حذف سمة عميل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteCustomerRole">
+    <Value>حذف دور عميل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteCustomer">
+    <Value>حذف عميل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteDiscount">
+    <Value>حذف خصم</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteEmailAccount">
+    <Value>حذف حساب بريد إلكتروني</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteFilterLevelValue">
+    <Value>حذف قيمة مستوى تصفية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteLanguage">
+    <Value>حذف لغة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteManufacturer">
+    <Value>حذف شركة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteMeasureDimension">
+    <Value>حذف وحدة قياس أبعاد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteMeasureWeight">
+    <Value>حذف وحدة قياس وزن</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteMenuItem">
+    <Value>حذف عنصر قائمة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteMenu">
+    <Value>حذف قائمة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteMessageTemplate">
+    <Value>حذف قالب رسالة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteNewsComment">
+    <Value>حذف تعليق على خبر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteNews">
+    <Value>حذف خبر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteOrder">
+    <Value>حذف طلب</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeletePlugin">
+    <Value>حذف إضافة برمجية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteProductAttribute">
+    <Value>حذف سمة منتج</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteProductReview">
+    <Value>حذف مراجعة منتج</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteProduct">
+    <Value>حذف منتج</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteReturnRequest">
+    <Value>حذف طلب إرجاع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteReviewType">
+    <Value>حذف نوع مراجعة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteSetting">
+    <Value>حذف إعداد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteSpecAttributeGroup">
+    <Value>حذف مجموعة سمات مواصفات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteSpecAttribute">
+    <Value>حذف سمة مواصفات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteStateProvince">
+    <Value>حذف ولاية أو محافظة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteStore">
+    <Value>حذف متجر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteSubscriptionType">
+    <Value>حذف نوع اشتراك</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteSystemLog">
+    <Value>حذف سجل النظام</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteTopic">
+    <Value>حذف موضوع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteVendorAttributeValue">
+    <Value>حذف قيمة سمة بائع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteVendorAttribute">
+    <Value>حذف سمة بائع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteVendor">
+    <Value>حذف بائع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteWarehouse">
+    <Value>حذف مستودع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.DeleteWidget">
+    <Value>حذف عنصر واجهة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditActivityLogTypes">
+    <Value>تعديل أنواع سجل النشاط</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditAddressAttributeValue">
+    <Value>تعديل قيمة سمة عنوان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditAddressAttribute">
+    <Value>تعديل سمة عنوان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditAffiliate">
+    <Value>تعديل مسوق</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditBlogPost">
+    <Value>تعديل تدوينة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditCampaign">
+    <Value>تعديل حملة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditCategory">
+    <Value>تعديل قسم</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditCheckoutAttribute">
+    <Value>تعديل سمة دفع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditCountry">
+    <Value>تعديل دولة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditCurrency">
+    <Value>تعديل عملة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditCustomerAttributeValue">
+    <Value>تعديل قيمة سمة عميل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditCustomerAttribute">
+    <Value>تعديل سمة عميل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditCustomerRole">
+    <Value>تعديل دور عميل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditCustomer">
+    <Value>تعديل عميل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditDiscount">
+    <Value>تعديل خصم</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditEmailAccount">
+    <Value>تعديل حساب بريد إلكتروني</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditFilterLevelValue">
+    <Value>تعديل قيمة مستوى تصفية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditLanguage">
+    <Value>تعديل لغة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditManufacturer">
+    <Value>تعديل شركة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditMeasureDimension">
+    <Value>تعديل وحدة قياس أبعاد</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditMeasureWeight">
+    <Value>تعديل وحدة قياس وزن</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditMenuItem">
+    <Value>تعديل عنصر قائمة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditMenu">
+    <Value>تعديل قائمة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditMessageTemplate">
+    <Value>تعديل قالب رسالة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditNews">
+    <Value>تعديل خبر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditOrder">
+    <Value>تعديل طلب</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditPlugin">
+    <Value>تعديل إضافة برمجية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditProductAttribute">
+    <Value>تعديل سمة منتج</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditProductReview">
+    <Value>تعديل مراجعة منتج</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditProduct">
+    <Value>تعديل منتج</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditPromotionProviders">
+    <Value>تعديل مزودي العروض الترويجية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditReturnRequest">
+    <Value>تعديل طلب إرجاع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditReviewType">
+    <Value>تعديل نوع مراجعة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditSettings">
+    <Value>تعديل الإعدادات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditSpecAttributeGroup">
+    <Value>تعديل مجموعة سمات مواصفات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditSpecAttribute">
+    <Value>تعديل سمة مواصفات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditStateProvince">
+    <Value>تعديل ولاية أو محافظة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditStore">
+    <Value>تعديل متجر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditSubscriptionType">
+    <Value>تعديل نوع اشتراك</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditTask">
+    <Value>تعديل مهمة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditTopic">
+    <Value>تعديل موضوع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditVendorAttributeValue">
+    <Value>تعديل قيمة سمة بائع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditVendorAttribute">
+    <Value>تعديل سمة بائع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditVendor">
+    <Value>تعديل بائع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditWarehouse">
+    <Value>تعديل مستودع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.EditWidget">
+    <Value>تعديل عنصر واجهة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ExportCategories">
+    <Value>تصدير الأقسام</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ExportCustomers">
+    <Value>تصدير العملاء</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ExportFilterLevelValues">
+    <Value>تصدير قيم مستويات التصفية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ExportManufacturers">
+    <Value>تصدير الشركات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ExportNewsLetterSubscriptions">
+    <Value>تصدير اشتراكات النشرة البريدية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ExportOrders">
+    <Value>تصدير الطلبات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ExportProducts">
+    <Value>تصدير المنتجات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ExportStates">
+    <Value>تصدير الولايات والمحافظات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.Impersonation.Finished">
+    <Value>جلسة انتحال شخصية عميل - انتهت</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.Impersonation.Started">
+    <Value>جلسة انتحال شخصية عميل - بدأت</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ImportCategories">
+    <Value>استيراد الأقسام</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ImportCustomers">
+    <Value>استيراد العملاء</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ImportFilterLevelValues">
+    <Value>استيراد قيم مستويات التصفية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ImportManufacturers">
+    <Value>استيراد الشركات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ImportNewsLetterSubscriptions">
+    <Value>استيراد اشتراكات النشرة البريدية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ImportProducts">
+    <Value>استيراد المنتجات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.ImportStates">
+    <Value>استيراد الولايات والمحافظات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.InstallNewPlugin">
+    <Value>تثبيت إضافة برمجية جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.AddBlogComment">
+    <Value>المتجر: إضافة تعليق على تدوينة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.AddForumPost">
+    <Value>المتجر: إضافة مشاركة في المنتدى</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.AddForumTopic">
+    <Value>المتجر: إضافة موضوع في المنتدى</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.AddNewsComment">
+    <Value>المتجر: إضافة تعليق على خبر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.AddProductReview">
+    <Value>المتجر: إضافة مراجعة منتج</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.AddToCompareList">
+    <Value>المتجر: إضافة إلى قائمة المقارنة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.AddToShoppingCart">
+    <Value>المتجر: إضافة إلى سلة التسوق</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.ContactUs">
+    <Value>المتجر: استخدام نموذج اتصل بنا</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.DeleteForumPost">
+    <Value>المتجر: حذف مشاركة من المنتدى</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.DeleteForumTopic">
+    <Value>المتجر: حذف موضوع من المنتدى</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.EditForumPost">
+    <Value>المتجر: تعديل مشاركة في المنتدى</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.EditForumTopic">
+    <Value>المتجر: تعديل موضوع في المنتدى</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.FailedLogin">
+    <Value>المتجر: فشل تسجيل الدخول</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.Logout">
+    <Value>المتجر: تسجيل الخروج</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.PasswordChanged">
+    <Value>المتجر: تغيير كلمة المرور</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.PlaceOrder">
+    <Value>المتجر: تقديم طلب</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.SendPM">
+    <Value>المتجر: إرسال رسالة خاصة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.SuccessfulLogin">
+    <Value>المتجر: تسجيل دخول ناجح</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.ViewCategory">
+    <Value>المتجر: عرض قسم</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.ViewManufacturer">
+    <Value>المتجر: عرض شركة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.PublicStore.ViewProduct">
+    <Value>المتجر: عرض منتج</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.UninstallPlugin">
+    <Value>إلغاء تثبيت إضافة برمجية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.UpdatePlugin">
+    <Value>تحديث إضافة برمجية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.UploadIcons">
+    <Value>رفع أيقونة الموقع وأيقونات التطبيق</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.UploadNewPlugin">
+    <Value>رفع إضافة برمجية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ActivityLogType.UploadNewTheme">
+    <Value>رفع قالب تصميم</Value>
   </LocaleResource>
 </Language>

@@ -14141,6 +14141,168 @@
   <LocaleResource Name="Admin.Sales">
     <Value>Sales</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests">
+    <Value>Maintenance requests</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.BackToList">
+    <Value>back to maintenance request list</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Customer">
+    <Value>Customer</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Deleted">
+    <Value>The maintenance request has been deleted successfully.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Device">
+    <Value>Device</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.EditDetails">
+    <Value>Maintenance request</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.AdminComment">
+    <Value>Admin comment</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.AdminComment.Hint">
+    <Value>The note the staff keeps on this request. The customer never sees it.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Area">
+    <Value>Street</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Brand">
+    <Value>Brand</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.City">
+    <Value>City</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.CreatedOn">
+    <Value>Created on</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.DeviceType">
+    <Value>Device type</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Email">
+    <Value>Email</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.FullName">
+    <Value>Full name</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.InWarranty">
+    <Value>In warranty</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.ModelNumber">
+    <Value>Model number</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.PhoneNumber">
+    <Value>Mobile</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Problem">
+    <Value>Problem</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Status">
+    <Value>Status</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Fields.Status.Hint">
+    <Value>Where this request stands.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Handling">
+    <Value>Handling</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.AdminComment">
+    <Value>Admin comment</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.AdminComment.Hint">
+    <Value>Search in the staff notes.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Area">
+    <Value>Street</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Area.Hint">
+    <Value>Search by street.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Brand">
+    <Value>Brand</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Brand.Hint">
+    <Value>Show only the requests for this brand.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.City">
+    <Value>City</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.City.Hint">
+    <Value>Search by city.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.DeviceType">
+    <Value>Device type</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.DeviceType.Hint">
+    <Value>Search by device type.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Email">
+    <Value>Email</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Email.Hint">
+    <Value>Search by email.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.EndDate">
+    <Value>End date</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.EndDate.Hint">
+    <Value>The last day of the period.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.FullName">
+    <Value>Full name</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.FullName.Hint">
+    <Value>Search by customer name.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.InWarranty">
+    <Value>Warranty</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.InWarranty.Hint">
+    <Value>Show only the devices in, or out of, the warranty period.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Keywords">
+    <Value>Keywords</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Keywords.Hint">
+    <Value>Search every field of the request at once.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.ModelNumber">
+    <Value>Model number</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.ModelNumber.Hint">
+    <Value>Search by model number.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.PhoneNumber">
+    <Value>Mobile</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.PhoneNumber.Hint">
+    <Value>Search by mobile number.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Problem">
+    <Value>Problem</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Problem.Hint">
+    <Value>Search in the problem description.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.StartDate">
+    <Value>Start date</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.StartDate.Hint">
+    <Value>The first day of the period.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Status">
+    <Value>Status</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.List.Status.Hint">
+    <Value>Show only the requests with this status.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Problem">
+    <Value>Problem as the customer described it</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Sales.MaintenanceRequests.Updated">
+    <Value>The maintenance request has been updated successfully.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.SalesReport.Average">
     <Value>Order totals</Value>
   </LocaleResource>
@@ -14284,6 +14446,12 @@
   </LocaleResource>
   <LocaleResource Name="Admin.ShoppingCartType.EndDate.Hint">
     <Value>The end date for the search (when a product was added to the cart).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ShoppingCartType.IncludeGuests">
+    <Value>Include guests</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ShoppingCartType.IncludeGuests.Hint">
+    <Value>Check to also list carts of customers who are not registered.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ShoppingCartType.Product">
     <Value>Product</Value>
@@ -16204,6 +16372,18 @@
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Catalog.RentalPricePeriod.Years">
     <Value>Years</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.MaintenanceRequestStatus.Cancelled">
+    <Value>Cancelled</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.MaintenanceRequestStatus.Completed">
+    <Value>Completed</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.MaintenanceRequestStatus.InProgress">
+    <Value>In progress</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.MaintenanceRequestStatus.New">
+    <Value>New</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Customers.CustomerNameFormat.ShowEmails">
     <Value>Show emails</Value>

@@ -1,0 +1,23 @@
+@using Nop.Core.Domain.Common
+@model KeyValuePair<AddressField, string>[]
+@*
+    One labelled <li> per formatted address field.
+
+    Every view that printed an address used to loop the array itself and emit
+    the bare value, which on a Syrian address left two unexplained lines -
+    "برزة" over "بدر" - with nothing saying which was the area and which the
+    street. The label comes from the same Address.Fields.* resource the add /
+    edit form already labels its inputs with, so the two always agree.
+
+    FormatAddressAsync returns a fixed array of seven slots and leaves the ones
+    the store does not collect empty - and an untouched slot keeps its default
+    key, AddressField.Country. Filtering on the value drops both, so no view
+    needs its own emptiness guard any more.
+*@
+@foreach (var field in Model.Where(f => !string.IsNullOrWhiteSpace(f.Value)))
+{
+    <li class="@field.Key.ToString().ToLowerInvariant()">
+        <span class="label">@T($"Address.Fields.{field.Key}"):</span>
+        <span class="value">@field.Value</span>
+    </li>
+}

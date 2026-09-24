@@ -275,7 +275,6 @@
                                         Length = Model.PageSize,
                                         LengthMenu = Model.AvailablePageSizes,
                                         FooterCallback = !Model.IsLoggedInAsVendor ? "ordersfootercallback" : null,
-                                        FooterColumns = !Model.IsLoggedInAsVendor ? 10 : 0,
                                         Filters = new List<FilterParameter>
                                                             {
                                             new FilterParameter(nameof(Model.StartDate), typeof(DateTime?)),
@@ -366,8 +365,9 @@
                                         ClassName = NopColumnClassDefaults.Button,
                                         Render = new RenderButtonView(new DataUrl("~/Admin/Order/Edit"))
                                     });
-                                    var orderSummaryColumnNumber = 8;
                                 }
+
+                                <div id="orders-summary" class="grid-summary"></div>
 
                                 @await Html.PartialAsync("Table", gridModel)
 
@@ -433,15 +433,12 @@
                                         data: postData,
                                         success: function (data, textStatus, jqXHR) {
                                             if (data) {
-                                                for (var key in data) {
-                                                    var reportSummary = '<div><strong>@T("Admin.Orders.Report.Summary").Text</strong></div>' +
-                                                        '<div>@T("Admin.Orders.Report.Profit").Text <span>' + data['AggregatorProfit'] +'</span></div>' +
-                                                        '<div>@T("Admin.Orders.Report.Shipping").Text <span>' + data['AggregatorShipping'] + '</span></div>' +
-                                                        '<div>@T("Admin.Orders.Report.Tax").Text <span>' +  data['AggregatorTax'] + '</span></div>' +
-                                                        '<div>@T("Admin.Orders.Report.Total").Text <span>' + data['AggregatorTotal'] + '</span></div>'
-                                                    var orderTotalsColumn = $('#orders-grid').DataTable().column(@(orderSummaryColumnNumber));
-                                                    $(orderTotalsColumn.footer()).html(reportSummary);
-                                                }
+                                                $('#orders-summary').html(
+                                                    '<span class="grid-summary-title">@T("Admin.Orders.Report.Summary").Text</span>' +
+                                                    '<span class="grid-summary-item"><span>@T("Admin.Orders.Report.Profit").Text</span><b>' + data['AggregatorProfit'] + '</b></span>' +
+                                                    '<span class="grid-summary-item"><span>@T("Admin.Orders.Report.Shipping").Text</span><b>' + data['AggregatorShipping'] + '</b></span>' +
+                                                    '<span class="grid-summary-item"><span>@T("Admin.Orders.Report.Tax").Text</span><b>' + data['AggregatorTax'] + '</b></span>' +
+                                                    '<span class="grid-summary-item is-total"><span>@T("Admin.Orders.Report.Total").Text</span><b>' + data['AggregatorTotal'] + '</b></span>');
                                             }
                                         }
                                     });

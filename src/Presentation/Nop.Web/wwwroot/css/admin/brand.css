@@ -873,6 +873,57 @@ table.dataTable thead .dt-column-order {
   opacity: .45;
 }
 
+/* --- Grid totals strip --------------------------------------------------
+   The order list and the bestsellers report POST for their aggregates after
+   every draw. Stock drops the answer into a single column's footer cell -
+   100px wide, under "Order total" - where four label/value pairs stack into
+   a ragged little column, and the tfoot band exists for nothing else. Both
+   views now write into a strip above their grid instead; this is the strip.
+   It carries no markup until the first response lands, hence :empty.
+   ------------------------------------------------------------------------ */
+
+.grid-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .4rem 1.75rem;
+  margin-bottom: 1rem;
+  padding: .7rem 1rem;
+  border: 1px solid var(--adm-line);
+  border-radius: var(--adm-r-sm);
+  background-color: var(--adm-surface-alt);
+}
+
+.grid-summary:empty {
+  display: none;
+}
+
+/* Pushes the figures to the far edge of the strip, either direction. */
+.grid-summary-title {
+  font-weight: 600;
+  margin-inline-end: auto;
+}
+
+.grid-summary-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .4rem;
+  white-space: nowrap;
+}
+
+.grid-summary-item > span {
+  color: var(--adm-ink-muted);
+}
+
+.grid-summary-item > b {
+  font-weight: 600;
+}
+
+/* The grand total is the figure the eye came for. */
+.grid-summary-item.is-total > b {
+  color: var(--adm-accent);
+}
+
 /* --- Modals ------------------------------------------------------------- */
 
 .modal-content {
@@ -1090,7 +1141,8 @@ span.grid-report-item {
 }
 
 /* Rows inside the order cards are a read-out, not a form. */
-#order-cards .card-body .form-group.row {
+#order-cards .card-body .form-group.row,
+#maintenance-request-cards .card-body .form-group.row {
   margin-bottom: 0;
   padding-block: 6px;
   /* not baseline: the label column is a .label-wrapper carrying the help icon,
@@ -1099,36 +1151,45 @@ span.grid-report-item {
   align-items: center;
 }
 
-#order-cards .card-body .form-group.row + .form-group.row {
+#order-cards .card-body .form-group.row + .form-group.row,
+#maintenance-request-cards .card-body .form-group.row + .form-group.row {
   border-top: 1px solid var(--adm-line);
 }
 
 /* A col-md-3 label column is a third of the card: on a wide screen the value
    lands an inch from the word it belongs to. Cap the label, flex the value. */
 #order-cards .card-body .form-group.row > [class*="col-md-3"],
+#maintenance-request-cards .card-body .form-group.row > [class*="col-md-3"],
 #order-cards .card-body .form-group.row > [class*="col-md-4"],
-#order-cards .card-body .form-group.row > [class*="col-lg-3"] {
+#maintenance-request-cards .card-body .form-group.row > [class*="col-md-4"],
+#order-cards .card-body .form-group.row > [class*="col-lg-3"],
+#maintenance-request-cards .card-body .form-group.row > [class*="col-lg-3"] {
   flex: 0 0 auto;
   width: 200px;
   max-width: 45%;
 }
 
 #order-cards .card-body .form-group.row > [class*="col-md-8"],
+#maintenance-request-cards .card-body .form-group.row > [class*="col-md-8"],
 #order-cards .card-body .form-group.row > [class*="col-md-9"],
-#order-cards .card-body .form-group.row > [class*="col-lg-9"] {
+#maintenance-request-cards .card-body .form-group.row > [class*="col-md-9"],
+#order-cards .card-body .form-group.row > [class*="col-lg-9"],
+#maintenance-request-cards .card-body .form-group.row > [class*="col-lg-9"] {
   flex: 1 1 0;
   width: auto;
   max-width: none;
 }
 
-#order-cards .card-body .col-form-label {
+#order-cards .card-body .col-form-label,
+#maintenance-request-cards .card-body .col-form-label {
   padding-block: 0;
   font-size: 14px;
   font-weight: 600;
   color: var(--adm-ink-muted);
 }
 
-#order-cards .card-body .form-text-row {
+#order-cards .card-body .form-text-row,
+#maintenance-request-cards .card-body .form-text-row {
   padding-top: 0;
   min-height: 0;
 }
@@ -1138,25 +1199,29 @@ span.grid-report-item {
    so pair them up. Below lg the stock single column is already right. */
 
 @media (min-width: 992px) {
-  #order-cards .card.card-default > .card-body {
+  #order-cards .card.card-default > .card-body,
+  #maintenance-request-cards .card.card-default > .card-body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 40px;
   }
 
-  #order-cards .card.card-default > .card-body > .form-group.row {
+  #order-cards .card.card-default > .card-body > .form-group.row,
+  #maintenance-request-cards .card.card-default > .card-body > .form-group.row {
     margin-inline: 0;
   }
 
   /* only the short label/value rows pair up - grids, tables and lone buttons
      keep the full card */
-  #order-cards .card.card-default > .card-body > *:not(.form-group.row) {
+  #order-cards .card.card-default > .card-body > *:not(.form-group.row),
+  #maintenance-request-cards .card.card-default > .card-body > *:not(.form-group.row) {
     grid-column: 1 / -1;
   }
 
   /* the separator rule hairlines every row but the first; in two columns the
      first line is two rows, so the second one has to be exempt too */
-  #order-cards .card.card-default > .card-body > .form-group.row:nth-child(2) {
+  #order-cards .card.card-default > .card-body > .form-group.row:nth-child(2),
+  #maintenance-request-cards .card.card-default > .card-body > .form-group.row:nth-child(2) {
     border-top: 0;
   }
 }
@@ -1172,6 +1237,25 @@ span.grid-report-item {
 #pnlChangeOrderStatus select {
   width: auto;
   min-width: 140px;
+}
+
+/* The shipping-method editor is marked up as an .input-group, so bootstrap
+   glues the select to Save and Save to Cancel. It is not one control in three
+   parts - it is a value and two actions. Space them, and hand back the corners
+   bootstrap squared off. Scoped to #order-cards so the real input groups
+   elsewhere in the admin, where flush is right, are left alone. */
+#order-cards .input-group,
+#maintenance-request-cards .input-group,
+#order-cards .input-group > .input-group-append,
+#maintenance-request-cards .input-group > .input-group-append {
+  gap: .5rem;
+}
+
+#order-cards .input-group .input-group-text,
+#maintenance-request-cards .input-group .input-group-text,
+#order-cards .input-group .btn,
+#maintenance-request-cards .input-group .btn {
+  border-radius: var(--adm-r-sm);
 }
 
 /* --- The address on a map ------------------------------------------------
@@ -1211,4 +1295,35 @@ span.grid-report-item {
 .order-address-map-card .order-address-map iframe {
   height: 100%;
   min-height: 240px;
+}
+
+/* The map sits on the left in both directions. RTL already puts the second
+   column there; LTR has to pull it in front of the facts. */
+@media (min-width: 768px) {
+  [dir="ltr"] .order-address-map-col {
+    order: -1;
+  }
+}
+
+/* --- Maintenance request details ----------------------------------------
+   A maintenance request is four short cards. Stacked full width they are four
+   screens of scrolling to read twelve facts, so the cards themselves pair up:
+   handling beside the customer, the device beside the problem. Each card sits
+   at its own height rather than stretching to its neighbour's. Below lg the
+   stock single column is already right. */
+
+@media (min-width: 992px) {
+  #maintenance-request-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    column-gap: 20px;
+  }
+}
+
+/* The customer typed this into a textarea, line breaks and all. */
+.maintenance-request-problem {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  line-height: 1.7;
 }

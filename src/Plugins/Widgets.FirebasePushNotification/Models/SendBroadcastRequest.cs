@@ -16,5 +16,5 @@ public class SendBroadcastRequest
 
 	public string BodyAr { get; set; } = string.Empty;
 
-	public string DataJson { get; set; } = string.Empty;
+	public string Link { get; set; } = string.Empty;
 }
