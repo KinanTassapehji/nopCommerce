@@ -43,6 +43,8 @@ public partial class DefaultPermissionConfigManager : IPermissionConfigManager
         new ("Admin area. Shipments. Create, edit, delete", StandardPermission.Orders.SHIPMENTS_CREATE_EDIT_DELETE, nameof(StandardPermission.Orders), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.VendorsRoleName),
         new ("Admin area. Return requests. View", StandardPermission.Orders.RETURN_REQUESTS_VIEW, nameof(StandardPermission.Orders), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Return requests. Create, edit, delete", StandardPermission.Orders.RETURN_REQUESTS_CREATE_EDIT_DELETE, nameof(StandardPermission.Orders), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. Maintenance requests. View", StandardPermission.Orders.MAINTENANCE_REQUESTS_VIEW, nameof(StandardPermission.Orders), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. Maintenance requests. Create, edit, delete", StandardPermission.Orders.MAINTENANCE_REQUESTS_CREATE_EDIT_DELETE, nameof(StandardPermission.Orders), NopCustomerDefaults.AdministratorsRoleName),
 
         #endregion
 

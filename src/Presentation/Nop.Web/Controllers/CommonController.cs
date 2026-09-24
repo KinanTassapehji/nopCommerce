@@ -39,6 +39,7 @@ public partial class CommonController : BasePublicController
     protected readonly IHtmlFormatter _htmlFormatter;
     protected readonly ILanguageService _languageService;
     protected readonly ILocalizationService _localizationService;
+    protected readonly IMaintenanceRequestService _maintenanceRequestService;
     protected readonly ISitemapModelFactory _sitemapModelFactory;
     protected readonly IStoreContext _storeContext;
     protected readonly IThemeContext _themeContext;
@@ -64,6 +65,7 @@ public partial class CommonController : BasePublicController
         IHtmlFormatter htmlFormatter,
         ILanguageService languageService,
         ILocalizationService localizationService,
+        IMaintenanceRequestService maintenanceRequestService,
         ISitemapModelFactory sitemapModelFactory,
         IStoreContext storeContext,
         IThemeContext themeContext,
@@ -85,6 +87,7 @@ public partial class CommonController : BasePublicController
         _htmlFormatter = htmlFormatter;
         _languageService = languageService;
         _localizationService = localizationService;
+        _maintenanceRequestService = maintenanceRequestService;
         _sitemapModelFactory = sitemapModelFactory;
         _storeContext = storeContext;
         _themeContext = themeContext;
@@ -250,7 +253,24 @@ public partial class CommonController : BasePublicController
 
         if (ModelState.IsValid)
         {
-            //ponytail: no maintenance request entity - the request is mailed through the contact us template
+            await _maintenanceRequestService.InsertMaintenanceRequestAsync(new MaintenanceRequest
+            {
+                FullName = model.FullName,
+                PhoneNumber = model.PhoneNumber,
+                Email = model.Email,
+                City = model.City,
+                Area = model.Area,
+                Brand = model.Brand,
+                DeviceType = model.DeviceType,
+                ModelNumber = model.ModelNumber,
+                InWarranty = model.InWarranty,
+                Problem = model.Problem,
+                Status = MaintenanceRequestStatus.New,
+                CreatedOnUtc = DateTime.UtcNow
+            });
+
+            //the request is mailed through the contact us template as well, so whoever works
+            //from the inbox keeps working from the inbox
             var fields = new List<(string Resource, string Value)>
             {
                 ("MaintenanceRequest.PhoneNumber", model.PhoneNumber),

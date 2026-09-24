@@ -163,6 +163,7 @@ public class SchemaMigration : ForwardOnlyMigration
         Create.TableFor<VendorAttribute>();
         Create.TableFor<VendorAttributeValue>();
         Create.TableFor<VendorNote>();
+        Create.TableFor<MaintenanceRequest>();
         Create.TableFor<Menu>();
         Create.TableFor<MenuItem>();
     }

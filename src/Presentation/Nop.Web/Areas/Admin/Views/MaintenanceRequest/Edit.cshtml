@@ -1,0 +1,222 @@
+@model MaintenanceRequestModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Sales.MaintenanceRequests.EditDetails").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Maintenance requests");
+
+    //the status is the one thing on this page that changes, so it is also the one splash of colour
+    var statusClass = (MaintenanceRequestStatus)Model.StatusId switch
+    {
+        MaintenanceRequestStatus.New => "badge-info",
+        MaintenanceRequestStatus.InProgress => "badge-warning",
+        MaintenanceRequestStatus.Completed => "badge-success",
+        _ => "badge-secondary"
+    };
+
+    const string hideHandlingBlockAttributeName = "MaintenanceRequestPage.HideHandlingBlock";
+    var hideHandlingBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideHandlingBlockAttributeName);
+
+    const string hideCustomerBlockAttributeName = "MaintenanceRequestPage.HideCustomerBlock";
+    var hideCustomerBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideCustomerBlockAttributeName);
+
+    const string hideDeviceBlockAttributeName = "MaintenanceRequestPage.HideDeviceBlock";
+    var hideDeviceBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideDeviceBlockAttributeName);
+
+    const string hideProblemBlockAttributeName = "MaintenanceRequestPage.HideProblemBlock";
+    var hideProblemBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideProblemBlockAttributeName);
+}
+
+<form asp-controller="MaintenanceRequest" asp-action="Edit" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.Sales.MaintenanceRequests.EditDetails") - @Model.Id
+            <small>
+                <i class="fas fa-arrow-circle-left"></i>
+                <a asp-action="List">@T("Admin.Sales.MaintenanceRequests.BackToList")</a>
+            </small>
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-floppy-disk"></i>
+                @T("Admin.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn btn-primary">
+                <i class="far fa-floppy-disk"></i>
+                @T("Admin.Common.SaveContinue")
+            </button>
+            <span id="maintenancerequest-delete" class="btn btn-danger">
+                <i class="far fa-trash-can"></i>
+                @T("Admin.Common.Delete")
+            </span>
+        </div>
+    </div>
+
+    <div asp-validation-summary="All"></div>
+    <input asp-for="Id" type="hidden" />
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default">
+                        <div class="card-body">
+                            @*the facts the page is opened for, before any card is read*@
+                            <div class="order-summary-grid">
+                                <div class="order-summary-item">
+                                    <span class="order-summary-label">@T("Admin.Sales.MaintenanceRequests.Fields.Status")</span>
+                                    <span class="order-summary-value"><span class="badge @statusClass">@Model.StatusName</span></span>
+                                </div>
+                                <div class="order-summary-item">
+                                    <span class="order-summary-label">@T("Admin.Sales.MaintenanceRequests.Fields.CreatedOn")</span>
+                                    <span class="order-summary-value">@Model.CreatedOn.ToString()</span>
+                                </div>
+                                <div class="order-summary-item">
+                                    <span class="order-summary-label">@T("Admin.Sales.MaintenanceRequests.Fields.InWarranty")</span>
+                                    <span class="order-summary-value">
+                                        <span class="badge @(Model.InWarranty ? "badge-success" : "badge-secondary")">
+                                            @T(Model.InWarranty ? "Admin.Common.Yes" : "Admin.Common.No")
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="order-summary-item">
+                                    <span class="order-summary-label">@T("Admin.Sales.MaintenanceRequests.Fields.PhoneNumber")</span>
+                                    <span class="order-summary-value" dir="ltr">
+                                        @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                                        {
+                                            <a href="tel:@Model.PhoneNumber">@Model.PhoneNumber</a>
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nop-cards id="maintenance-request-cards">
+                        <nop-card asp-name="maintenance-request-handling" asp-icon="fas fa-list-check" asp-title="@T("Admin.Sales.MaintenanceRequests.Handling")" asp-hide-block-attribute-name="@hideHandlingBlockAttributeName" asp-hide="@hideHandlingBlock" asp-advanced="false">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="StatusId" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <nop-select asp-for="StatusId" asp-items="Model.AvailableStatuses" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="AdminComment" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <nop-textarea asp-for="AdminComment"></nop-textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </nop-card>
+                        <nop-card asp-name="maintenance-request-customer" asp-icon="far fa-user" asp-title="@T("Admin.Sales.MaintenanceRequests.Customer")" asp-hide-block-attribute-name="@hideCustomerBlockAttributeName" asp-hide="@hideCustomerBlock" asp-advanced="false">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="FullName" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-text-row">@Model.FullName</div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="PhoneNumber" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-text-row" dir="ltr">
+                                            @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                                            {
+                                                <a href="tel:@Model.PhoneNumber">@Model.PhoneNumber</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="Email" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-text-row" dir="ltr">
+                                            @if (!string.IsNullOrEmpty(Model.Email))
+                                            {
+                                                <a href="mailto:@Model.Email">@Model.Email</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="City" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-text-row">@Model.City</div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="Area" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-text-row">@Model.Area</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </nop-card>
+                        <nop-card asp-name="maintenance-request-device" asp-icon="fas fa-plug" asp-title="@T("Admin.Sales.MaintenanceRequests.Device")" asp-hide-block-attribute-name="@hideDeviceBlockAttributeName" asp-hide="@hideDeviceBlock" asp-advanced="false">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="Brand" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-text-row">@Model.Brand</div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="DeviceType" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-text-row">@Model.DeviceType</div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="ModelNumber" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-text-row" dir="ltr">@Model.ModelNumber</div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="InWarranty" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-text-row">
+                                            <span class="badge @(Model.InWarranty ? "badge-success" : "badge-secondary")">
+                                                @T(Model.InWarranty ? "Admin.Common.Yes" : "Admin.Common.No")
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </nop-card>
+                        <nop-card asp-name="maintenance-request-problem" asp-icon="far fa-comment-dots" asp-title="@T("Admin.Sales.MaintenanceRequests.Problem")" asp-hide-block-attribute-name="@hideProblemBlockAttributeName" asp-hide="@hideProblemBlock" asp-advanced="false">
+                            <div class="card-body">
+                                <div class="maintenance-request-problem">@Model.Problem</div>
+                            </div>
+                        </nop-card>
+                    </nop-cards>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+<nop-delete-confirmation asp-model-id="@Model.Id" asp-button-id="maintenancerequest-delete" />

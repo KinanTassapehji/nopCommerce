@@ -50,6 +50,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IHomeModelFactory, HomeModelFactory>();
         services.AddScoped<ILanguageModelFactory, LanguageModelFactory>();
         services.AddScoped<ILogModelFactory, LogModelFactory>();
+        services.AddScoped<IMaintenanceRequestModelFactory, MaintenanceRequestModelFactory>();
         services.AddScoped<IManufacturerModelFactory, ManufacturerModelFactory>();
         services.AddScoped<IMeasureModelFactory, MeasureModelFactory>();
         services.AddScoped<IMessageTemplateModelFactory, MessageTemplateModelFactory>();

@@ -1,0 +1,307 @@
+﻿@model MaintenanceRequestSearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Sales.MaintenanceRequests").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Maintenance requests");
+}
+
+@{
+    const string hideSearchBlockAttributeName = "MaintenanceRequestsPage.HideSearchBlock";
+    var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
+}
+
+<form asp-controller="MaintenanceRequest" asp-action="List" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.Sales.MaintenanceRequests")
+        </h1>
+        <div class="float-right">
+            <button type="button" id="delete-selected" class="btn btn-danger">
+                <i class="far fa-trash-can"></i>
+                @T("Admin.Common.Delete.Selected")
+            </button>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default card-search">
+                        <div class="card-body">
+                            <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+                                <div class="search-text">@T("Admin.Common.Search")</div>
+                                <div class="icon-search"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></div>
+                                <div class="icon-collapse"><i class="far fa-angle-@(!hideSearchBlock ? "up" : "down")" aria-hidden="true"></i></div>
+                            </div>
+
+                            <div class="search-body @(hideSearchBlock ? "closed" : "")">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchKeywords" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchKeywords" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchStartDate" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchStartDate" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchEndDate" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchEndDate" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchStatusId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchStatusId" asp-items="Model.AvailableStatuses" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchInWarrantyId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchInWarrantyId" asp-items="Model.AvailableWarrantyOptions" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchFullName" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchFullName" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchPhoneNumber" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchPhoneNumber" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchEmail" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchEmail" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchCity" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchCity" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchArea" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchArea" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchBrand" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchBrand" asp-items="Model.AvailableBrands" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchDeviceType" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchDeviceType" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchModelNumber" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchModelNumber" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchProblem" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchProblem" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchAdminComment" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchAdminComment" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="text-center col-12">
+                                        <button type="button" id="search-maintenancerequests" class="btn btn-primary btn-search">
+                                            <i class="fas fa-magnifying-glass"></i>
+                                            @T("Admin.Common.Search")
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-default">
+                        <div class="card-body">
+                            @await Html.PartialAsync("Table", new DataTablesModel
+                            {
+                                Name = "maintenancerequests-grid",
+                                UrlRead = new DataUrl("MaintenanceRequestList", "MaintenanceRequest", null),
+                                SearchButtonId = "search-maintenancerequests",
+                                Length = Model.PageSize,
+                                LengthMenu = Model.AvailablePageSizes,
+                                Filters = new List<FilterParameter>
+                                {
+                                    new FilterParameter(nameof(Model.SearchStartDate), typeof(DateTime?)),
+                                    new FilterParameter(nameof(Model.SearchEndDate), typeof(DateTime?)),
+                                    new FilterParameter(nameof(Model.SearchStatusId)),
+                                    new FilterParameter(nameof(Model.SearchInWarrantyId)),
+                                    new FilterParameter(nameof(Model.SearchKeywords)),
+                                    new FilterParameter(nameof(Model.SearchFullName)),
+                                    new FilterParameter(nameof(Model.SearchPhoneNumber)),
+                                    new FilterParameter(nameof(Model.SearchEmail)),
+                                    new FilterParameter(nameof(Model.SearchCity)),
+                                    new FilterParameter(nameof(Model.SearchArea)),
+                                    new FilterParameter(nameof(Model.SearchBrand)),
+                                    new FilterParameter(nameof(Model.SearchDeviceType)),
+                                    new FilterParameter(nameof(Model.SearchModelNumber)),
+                                    new FilterParameter(nameof(Model.SearchProblem)),
+                                    new FilterParameter(nameof(Model.SearchAdminComment))
+                                },
+                                ColumnCollection = new List<ColumnProperty>
+                                {
+                                    new ColumnProperty(nameof(MaintenanceRequestModel.Id))
+                                    {
+                                        IsMasterCheckBox = true,
+                                        Render = new RenderCheckBox("checkbox_maintenancerequests"),
+                                        ClassName =  NopColumnClassDefaults.CenterAll,
+                                        Width = "50"
+                                    },
+                                    new ColumnProperty(nameof(MaintenanceRequestModel.CreatedOn))
+                                    {
+                                        Title = T("Admin.Sales.MaintenanceRequests.Fields.CreatedOn").Text,
+                                        Width = "150",
+                                        Render = new RenderDate()
+                                    },
+                                    new ColumnProperty(nameof(MaintenanceRequestModel.FullName))
+                                    {
+                                        Title = T("Admin.Sales.MaintenanceRequests.Fields.FullName").Text
+                                    },
+                                    new ColumnProperty(nameof(MaintenanceRequestModel.PhoneNumber))
+                                    {
+                                        Title = T("Admin.Sales.MaintenanceRequests.Fields.PhoneNumber").Text,
+                                        Width = "120"
+                                    },
+                                    new ColumnProperty(nameof(MaintenanceRequestModel.City))
+                                    {
+                                        Title = T("Admin.Sales.MaintenanceRequests.Fields.City").Text,
+                                        Width = "120"
+                                    },
+                                    new ColumnProperty(nameof(MaintenanceRequestModel.Brand))
+                                    {
+                                        Title = T("Admin.Sales.MaintenanceRequests.Fields.Brand").Text,
+                                        Width = "120"
+                                    },
+                                    new ColumnProperty(nameof(MaintenanceRequestModel.DeviceType))
+                                    {
+                                        Title = T("Admin.Sales.MaintenanceRequests.Fields.DeviceType").Text,
+                                        Width = "150"
+                                    },
+                                    new ColumnProperty(nameof(MaintenanceRequestModel.InWarranty))
+                                    {
+                                        Title = T("Admin.Sales.MaintenanceRequests.Fields.InWarranty").Text,
+                                        Width = "100",
+                                        ClassName = NopColumnClassDefaults.CenterAll,
+                                        Render = new RenderBoolean()
+                                    },
+                                    new ColumnProperty(nameof(MaintenanceRequestModel.StatusName))
+                                    {
+                                        Title = T("Admin.Sales.MaintenanceRequests.Fields.Status").Text,
+                                        Width = "120"
+                                    },
+                                    new ColumnProperty(nameof(MaintenanceRequestModel.Id))
+                                    {
+                                        Title = T("Admin.Common.View").Text,
+                                        Width = "50",
+                                        ClassName =  NopColumnClassDefaults.Button,
+                                        Render = new RenderButtonEdit(new DataUrl("~/Admin/MaintenanceRequest/Edit"))
+                                    }
+                                }
+                            })
+
+                            <script>
+                                $(function() {
+                                    //"delete selected" button
+                                    $("#delete-selected-action-confirmation-submit-button").on("click", function () {
+                                        var postData = {
+                                            selectedIds: selectedIds
+                                        };
+                                        addAntiForgeryToken(postData);
+                                        $.ajax({
+                                            cache: false,
+                                            type: "POST",
+                                            url: "@(Url.Action("DeleteSelected", "MaintenanceRequest"))",
+                                            data: postData,
+                                            traditional: true,
+                                            error: function (jqXHR, textStatus, errorThrown) {
+                                                showAlert('deleteSelectedFailed', errorThrown);
+                                            },
+                                            complete: function (jqXHR, textStatus) {
+                                                if (jqXHR.status === 204)
+                                                {
+                                                    showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                                    return;
+                                                }
+                                                updateTable('#maintenancerequests-grid');
+                                            }
+                                        });
+                                        $('#delete-selected-action-confirmation').modal('toggle');
+                                        return false;
+                                    });
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+<nop-alert asp-alert-id="deleteSelectedFailed" />
+<nop-alert asp-alert-id="nothingSelectedAlert" />
+<nop-action-confirmation asp-button-id="delete-selected" />

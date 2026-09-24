@@ -31,6 +31,8 @@ public partial class StandardPermission
         public const string SHIPMENTS_CREATE_EDIT_DELETE = $"{nameof(Orders)}.ShipmentsCreateEditDelete";
         public const string RETURN_REQUESTS_VIEW = $"{nameof(Orders)}.ReturnRequestsView";
         public const string RETURN_REQUESTS_CREATE_EDIT_DELETE = $"{nameof(Orders)}.ReturnRequestsCreateEditDelete";
+        public const string MAINTENANCE_REQUESTS_VIEW = $"{nameof(Orders)}.MaintenanceRequestsView";
+        public const string MAINTENANCE_REQUESTS_CREATE_EDIT_DELETE = $"{nameof(Orders)}.MaintenanceRequestsCreateEditDelete";
 
     }
 
