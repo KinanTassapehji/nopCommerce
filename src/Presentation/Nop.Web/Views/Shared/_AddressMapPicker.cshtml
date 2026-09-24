@@ -34,12 +34,13 @@
     @*kept here rather than in a theme stylesheet so the two stores' themes stay out of it*@
     <style>
         .address-map-canvas { width: 100%; height: 280px; margin-top: 8px; border-radius: 6px; }
-        .address-map-search-row { position: relative; margin-top: 8px; }
-        .address-map-search { display: block; box-sizing: border-box; width: 100%; margin: 0; padding-inline-end: 9em; }
-        /* ponytail: fixed reserve for the button - the two label texts are short enough that
-           measuring it in js would cost more than it saves */
+        /* the button sits beside the field rather than over it - each theme sizes buttons and
+           pads search fields its own way on a phone, which an overlay cannot survive */
+        .address-map-search-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .address-map-search { flex: 1 1 14em; min-width: 0; box-sizing: border-box; margin: 0; }
         .address-map-search::-webkit-search-cancel-button { display: none; }
-        .address-map-locate { position: absolute; inset-inline-end: 4px; top: 50%; transform: translateY(-50%); padding: 4px 10px; font-size: .85em; line-height: 1.4; }
+        .address-map-search-row .address-map-locate { flex: 0 0 auto; margin: 0; }
+        @@media (max-width: 600px) { .address-map-search-row .address-map-locate { flex-basis: 100%; } }
         .address-map-hint { display: block; margin-top: 4px; font-size: .9em; opacity: .75; }
         .address-map-results { list-style: none; margin: 4px 0 0; padding: 0; border: 1px solid #ddd; border-radius: 6px; max-height: 180px; overflow: auto; }
         .address-map-results li { padding: 8px 10px; border-bottom: 1px solid #eee; cursor: pointer; }
