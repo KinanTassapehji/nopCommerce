@@ -1009,6 +1009,24 @@ table.dataTable thead .dt-column-order {
   padding-block: .9rem;
 }
 
+/* Bigger sidebar logo. logo.png is cropped to the artwork (234x53, no
+   transparent band), so 44px tall fills most of the 250px sidebar width, in a
+   bar grown from 60px to 64px. The menu below is sized to the old bar
+   (AdminLTE's 3.5rem + 1px), so it shrinks to match or its bottom slides under
+   the window edge. */
+.main-sidebar .brand-link.logo-switch {
+  height: 64px;
+}
+
+.main-sidebar .brand-link.logo-switch .logo-xl {
+  max-height: 44px;
+  top: 10px;
+}
+
+.layout-fixed .main-sidebar .sidebar {
+  height: calc(100% - 65px);
+}
+
 /* --- Top bar ------------------------------------------------------------ */
 
 .main-header.navbar {
