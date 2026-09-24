@@ -15,6 +15,11 @@ public partial record AddressModel : BaseNopEntityModel
         CustomAddressAttributes = new List<AddressAttributeModel>();
     }
 
+    //the public store's resource, not an Admin.* one - the label is the same word and it
+    //already ships translated in both languages
+    [NopResourceDisplayName("Address.Fields.AddressName")]
+    public string AddressName { get; set; }
+
     [NopResourceDisplayName("Admin.Address.Fields.FirstName")]
     public string FirstName { get; set; }
 
@@ -73,6 +78,9 @@ public partial record AddressModel : BaseNopEntityModel
 
     public IList<SelectListItem> AvailableCountries { get; set; }
     public IList<SelectListItem> AvailableStates { get; set; }
+
+    //the customer and order address forms show only what the public address form shows
+    public bool PublicFieldsOnly { get; set; }
 
     public bool FirstNameRequired { get; set; }
     public bool LastNameRequired { get; set; }

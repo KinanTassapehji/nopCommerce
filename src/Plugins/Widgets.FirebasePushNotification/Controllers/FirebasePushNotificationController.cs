@@ -82,19 +82,18 @@ public class FirebasePushNotificationController : BasePluginController
 
 	[HttpGet]
 	[CheckPermission("Configuration.ManageWidgets", CheckPermissionAttribute.CheckPermissionResultType.Default)]
-	public IActionResult SendBroadcast()
+	public async Task<IActionResult> SendBroadcast()
 	{
-		ConfigurationModel configurationModel = new ConfigurationModel();
-		int num = 4;
-		List<SelectListItem> list = new List<SelectListItem>(num);
-		CollectionsMarshal.SetCount(list, num);
-		Span<SelectListItem> span = CollectionsMarshal.AsSpan(list);
-		span[0] = new SelectListItem("All", "all");
-		span[1] = new SelectListItem("Android", "android");
-		span[2] = new SelectListItem("iOS", "ios");
-		span[3] = new SelectListItem("Web", "web");
-		configurationModel.AvailablePlatforms = list;
-		ConfigurationModel model = configurationModel;
+		ConfigurationModel model = new ConfigurationModel
+		{
+			AvailablePlatforms = new List<SelectListItem>
+			{
+				new SelectListItem(await _localizationService.GetResourceAsync("Admin.Common.All"), "all"),
+				new SelectListItem("Android", "android"),
+				new SelectListItem("iOS", "ios"),
+				new SelectListItem("Web", "web")
+			}
+		};
 		return View("~/Plugins/Widgets.FirebasePushNotification/Views/SendBroadcast.cshtml", model);
 	}
 
@@ -162,14 +161,13 @@ public class FirebasePushNotificationController : BasePluginController
 		if (string.IsNullOrWhiteSpace(request.TitleEn) || string.IsNullOrWhiteSpace(request.BodyEn) || string.IsNullOrWhiteSpace(request.TitleAr) || string.IsNullOrWhiteSpace(request.BodyAr))
 		{
 			_notificationService.ErrorNotification(await _localizationService.GetResourceAsync("Plugins.Widgets.FirebasePushNotification.Broadcast.Errors.TitleBodyRequired"));
-			return SendBroadcast();
+			return await SendBroadcast();
 		}
-		Dictionary<string, string> data = ParseDataJson(request.DataJson);
-		if (data == null && !string.IsNullOrWhiteSpace(request.DataJson))
+		//the service worker opens data["url"] on tap; it is the only data key the site reads
+		Dictionary<string, string>? data = string.IsNullOrWhiteSpace(request.Link) ? null : new Dictionary<string, string>
 		{
-			_notificationService.ErrorNotification(await _localizationService.GetResourceAsync("Plugins.Widgets.FirebasePushNotification.Errors.InvalidDataJson"));
-			return SendBroadcast();
-		}
+			["url"] = NormalizeLink(request.Link)
+		};
 		List<int> targetCustomerIds = new List<int>();
 		if (request.SendToAllUsers)
 		{
@@ -186,7 +184,7 @@ public class FirebasePushNotificationController : BasePluginController
 		if (!targetCustomerIds.Any())
 		{
 			_notificationService.WarningNotification(await _localizationService.GetResourceAsync("Plugins.Widgets.FirebasePushNotification.Broadcast.Errors.SelectUser"));
-			return SendBroadcast();
+			return await SendBroadcast();
 		}
 		IList<Customer> customersByIds = await _customerService.GetCustomersByIdsAsync(targetCustomerIds.ToArray());
 		Dictionary<int, string> languageMap = (await _languageService.GetAllLanguagesAsync(showHidden: true)).ToDictionary((Language language) => language.Id, (Language language) => language.LanguageCulture?.ToLowerInvariant() ?? string.Empty);
@@ -234,6 +232,16 @@ public class FirebasePushNotificationController : BasePluginController
 		string text = (customer.FirstName + " " + customer.LastName).Trim();
 		string text2 = (string.IsNullOrWhiteSpace(text) ? customer.Email : text);
 		return text2 + " (" + (customer.Username ?? customer.Email ?? customer.Id.ToString()) + ")";
+	}
+
+	//Keeps a full http(s) address as pasted; anything else becomes a path on this store
+	//("electronics" -> "/electronics"), which also defuses "javascript:" and the like.
+	private static string NormalizeLink(string link)
+	{
+		link = link.Trim();
+		if (link.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || link.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+			return link;
+		return "/" + link.TrimStart('/');
 	}
 
 	private static Dictionary<string, string>? ParseDataJson(string dataJson)

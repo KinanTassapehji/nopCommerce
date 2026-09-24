@@ -72,6 +72,7 @@ public partial interface ICustomerService
     /// <param name="createdFromUtc">Created date from (UTC); pass null to load all records</param>
     /// <param name="createdToUtc">Created date to (UTC); pass null to load all records</param>
     /// <param name="countryId">Billing country identifier; pass null to load all records</param>
+    /// <param name="includeGuests">Whether to include customers who are not registered</param>
     /// <param name="pageIndex">Page index</param>
     /// <param name="pageSize">Page size</param>
     /// <returns>
@@ -81,7 +82,7 @@ public partial interface ICustomerService
     Task<IPagedList<Customer>> GetCustomersWithShoppingCartsAsync(ShoppingCartType? shoppingCartType = null,
         int storeId = 0, int? productId = null,
         DateTime? createdFromUtc = null, DateTime? createdToUtc = null, int? countryId = null,
-        int pageIndex = 0, int pageSize = int.MaxValue);
+        bool includeGuests = true, int pageIndex = 0, int pageSize = int.MaxValue);
 
     /// <summary>
     /// Gets customer for shopping cart

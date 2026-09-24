@@ -1,5 +1,9 @@
-﻿@model OrderModel
+﻿@using Nop.Services.Localization
+@using Nop.Services.Shipping
+@model OrderModel
 @inject AddressSettings addressSettings
+@inject ILocalizationService localizationService
+@inject IShippingMethodsService shippingMethodsService
 
 @{
     var canShipmentsView = await permissionService.AuthorizeAsync(StandardPermission.Orders.SHIPMENTS_VIEW);
@@ -9,9 +13,10 @@
 
     //an address with no country gives the geocoder no region to search, and the
     //world map Google answers with is worse than none - so it decides both whether
-    //the map panel is drawn and where the "view on Google Maps" link lives
+    //the map panel is drawn and where the "view on Google Maps" link lives - unless
+    //the customer dropped a pin, which needs no geocoding at all
     var showMap = !string.IsNullOrEmpty(Model.ShippingAddressGoogleMapsUrl) &&
-                  !string.IsNullOrEmpty(Model.ShippingAddress?.CountryName);
+                  (Model.ShippingAddressMapPinned || !string.IsNullOrEmpty(Model.ShippingAddress?.CountryName));
 
     //One row per field the store actually asks for. AddressSettings is the same
     //source the public address form reads, so switching a field off in
@@ -35,6 +40,20 @@
         (Enabled: addressSettings.CountryEnabled, Key: "Country", Value: orderAddress.CountryName)
     }.Where(field => field.Enabled || !string.IsNullOrWhiteSpace(field.Value)).ToList();
 
+    //The method is picked from the store's shipping methods rather than retyped:
+    //what is saved here is what the customer sees on the order, and a typo has no
+    //second chance. The order's own value leads the list even when it is not one of
+    //them any more - a renamed or deleted method must not be silently reassigned.
+    var shippingMethodNames = new List<string>();
+    if (Model.IsShippable && !Model.IsLoggedInAsVendor)
+    {
+        foreach (var shippingMethod in await shippingMethodsService.GetAllShippingMethodsAsync())
+            shippingMethodNames.Add(await localizationService.GetLocalizedAsync(shippingMethod, method => method.Name));
+
+        if (!string.IsNullOrEmpty(Model.ShippingMethod) && !shippingMethodNames.Contains(Model.ShippingMethod))
+            shippingMethodNames.Insert(0, Model.ShippingMethod);
+    }
+
     //The pickup address belongs to the store, not to the customer, so there is no
     //setting to read - show whichever parts of it are filled in.
     var pickupFields = Model.PickupAddress == null
@@ -56,56 +75,56 @@
             to a full-width card below, so the panel opened on half a screen of
             nothing.*@
         <div class="col-md-6 card-group">
-            @if (Model.IsShippable)
+            @if (Model.IsShippable && Model.PickupInStore && Model.PickupAddress != null)
             {
-                if (Model.PickupInStore && Model.PickupAddress != null)
-                {
-                    <div class="card mb-3">
-                        <div class="card-header clearfix">
-                            @T("Admin.Orders.Fields.PickupAddress")
-                        </div>
-                        <div class="card-body">
-                            @foreach (var field in pickupFields)
-                            {
-                                <div class="form-group row">
-                                    <div class="col-md-4">
-                                        <div class="label-wrapper">
-                                            <label class="col-form-label">
-                                                @T($"Admin.Orders.Address.{field.Key}")
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="form-text-row">
-                                            @field.Value
-                                        </div>
+                <div class="card mb-3">
+                    <div class="card-header clearfix">
+                        @T("Admin.Orders.Fields.PickupAddress")
+                    </div>
+                    <div class="card-body">
+                        @foreach (var field in pickupFields)
+                        {
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <div class="label-wrapper">
+                                        <label class="col-form-label">
+                                            @T($"Admin.Orders.Address.{field.Key}")
+                                        </label>
                                     </div>
                                 </div>
-                            }
-                        </div>
-
-                        @if (!string.IsNullOrEmpty(Model.PickupAddressGoogleMapsUrl) && !string.IsNullOrEmpty(Model.PickupAddress.CountryName))
-                        {
-                            <div class="order-address-map">
-                                <iframe src="@(Model.PickupAddressGoogleMapsUrl + "&output=embed")"
-                                        title="@T("Admin.Orders.Fields.PickupAddress")"
-                                        loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
-                            </div>
-                            <div class="card-footer">
-                                <div class="form-text-row">
-                                    <img alt="google maps" src="@Url.Content("~/css/admin/images/gmaps.ico")" />
-                                    <a href="@Html.Raw(Model.PickupAddressGoogleMapsUrl)" target="_blank">@T("Admin.Orders.Fields.PickupAddress.ViewOnGoogleMaps")</a>
+                                <div class="col-md-8">
+                                    <div class="form-text-row">
+                                        @field.Value
+                                    </div>
                                 </div>
                             </div>
                         }
                     </div>
-                }
 
-                @*No card header: the two rows below are labelled, and a
-                    "Shipping method" title over a "Shipping method" row just
-                    says it twice.*@
-                <div class="card mb-3">
-                    <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.PickupAddressGoogleMapsUrl) && !string.IsNullOrEmpty(Model.PickupAddress.CountryName))
+                    {
+                        <div class="order-address-map">
+                            <iframe src="@(Model.PickupAddressGoogleMapsUrl + "&output=embed")"
+                                    title="@T("Admin.Orders.Fields.PickupAddress")"
+                                    loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+                        </div>
+                        <div class="card-footer">
+                            <div class="form-text-row">
+                                <img alt="google maps" src="@Url.Content("~/css/admin/images/gmaps.ico")" />
+                                <a href="@Html.Raw(Model.PickupAddressGoogleMapsUrl)" target="_blank">@T("Admin.Orders.Fields.PickupAddress.ViewOnGoogleMaps")</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            @*How the parcel ships and where it goes are the same set of facts, so
+                they share one card. No card header either: every row below is
+                labelled, and the panel this sits in is already titled "Shipping".*@
+            <div class="card mb-3">
+                <div class="card-body">
+                    @if (Model.IsShippable)
+                    {
                         <div class="form-group row">
                             <div class="col-md-4">
                                 <nop-label asp-for="ShippingMethod" />
@@ -139,7 +158,11 @@
                                             @Model.ShippingMethod
                                         </div>
                                         <div id="divShippingMethod">
-                                            <nop-editor asp-for="ShippingMethod" />
+                                            @*a plain select, not nop-select: that one renders select2, which is initialised
+                                                while this div is still hidden and so measures its width as zero -
+                                                an 84px box with a scrollbar on each axis. Three shipping methods
+                                                need no search box anyway.*@
+                                            <select asp-for="ShippingMethod" asp-items="@(new SelectList(shippingMethodNames))" class="form-control"></select>
                                         </div>
                                         <span class="input-group-append">
                                             <button type="submit" onclick="toggleEditShippingMethod(true);return false;" id="btnEditShippingMethod" class="btn btn-primary">
@@ -166,7 +189,7 @@
                             </div>
                         </div>
 
-                        @if (!Model.IsLoggedInAsVendor)
+                        if (!Model.IsLoggedInAsVendor)
                         {
                             <div class="form-group row">
                                 <div class="col-md-4">
@@ -177,22 +200,16 @@
                                 </div>
                             </div>
                         }
-                    </div>
-                </div>
-            }
-            else
-            {
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="form-text-row">@T("Admin.Orders.ShippingInfo.NotRequired")</div>
-                    </div>
-                </div>
-            }
-            <div class="card mb-3">
-                <div class="card-header clearfix">
-                    @T("Admin.Orders.Fields.ShippingAddress")
-                </div>
-                <div class="card-body">
+                    }
+                    else
+                    {
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <div class="form-text-row">@T("Admin.Orders.ShippingInfo.NotRequired")</div>
+                            </div>
+                        </div>
+                    }
+
                     @foreach (var field in addressFields)
                     {
                         <div class="form-group row">
@@ -234,8 +251,8 @@
                         @*space-between rather than the mr-auto/ml-auto pair stock uses:
                             those two are physical margins, so in the RTL admin they pushed
                             both items into the middle of the footer instead of one to each
-                            end. Edit opens the row it sits under, so it leads; the map link
-                            closes the footer.*@
+                            end. Edit opens the address rows above it, so it leads; the map
+                            link closes the footer.*@
                         <div class="form-group row justify-content-between align-items-center">
                             <div class="col-auto">
                                 <a asp-action="AddressEdit" asp-route-addressId="@orderAddress.Id" asp-route-orderId="@Model.Id" class="btn btn-primary">@T("Admin.Common.Edit")</a>
@@ -263,7 +280,7 @@
             than no map, so that address keeps the link in the card above instead.*@
         @if (showMap)
         {
-            <div class="col-md-6 card-group">
+            <div class="col-md-6 card-group order-address-map-col">
                 <div class="card mb-3 order-address-map-card">
                     <div class="card-body">
                         <div class="order-address-map">

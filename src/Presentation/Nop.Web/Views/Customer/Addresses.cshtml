@@ -32,25 +32,25 @@
                                 @if (address.PhoneEnabled)
                                 {
                                     <li class="phone">
-                                        <label>@T("Address.Fields.PhoneNumber"):</label>
-                                        @address.PhoneNumber
+                                        <span class="label">@T("Address.Fields.PhoneNumber"):</span>
+                                        <span class="value">@address.PhoneNumber</span>
                                     </li>
                                 }
                                 @if (address.FaxEnabled)
                                 {
                                     <li class="fax">
-                                        <label>@T("Address.Fields.FaxNumber"):</label>
-                                        @address.FaxNumber
+                                        <span class="label">@T("Address.Fields.FaxNumber"):</span>
+                                        <span class="value">@address.FaxNumber</span>
                                     </li>
                                 }
                                 @if (address.CompanyEnabled && !string.IsNullOrEmpty(address.Company))
                                 {
-                                    <li class="company">@address.Company</li>
+                                    <li class="company">
+                                        <span class="label">@T("Address.Fields.Company"):</span>
+                                        <span class="value">@address.Company</span>
+                                    </li>
                                 }
-                                @foreach(var item in address.AddressFields)
-                                {
-                                    <li class=@item.Key.ToString().ToLower()>@item.Value</li>                                    
-                                }
+                                @await Html.PartialAsync("_AddressFields", address.AddressFields)
                                 @if (!string.IsNullOrEmpty(address.FormattedCustomAddressAttributes))
                                 {
                                     <li class="custom-attributes-view">

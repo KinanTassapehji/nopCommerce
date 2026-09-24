@@ -868,6 +868,57 @@ table.dataTable thead .dt-column-order {
   opacity: .45;
 }
 
+/* --- Grid totals strip --------------------------------------------------
+   The order list and the bestsellers report POST for their aggregates after
+   every draw. Stock drops the answer into a single column's footer cell -
+   100px wide, under "Order total" - where four label/value pairs stack into
+   a ragged little column, and the tfoot band exists for nothing else. Both
+   views now write into a strip above their grid instead; this is the strip.
+   It carries no markup until the first response lands, hence :empty.
+   ------------------------------------------------------------------------ */
+
+.grid-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .4rem 1.75rem;
+  margin-bottom: 1rem;
+  padding: .7rem 1rem;
+  border: 1px solid var(--adm-line);
+  border-radius: var(--adm-r-sm);
+  background-color: var(--adm-surface-alt);
+}
+
+.grid-summary:empty {
+  display: none;
+}
+
+/* Pushes the figures to the far edge of the strip, either direction. */
+.grid-summary-title {
+  font-weight: 600;
+  margin-inline-end: auto;
+}
+
+.grid-summary-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .4rem;
+  white-space: nowrap;
+}
+
+.grid-summary-item > span {
+  color: var(--adm-ink-muted);
+}
+
+.grid-summary-item > b {
+  font-weight: 600;
+}
+
+/* The grand total is the figure the eye came for. */
+.grid-summary-item.is-total > b {
+  color: var(--adm-accent);
+}
+
 /* --- Modals ------------------------------------------------------------- */
 
 .modal-content {
@@ -1169,6 +1220,21 @@ span.grid-report-item {
   min-width: 140px;
 }
 
+/* The shipping-method editor is marked up as an .input-group, so bootstrap
+   glues the select to Save and Save to Cancel. It is not one control in three
+   parts - it is a value and two actions. Space them, and hand back the corners
+   bootstrap squared off. Scoped to #order-cards so the real input groups
+   elsewhere in the admin, where flush is right, are left alone. */
+#order-cards .input-group,
+#order-cards .input-group > .input-group-append {
+  gap: .5rem;
+}
+
+#order-cards .input-group .input-group-text,
+#order-cards .input-group .btn {
+  border-radius: var(--adm-r-sm);
+}
+
 /* --- The address on a map ------------------------------------------------
    The order screen linked the shipping address out to Google Maps and left the
    question ("where is this?") one click away on every order. Embedded instead,
@@ -1206,4 +1272,12 @@ span.grid-report-item {
 .order-address-map-card .order-address-map iframe {
   height: 100%;
   min-height: 240px;
+}
+
+/* The map sits on the left in both directions. RTL already puts the second
+   column there; LTR has to pull it in front of the facts. */
+@media (min-width: 768px) {
+  [dir="ltr"] .order-address-map-col {
+    order: -1;
+  }
 }

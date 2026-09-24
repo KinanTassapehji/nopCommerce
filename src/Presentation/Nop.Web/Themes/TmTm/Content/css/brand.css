@@ -7371,3 +7371,432 @@ so the field stays visible beside the icon. */
     scroll-behavior: auto;
   }
 }
+
+
+/* ==========================================================================
+   Account lists: addresses and order history
+   Two pages built from the same three parts - a `.section` card, a `ul.info`
+   inside it, a `.buttons` row under that - and the base sheet drew both as a
+   flat grey slab (#f9f9f9, one border-top, no radius) floated two-to-a-row at
+   `width: 45%`. Three cards left a ragged half-row, a wide screen never got a
+   third column, and the address card in particular was a stack of bare values
+   with nothing naming them.
+
+   Both are now the same bordered white card the order details page already
+   uses for its billing / shipping blocks, laid out in a grid that takes as
+   many columns as fit, with a labelled two-column row list inside.
+
+   The label/value spans come from the views (and, for the address fields,
+   from Views/Shared/_AddressFields.cshtml) - `.label` and `.value` are the
+   names the order details page was already using, so one set of row rules
+   covers every address the store prints.
+   ========================================================================== */
+
+.address-list-page .address-list,
+.order-list-page .order-list{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  align-items: stretch;
+  gap: var(--tm-gutter);
+  margin-block-end: var(--tm-stack-lg);
+}
+
+/* The class is repeated through the list wrapper to reach (0,3,0): the base
+   sheet's `display:inline-block; width:45%` pair is (0,2,0) and lives in a
+   min-width media query, so order alone would not settle it. */
+.address-list-page .address-list .section,
+.order-list-page .order-list .section{
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  margin: 0;
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius);
+  background: var(--tm-surface);
+  padding: var(--tm-stack-md) var(--tm-gutter) var(--tm-gutter);
+  transition: border-color var(--tm-transition), box-shadow var(--tm-transition);
+}
+
+.address-list-page .address-list .section:hover,
+.order-list-page .order-list .section:hover{
+  border-color: var(--tm-teal-border);
+  box-shadow: var(--tm-shadow);
+}
+
+/* The address nickname or the order number - the one line that tells the
+   cards apart, so it heads the card and rules off from the detail. */
+.address-list-page .address-list .title,
+.order-list-page .order-list .title{
+  margin: 0 0 var(--tm-stack-sm);
+  padding: 0 0 var(--tm-stack-sm);
+  border-block-end: 1px solid var(--tm-line);
+  font-size: var(--tm-fs-body-lg);
+  line-height: var(--tm-lh-body-lg);
+  font-weight: 700;
+  color: var(--tm-ink);
+  text-align: start;
+}
+
+/* `flex: 1` is what keeps the buttons on the card floor: a two-line address
+   and a five-line one still line their actions up across a row. */
+.address-list-page .info,
+.order-list-page .info{
+  flex: 1;
+  margin: 0;
+  border: 0;
+  background: none;
+  padding: 0;
+  list-style: none;
+  line-height: inherit;
+  color: var(--tm-ink);
+}
+
+.address-list-page .info li,
+.order-list-page .info li{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px var(--tm-stack-sm);
+  padding-block: 8px;
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+}
+
+.address-list-page .info li + li,
+.order-list-page .info li + li{
+  border-block-start: 1px solid var(--tm-line);
+}
+
+/* No uppercase and no letter-spacing on these: the stores run in Arabic, where
+   the first does nothing and the second prises apart letters that join. Muted
+   colour and the smaller size carry the hierarchy instead.
+   ponytail: one fixed min-width rather than a subgrid - the labels are short
+   and of a size, and a row that wraps under pressure beats a column sized to
+   the longest label in the card. */
+.address-list-page .info .label,
+.order-list-page .info .label{
+  flex: 0 0 auto;
+  min-width: 88px;
+  font-size: var(--tm-fs-label-sm);
+  font-weight: 600;
+  color: var(--tm-ink-muted);
+}
+
+.address-list-page .info .value,
+.order-list-page .info .value{
+  flex: 1 1 55%;
+  min-width: 0;
+  color: var(--tm-ink);
+  overflow-wrap: anywhere;
+}
+
+/* The custom address attributes arrive as one pre-formatted "name: value" run
+   separated by <br>, labels included, so this row spans the card instead of
+   being forced into the two-column shape. */
+.address-list-page .info .custom-attributes-view{
+  display: block;
+  color: var(--tm-ink-muted);
+}
+
+/* --- Order history: status and total --------------------------------------
+   `.order-status` carries the status name as a class and was never styled at
+   all - the state of the order read exactly like the date above it. */
+.order-list-page .info .order-status{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 3px 12px;
+  background: var(--tm-teal-tint);
+  font-size: var(--tm-fs-label-sm);
+  line-height: var(--tm-lh-label-sm);
+  font-weight: 700;
+  color: var(--tm-teal-deep);
+}
+
+.order-list-page .info .order-status::before{
+  content: "";
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Processing keeps the brand tint above. The other three are the status
+   colours the tokens already define, on a wash of themselves. */
+.order-list-page .info .order-status.pending{
+  background: #fbf1de;
+  color: var(--tm-warning);
+}
+
+.order-list-page .info .order-status.complete{
+  background: #e3f1ea;
+  color: var(--tm-success);
+}
+
+.order-list-page .info .order-status.cancelled{
+  background: #fbe6e7;
+  color: var(--tm-error);
+}
+
+/* The money is what the row is scanned for. */
+.order-list-page .info .order-total{
+  font-size: var(--tm-fs-title);
+  line-height: var(--tm-lh-title);
+  font-weight: 700;
+  color: var(--tm-teal-deep);
+}
+
+/* --- Order history: card layout -------------------------------------------
+   An order card is not an address: three ruled label/value rows read like a
+   form. The card is laid out as a receipt instead - number and status pill
+   across the head, the date under them, and the total opposite the details
+   button on a ruled footer. `.info` drops out of the box tree (`contents`)
+   so its rows can sit in the card's own grid without touching the view.
+   `auto-fill` rather than the shared `auto-fit`: one order no longer
+   stretches into a banner the width of the column. */
+.order-list-page .order-list{
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+}
+
+.order-list-page .order-list .section{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "title status"
+    "date  date"
+    "total buttons";
+  align-items: center;
+}
+
+.order-list-page .order-list .title{
+  grid-area: title;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.order-list-page .info{
+  display: contents;
+}
+
+.order-list-page .info li.status,
+.order-list-page .info li.date,
+.order-list-page .info li.total{
+  border: 0;
+  padding: 0;
+}
+
+.order-list-page .info li.status{
+  grid-area: status;
+}
+
+.order-list-page .info li.date{
+  grid-area: date;
+  padding-block: 4px var(--tm-stack-md);
+}
+
+.order-list-page .info .order-date{
+  color: var(--tm-ink-muted);
+}
+
+/* The pill and the muted date say what they are; the labels stay for
+   screen readers only. */
+.order-list-page .info li.status .label,
+.order-list-page .info li.date .label{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Total and buttons each carry the footer rule, so it runs unbroken under
+   both cells. */
+.order-list-page .info li.total,
+.order-list-page .order-list .buttons{
+  align-self: stretch;
+  border-block-start: 1px solid var(--tm-line);
+  padding-block-start: var(--tm-stack-md);
+}
+
+.order-list-page .info li.total{
+  grid-area: total;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+}
+
+.order-list-page .order-list .buttons{
+  grid-area: buttons;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 0;
+}
+
+/* --- Addresses: card layout -----------------------------------------------
+   Printed the way an address is written on a parcel rather than as a form:
+   pin badge and nickname on the head, then the address lines unlabelled, the
+   phone and the map reference muted under them, and the actions on a ruled
+   footer. Street, area and city need no label to be read as an address; the
+   labels stay for screen readers. */
+.address-list-page .address-list .title{
+  display: flex;
+  align-items: center;
+  gap: var(--tm-stack-sm);
+  margin-block-end: var(--tm-stack-sm);
+  padding: 0;
+  border: 0;
+}
+
+/* ponytail: the pin's fill is --tm-teal written out - a data URI cannot read
+   a custom property. Change both together. */
+.address-list-page .address-list .title::before{
+  content: "";
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--tm-teal-tint) center / 18px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23009a95'%3E%3Cpath d='M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z'/%3E%3C/svg%3E");
+}
+
+.address-list-page .info{
+  display: flex;
+  flex-direction: column;
+  padding-inline-start: calc(36px + var(--tm-stack-sm));
+}
+
+.address-list-page .info li{
+  padding-block: 2px;
+  font-size: var(--tm-fs-body);
+  line-height: var(--tm-lh-body);
+}
+
+.address-list-page .info li + li{
+  border: 0;
+}
+
+.address-list-page .info .label{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-width: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Contact detail and map reference follow the address, not lead it. */
+.address-list-page .info li.phone,
+.address-list-page .info li.fax,
+.address-list-page .info .custom-attributes-view{
+  order: 1;
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  color: var(--tm-ink-muted);
+}
+
+.address-list-page .info li.phone{
+  margin-block-start: var(--tm-stack-sm);
+}
+
+/* A phone number is digits and a leading "+": in an RTL line the bidi
+   algorithm moves the "+" to the far end, printing 96393486264+. */
+.address-list-page .info li.phone .value,
+.address-list-page .info li.fax .value{
+  flex: 0 1 auto;
+  color: inherit;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.address-list-page .info .custom-attributes-view{
+  font-size: var(--tm-fs-label-sm);
+  line-height: var(--tm-lh-label-sm);
+}
+
+/* Street before area, as an address is written; the view prints the fields
+   in the admin's configured order, which puts the area first. */
+.address-list-page .info li.address1{
+  order: -1;
+}
+
+/* margin-block-end: the base sheet's 30px under every `.buttons`. */
+.address-list-page .address-list .buttons{
+  justify-content: flex-end;
+  margin-block-end: 0;
+  border-block-start: 1px solid var(--tm-line);
+  padding-block-start: var(--tm-stack-md);
+}
+
+/* --- Period filter and "add new" ------------------------------------------
+   The filter sat in its own 20px-padded strip with a 36px select pushed to the
+   far end of it; the add-address button sat centred below the grid, which on a
+   three-column row put the page's primary action nowhere in particular. Both
+   now start where the cards start. */
+.order-list-page .order-filters{
+  padding: 0;
+  margin-block-end: var(--tm-stack-md);
+}
+
+.order-list-page .order-filters__row{
+  margin: 0;
+  justify-content: flex-start;
+}
+
+.order-list-page .order-filters__label{
+  margin-inline-end: var(--tm-stack-sm);
+  font-size: var(--tm-fs-label);
+  color: var(--tm-ink-muted);
+}
+
+.order-list-page .order-filters__input{
+  min-height: 44px;
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius-sm);
+  background: var(--tm-surface);
+  padding-inline: 12px;
+  font-size: var(--tm-fs-label);
+  color: var(--tm-ink);
+}
+
+.address-list-page .add-button{
+  margin: 0 0 var(--tm-stack-lg);
+  text-align: start;
+}
+
+/* --- Addresses printed elsewhere -------------------------------------------
+   Order details, shipment details and the checkout confirm step share the
+   `_AddressFields` partial, so they get the same labels. Their `.info-list`
+   rows are already carded and ruled by the order-details block above - all
+   they need is the two-column shape, so the label does not run into the
+   value. */
+.order-details-page .info-list li,
+.shipment-details-page .info-list li,
+.checkout-page .info-list li{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px var(--tm-stack-sm);
+}
+
+.order-details-page .info-list .label,
+.shipment-details-page .info-list .label,
+.checkout-page .info-list .label{
+  flex: 0 0 auto;
+  min-width: 88px;
+  font-size: var(--tm-fs-label-sm);
+  font-weight: 600;
+  color: var(--tm-ink-muted);
+}
+
+.order-details-page .info-list .value,
+.shipment-details-page .info-list .value,
+.checkout-page .info-list .value{
+  flex: 1 1 55%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

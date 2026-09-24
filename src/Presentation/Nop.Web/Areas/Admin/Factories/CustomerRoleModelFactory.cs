@@ -76,7 +76,10 @@ public partial class CustomerRoleModelFactory : ICustomerRoleModelFactory
         ArgumentNullException.ThrowIfNull(searchModel);
 
         //get customer roles
-        var customerRoles = (await _customerService.GetAllCustomerRolesAsync(true)).ToPagedList(searchModel);
+        //ponytail: unused system roles are hidden from this grid only; they still exist and work
+        var hiddenRoles = new[] { NopCustomerDefaults.ForumModeratorsRoleName, NopCustomerDefaults.GuestsRoleName, NopCustomerDefaults.VendorsRoleName };
+        var customerRoles = (await _customerService.GetAllCustomerRolesAsync(true))
+            .Where(role => !hiddenRoles.Contains(role.SystemName)).ToList().ToPagedList(searchModel);
 
         //prepare grid model
         var model = await new CustomerRoleListModel().PrepareToGridAsync(searchModel, customerRoles, () =>

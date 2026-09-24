@@ -14285,6 +14285,12 @@
   <LocaleResource Name="Admin.ShoppingCartType.EndDate.Hint">
     <Value>The end date for the search (when a product was added to the cart).</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ShoppingCartType.IncludeGuests">
+    <Value>Include guests</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ShoppingCartType.IncludeGuests.Hint">
+    <Value>Check to also list carts of customers who are not registered.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ShoppingCartType.Product">
     <Value>Product</Value>
   </LocaleResource>

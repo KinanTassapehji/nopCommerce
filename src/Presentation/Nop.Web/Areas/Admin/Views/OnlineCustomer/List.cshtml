@@ -1,5 +1,7 @@
 ﻿@model OnlineCustomerSearchModel
 
+@inject Nop.Core.Domain.Customers.CustomerSettings customerSettings
+
 @{
     //page title
     ViewBag.PageTitle = T("Admin.Customers.OnlineCustomers").Text;
@@ -114,7 +116,9 @@
                             new ColumnProperty(nameof(OnlineCustomerModel.LastVisitedPage))
                             {
                                 Title = T("Admin.Customers.OnlineCustomers.Fields.LastVisitedPage").Text,
-                                Width = "100"
+                                Width = "100",
+                                //off by default; a column of "disabled" on every row says nothing
+                                Visible = customerSettings.StoreLastVisitedPage
                             }
                         }
                     })

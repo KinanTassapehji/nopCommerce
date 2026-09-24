@@ -1,4 +1,13 @@
 ﻿@model AddressModel
+@using Nop.Core.Domain.Common
+@inject AddressSettings addressSettings
+@{
+    //ponytail: the customer and order address forms mirror the public one - same fields, nothing else.
+    //Everything the address settings switch off (and the account holder's name and email) is posted
+    //hidden so editing here never wipes a value the form does not show.
+    var publicFieldsOnly = Model.PublicFieldsOnly;
+    bool Shown(bool enabled) => !publicFieldsOnly || enabled;
+}
 
 <script>
     $(function() {
@@ -44,121 +53,214 @@
 
 <div class="form-group row">
     <div class="col-md-3">
-        <nop-label asp-for="FirstName" />
+        <nop-label asp-for="AddressName" />
     </div>
     <div class="col-md-9">
-        <nop-editor asp-for="FirstName" asp-required="@Model.FirstNameRequired" />
-        <span asp-validation-for="FirstName"></span>
+        <nop-editor asp-for="AddressName" />
+        <span asp-validation-for="AddressName"></span>
     </div>
 </div>
-<div class="form-group row">
-    <div class="col-md-3">
-        <nop-label asp-for="LastName" />
+@if (publicFieldsOnly)
+{
+    @*the account holder's own name and email - kept on the address, not asked for again*@
+    <input asp-for="FirstName" type="hidden" />
+    <input asp-for="LastName" type="hidden" />
+    <input asp-for="Email" type="hidden" />
+}
+else
+{
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FirstName" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FirstName" asp-required="@Model.FirstNameRequired" />
+            <span asp-validation-for="FirstName"></span>
+        </div>
     </div>
-    <div class="col-md-9">
-        <nop-editor asp-for="LastName" asp-required="@Model.LastNameRequired" />
-        <span asp-validation-for="LastName"></span>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="LastName" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="LastName" asp-required="@Model.LastNameRequired" />
+            <span asp-validation-for="LastName"></span>
+        </div>
     </div>
-</div>
-<div class="form-group row">
-    <div class="col-md-3">
-        <nop-label asp-for="Email" />
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Email" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Email" asp-required="@Model.EmailRequired" />
+            <span asp-validation-for="Email"></span>
+        </div>
     </div>
-    <div class="col-md-9">
-        <nop-editor asp-for="Email" asp-required="@Model.EmailRequired" />
-        <span asp-validation-for="Email"></span>
+}
+@if (Shown(addressSettings.CompanyEnabled))
+{
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Company" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Company" asp-required="@Model.CompanyRequired" />
+            <span asp-validation-for="Company"></span>
+        </div>
     </div>
-</div>
-<div class="form-group row">
-    <div class="col-md-3">
-        <nop-label asp-for="Company" />
+}
+else
+{
+    <input asp-for="Company" type="hidden" />
+}
+@if (Shown(addressSettings.CountryEnabled))
+{
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="CountryId" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="CountryId" asp-items="Model.AvailableCountries" asp-required="@Model.CountryRequired" />
+            <span asp-validation-for="CountryId"></span>
+        </div>
     </div>
-    <div class="col-md-9">
-        <nop-editor asp-for="Company" asp-required="@Model.CompanyRequired" />
-        <span asp-validation-for="Company"></span>
+}
+else
+{
+    <input asp-for="CountryId" type="hidden" />
+}
+@if (Shown(addressSettings.CountryEnabled && addressSettings.StateProvinceEnabled))
+{
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="StateProvinceId" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="StateProvinceId" asp-items="Model.AvailableStates" />
+            <span asp-validation-for="StateProvinceId"></span>
+        </div>
     </div>
-</div>
-<div class="form-group row">
-    <div class="col-md-3">
-        <nop-label asp-for="CountryId" />
+}
+else
+{
+    <input asp-for="StateProvinceId" type="hidden" />
+}
+
+@*same place the public form puts it - the pin is picked before the fields it describes.*@
+@await Html.PartialAsync("_AddressMapPicker", Model)
+
+@if (Shown(addressSettings.CountyEnabled))
+{
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="County" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="County" asp-required="@Model.CountyRequired" />
+            <span asp-validation-for="County"></span>
+        </div>
     </div>
-    <div class="col-md-9">
-        <nop-select asp-for="CountryId" asp-items="Model.AvailableCountries" asp-required="@Model.CountryRequired" />
-        <span asp-validation-for="CountryId"></span>
+}
+else
+{
+    <input asp-for="County" type="hidden" />
+}
+@if (Shown(addressSettings.CityEnabled))
+{
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="City" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="City" asp-required="@Model.CityRequired" />
+            <span asp-validation-for="City"></span>
+        </div>
     </div>
-</div>
-<div class="form-group row">
-    <div class="col-md-3">
-        <nop-label asp-for="StateProvinceId" />
+}
+else
+{
+    <input asp-for="City" type="hidden" />
+}
+@if (Shown(addressSettings.StreetAddressEnabled))
+{
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Address1" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Address1" asp-required="@Model.StreetAddressRequired" />
+            <span asp-validation-for="Address1"></span>
+        </div>
     </div>
-    <div class="col-md-9">
-        <nop-select asp-for="StateProvinceId" asp-items="Model.AvailableStates" />
-        <span asp-validation-for="StateProvinceId"></span>
+}
+else
+{
+    <input asp-for="Address1" type="hidden" />
+}
+@if (Shown(addressSettings.StreetAddress2Enabled))
+{
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Address2" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Address2" asp-required="@Model.StreetAddress2Required" />
+            <span asp-validation-for="Address2"></span>
+        </div>
     </div>
-</div>
-<div class="form-group row">
-    <div class="col-md-3">
-        <nop-label asp-for="County" />
+}
+else
+{
+    <input asp-for="Address2" type="hidden" />
+}
+@if (Shown(addressSettings.ZipPostalCodeEnabled))
+{
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="ZipPostalCode" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="ZipPostalCode" asp-required="@Model.ZipPostalCodeRequired" />
+            <span asp-validation-for="ZipPostalCode"></span>
+        </div>
     </div>
-    <div class="col-md-9">
-        <nop-editor asp-for="County" asp-required="@Model.CountyRequired" />
-        <span asp-validation-for="County"></span>
+}
+else
+{
+    <input asp-for="ZipPostalCode" type="hidden" />
+}
+@if (Shown(addressSettings.PhoneEnabled))
+{
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="PhoneNumber" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="PhoneNumber" asp-required="@Model.PhoneRequired" />
+            <span asp-validation-for="PhoneNumber"></span>
+        </div>
     </div>
-</div>
-<div class="form-group row">
-    <div class="col-md-3">
-        <nop-label asp-for="City" />
+}
+else
+{
+    <input asp-for="PhoneNumber" type="hidden" />
+}
+@if (Shown(addressSettings.FaxEnabled))
+{
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FaxNumber" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FaxNumber" asp-required="@Model.FaxRequired" />
+            <span asp-validation-for="FaxNumber"></span>
+        </div>
     </div>
-    <div class="col-md-9">
-        <nop-editor asp-for="City" asp-required="@Model.CityRequired" />
-        <span asp-validation-for="City"></span>
-    </div>
-</div>
-<div class="form-group row">
-    <div class="col-md-3">
-        <nop-label asp-for="Address1" />
-    </div>
-    <div class="col-md-9">
-        <nop-editor asp-for="Address1" asp-required="@Model.StreetAddressRequired" />
-        <span asp-validation-for="Address1"></span>
-    </div>
-</div>
-<div class="form-group row">
-    <div class="col-md-3">
-        <nop-label asp-for="Address2" />
-    </div>
-    <div class="col-md-9">
-        <nop-editor asp-for="Address2" asp-required="@Model.StreetAddress2Required" />
-        <span asp-validation-for="Address2"></span>
-    </div>
-</div>
-<div class="form-group row">
-    <div class="col-md-3">
-        <nop-label asp-for="ZipPostalCode" />
-    </div>
-    <div class="col-md-9">
-        <nop-editor asp-for="ZipPostalCode" asp-required="@Model.ZipPostalCodeRequired" />
-        <span asp-validation-for="ZipPostalCode"></span>
-    </div>
-</div>
-<div class="form-group row">
-    <div class="col-md-3">
-        <nop-label asp-for="PhoneNumber" />
-    </div>
-    <div class="col-md-9">
-        <nop-editor asp-for="PhoneNumber" asp-required="@Model.PhoneRequired" />
-        <span asp-validation-for="PhoneNumber"></span>
-    </div>
-</div>
-<div class="form-group row">
-    <div class="col-md-3">
-        <nop-label asp-for="FaxNumber" />
-    </div>
-    <div class="col-md-9">
-        <nop-editor asp-for="FaxNumber" asp-required="@Model.FaxRequired" />
-        <span asp-validation-for="FaxNumber"></span>
-    </div>
-</div>
+}
+else
+{
+    <input asp-for="FaxNumber" type="hidden" />
+}
 
 @if (Model.CustomAddressAttributes.Count > 0)
 {

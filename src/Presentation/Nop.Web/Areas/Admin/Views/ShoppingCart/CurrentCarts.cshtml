@@ -104,8 +104,18 @@
                                         <nop-select asp-for="StoreId" asp-items="Model.AvailableStores" />
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <nop-label asp-for="IncludeGuests" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <nop-editor asp-for="IncludeGuests" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        @* the type dropdown was trimmed with wishlists, but the grids still need it: unbound it defaults to 0 and matches no rows *@
+                        <input asp-for="ShoppingCartType" type="hidden" />
                         <div class="row">
                             <div class="text-center col-12">
                                 <button type="button" id="search-shopping-carts" class="btn btn-primary btn-search">
@@ -131,10 +141,12 @@
                         LengthMenu = Model.AvailablePageSizes,
                         Filters = new List<FilterParameter>
                         {
+                            new FilterParameter(nameof(Model.ShoppingCartType)),
                             new FilterParameter(nameof(Model.StartDate), typeof(DateTime?)),
                             new FilterParameter(nameof(Model.EndDate), typeof(DateTime?)),
                             new FilterParameter(nameof(Model.StoreId)),
-                            new FilterParameter(nameof(Model.ProductId))
+                            new FilterParameter(nameof(Model.ProductId)),
+                            new FilterParameter(nameof(Model.IncludeGuests), typeof(bool))
                         },
                         ColumnCollection = new List<ColumnProperty>
                         {

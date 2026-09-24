@@ -621,7 +621,9 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         await PrepareCustomerAttributeModelsAsync(model.CustomerAttributes, customer);
 
         //prepare available customer roles
-        var availableRoles = await _customerService.GetAllCustomerRolesAsync(showHidden: true);
+        //ponytail: Vendors and Forum Moderators are unused here; Guests stays, guest customers need it to save
+        var availableRoles = (await _customerService.GetAllCustomerRolesAsync(showHidden: true))
+            .Where(role => role.SystemName != NopCustomerDefaults.VendorsRoleName && role.SystemName != NopCustomerDefaults.ForumModeratorsRoleName);
         model.AvailableCustomerRoles = availableRoles.Select(role => new SelectListItem
         {
             Text = role.Name,
@@ -711,6 +713,14 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         }
 
         model.CustomerId = customer.Id;
+
+        //the form does not ask for name or email - like the public one, they come from the customer
+        if (address == null)
+        {
+            model.Address.FirstName = customer.FirstName;
+            model.Address.LastName = customer.LastName;
+            model.Address.Email = customer.Email;
+        }
 
         //prepare address model
         await _addressModelFactory.PrepareAddressModelAsync(model.Address, address);

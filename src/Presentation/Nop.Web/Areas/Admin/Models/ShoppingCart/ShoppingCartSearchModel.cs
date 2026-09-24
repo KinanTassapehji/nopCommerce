@@ -43,6 +43,9 @@ public partial record ShoppingCartSearchModel : BaseSearchModel
     [NopResourceDisplayName("Admin.ShoppingCartType.Store")]
     public int StoreId { get; set; }
 
+    [NopResourceDisplayName("Admin.ShoppingCartType.IncludeGuests")]
+    public bool IncludeGuests { get; set; }
+
 
     public ShoppingCartItemSearchModel ShoppingCartItemSearchModel { get; set; }
 

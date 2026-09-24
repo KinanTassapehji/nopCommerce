@@ -105,6 +105,17 @@ public partial class AdminMenu : IAdminMenu
                             Url = GetMenuItemUrl("Product", "List"),
                             IconClass = "far fa-dot-circle"
                         },
+                        //Affiliates, newsletter subscriptions, subscription types and campaigns
+                        //are not used by tmtm, so the whole Promotions group is gone and its one
+                        //remaining entry sits under Products.
+                        new()
+                        {
+                            SystemName = "Discounts",
+                            Title = await _localizationService.GetResourceAsync("Admin.Promotions.Discounts"),
+                            PermissionNames = new List<string> { StandardPermission.Promotions.DISCOUNTS_VIEW },
+                            Url = GetMenuItemUrl("Discount", "List"),
+                            IconClass = "far fa-dot-circle"
+                        },
                         new()
                         {
                             SystemName = "Categories",
@@ -191,6 +202,111 @@ public partial class AdminMenu : IAdminMenu
                         }
                     }
                 },
+                //reports
+                new()
+                {
+                    SystemName = "Reports",
+                    Title = await _localizationService.GetResourceAsync("Admin.Reports"),
+                    IconClass = "fas fa-chart-line",
+                    ChildNodes = new List<AdminMenuItem>
+                    {
+                        new()
+                        {
+                            SystemName = "Sales summary",
+                            Title = await _localizationService.GetResourceAsync("Admin.Reports.SalesSummary"),
+                            PermissionNames = new List<string> { StandardPermission.Reports.SALES_SUMMARY },
+                            Url = GetMenuItemUrl("Report", "SalesSummary"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
+                            SystemName = "Low stock",
+                            Title = await _localizationService.GetResourceAsync("Admin.Reports.LowStock"),
+                            PermissionNames =
+                                new List<string>
+                                {
+                                    StandardPermission.Catalog.PRODUCTS_VIEW,
+                                    StandardPermission.Reports.LOW_STOCK
+                                },
+                            Url = GetMenuItemUrl("Report", "LowStock"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
+                            SystemName = "Bestsellers",
+                            Title = await _localizationService.GetResourceAsync("Admin.Reports.Sales.Bestsellers"),
+                            PermissionNames =
+                                new List<string>
+                                {
+                                    StandardPermission.Orders.ORDERS_VIEW,
+                                    StandardPermission.Reports.BESTSELLERS
+                                },
+                            Url = GetMenuItemUrl("Report", "Bestsellers"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
+                            SystemName = "Products never purchased",
+                            Title = await _localizationService.GetResourceAsync("Admin.Reports.Sales.NeverSold"),
+                            PermissionNames =
+                                new List<string>
+                                {
+                                    StandardPermission.Orders.ORDERS_VIEW,
+                                    StandardPermission.Reports.PRODUCTS_NEVER_PURCHASED
+                                },
+                            Url = GetMenuItemUrl("Report", "NeverSold"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
+                            SystemName = "Customers",
+                            Title = await _localizationService.GetResourceAsync("Admin.Reports.Customers"),
+                            IconClass = "far fa-dot-circle",
+                            ChildNodes = new List<AdminMenuItem>
+                            {
+                                new()
+                                {
+                                    SystemName = "Registered customers",
+                                    Title = await _localizationService.GetResourceAsync("Admin.Reports.Customers.RegisteredCustomers"),
+                                    PermissionNames =
+                                        new List<string>
+                                        {
+                                            StandardPermission.Customers.CUSTOMERS_VIEW,
+                                            StandardPermission.Reports.REGISTERED_CUSTOMERS
+                                        },
+                                    Url = GetMenuItemUrl("Report", "RegisteredCustomers"),
+                                    IconClass = "far fa-dot-circle"
+                                },
+                                new()
+                                {
+                                    SystemName = "Customers by order total",
+                                    Title = await _localizationService.GetResourceAsync("Admin.Reports.Customers.BestBy.BestByOrderTotal"),
+                                    PermissionNames =
+                                        new List<string>
+                                        {
+                                            StandardPermission.Customers.CUSTOMERS_VIEW,
+                                            StandardPermission.Reports.CUSTOMERS_BY_ORDER_TOTAL
+                                        },
+                                    Url = GetMenuItemUrl("Report", "BestCustomersByOrderTotal"),
+                                    IconClass = "far fa-dot-circle"
+                                },
+                                new()
+                                {
+                                    SystemName = "Customers by number of orders",
+                                    Title = await _localizationService.GetResourceAsync("Admin.Reports.Customers.BestBy.BestByNumberOfOrders"),
+                                    PermissionNames =
+                                        new List<string>
+                                        {
+                                            StandardPermission.Customers.CUSTOMERS_VIEW,
+                                            StandardPermission.Reports.CUSTOMERS_BY_NUMBER_OF_ORDERS
+                                        },
+                                    Url = GetMenuItemUrl("Report", "BestCustomersByNumberOfOrders"),
+                                    IconClass = "far fa-dot-circle"
+                                }
+                            }
+                        }
+                    }
+                },
                 //customers
                 new()
                 {
@@ -240,18 +356,6 @@ public partial class AdminMenu : IAdminMenu
                             IconClass = "far fa-dot-circle"
                         }
                     }
-                },
-                //discounts
-                //Affiliates, newsletter subscriptions, subscription types and campaigns
-                //are not used by tmtm, so the whole Promotions group is gone and its one
-                //remaining entry sits at the top level, keeping the group's own icon.
-                new()
-                {
-                    SystemName = "Discounts",
-                    Title = await _localizationService.GetResourceAsync("Admin.Promotions.Discounts"),
-                    PermissionNames = new List<string> { StandardPermission.Promotions.DISCOUNTS_VIEW },
-                    Url = GetMenuItemUrl("Discount", "List"),
-                    IconClass = "fas fa-tags"
                 },
                 //content management
                 new()
@@ -686,111 +790,6 @@ public partial class AdminMenu : IAdminMenu
                             PermissionNames = new List<string> { StandardPermission.System.MANAGE_MAINTENANCE },
                             Url = GetMenuItemUrl("Template", "List"),
                             IconClass = "far fa-dot-circle"
-                        }
-                    }
-                },
-                //reports
-                new()
-                {
-                    SystemName = "Reports",
-                    Title = await _localizationService.GetResourceAsync("Admin.Reports"),
-                    IconClass = "fas fa-chart-line",
-                    ChildNodes = new List<AdminMenuItem>
-                    {
-                        new()
-                        {
-                            SystemName = "Sales summary",
-                            Title = await _localizationService.GetResourceAsync("Admin.Reports.SalesSummary"),
-                            PermissionNames = new List<string> { StandardPermission.Reports.SALES_SUMMARY },
-                            Url = GetMenuItemUrl("Report", "SalesSummary"),
-                            IconClass = "far fa-dot-circle"
-                        },
-                        new()
-                        {
-                            SystemName = "Low stock",
-                            Title = await _localizationService.GetResourceAsync("Admin.Reports.LowStock"),
-                            PermissionNames =
-                                new List<string>
-                                {
-                                    StandardPermission.Catalog.PRODUCTS_VIEW,
-                                    StandardPermission.Reports.LOW_STOCK
-                                },
-                            Url = GetMenuItemUrl("Report", "LowStock"),
-                            IconClass = "far fa-dot-circle"
-                        },
-                        new()
-                        {
-                            SystemName = "Bestsellers",
-                            Title = await _localizationService.GetResourceAsync("Admin.Reports.Sales.Bestsellers"),
-                            PermissionNames =
-                                new List<string>
-                                {
-                                    StandardPermission.Orders.ORDERS_VIEW,
-                                    StandardPermission.Reports.BESTSELLERS
-                                },
-                            Url = GetMenuItemUrl("Report", "Bestsellers"),
-                            IconClass = "far fa-dot-circle"
-                        },
-                        new()
-                        {
-                            SystemName = "Products never purchased",
-                            Title = await _localizationService.GetResourceAsync("Admin.Reports.Sales.NeverSold"),
-                            PermissionNames =
-                                new List<string>
-                                {
-                                    StandardPermission.Orders.ORDERS_VIEW,
-                                    StandardPermission.Reports.PRODUCTS_NEVER_PURCHASED
-                                },
-                            Url = GetMenuItemUrl("Report", "NeverSold"),
-                            IconClass = "far fa-dot-circle"
-                        },
-                        new()
-                        {
-                            SystemName = "Customers",
-                            Title = await _localizationService.GetResourceAsync("Admin.Reports.Customers"),
-                            IconClass = "far fa-dot-circle",
-                            ChildNodes = new List<AdminMenuItem>
-                            {
-                                new()
-                                {
-                                    SystemName = "Registered customers",
-                                    Title = await _localizationService.GetResourceAsync("Admin.Reports.Customers.RegisteredCustomers"),
-                                    PermissionNames =
-                                        new List<string>
-                                        {
-                                            StandardPermission.Customers.CUSTOMERS_VIEW,
-                                            StandardPermission.Reports.REGISTERED_CUSTOMERS
-                                        },
-                                    Url = GetMenuItemUrl("Report", "RegisteredCustomers"),
-                                    IconClass = "far fa-dot-circle"
-                                },
-                                new()
-                                {
-                                    SystemName = "Customers by order total",
-                                    Title = await _localizationService.GetResourceAsync("Admin.Reports.Customers.BestBy.BestByOrderTotal"),
-                                    PermissionNames =
-                                        new List<string>
-                                        {
-                                            StandardPermission.Customers.CUSTOMERS_VIEW,
-                                            StandardPermission.Reports.CUSTOMERS_BY_ORDER_TOTAL
-                                        },
-                                    Url = GetMenuItemUrl("Report", "BestCustomersByOrderTotal"),
-                                    IconClass = "far fa-dot-circle"
-                                },
-                                new()
-                                {
-                                    SystemName = "Customers by number of orders",
-                                    Title = await _localizationService.GetResourceAsync("Admin.Reports.Customers.BestBy.BestByNumberOfOrders"),
-                                    PermissionNames =
-                                        new List<string>
-                                        {
-                                            StandardPermission.Customers.CUSTOMERS_VIEW,
-                                            StandardPermission.Reports.CUSTOMERS_BY_NUMBER_OF_ORDERS
-                                        },
-                                    Url = GetMenuItemUrl("Report", "BestCustomersByNumberOfOrders"),
-                                    IconClass = "far fa-dot-circle"
-                                }
-                            }
                         }
                     }
                 },

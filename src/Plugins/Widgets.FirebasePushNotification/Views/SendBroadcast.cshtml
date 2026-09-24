@@ -1,4 +1,5 @@
 ﻿@model Widgets.FirebasePushNotification.Models.ConfigurationModel
+@inject Nop.Core.IStoreContext StoreContext
 @{
     Layout = "_AdminLayout";
     ViewBag.PageTitle = T("Plugins.Widgets.FirebasePushNotification.Broadcast.PageTitle").Text;
@@ -36,7 +37,13 @@
                     <div class="form-group row"><div class="col-md-3">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.TitleAr")</div><div class="col-md-9"><input name="TitleAr" class="form-control" required /></div></div>
                     <div class="form-group row"><div class="col-md-3">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.BodyAr")</div><div class="col-md-9"><textarea name="BodyAr" class="form-control" rows="2" required></textarea></div></div>
 
-                    <div class="form-group row"><div class="col-md-3">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.DataJson")</div><div class="col-md-9"><textarea name="DataJson" class="form-control" rows="4"></textarea></div></div>
+                    <div class="form-group row">
+                        <div class="col-md-3">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.Link")</div>
+                        <div class="col-md-9">
+                            <input name="Link" class="form-control" dir="ltr" value="@((await StoreContext.GetCurrentStoreAsync()).Url)" />
+                            <small class="form-text text-muted">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.LinkHint")</small>
+                        </div>
+                    </div>
                     <button type="submit" class="btn btn-warning">@T("Plugins.Widgets.FirebasePushNotification.Broadcast.Send")</button>
                 </div>
             </div>
@@ -53,6 +60,11 @@
             placeholder: '@T("Plugins.Widgets.FirebasePushNotification.Broadcast.SearchPlaceholder")',
             allowClear: true,
             minimumInputLength: 2,
+            language: {
+                inputTooShort: function () { return '@T("Plugins.Widgets.FirebasePushNotification.Broadcast.InputTooShort")'; },
+                noResults: function () { return '@T("Plugins.Widgets.FirebasePushNotification.Broadcast.NoResults")'; },
+                searching: function () { return '@T("Plugins.Widgets.FirebasePushNotification.Broadcast.Searching")'; }
+            },
             ajax: {
                 url: '@Url.Action("SearchCustomers", "FirebasePushNotification", new { area = "Admin" })',
                 dataType: 'json',

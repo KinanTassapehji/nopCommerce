@@ -4,12 +4,17 @@
 @inject ISettingService settingService
 @inject IWorkContext workContext
 @*
-    Google map pin picker for the public address form.
-    Configured from Admin > Configuration > Settings > All settings (no dedicated UI on purpose):
+    The public store's map pin picker, in admin dress. Same module
+    (~/js/address-map.js), same settings, different markup and skin:
+
       googlemappicker.apikey              - Google key with Maps JavaScript API + Geocoding API enabled
       googlemappicker.locationattributeid - id of the custom address attribute (textbox) that stores "lat,lng"
       googlemappicker.defaultcenter       - "lat,lng" the map opens on when the address has no pin yet
-    Falls back to the NopStation address validator's key if ours is not set.
+
+    المنطقة and الشارع are the pin's to fill, same as the public form: the module
+    locks them on load and writes them from the geocode on every drop, so the only
+    way to set an address here is on the map. If google is unreachable it unlocks
+    them again rather than leaving the form unusable.
 *@
 @{
     var apiKey = await settingService.GetSettingByKeyAsync<string>("googlemappicker.apikey")
@@ -18,7 +23,6 @@
     var locationAttribute = Model.CustomAddressAttributes?.FirstOrDefault(attribute => attribute.Id == locationAttributeId);
     var defaultCenter = await settingService.GetSettingByKeyAsync("googlemappicker.defaultcenter", "33.5138,36.2765");
     var language = (await workContext.GetWorkingLanguageAsync()).UniqueSeoCode;
-    //unique per form - the one page checkout keeps a billing and a shipping form in the same DOM
     var mapId = $"{Html.IdFor(model => model.Id)}_map";
     //an address that already carries a pin opens showing what it currently says - the text
     //google gave the spot, which the pin saved ahead of its "(lat,lng)". Pins saved before
@@ -31,41 +35,41 @@
 }
 @if (!string.IsNullOrWhiteSpace(apiKey) && locationAttribute != null)
 {
-    @*kept here rather than in a theme stylesheet so the two stores' themes stay out of it*@
+    @*alongside the public partial's own block rather than in brand.css - the picker
+        stays one file to read, and the two skins share nothing but the canvas size*@
     <style>
-        .address-map-canvas { width: 100%; height: 280px; margin-top: 8px; border-radius: 6px; }
-        .address-map-search-row { position: relative; margin-top: 8px; }
-        .address-map-search { display: block; box-sizing: border-box; width: 100%; margin: 0; padding-inline-end: 9em; }
-        /* ponytail: fixed reserve for the button - the two label texts are short enough that
-           measuring it in js would cost more than it saves */
-        .address-map-search::-webkit-search-cancel-button { display: none; }
-        .address-map-locate { position: absolute; inset-inline-end: 4px; top: 50%; transform: translateY(-50%); padding: 4px 10px; font-size: .85em; line-height: 1.4; }
+        .address-map-canvas { width: 100%; height: 280px; margin-top: 8px; border-radius: var(--adm-r-sm, 8px); }
         .address-map-hint { display: block; margin-top: 4px; font-size: .9em; opacity: .75; }
-        .address-map-results { list-style: none; margin: 4px 0 0; padding: 0; border: 1px solid #ddd; border-radius: 6px; max-height: 180px; overflow: auto; }
-        .address-map-results li { padding: 8px 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .address-map-results { list-style: none; margin: 8px 0 0; padding: 0; border: 1px solid var(--adm-line, #ddd); border-radius: var(--adm-r-sm, 8px); max-height: 180px; overflow: auto; }
+        .address-map-results li { padding: 8px 10px; border-bottom: 1px solid var(--adm-line, #eee); cursor: pointer; }
         .address-map-results li:last-child { border-bottom: 0; }
-        .address-map-results li:hover { background: #f5f5f5; }
+        .address-map-results li:hover { background: var(--adm-accent-tint, #f5f5f5); }
         .address-map-results li.empty { cursor: default; opacity: .75; }
         .address-map-results li.empty:hover { background: none; }
-        .address-map-owned { background: #f5f5f5; cursor: not-allowed; }
+        .address-map-locate { margin-top: 8px; }
+        /* the pin owns these - they read as a value, not as something to type in */
+        .form-control.address-map-owned { background-color: var(--adm-surface-alt, #f5f5f5); cursor: not-allowed; }
     </style>
-    <div class="inputs address-map">
-        <label for="@(mapId)_search">@locationAttribute.Name:</label>
-        <div class="address-map-search-row">
-            @*not a named field - it must never be posted with the address*@
-            <input type="search" id="@(mapId)_search" class="address-map-search" autocomplete="off"
-                   value="@currentAddress" placeholder="@T("Address.Fields.MapLocation.Search")" />
-            <button type="button" class="button-2 address-map-locate" id="@(mapId)_locate">@T("Address.Fields.MapLocation.UseMyLocation")</button>
+    <div class="form-group row address-map">
+        <div class="col-md-3">
+            <div class="label-wrapper">
+                <label class="col-form-label" for="@(mapId)_search">@locationAttribute.Name</label>
+            </div>
         </div>
-        <ul class="address-map-results" id="@(mapId)_results" style="display: none;"></ul>
-        @*no map until there is something to show it for - a search, the customer's location, or a pin the address already has*@
-        <div id="@mapId" class="address-map-canvas" style="display: none;"></div>
-        <span class="address-map-hint" id="@(mapId)_hint" style="display: none;">@T("Address.Fields.MapLocation.Hint")</span>
+        <div class="col-md-9">
+            @*not a named field - it must never be posted with the address*@
+            <input type="search" id="@(mapId)_search" class="form-control address-map-search" autocomplete="off"
+                   value="@currentAddress" placeholder="@T("Address.Fields.MapLocation.Search")" />
+            <ul class="address-map-results" id="@(mapId)_results" style="display: none;"></ul>
+            <button type="button" class="btn btn-secondary address-map-locate" id="@(mapId)_locate">@T("Address.Fields.MapLocation.UseMyLocation")</button>
+            @*no map until there is something to show it for - a search, the browser's location, or a pin the address already has*@
+            <div id="@mapId" class="address-map-canvas" style="display: none;"></div>
+            <span class="address-map-hint" id="@(mapId)_hint" style="display: none;">@T("Address.Fields.MapLocation.Hint")</span>
+        </div>
     </div>
 
     <script src="~/js/address-map.js"></script>
     <script>
-        //the module lives in ~/js/address-map.js - the admin address form loads the same one
         AddressMap.init({
             mapId: '@mapId',
             searchFieldId: '@(mapId)_search',
@@ -73,11 +77,9 @@
             noResults: '@T("Address.Fields.MapLocation.NoResults")',
             locateButtonId: '@(mapId)_locate',
             hintId: '@(mapId)_hint',
-            locationFieldId: '@locationAttribute.ControlId',
-            cityFieldId: '@Html.IdFor(model => model.City)',
+            locationFieldId: 'address_attribute_@(locationAttribute.Id)',
             countyFieldId: '@Html.IdFor(model => model.County)',
             streetFieldId: '@Html.IdFor(model => model.Address1)',
-            zipFieldId: '@Html.IdFor(model => model.ZipPostalCode)',
             apiKey: '@apiKey',
             language: '@language',
             defaultCenter: '@defaultCenter'

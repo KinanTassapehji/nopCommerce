@@ -13,30 +13,31 @@
                         @Model.BillingAddress.FirstName @Model.BillingAddress.LastName
                     </li>
                     <li class="email">
-                        @T("Order.Email"): @Model.BillingAddress.Email
+                        <span class="label">@T("Order.Email"):</span>
+                        <span class="value">@Model.BillingAddress.Email</span>
                     </li>
                     @if (Model.BillingAddress.PhoneEnabled)
                     {
                         <li class="phone">
-                            @T("Order.Phone"): @Model.BillingAddress.PhoneNumber
+                            <span class="label">@T("Order.Phone"):</span>
+                            <span class="value">@Model.BillingAddress.PhoneNumber</span>
                         </li>
                     }
                     @if (Model.BillingAddress.FaxEnabled)
                     {
                         <li class="fax">
-                            @T("Order.Fax"): @Model.BillingAddress.FaxNumber
+                            <span class="label">@T("Order.Fax"):</span>
+                            <span class="value">@Model.BillingAddress.FaxNumber</span>
                         </li>
                     }
                     @if (Model.BillingAddress.CompanyEnabled && !string.IsNullOrEmpty(Model.BillingAddress.Company))
                     {
                         <li class="company">
-                            @Model.BillingAddress.Company
+                            <span class="label">@T("Address.Fields.Company"):</span>
+                            <span class="value">@Model.BillingAddress.Company</span>
                         </li>
                     }
-                    @foreach (var item in Model.BillingAddress.AddressFields)
-                    {
-                        <li class=@item.Key.ToString().ToLower()>@item.Value</li>
-                    }
+                    @await Html.PartialAsync("_AddressFields", Model.BillingAddress.AddressFields)
 
                     @if (!string.IsNullOrEmpty(Model.BillingAddress.FormattedCustomAddressAttributes))
                     {
@@ -80,10 +81,7 @@
                             @T("Order.PickupAddress")
                         </h2>
                         <ul class="info-list">
-                            @foreach (var item in Model.PickupAddress.AddressFields)
-                            {
-                                <li class=@item.Key.ToString().ToLower()>@item.Value</li>
-                            }
+                            @await Html.PartialAsync("_AddressFields", Model.PickupAddress.AddressFields)
                             @await Html.PartialAsync("_OrderCustomValues", Model.CustomValues?.GetValuesByDisplayLocation(CustomValueDisplayLocation.ShippingAddress))
                         </ul>
                     </div>
