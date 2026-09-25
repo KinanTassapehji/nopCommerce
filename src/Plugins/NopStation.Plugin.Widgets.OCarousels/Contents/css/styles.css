@@ -254,7 +254,8 @@
   align-items: center;
   justify-content: center;
   min-height: 160px;
-  padding: 24px;
+  padding: 8px;
+  overflow: hidden; /* clips the zoomed logo below to the tile */
   background: var(--tm-surface, #fff);
   border: 1px solid var(--tm-line, #dfe5e5);
   border-radius: var(--tm-radius, 12px);
@@ -269,6 +270,10 @@
   max-width: 100%;
   max-height: 112px;
   object-fit: contain;
+  /* ponytail: the logos are drawn on a white 415x145 plate with 20-45% of it empty
+     margin, so contain alone leaves them tiny. 1.25x only cuts margin while the
+     artwork spans <= 80% of the plate; re-cropping the uploads is the real fix. */
+  transform: scale(1.25);
 }
 
 .carousel-manufacturer .ocarousel-item > a:hover,
