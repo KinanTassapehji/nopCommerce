@@ -7313,8 +7313,7 @@ so the field stays visible beside the icon. */
 .home-page .block-manufacturer-navigation .list a{
   position: relative; /* anchors the visually-hidden name below */
   display: block;
-  padding: 0;
-  overflow: hidden; /* clips the zoomed logo to the tile */
+  padding: 6px 12px;
   border: 1px solid var(--tm-line);
   border-radius: var(--tm-radius);
   background: var(--tm-surface);
@@ -7344,15 +7343,13 @@ so the field stays visible beside the icon. */
   white-space: nowrap;
 }
 
-/* ponytail: the logos are drawn on a white 415x145 plate that is 20-45% empty
-   margin, so the plate fills the tile and 1.25x zooms past the margin. Safe
-   while the artwork spans <= 80% of the plate; re-cropping the uploads is the
-   real fix, after which this scale goes. */
+/* The logos are drawn on a white 415x145 plate with its own margin, so the
+   plate fills the tile's content box and that margin is the air around the
+   mark - no zoom, which in a tile this short ran the mark into the border. */
 .home-page .block-manufacturer-navigation .list img{
   display: block;
   inline-size: 100%;
   block-size: auto;
-  transform: scale(1.25);
 }
 
 /* The sidebar keeps its plain name list; the logos are the home strip's. */
