@@ -2253,7 +2253,9 @@ along with the pill the li was wrapped in. */
   font-size: 11px;
 }
 
-/* An empty cart has nothing to announce. */
+/* An empty cart has nothing to announce. The id selector is here to outrank
+   #topcartlink .cart-qty above, whose display:inline-flex kept a "0" on show. */
+#topcartlink .cart-qty[data-qty="0"],
 .cart-qty[data-qty="0"]{
   display: none;
 }
