@@ -145,6 +145,14 @@ public class FirebaseNotificationService : IFirebaseNotificationService
 		}
 	}
 
+	//Android draws a notification's status-bar icon from its alpha channel alone, so without a
+	//badge the full-colour app icon came out as a white square. The badge is the logo mark in
+	//white on transparent; Chrome and installed PWAs use it (the TWA app ships its own copy).
+	private static readonly WebpushConfig BadgedWebpush = new WebpushConfig
+	{
+		Notification = new WebpushNotification { Badge = "/icons/icons_0/badge-96x96.png" }
+	};
+
 	private async Task<bool> SendToDeviceTokenAsync(string title, string body, string deviceToken, Dictionary<string, string>? data = null, string platform = "all", CancellationToken cancellationToken = default(CancellationToken))
 	{
 		Dictionary<string, string> messageData = ((data != null) ? new Dictionary<string, string>(data) : new Dictionary<string, string>());
@@ -158,6 +166,7 @@ public class FirebaseNotificationService : IFirebaseNotificationService
 				Title = title,
 				Body = body
 			},
+			Webpush = BadgedWebpush,
 			Data = messageData
 		};
 		try
@@ -195,6 +204,7 @@ public class FirebaseNotificationService : IFirebaseNotificationService
 				Title = title,
 				Body = body
 			},
+			Webpush = BadgedWebpush,
 			Data = messageData
 		};
 		Log($"SendMulticast: {deviceTokens.Count} tokens, platform={platform}");
