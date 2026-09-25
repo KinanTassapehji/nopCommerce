@@ -133,7 +133,9 @@ public class DataMigration : Migration
             loginActivity.SystemKeyword = "PublicStore.SuccessfulLogin";
             _dataProvider.UpdateEntity(loginActivity);
         }
-        else
+        //TmTm: the stock else inserted unguarded, so every re-run of this migration added one
+        //more copy - production had 55 of them on the activity types page
+        else if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "PublicStore.SuccessfulLogin", StringComparison.InvariantCultureIgnoreCase) == 0))
         {
             _dataProvider.InsertEntity(
                 new ActivityLogType
