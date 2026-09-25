@@ -4158,6 +4158,20 @@ so the field stays visible beside the icon. */
    notch and the home indicator on a phone. */
 .tm-lightbox .tm-slide{
   padding-block: calc(env(safe-area-inset-top, 0px) + 64px) calc(env(safe-area-inset-bottom, 0px) + 64px);
+  overflow: hidden;
+}
+
+/* Click to zoom, mouse only — a phone has pinch. The gallery script sets
+   tm-zoomable and moves transform-origin with the pointer, so the spot under
+   the cursor stays put while the rest pans around it. */
+.tm-lightbox.tm-zoomable .tm-slide img{
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+}
+
+.tm-lightbox .tm-slide img.tm-zoomed{
+  cursor: zoom-out;
+  transform: scale(2.5);
 }
 
 .tm-lightbox .tm-gallery-open{

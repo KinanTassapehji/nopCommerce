@@ -147,6 +147,7 @@
 
         function setCurrent(index) {
             current = index;
+            unzoom();
             thumbs.forEach(function (thumb, i) {
                 thumb.classList.toggle('active', i === index);
                 thumb.setAttribute('aria-current', i === index ? 'true' : 'false');
@@ -203,7 +204,43 @@
             if (event.target === dialog)
                 dialog.close();
         });
+        //Click to zoom, for a mouse only: on a touch screen a tap-and-drag is
+        //the swipe, and pinch already zooms.
+        var zoomed = null;
+        function unzoom() {
+            if (zoomed)
+                zoomed.classList.remove('tm-zoomed');
+            zoomed = null;
+        }
+        //Measured off the slide, which never scales: the picture's own box grows
+        //with the zoom. The picture sits centred in it.
+        function aim(img, event) {
+            var box = img.parentNode.getBoundingClientRect();
+            var x = (event.clientX - box.left - (box.width - img.offsetWidth) / 2) / img.offsetWidth;
+            var y = (event.clientY - box.top - (box.height - img.offsetHeight) / 2) / img.offsetHeight;
+            img.style.transformOrigin = Math.min(Math.max(x, 0), 1) * 100 + '% ' + Math.min(Math.max(y, 0), 1) * 100 + '%';
+        }
+        if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+            dialog.classList.add('tm-zoomable');
+            slides.forEach(function (slide) {
+                var img = slide.firstElementChild;
+                img.addEventListener('click', function (event) {
+                    if (zoomed === img)
+                        return unzoom();
+                    unzoom();
+                    aim(img, event);
+                    img.classList.add('tm-zoomed');
+                    zoomed = img;
+                });
+                img.addEventListener('mousemove', function (event) {
+                    if (zoomed === img)
+                        aim(img, event);
+                });
+            });
+        }
+
         dialog.addEventListener('close', function () {
+            unzoom();
             gallery.insertBefore(stage, slot);
             goTo(current);
         });
