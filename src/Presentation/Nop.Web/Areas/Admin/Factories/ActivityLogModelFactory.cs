@@ -1,5 +1,8 @@
-﻿using Nop.Services.Customers;
+﻿using Nop.Core;
+using Nop.Core.Domain.Logging;
+using Nop.Services.Customers;
 using Nop.Services.Helpers;
+using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.Logging;
@@ -18,6 +21,8 @@ public partial class ActivityLogModelFactory : IActivityLogModelFactory
     protected readonly ICustomerActivityService _customerActivityService;
     protected readonly ICustomerService _customerService;
     protected readonly IDateTimeHelper _dateTimeHelper;
+    protected readonly ILocalizationService _localizationService;
+    protected readonly IWorkContext _workContext;
 
     #endregion
 
@@ -26,17 +31,33 @@ public partial class ActivityLogModelFactory : IActivityLogModelFactory
     public ActivityLogModelFactory(IBaseAdminModelFactory baseAdminModelFactory,
         ICustomerActivityService customerActivityService,
         ICustomerService customerService,
-        IDateTimeHelper dateTimeHelper)
+        IDateTimeHelper dateTimeHelper,
+        ILocalizationService localizationService,
+        IWorkContext workContext)
     {
         _baseAdminModelFactory = baseAdminModelFactory;
         _customerActivityService = customerActivityService;
         _customerService = customerService;
         _dateTimeHelper = dateTimeHelper;
+        _localizationService = localizationService;
+        _workContext = workContext;
     }
 
     #endregion
 
     #region Utilities
+
+    /// <summary>
+    /// Get the display name of an activity type: Name is plain DB text, so translate by system
+    /// keyword and fall back to Name - the same lookup the activity log's type filter uses
+    /// </summary>
+    protected virtual async Task<string> GetActivityTypeNameAsync(ActivityLogType activityType, int languageId)
+    {
+        if (activityType is null)
+            return null;
+
+        return await _localizationService.GetResourceAsync($"Admin.ActivityLogType.{activityType.SystemKeyword}", languageId, false, activityType.Name);
+    }
 
     /// <summary>
     /// Prepare activity log type models
@@ -49,7 +70,14 @@ public partial class ActivityLogModelFactory : IActivityLogModelFactory
     {
         //prepare available activity log types
         var availableActivityTypes = await _customerActivityService.GetAllActivityTypesAsync();
-        var models = availableActivityTypes.Select(activityType => activityType.ToModel<ActivityLogTypeModel>()).ToList();
+        var languageId = (await _workContext.GetWorkingLanguageAsync()).Id;
+        var models = new List<ActivityLogTypeModel>();
+        foreach (var activityType in availableActivityTypes)
+        {
+            var typeModel = activityType.ToModel<ActivityLogTypeModel>();
+            typeModel.Name = await GetActivityTypeNameAsync(activityType, languageId);
+            models.Add(typeModel);
+        }
 
         return models;
     }
@@ -130,13 +158,14 @@ public partial class ActivityLogModelFactory : IActivityLogModelFactory
         //prepare list model
         var customerIds = activityLog.GroupBy(logItem => logItem.CustomerId).Select(logItem => logItem.Key);
         var activityLogCustomers = await _customerService.GetCustomersByIdsAsync(customerIds.ToArray());
+        var languageId = (await _workContext.GetWorkingLanguageAsync()).Id;
         var model = await new ActivityLogListModel().PrepareToGridAsync(searchModel, activityLog, () =>
         {
             return activityLog.SelectAwait(async logItem =>
             {
                 //fill in model values from the entity
                 var logItemModel = logItem.ToModel<ActivityLogModel>();
-                logItemModel.ActivityLogTypeName = (await _customerActivityService.GetActivityTypeByIdAsync(logItem.ActivityLogTypeId))?.Name;
+                logItemModel.ActivityLogTypeName = await GetActivityTypeNameAsync(await _customerActivityService.GetActivityTypeByIdAsync(logItem.ActivityLogTypeId), languageId);
 
                 logItemModel.CustomerEmail = activityLogCustomers?.FirstOrDefault(x => x.Id == logItem.CustomerId)?.Email;
 
