@@ -1587,6 +1587,18 @@ public partial class CustomerController : BasePublicController
                 ModelState.AddModelError("", error);
         }
 
+        //the customer info page carries this form inline: send a failure back there too, as
+        //notifications, instead of stranding the customer on the standalone page. Only for that
+        //page - an expired password lands here with a returnUrl too, and must stay to be fixed
+        var infoUrl = Url.RouteUrl(NopRouteNames.General.CUSTOMER_INFO);
+        if (string.Equals(returnUrl, infoUrl, StringComparison.OrdinalIgnoreCase))
+        {
+            foreach (var error in ModelState.Values.SelectMany(value => value.Errors))
+                _notificationService.ErrorNotification(error.ErrorMessage);
+
+            return new RedirectResult(returnUrl);
+        }
+
         //If we got this far, something failed, redisplay form
         model = await _customerModelFactory.PrepareChangePasswordModelAsync(customer);
 
