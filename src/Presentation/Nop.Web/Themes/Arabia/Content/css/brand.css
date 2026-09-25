@@ -1810,6 +1810,10 @@ so the "HomepageText" topic that would
 :is(.home-page-category-grid, .sub-category-grid) .item-box{
   display: flex;
   flex-direction: column-reverse;
+  /* column-reverse packs from the bottom by default, so a name that wraps to
+     two lines lifted its picture above its neighbours'. flex-end is the top
+     here: pictures share a top edge and the extra line hangs below. */
+  justify-content: flex-end;
   align-items: center;
   gap: var(--ar-stack-sm);
   float: none;
@@ -7749,6 +7753,7 @@ so the field stays visible beside the icon. */
 .home-usp{
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr; /* one card that wraps no longer leaves its row taller than the other */
   gap: var(--ar-stack-sm);
   margin: 0;
   padding: 0;
