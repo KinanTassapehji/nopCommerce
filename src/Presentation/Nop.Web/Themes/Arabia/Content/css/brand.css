@@ -6467,6 +6467,18 @@ so the field stays visible beside the icon. */
   padding: 26px 30px 30px;
 }
 
+/* The change-password form is shared with its own page, so it brings its own
+   .fieldset along; inside the info page's card that was a second card. */
+.customer-info-page .fieldset .fieldset{
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
 .registration-page .fieldset > .title,
 .customer-info-page .fieldset > .title{
   margin: 0 0 22px;
