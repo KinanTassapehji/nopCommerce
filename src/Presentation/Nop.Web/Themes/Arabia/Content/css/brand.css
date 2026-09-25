@@ -4480,6 +4480,20 @@ so the field stays visible beside the icon. */
    notch and the home indicator on a phone. */
 .ar-lightbox .ar-slide{
   padding-block: calc(env(safe-area-inset-top, 0px) + 64px) calc(env(safe-area-inset-bottom, 0px) + 64px);
+  overflow: hidden;
+}
+
+/* Click to zoom, mouse only — a phone has pinch. The gallery script sets
+   ar-zoomable and moves transform-origin with the pointer, so the spot under
+   the cursor stays put while the rest pans around it. */
+.ar-lightbox.ar-zoomable .ar-slide img{
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+}
+
+.ar-lightbox .ar-slide img.ar-zoomed{
+  cursor: zoom-out;
+  transform: scale(2.5);
 }
 
 .ar-lightbox .ar-gallery-open{
