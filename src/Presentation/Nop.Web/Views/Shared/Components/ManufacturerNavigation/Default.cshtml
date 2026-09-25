@@ -8,14 +8,17 @@
         <h2 class="title">
             @*the heading is the way into the full brand list - the "view all" link
                 below it only appears once there are more brands than the strip shows*@
-            <a href="@Url.RouteUrl(NopRouteNames.General.MANUFACTURERS)">@T("Manufacturers")</a>
+            <a href="@Url.RouteUrl(NopRouteNames.General.MANUFACTURERS)">@T("Homepage.Brands")</a>
         </h2>
         <div class="listbox">
             <ul class="list">
                 @foreach (var manufacturer in Model.Manufacturers)
                 {
                     <li class="@(manufacturer.IsActive ? "active" : "inactive")">
-                        <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { SeName = manufacturer.SeName }))">@manufacturer.Name</a>
+                        <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { SeName = manufacturer.SeName }))" title="@manufacturer.PictureModel.Title">
+                            <img alt="@manufacturer.PictureModel.AlternateText" src="@manufacturer.PictureModel.ImageUrl" />
+                            <span>@manufacturer.Name</span>
+                        </a>
                     </li>
                 }
             </ul>

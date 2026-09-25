@@ -19133,6 +19133,9 @@
   <LocaleResource Name="Homepage.Categories">
     <Value>Shop by category</Value>
   </LocaleResource>
+  <LocaleResource Name="Homepage.Brands">
+    <Value>Brands</Value>
+  </LocaleResource>
   <LocaleResource Name="Homepage.ViewAll">
     <Value>View all</Value>
   </LocaleResource>

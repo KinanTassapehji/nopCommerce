@@ -22751,6 +22751,9 @@
   <LocaleResource Name="Homepage.Categories">
     <Value>تسوق حسب الفئة</Value>
   </LocaleResource>
+  <LocaleResource Name="Homepage.Brands">
+    <Value>العلامات التجارية</Value>
+  </LocaleResource>
   <LocaleResource Name="Homepage.ViewAll">
     <Value>عرض الكل</Value>
   </LocaleResource>

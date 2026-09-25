@@ -7246,6 +7246,132 @@ so the field stays visible beside the icon. */
   line-height: var(--tm-lh-label-sm);
 }
 
+/* --- Brand strip (.block-manufacturer-navigation) --------------------------
+   Rendered with the page (Arabia's strip) in place of the OCarousel band,
+   which printed an empty box and fetched its logos once scrolled to. The
+   component's markup is a sidebar block: the base sheet caps .block at 600px,
+   makes .title a grey accordion bar and hides .listbox below 1001px, so on
+   the home page it is flattened into one always-open band. */
+.home-page .block-manufacturer-navigation{
+  max-width: none;
+  text-align: start;
+}
+
+.home-page .block-manufacturer-navigation > .title{
+  background: none;
+  cursor: auto;
+}
+
+.home-page .block-manufacturer-navigation > .title a{
+  color: inherit;
+}
+
+.home-page .block-manufacturer-navigation .listbox{
+  display: block;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+
+/* One row that scrolls on a phone, bleeding into the page margin like the
+   category rail above it. */
+.home-page .block-manufacturer-navigation .list{
+  display: flex;
+  gap: var(--tm-stack-sm);
+  margin: 0 calc(-1 * var(--tm-margin-mobile));
+  padding: 0 var(--tm-margin-mobile) 4px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--tm-margin-mobile);
+  scrollbar-width: none;
+}
+
+.home-page .block-manufacturer-navigation .list::-webkit-scrollbar{
+  display: none;
+}
+
+.home-page .block-manufacturer-navigation .list li{
+  flex: 1 0 140px;
+  margin: 0;
+  padding: 0;
+  scroll-snap-align: start;
+}
+
+.home-page .block-manufacturer-navigation .list a{
+  position: relative; /* anchors the visually-hidden name below */
+  display: block;
+  padding: 0;
+  overflow: hidden; /* clips the zoomed logo to the tile */
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius);
+  background: var(--tm-surface);
+  transition: border-color var(--tm-transition), box-shadow var(--tm-transition),
+              transform var(--tm-transition);
+}
+
+/* the base sheet marks every block list link with a square bullet */
+.home-page .block-manufacturer-navigation .list a:before{
+  display: none;
+}
+
+.home-page .block-manufacturer-navigation .list a:hover,
+.home-page .block-manufacturer-navigation .list a:focus-visible{
+  border-color: var(--tm-teal);
+  box-shadow: var(--tm-shadow);
+}
+
+/* The logos carry the name already; it stays as the link's accessible name. */
+.home-page .block-manufacturer-navigation .list a > span{
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ponytail: the logos are drawn on a white 415x145 plate that is 20-45% empty
+   margin, so the plate fills the tile and 1.25x zooms past the margin. Safe
+   while the artwork spans <= 80% of the plate; re-cropping the uploads is the
+   real fix, after which this scale goes. */
+.home-page .block-manufacturer-navigation .list img{
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  transform: scale(1.25);
+}
+
+/* The sidebar keeps its plain name list; the logos are the home strip's. */
+.side-2 .block-manufacturer-navigation .list img{
+  display: none;
+}
+
+@media (min-width: 1001px){
+  /* Every brand on one line: six 140px tiles fit the 980px column. */
+  .home-page .block-manufacturer-navigation .list{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--tm-stack-md);
+    margin: 0;
+    padding: 0;
+    overflow-x: visible;
+    scroll-snap-type: none;
+  }
+
+  .home-page .block-manufacturer-navigation .list a:hover,
+  .home-page .block-manufacturer-navigation .list a:focus-visible{
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .home-page .block-manufacturer-navigation .list a{
+    transition: none;
+  }
+}
+
 /* --- Band headings: a "view all" at the far end of the title line --------- */
 .home-page .page-body > * > .title .view-all{
   display: inline-flex;

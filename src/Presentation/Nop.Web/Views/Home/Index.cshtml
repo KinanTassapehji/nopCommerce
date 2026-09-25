@@ -63,6 +63,8 @@
             </div>
             <a class="button-1" href="@Url.RouteUrl(NopRouteNames.General.CATEGORIES)">@T("Homepage.Cta.Button")</a>
         </section>
+        @*rendered with the page, not the OCarousel band that waited for a scroll and a POST*@
+        @await Component.InvokeAsync(typeof(ManufacturerNavigationViewComponent), new { currentManufacturerId = 0 })
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeBestSellers })
         @await Component.InvokeAsync(typeof(HomepageBestSellersViewComponent))
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeNews })
