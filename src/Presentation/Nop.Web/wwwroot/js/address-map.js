@@ -221,7 +221,8 @@ window.AddressMap = window.AddressMap || (function () {
         }
 
         //google will happily match a street name in the wrong country, and it finds nothing at all
-        //for half the syrian addresses - either way the customer has to see what came back
+        //for half the syrian addresses - either way the customer has to see what came back.
+        //found is [{ text, point }], whichever of the two searches below produced it
         function listResults(found) {
             if (!results)
                 return;
@@ -234,14 +235,48 @@ window.AddressMap = window.AddressMap || (function () {
             }
             found.slice(0, 5).forEach(function (result) {
                 var item = document.createElement('li');
-                item.textContent = result.formatted_address;
+                item.textContent = result.text;
                 item.addEventListener('click', function () {
                     clearResults();
-                    drop(toPoint(result.geometry.location), 17, result.formatted_address);
+                    drop(result.point, 17, result.text);
                 });
                 results.appendChild(item);
             });
             results.style.display = '';
+        }
+
+        //the geocoder resolves one address, so it answers a search with one result. Text search
+        //(Places API (New)) lists every place that matches; the geocoder stays as the fallback for
+        //the addresses places does not know, and for a key without places enabled.
+        function geocodeSearch(query) {
+            geocoder.geocode({ address: query, bounds: map.getBounds() }, function (found, status) {
+                listResults(status === 'OK' && found ? found.map(function (result) {
+                    return { text: result.formatted_address, point: toPoint(result.geometry.location) };
+                }) : []);
+            });
+        }
+
+        function placeSearch(query) {
+            google.maps.importLibrary('places').then(function (places) {
+                return places.Place.searchByText({
+                    textQuery: query,
+                    fields: ['displayName', 'formattedAddress', 'location'],
+                    //bias to what the customer is looking at, so "المزة" lands in the right city
+                    locationBias: map.getBounds(),
+                    language: options.language,
+                    maxResultCount: 5
+                });
+            }).then(function (response) {
+                if (!response.places.length)
+                    return geocodeSearch(query);
+                listResults(response.places.map(function (place) {
+                    var name = place.displayName, address = place.formattedAddress || '';
+                    return {
+                        text: name && address.indexOf(name) !== 0 ? name + (/^ar/.test(options.language) ? '، ' : ', ') + address : address || name,
+                        point: toPoint(place.location)
+                    };
+                }));
+            }).catch(function () { geocodeSearch(query); });
         }
 
         if (search) {
@@ -252,12 +287,7 @@ window.AddressMap = window.AddressMap || (function () {
                 e.preventDefault();
                 if (!search.value.trim())
                     return;
-                show(function () {
-                    //bias to what the customer is looking at, so "المزة" lands in the right city
-                    geocoder.geocode({ address: search.value, bounds: map.getBounds() }, function (found, status) {
-                        listResults(status === 'OK' && found ? found : []);
-                    });
-                });
+                show(function () { placeSearch(search.value.trim()); });
             });
             search.addEventListener('input', function () {
                 if (!search.value.trim())
