@@ -13733,7 +13733,7 @@
     <Value>تصفية حسب بلد شحن الطلب.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Sales.Bestsellers.ByAmount">
-    <Value>الأكثر مبيعاً حسب الكمية</Value>
+    <Value>الأكثر مبيعاً حسب قيمة المبيعات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Sales.Bestsellers.ByQuantity">
     <Value>الأكثر مبيعًا حسب الكمية</Value>
