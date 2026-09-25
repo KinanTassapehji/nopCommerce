@@ -222,7 +222,8 @@ window.AddressMap = window.AddressMap || (function () {
 
         //google will happily match a street name in the wrong country, and it finds nothing at all
         //for half the syrian addresses - either way the customer has to see what came back.
-        //found is [{ text, point }], whichever of the two searches below produced it
+        //found is [{ text, point }] from a search, or [{ text, resolve }] from autocomplete, whose
+        //suggestions carry no coordinates until one is picked
         function listResults(found) {
             if (!results)
                 return;
@@ -235,21 +236,40 @@ window.AddressMap = window.AddressMap || (function () {
             }
             found.slice(0, 5).forEach(function (result) {
                 var item = document.createElement('li');
+                item.setAttribute('role', 'option');
                 item.textContent = result.text;
                 item.addEventListener('click', function () {
                     clearResults();
-                    drop(result.point, 17, result.text);
+                    Promise.resolve(result.point || result.resolve()).then(function (point) {
+                        drop(point, 17, result.text);
+                    }).catch(function () { });
                 });
                 results.appendChild(item);
             });
             results.style.display = '';
         }
 
+        //arrow keys walk the list the way they walk any suggestion box
+        function moveActive(step) {
+            var items = results ? results.querySelectorAll('li[role=option]') : [];
+            if (!items.length)
+                return;
+            var current = results.querySelector('li.active');
+            var index = Array.prototype.indexOf.call(items, current) + step;
+            if (current)
+                current.classList.remove('active');
+            index = (index + items.length) % items.length;
+            items[index].classList.add('active');
+            items[index].scrollIntoView({ block: 'nearest' });
+        }
+
         //the geocoder resolves one address, so it answers a search with one result. Text search
         //(Places API (New)) lists every place that matches; the geocoder stays as the fallback for
         //the addresses places does not know, and for a key without places enabled.
-        function geocodeSearch(query) {
+        function geocodeSearch(query, request) {
             geocoder.geocode({ address: query, bounds: map.getBounds() }, function (found, status) {
+                if (request !== latest)
+                    return;
                 listResults(status === 'OK' && found ? found.map(function (result) {
                     return { text: result.formatted_address, point: toPoint(result.geometry.location) };
                 }) : []);
@@ -257,6 +277,7 @@ window.AddressMap = window.AddressMap || (function () {
         }
 
         function placeSearch(query) {
+            var request = latest;
             google.maps.importLibrary('places').then(function (places) {
                 return places.Place.searchByText({
                     textQuery: query,
@@ -267,8 +288,10 @@ window.AddressMap = window.AddressMap || (function () {
                     maxResultCount: 5
                 });
             }).then(function (response) {
+                if (request !== latest)
+                    return;
                 if (!response.places.length)
-                    return geocodeSearch(query);
+                    return geocodeSearch(query, request);
                 listResults(response.places.map(function (place) {
                     var name = place.displayName, address = place.formattedAddress || '';
                     return {
@@ -276,22 +299,86 @@ window.AddressMap = window.AddressMap || (function () {
                         point: toPoint(place.location)
                     };
                 }));
-            }).catch(function () { geocodeSearch(query); });
+            }).catch(function () { geocodeSearch(query, request); });
+        }
+
+        //as the customer types: autocomplete, the endpoint google builds for this. A session token
+        //ties the keystrokes to the one place picked at the end, which is billed as one lookup;
+        //text search per pause would bill every pause. Enter still runs the full text search.
+        var typingDelay = 300, minChars = 2, typingTimer, sessionToken, latest = 0;
+
+        function suggest(query) {
+            var request = ++latest;
+            google.maps.importLibrary('places').then(function (places) {
+                sessionToken = sessionToken || new places.AutocompleteSessionToken();
+                return places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
+                    input: query,
+                    sessionToken: sessionToken,
+                    locationBias: map.getBounds(),
+                    language: options.language
+                });
+            }).then(function (response) {
+                //an older request answering after a newer one must not overwrite its list
+                if (request !== latest)
+                    return;
+                listResults(response.suggestions.filter(function (s) { return s.placePrediction; }).map(function (s) {
+                    var prediction = s.placePrediction;
+                    return {
+                        text: prediction.text.text,
+                        resolve: function () {
+                            //picking ends the session: the next keystroke starts a new one
+                            sessionToken = null;
+                            var place = prediction.toPlace();
+                            return place.fetchFields({ fields: ['location'] }).then(function () {
+                                return toPoint(place.location);
+                            });
+                        }
+                    };
+                }));
+            //while typing a failure just means no suggestions - enter still has the full search
+            }).catch(function () { });
         }
 
         if (search) {
+            if (results)
+                results.setAttribute('role', 'listbox');
+
             search.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    moveActive(e.key === 'ArrowDown' ? 1 : -1);
+                    return;
+                }
+                if (e.key === 'Escape') {
+                    clearResults();
+                    return;
+                }
                 if (e.key !== 'Enter')
                     return;
                 //the box sits inside the address form - enter must not submit it
                 e.preventDefault();
+                var active = results && results.querySelector('li.active');
+                if (active) {
+                    active.click();
+                    return;
+                }
                 if (!search.value.trim())
                     return;
+                clearTimeout(typingTimer);
+                latest++; //a suggestion still in flight must not replace the search results
                 show(function () { placeSearch(search.value.trim()); });
             });
             search.addEventListener('input', function () {
-                if (!search.value.trim())
+                clearTimeout(typingTimer);
+                var query = search.value.trim();
+                if (query.length < minChars) {
+                    latest++;
                     clearResults();
+                    return;
+                }
+                typingTimer = setTimeout(function () {
+                    show(function () { suggest(query); });
+                }, typingDelay);
             });
         }
 
