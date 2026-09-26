@@ -987,6 +987,8 @@ public partial class AdminMenu : IAdminMenu
             //found by its licence link: "/NopStationCore/" would also match the string resources moved to Content management
             foreach (var section in root.ChildNodes.Where(node => hasUrl(node, "/NopStationLicense/")))
                 RestrictMenuItems(section, StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS);
+            //and so are NopStation's string resources, wherever they are listed now
+            RestrictMenuItems(root, StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS, "/NopStationCore/LocaleResource");
         }
 
         //product tabs are not used yet; hidden, not removed - drop the suffix to bring them back
