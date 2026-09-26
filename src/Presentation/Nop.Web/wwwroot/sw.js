@@ -16,7 +16,7 @@
    Bump CACHE_VERSION to invalidate everything on the next activation.
    ============================================================================= */
 
-const CACHE_VERSION = 'v5';
+const CACHE_VERSION = 'v6';
 const STATIC_CACHE = `tmtm-static-${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline.html';
 
@@ -109,9 +109,11 @@ function isCacheableAsset(pathname) {
   return CACHEABLE_PREFIXES.some(prefix => p.startsWith(prefix));
 }
 
-/* Keep the runtime cache from growing without bound. */
+/* Keep the runtime cache from growing without bound. Precached files are the
+   oldest entries, so an oldest-first trim used to evict offline.html first and
+   leave shoppers on the bare-text fallback. They are never trimmed. */
 async function trim(cache) {
-  const keys = await cache.keys();
+  const keys = (await cache.keys()).filter(k => !PRECACHE.includes(new URL(k.url).pathname));
   if (keys.length <= MAX_ENTRIES) return;
   for (const k of keys.slice(0, keys.length - MAX_ENTRIES)) await cache.delete(k);
 }
