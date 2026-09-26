@@ -15014,7 +15014,7 @@
     <Value>لا تنس إعادة تشغيل التطبيق بمجرد تعديل المهمة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.ScheduleTasks.RunNow">
-    <Value>اركض الآن</Value>
+    <Value>تشغيل الآن</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.ScheduleTasks.RunNow.Done">
     <Value>تم تشغيل مهمة الجدول الزمني</Value>
