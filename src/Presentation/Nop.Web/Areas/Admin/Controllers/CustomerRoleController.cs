@@ -53,6 +53,27 @@ public partial class CustomerRoleController : BaseAdminController
 
     #endregion
 
+    #region Utilities
+
+    /// <summary>
+    /// Only a super administrator can create, edit or delete the roles the store's access hangs on
+    /// (matched by system name, so an administrator cannot mint a look-alike role either)
+    /// </summary>
+    protected virtual async Task<bool> CanManageRoleAsync(params string[] systemNames)
+    {
+        string[] protectedRoles =
+        [
+            NopCustomerDefaults.SuperAdministratorsRoleName,
+            NopCustomerDefaults.AdministratorsRoleName,
+            NopCustomerDefaults.RegisteredRoleName
+        ];
+
+        return !systemNames.Any(name => protectedRoles.Contains(name, StringComparer.InvariantCultureIgnoreCase)) ||
+            await _customerService.IsSuperAdminAsync(await _workContext.GetCurrentCustomerAsync());
+    }
+
+    #endregion
+
     #region Methods
 
     public virtual IActionResult Index()
@@ -94,6 +115,9 @@ public partial class CustomerRoleController : BaseAdminController
     [CheckPermission(StandardPermission.Configuration.MANAGE_ACL)]
     public virtual async Task<IActionResult> Create(CustomerRoleModel model, bool continueEditing)
     {
+        if (!await CanManageRoleAsync(model.SystemName))
+            ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Admin.Customers.CustomerRoles.OnlySuperAdminCanManage"));
+
         if (ModelState.IsValid)
         {
             var customerRole = model.ToEntity<CustomerRole>();
@@ -124,6 +148,13 @@ public partial class CustomerRoleController : BaseAdminController
         if (customerRole == null)
             return RedirectToAction("List");
 
+        //saving or deleting would be refused anyway; don't offer the buttons
+        if (!await CanManageRoleAsync(customerRole.SystemName))
+        {
+            _notificationService.ErrorNotification(await _localizationService.GetResourceAsync("Admin.Customers.CustomerRoles.OnlySuperAdminCanManage"));
+            return RedirectToAction("List");
+        }
+
         //prepare model
         var model = await _customerRoleModelFactory.PrepareCustomerRoleModelAsync(null, customerRole);
 
@@ -144,6 +175,9 @@ public partial class CustomerRoleController : BaseAdminController
         {
             if (ModelState.IsValid)
             {
+                if (!await CanManageRoleAsync(customerRole.SystemName, model.SystemName))
+                    throw new NopException(await _localizationService.GetResourceAsync("Admin.Customers.CustomerRoles.OnlySuperAdminCanManage"));
+
                 if (customerRole.IsSystemRole && !model.Active)
                     throw new NopException(await _localizationService.GetResourceAsync("Admin.Customers.CustomerRoles.Fields.Active.CantEditSystem"));
 
@@ -191,6 +225,9 @@ public partial class CustomerRoleController : BaseAdminController
 
         try
         {
+            if (!await CanManageRoleAsync(customerRole.SystemName))
+                throw new NopException(await _localizationService.GetResourceAsync("Admin.Customers.CustomerRoles.OnlySuperAdminCanManage"));
+
             await _customerService.DeleteCustomerRoleAsync(customerRole);
 
             //activity log

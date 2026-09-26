@@ -93,7 +93,7 @@ public partial class SecurityController : BaseAdminController
     }
 
     [HttpPost]
-    [CheckPermission(StandardPermission.Configuration.MANAGE_ACL)]
+    [CheckPermission(StandardPermission.Security.MANAGE_PERMISSIONS)]
     public virtual async Task<IActionResult> PermissionCategory(PermissionItemSearchModel searchModel)
     {
         var model = await _securityModelFactory.PreparePermissionItemListModelAsync(searchModel);
@@ -101,7 +101,7 @@ public partial class SecurityController : BaseAdminController
         return Json(model);
     }
 
-    [CheckPermission(StandardPermission.Configuration.MANAGE_ACL)]
+    [CheckPermission(StandardPermission.Security.MANAGE_PERMISSIONS)]
     public virtual async Task<IActionResult> PermissionEditPopup(int id)
     {
         var permissionRecord = await _permissionService.GetPermissionRecordByIdAsync(id);
@@ -111,7 +111,7 @@ public partial class SecurityController : BaseAdminController
     }
 
     [HttpPost]
-    [CheckPermission(StandardPermission.Configuration.MANAGE_ACL)]
+    [CheckPermission(StandardPermission.Security.MANAGE_PERMISSIONS)]
     public virtual async Task<IActionResult> PermissionEditPopup(PermissionItemModel model)
     {
         if (ModelState.IsValid)
@@ -151,7 +151,7 @@ public partial class SecurityController : BaseAdminController
     }
 
     [HttpPost]
-    [CheckPermission(StandardPermission.Configuration.MANAGE_ACL)]
+    [CheckPermission(StandardPermission.Security.MANAGE_PERMISSIONS)]
     public virtual async Task<IActionResult> PermissionCategories(PermissionCategorySearchModel searchModel)
     {
         var model = await _securityModelFactory.PreparePermissionCategoryListModelAsync(searchModel);
@@ -159,7 +159,7 @@ public partial class SecurityController : BaseAdminController
         return Json(model);
     }
 
-    [CheckPermission(StandardPermission.Configuration.MANAGE_ACL)]
+    [CheckPermission(StandardPermission.Security.MANAGE_PERMISSIONS)]
     public virtual async Task<IActionResult> Permissions()
     {
         //prepare model

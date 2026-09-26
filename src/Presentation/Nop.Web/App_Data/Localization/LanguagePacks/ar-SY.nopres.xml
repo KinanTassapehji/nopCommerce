@@ -385,7 +385,7 @@
     <Value>لم تقم بالتسجيل فى اى منتدى</Value>
   </LocaleResource>
   <LocaleResource Name="Account.Gdpr">
-    <Value>أدوات الناتج المحلي الإجمالي</Value>
+    <Value>أدوات حماية البيانات (GDPR)</Value>
   </LocaleResource>
   <LocaleResource Name="Account.Gdpr.Delete">
     <Value>الحق في أن تنسى</Value>
@@ -1627,7 +1627,7 @@
     <Value>اسم البائع (بلغة {0}) مطلوب لإنشاء علامات meta باستخدام خدمات الذكاء الاصطناعي.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog">
-    <Value>المنتجات</Value>
+    <Value>الكتالوج</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.AdditionalProductReviews.Fields.Name">
     <Value>الاسم</Value>
@@ -2233,7 +2233,7 @@
     <Value>تم تحديث قيمة مستوى الفلتر بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Manufacturers">
-    <Value>الشركات</Value>
+    <Value>العلامات التجارية</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Manufacturers.Added">
     <Value>تم إضافة الشركة بنجاح</Value>
@@ -2950,7 +2950,7 @@
     <Value>رقم الجزء الخاص بالشركة المصنعة لهذا المنتج.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.Manufacturers">
-    <Value>الشركات</Value>
+    <Value>العلامات التجارية</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.Manufacturers.Hint">
     <Value>اختر الشركة المصنعة. يمكنك إدارة الشركات المصنعة عن طريق اختيار كتالوج المصنعين</Value>
@@ -3082,7 +3082,7 @@
     <Value>تكلفة المنتج هو تكلفة المنتج الرئيسي. هذا الحقل هو فقط للاستخدام الداخلي، غير مرئية للعملاء.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.ProductTags">
-    <Value>علامات المنتج</Value>
+    <Value>الوسوم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.ProductTags.Hint">
     <Value>علامات المنتج هي الكلمات الرئيسية لتحديد المنتج. والمزيد من المنتجات المرتبطة علامة معينة، وأكبر منها سوف تظهر على سحابة العلامة.</Value>
@@ -3934,7 +3934,7 @@
     <Value>تم تحديث المنتج بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductTags">
-    <Value>علامات المنتج</Value>
+    <Value>الوسوم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductTags.BackToList">
     <Value>العودة إلى قائمة المنتجات</Value>
@@ -4174,7 +4174,7 @@
     <Value>ملف مضغوط</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration">
-    <Value>إعدادات</Value>
+    <Value>الإعدادات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.ACL">
     <Value>قائمة الصلاحيات</Value>
@@ -4948,7 +4948,7 @@
     <Value><![CDATA[حزمة التعريب التي تم تحميلها عند تثبيت المتجر تم ترجمتها من قبل {0}%. إذا كنت ترغب في المساهمة في التعريب، يرجى زيارة <a href="{1}" target="_blank">صفحة الترجمات لدينا.</a> صفحة]]></Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Languages">
-    <Value>اللغة</Value>
+    <Value>اللغات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Languages.Added">
     <Value>تم إدخال لغة جديدة بنجاح.</Value>
@@ -5428,7 +5428,7 @@
     <Value>اختار للسماح بالزوار بترك تعليقاتهم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Blog.BlockTitle.BlogComments">
-    <Value>تعليقات المندونة</Value>
+    <Value>تعليقات المدونة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Blog.BlockTitle.Common">
     <Value>متشرك</Value>
@@ -6973,7 +6973,7 @@
     <Value>عيّن حجم الصفحة للموضوعات في المنتديات ، على سبيل المثال. موضوعات "10" لكل صفحة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Gdpr">
-    <Value>إعدادات الناتج القومي الإجمالي</Value>
+    <Value>إعدادات حماية البيانات (GDPR)</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Gdpr.BlockTitle.Common">
     <Value>متشرك</Value>
@@ -7039,7 +7039,7 @@
     <Value>يرجى تقديم الرسالة المطلوبة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Gdpr.Consent.Updated">
-    <Value>تم تحديث موافقة الناتج المحلي الإجمالي بنجاح.</Value>
+    <Value>تم تحديث موافقة حماية البيانات (GDPR) بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Gdpr.DeleteInactiveCustomersAfterMonths">
     <Value>حذف العملاء الغير نشطين بعد أشهر</Value>
@@ -7048,10 +7048,10 @@
     <Value>أدخل عدد الأشهر التي سيتم بعدها حذف العملاء والبيانات الشخصية الخاصة بهم.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Gdpr.GdprEnabled">
-    <Value>تمكين الناتج المحلي الإجمالي</Value>
+    <Value>تمكين حماية البيانات (GDPR)</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Gdpr.GdprEnabled.Hint">
-    <Value>تحقق لتمكين الناتج القومي الإجمالي (لائحة حماية البيانات العامة).</Value>
+    <Value>حدّد لتمكين اللائحة العامة لحماية البيانات (GDPR).</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Gdpr.LogNewsletterConsent">
     <Value>تسجيل موافقة "النشرة الإخبارية"</Value>
@@ -7894,10 +7894,10 @@
     <Value>تحقق للسماح للعملاء بإلغاء الطلبات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.AnonymousCheckoutAllowed">
-    <Value>يسمح بتجيل الخروج بشكل مجهول</Value>
+    <Value>السماح بالشراء كزائر</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.AnonymousCheckoutAllowed.Hint">
-    <Value>تحقق من اجل تمكين تسجيل الخروج بشكل مجهول (لا يُطلب من العملاء تسجيل الدخول / التسجيل عند شراء المنتجات).</Value>
+    <Value>فعّل هذا الخيار للسماح بالشراء كزائر (لا يُطلب من العملاء تسجيل الدخول أو إنشاء حساب عند شراء المنتجات).</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Order.AttachPdfInvoiceToOrderCompletedEmail">
     <Value>إرفاق فاتورة PDF (بريد "اكتمال الطلب")</Value>
@@ -8269,7 +8269,7 @@
     <Value>كود التصنيع</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.Manufacturers">
-    <Value>الشركات</Value>
+    <Value>العلامات التجارية</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.MarkAsNew">
     <Value>وضع علامة جديد</Value>
@@ -8311,7 +8311,7 @@
     <Value>تكلفة المنتج</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.ProductTags">
-    <Value>علامات المنتج</Value>
+    <Value>الوسوم</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.ProductTemplate">
     <Value>نموذج المنتجات</Value>
@@ -8660,7 +8660,7 @@
     <Value>الشحن</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.DatesAndRanges">
-    <Value>التواريخ والنطاقات</Value>
+    <Value>مواعيد التوصيل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.DeliveryDates">
     <Value>مواعيد التسليم</Value>
@@ -8702,7 +8702,7 @@
     <Value>تم تحديث تاريخ التسليم بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.Measures">
-    <Value>الإجراءات</Value>
+    <Value>وحدات القياس</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.Measures.AdditionalConfirm">
     <Value><![CDATA[ تحذير. لا يُنصح بالقيام بذلك على المواقع الحية لأنه يجب تحديث الأسعار الأخرى يدويًا   كما يجب عليك التأكد من أن كل منتج له مقياس صحيح (البعد والأوزان) - لا يتم ضبطها تلقائيًا ]]></Value>
@@ -8870,7 +8870,7 @@
     <Value>الاسم الكودي</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.PickupPoints">
-    <Value>نقاط الإرسال</Value>
+    <Value>نقاط الاستلام</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Shipping.ProductAvailabilityRanges">
     <Value>نطاقات توافر المنتج</Value>
@@ -9395,13 +9395,13 @@
     <Value>المواضيع (الصفحات) هي كتل محتوى مجانية الشكل يمكن عرضها على موقعك، إما مضمنة داخل صفحات أخرى أو على صفحاتها الخاصة. وكثيرا ما تستخدم لصفحات الأسئلة الشائعة، وصفحات السياسات، والتعليمات الخاصة، وأكثر من ذلك.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.TopicList.Topics1.Title">
-    <Value>الموضوعات (الصفحات)</Value>
+    <Value>الصفحات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.TopicList.Topics2.Text">
     <Value>في هذا الجدول، يمكنك رؤية قائمة المواضيع التي تم إنشاؤها بشكل افتراضي.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.TopicList.Topics2.Title">
-    <Value>الموضوعات (الصفحات)</Value>
+    <Value>الصفحات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement">
     <Value>إدارة المحتوى</Value>
@@ -9548,7 +9548,7 @@
     <Value>تم تحديث مشاركة المدونة بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Blog.Comments">
-    <Value>تعليقات المندونة</Value>
+    <Value>تعليقات المدونة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Blog.Comments.ApproveSelected">
     <Value>قبول المختار</Value>
@@ -9959,7 +9959,7 @@
     <Value>تم تحديث القائمة بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates">
-    <Value>قوالب الرسالة</Value>
+    <Value>قوالب الرسائل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.BackToList">
     <Value>العودة لإرجاع قائمة قالب الرسالة</Value>
@@ -10592,7 +10592,7 @@
     <Value>تم تحديث الاستطلاع بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Topics">
-    <Value>الموضوعات (الصفحات)</Value>
+    <Value>الصفحات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Topics.Added">
     <Value>تمت إضافة الموضوع الجديد بنجاح.</Value>
@@ -10751,10 +10751,10 @@
     <Value>تم تحديث الموضوع بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Widgets">
-    <Value>القطع</Value>
+    <Value>عناصر الواجهة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Widgets.BackToList">
-    <Value>العودة إلى قائمة القطعة</Value>
+    <Value>العودة إلى قائمة عناصر الواجهة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Widgets.Configure">
     <Value>تهيئة</Value>
@@ -11369,7 +11369,7 @@
     <Value>الرقم البريدي مطلوب</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Gdpr">
-    <Value>الناتج المحلي الإجمالي</Value>
+    <Value>حماية البيانات (GDPR)</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Gdpr.Delete">
     <Value>حذف دائم</Value>
@@ -11508,6 +11508,12 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.OnlyAdminCanDeleteAdmin">
     <Value>لا يُسمح لك بحذف المشرفين. يمكن للمسؤولين فقط القيام بذلك.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.OnlySuperAdminCanManage">
+    <Value>لا يمكن تعديل هذا الدور إلا من قبل مشرف عام.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.OnlySuperAdminCanManageSuperAdmin">
+    <Value>لا يمكن تعديل حسابات المشرف العام أو دوره إلا من قبل مشرف عام.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Orders">
     <Value>الطلبات</Value>
@@ -11687,7 +11693,7 @@
     <Value>مزيد من المعلومات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Dashboard.NumberOfCustomers">
-    <Value>العملاء المسجلين</Value>
+    <Value>العملاء المسجلون</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Dashboard.NumberOfLowStockProducts">
     <Value>منتجات منخفضة المخزون</Value>
@@ -11958,6 +11964,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.IAclSupportedModel.Fields.AclCustomerRoles.Hint">
     <Value>اختيار واحد أو عدة أدوار العملاء أي المشرفين والبائعين والضيوف، الذين سوف يكونون قادرين على استخدام أو رؤية هذا العنصر. إذا لم تكن بحاجة إلى هذا الخيار، فاترك هذا الحقل فارغا.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Marketing">
+    <Value>التسويق</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Menu.Search">
     <Value>بحث</Value>
@@ -12665,7 +12674,7 @@
     <Value>الإجمالي</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Shipments">
-    <Value>شحنات</Value>
+    <Value>الشحنات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Shipments.Added">
     <Value>تمت إضافة الشحنة الجديدة بنجاح.</Value>
@@ -12740,7 +12749,7 @@
     <Value>شحنة #</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Shipments.List">
-    <Value>شحنات</Value>
+    <Value>الشحنات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Shipments.List.City">
     <Value>المدينة</Value>
@@ -13622,10 +13631,10 @@
     <Value>تقارير العملاء</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Customers.BestBy.BestByNumberOfOrders">
-    <Value>الزبائن حسب عدد الطلبات</Value>
+    <Value>العملاء حسب عدد الطلبات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Customers.BestBy.BestByOrderTotal">
-    <Value>الزبائن حسب الطلب الكلي</Value>
+    <Value>العملاء حسب إجمالي الطلبات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Customers.BestBy.EndDate">
     <Value>تاريخ النهاية</Value>
@@ -13682,7 +13691,7 @@
     <Value>سنة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Customers.RegisteredCustomers">
-    <Value>العملاء المسجلين</Value>
+    <Value>العملاء المسجلون</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Customers.RegisteredCustomers.Fields.Customers">
     <Value>عدد العملاء</Value>
@@ -13847,7 +13856,7 @@
     <Value>تاريخ البداية للبحث</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Sales.NeverSold">
-    <Value>المنتجات التي لم يتم شراؤها أبداً</Value>
+    <Value>منتجات لم تُبع</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Reports.Sales.NeverSold.EndDate">
     <Value>تاريخ النهاية</Value>
@@ -18631,6 +18640,15 @@
   <LocaleResource Name="Security.Permission.Reports.SalesSummary">
     <Value>لوحة التحكم. تقارير. ملخص المبيعات</Value>
   </LocaleResource>
+  <LocaleResource Name="Security.Permission.Configuration.ManagePluginAndWidgetLists">
+    <Value>إدارة قوائم عناصر الواجهة والإضافات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.Configuration.ManageAdvancedSettings">
+    <Value>إدارة الإعدادات المتقدمة (كل الإعدادات، إعدادات الفلترة، حماية البيانات GDPR، قيود الدفع)</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.Security.ManagePermissions">
+    <Value>إدارة الصلاحيات (قائمة الصلاحيات)</Value>
+  </LocaleResource>
   <LocaleResource Name="Security.Permission.security.AccessAdminPanel">
     <Value>لوحة تحكم.الدخول للوحة التحكم</Value>
   </LocaleResource>
@@ -19178,7 +19196,7 @@
     <Value>الإعدادات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.AnywhereSlider.Menu.Sliders">
-    <Value>أشرطة العرض</Value>
+    <Value>السلايدر</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.AnywhereSlider.SliderItems.AddNew">
     <Value>إضافة عنصر جديد</Value>
@@ -19253,7 +19271,7 @@
     <Value>يجب حفظ شريط العرض قبل أن تتمكّن من إضافة عناصر إلى صفحته.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.AnywhereSlider.SliderList">
-    <Value>أشرطة العرض</Value>
+    <Value>السلايدر</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.AnywhereSlider.Sliders.Created">
     <Value>تم إنشاء شريط العرض بنجاح.</Value>
@@ -19550,7 +19568,7 @@
     <Value>تم حفظ مفتاح المنتج بنجاح.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.Core.LocaleResources">
-    <Value>الموارد النصية</Value>
+    <Value>نصوص الموقع</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.Core.Marketplace">
     <Value>متجر NopStation</Value>
@@ -19727,7 +19745,7 @@
     <Value>الترخيص</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.Core.Menu.LocaleResources">
-    <Value>الموارد النصية</Value>
+    <Value>نصوص الموقع</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.Core.Menu.Marketplace">
     <Value>المتجر</Value>
@@ -20189,7 +20207,7 @@
     <Value>العودة إلى قائمة الكاروسيل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.OCarousels.CarouselList">
-    <Value>الكاروسيلات</Value>
+    <Value>شرائط المنتجات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.OCarousels.Configuration">
     <Value>إعدادات الكاروسيل</Value>
@@ -20216,7 +20234,7 @@
     <Value>تعديل تفاصيل الكاروسيل</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.OCarousels.Menu.Carousels">
-    <Value>الكاروسيلات</Value>
+    <Value>شرائط المنتجات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.OCarousels.Menu.Configuration">
     <Value>الإعدادات</Value>
@@ -20699,7 +20717,7 @@
     <Value>القائمة</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.ProductTabs.Menu.ProductTab">
-    <Value>تبويبات المنتج</Value>
+    <Value>تبويبات المنتجات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.ProductTabs.ProductTabItemProducts.Fields.DisplayOrder">
     <Value>ترتيب العرض</Value>
@@ -20756,7 +20774,7 @@
     <Value>تم تحديث عنصر تبويب المنتج بنجاح</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.ProductTabs.ProductTabList">
-    <Value>تبويبات المنتج</Value>
+    <Value>تبويبات المنتجات</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopStation.ProductTabs.ProductTabs.AddNew">
     <Value>إضافة تبويب منتج جديد</Value>

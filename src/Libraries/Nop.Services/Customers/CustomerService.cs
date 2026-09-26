@@ -1197,6 +1197,20 @@ public partial class CustomerService : ICustomerService
     }
 
     /// <summary>
+    /// Gets a value indicating whether customer is a super administrator
+    /// </summary>
+    /// <param name="customer">Customer</param>
+    /// <param name="onlyActiveCustomerRoles">A value indicating whether we should look only in active customer roles</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the result
+    /// </returns>
+    public virtual async Task<bool> IsSuperAdminAsync(Customer customer, bool onlyActiveCustomerRoles = true)
+    {
+        return await IsInCustomerRoleAsync(customer, NopCustomerDefaults.SuperAdministratorsRoleName, onlyActiveCustomerRoles);
+    }
+
+    /// <summary>
     /// Gets a value indicating whether customer is a forum moderator
     /// </summary>
     /// <param name="customer">Customer</param>

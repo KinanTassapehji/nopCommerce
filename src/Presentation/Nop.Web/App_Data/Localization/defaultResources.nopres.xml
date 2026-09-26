@@ -10590,7 +10590,7 @@
     <Value>The poll has been updated successfully.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Topics">
-    <Value>Topics (pages)</Value>
+    <Value>Pages</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Topics.Added">
     <Value>The new topic has been added successfully.</Value>
@@ -11507,6 +11507,12 @@
   <LocaleResource Name="Admin.Customers.Customers.OnlyAdminCanDeleteAdmin">
     <Value>You're not allowed to delete administrators. Only administrators can do it.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.OnlySuperAdminCanManage">
+    <Value>Only a super administrator can change this role.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.OnlySuperAdminCanManageSuperAdmin">
+    <Value>Only a super administrator can change super administrator accounts or the super administrators role.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Orders">
     <Value>Orders</Value>
   </LocaleResource>
@@ -11956,6 +11962,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.IAclSupportedModel.Fields.AclCustomerRoles.Hint">
     <Value>Choose one or several customer roles i.e. administrators, vendors, guests, who will be able to use or see this item. If you don't need this option just leave this field empty.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Marketing">
+    <Value>Marketing</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Menu.Search">
     <Value>Search</Value>
@@ -18643,6 +18652,15 @@
   </LocaleResource>
   <LocaleResource Name="Security.Permission.Reports.SalesSummary">
     <Value>Admin area. Reports. Sales summary</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.Configuration.ManagePluginAndWidgetLists">
+    <Value>Manage the widget and plugin lists</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.Configuration.ManageAdvancedSettings">
+    <Value>Manage advanced settings (all settings, filter levels, GDPR, payment restrictions)</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.Security.ManagePermissions">
+    <Value>Manage permissions (access control list)</Value>
   </LocaleResource>
   <LocaleResource Name="Security.Permission.security.AccessAdminPanel">
     <Value>Access admin area</Value>

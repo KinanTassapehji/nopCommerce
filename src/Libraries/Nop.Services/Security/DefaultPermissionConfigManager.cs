@@ -13,6 +13,7 @@ public partial class DefaultPermissionConfigManager : IPermissionConfigManager
         #region Security
         
         new ("Access admin area", StandardPermission.Security.ACCESS_ADMIN_PANEL, nameof(StandardPermission.Security), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.VendorsRoleName),
+        new ("Admin area. Permissions. Manage", StandardPermission.Security.MANAGE_PERMISSIONS, nameof(StandardPermission.Security), NopCustomerDefaults.SuperAdministratorsRoleName),
 
         #endregion
 
@@ -26,9 +27,9 @@ public partial class DefaultPermissionConfigManager : IPermissionConfigManager
         new ("Admin area. Customer roles. Create, edit, delete", StandardPermission.Customers.CUSTOMER_ROLES_CREATE_EDIT_DELETE, nameof(StandardPermission.Customers), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Vendors. View", StandardPermission.Customers.VENDORS_VIEW, nameof(StandardPermission.Customers), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Vendors. Create, edit, delete", StandardPermission.Customers.VENDORS_CREATE_EDIT_DELETE, nameof(StandardPermission.Customers), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Activity Log. View", StandardPermission.Customers.ACTIVITY_LOG_VIEW, nameof(StandardPermission.Customers), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Activity Log. Delete", StandardPermission.Customers.ACTIVITY_LOG_DELETE, nameof(StandardPermission.Customers), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Activity Log. Manage types", StandardPermission.Customers.ACTIVITY_LOG_MANAGE_TYPES, nameof(StandardPermission.Customers), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. Activity Log. View", StandardPermission.Customers.ACTIVITY_LOG_VIEW, nameof(StandardPermission.Customers), NopCustomerDefaults.SuperAdministratorsRoleName),
+        new ("Admin area. Activity Log. Delete", StandardPermission.Customers.ACTIVITY_LOG_DELETE, nameof(StandardPermission.Customers), NopCustomerDefaults.SuperAdministratorsRoleName),
+        new ("Admin area. Activity Log. Manage types", StandardPermission.Customers.ACTIVITY_LOG_MANAGE_TYPES, nameof(StandardPermission.Customers), NopCustomerDefaults.SuperAdministratorsRoleName),
         new ("Admin area. GDPR. Manage", StandardPermission.Customers.GDPR_MANAGE, nameof(StandardPermission.Customers), NopCustomerDefaults.AdministratorsRoleName),
 
         #endregion
@@ -128,28 +129,30 @@ public partial class DefaultPermissionConfigManager : IPermissionConfigManager
         #region Configuration
         
         new ("Admin area. Widgets. Manage", StandardPermission.Configuration.MANAGE_WIDGETS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Countries. Manage", StandardPermission.Configuration.MANAGE_COUNTRIES, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. Countries. Manage", StandardPermission.Configuration.MANAGE_COUNTRIES, nameof(StandardPermission.Configuration), NopCustomerDefaults.SuperAdministratorsRoleName),
         new ("Admin area. Languages. Manage", StandardPermission.Configuration.MANAGE_LANGUAGES, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Settings. Manage", StandardPermission.Configuration.MANAGE_SETTINGS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. Settings. Manage", StandardPermission.Configuration.MANAGE_SETTINGS, nameof(StandardPermission.Configuration), NopCustomerDefaults.SuperAdministratorsRoleName),
+        new ("Admin area. Advanced settings (all settings, filter levels, GDPR, payment restrictions). Manage", StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS, nameof(StandardPermission.Configuration), NopCustomerDefaults.SuperAdministratorsRoleName),
         new ("Admin area. Payment Methods. Manage", StandardPermission.Configuration.MANAGE_PAYMENT_METHODS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Tax Settings. Manage", StandardPermission.Configuration.MANAGE_TAX_SETTINGS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Shipping Settings. Manage", StandardPermission.Configuration.MANAGE_SHIPPING_SETTINGS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Currencies. Manage", StandardPermission.Configuration.MANAGE_CURRENCIES, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. ACL. Manage", StandardPermission.Configuration.MANAGE_ACL, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Email Accounts. Manage", StandardPermission.Configuration.MANAGE_EMAIL_ACCOUNTS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Stores. Manage", StandardPermission.Configuration.MANAGE_STORES, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. Email Accounts. Manage", StandardPermission.Configuration.MANAGE_EMAIL_ACCOUNTS, nameof(StandardPermission.Configuration), NopCustomerDefaults.SuperAdministratorsRoleName),
+        new ("Admin area. Stores. Manage", StandardPermission.Configuration.MANAGE_STORES, nameof(StandardPermission.Configuration), NopCustomerDefaults.SuperAdministratorsRoleName),
         new ("Admin area. Plugins. Manage", StandardPermission.Configuration.MANAGE_PLUGINS, nameof(StandardPermission.Configuration), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. Plugin and widget lists. Manage", StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS, nameof(StandardPermission.Configuration), NopCustomerDefaults.SuperAdministratorsRoleName),
         
         #endregion
 
         #region System
         
-        new ("Admin area. System Log. Manage", StandardPermission.System.MANAGE_SYSTEM_LOG, nameof(StandardPermission.System), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Message Queue. Manage", StandardPermission.System.MANAGE_MESSAGE_QUEUE, nameof(StandardPermission.System), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Maintenance. Manage", StandardPermission.System.MANAGE_MAINTENANCE, nameof(StandardPermission.System), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. System Log. Manage", StandardPermission.System.MANAGE_SYSTEM_LOG, nameof(StandardPermission.System), NopCustomerDefaults.SuperAdministratorsRoleName),
+        new ("Admin area. Message Queue. Manage", StandardPermission.System.MANAGE_MESSAGE_QUEUE, nameof(StandardPermission.System), NopCustomerDefaults.SuperAdministratorsRoleName),
+        new ("Admin area. Maintenance. Manage", StandardPermission.System.MANAGE_MAINTENANCE, nameof(StandardPermission.System), NopCustomerDefaults.SuperAdministratorsRoleName),
         new ("Admin area. HTML Editor. Manage pictures", StandardPermission.System.HTML_EDITOR_MANAGE_PICTURES, nameof(StandardPermission.System), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Schedule Tasks. Manage", StandardPermission.System.MANAGE_SCHEDULE_TASKS, nameof(StandardPermission.System), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. App Settings. Manage", StandardPermission.System.MANAGE_APP_SETTINGS, nameof(StandardPermission.System), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. Schedule Tasks. Manage", StandardPermission.System.MANAGE_SCHEDULE_TASKS, nameof(StandardPermission.System), NopCustomerDefaults.SuperAdministratorsRoleName),
+        new ("Admin area. App Settings. Manage", StandardPermission.System.MANAGE_APP_SETTINGS, nameof(StandardPermission.System), NopCustomerDefaults.SuperAdministratorsRoleName),
 
         #endregion
         

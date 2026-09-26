@@ -13,6 +13,11 @@ public static partial class NopCustomerDefaults
     public static string AdministratorsRoleName => "Administrators";
 
     /// <summary>
+    /// Gets a system name of 'super administrators' customer role (held alongside 'administrators')
+    /// </summary>
+    public static string SuperAdministratorsRoleName => "SuperAdministrators";
+
+    /// <summary>
     /// Gets a system name of 'forum moderators' customer role
     /// </summary>
     public static string ForumModeratorsRoleName => "ForumModerators";

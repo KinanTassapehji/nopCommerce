@@ -1727,7 +1727,8 @@ public partial class InstallationService
             MinOrderSubtotalAmountIncludingTax = false,
             MinOrderTotalAmount = 0,
             AutoUpdateOrderTotalsOnEditingOrder = false,
-            AnonymousCheckoutAllowed = true,
+            //registered customers only
+            AnonymousCheckoutAllowed = false,
             TermsOfServiceOnShoppingCartPage = true,
             TermsOfServiceOnOrderConfirmPage = false,
             OnePageCheckoutEnabled = true,
@@ -2117,6 +2118,13 @@ public partial class InstallationService
             IsSystemRole = true,
             SystemName = NopCustomerDefaults.AdministratorsRoleName
         };
+        var crSuperAdministrators = new CustomerRole
+        {
+            Name = "Super Administrators",
+            Active = true,
+            IsSystemRole = true,
+            SystemName = NopCustomerDefaults.SuperAdministratorsRoleName
+        };
         var crForumModerators = new CustomerRole
         {
             Name = "Forum Moderators",
@@ -2148,6 +2156,7 @@ public partial class InstallationService
         var customerRoles = new List<CustomerRole>
             {
                 crAdministrators,
+                crSuperAdministrators,
                 crForumModerators,
                 crRegistered,
                 crGuests,
@@ -2202,6 +2211,7 @@ public partial class InstallationService
 
         await _dataProvider.BulkInsertEntitiesAsync(new[]{
             new CustomerCustomerRoleMapping { CustomerId = adminUser.Id, CustomerRoleId = crAdministrators.Id },
+            new CustomerCustomerRoleMapping { CustomerId = adminUser.Id, CustomerRoleId = crSuperAdministrators.Id },
             new CustomerCustomerRoleMapping { CustomerId = adminUser.Id, CustomerRoleId = crForumModerators.Id },
             new CustomerCustomerRoleMapping { CustomerId = adminUser.Id, CustomerRoleId = crRegistered.Id }});
 
@@ -2299,8 +2309,8 @@ public partial class InstallationService
                     IsPasswordProtected = false,
                     DisplayOrder = 15,
                     Published = true,
-                    Title = "شروط الاستخدام",
-                    Body = "<p>اكتب هنا شروط الاستخدام. يمكنك تعديل هذا النص من لوحة التحكم.</p>",
+                    Title = ConditionsOfUseTopic.ArabicTitle,
+                    Body = ConditionsOfUseTopic.ArabicBody,
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {

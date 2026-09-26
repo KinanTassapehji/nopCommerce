@@ -13,18 +13,21 @@
             @T("Admin.Configuration.Currencies")
         </h1>
         <div class="float-right">
-            <button type="submit" name="save" class="btn btn-primary">
+            @* rates are set by hand, not by an exchange rate provider; hidden, not removed.
+               Save goes with them: it only saves the provider fields below *@
+            @*<button type="submit" name="save" class="btn btn-primary">
                 <i class="far fa-floppy-disk"></i>
                 @T("Admin.Common.Save")
             </button>
             <a asp-controller="Currency" asp-action="List" asp-route-liveRates="true" class="btn btn-success">
                 <i class="fas fa-list-check"></i>
                 @T("Admin.Configuration.Currencies.GetLiveRates")
-            </a>
-            <a asp-action="Create" class="btn btn-primary">
+            </a>*@
+            @* the currency set is fixed; hidden, not removed *@
+            @*<a asp-action="Create" class="btn btn-primary">
                 <i class="fas fa-square-plus"></i>
                 @T("Admin.Common.AddNew")
-            </a>
+            </a>*@
             @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.CurrencyListButtons, additionalData = Model })
         </div>
     </div>
@@ -34,7 +37,8 @@
             <div class="form-horizontal">
                 <div class="form-horizontal">
                     <div class="cards-group">
-                        <div class="card card-default">
+                        @* exchange rate provider and auto update; hidden, not removed *@
+                        <div class="card card-default" style="display: none">
                             <div class="card-body">
                                 <div class="form-group row">
                                     <div class="col-md-3">

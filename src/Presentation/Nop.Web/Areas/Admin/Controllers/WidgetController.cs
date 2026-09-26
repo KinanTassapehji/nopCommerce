@@ -52,6 +52,7 @@ public partial class WidgetController : BaseAdminController
     }
 
     [CheckPermission(StandardPermission.Configuration.MANAGE_WIDGETS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> List()
     {
         //prepare model
@@ -62,6 +63,7 @@ public partial class WidgetController : BaseAdminController
 
     [HttpPost]
     [CheckPermission(StandardPermission.Configuration.MANAGE_WIDGETS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> List(WidgetSearchModel searchModel)
     {
         //prepare model
@@ -72,6 +74,7 @@ public partial class WidgetController : BaseAdminController
 
     [HttpPost]
     [CheckPermission(StandardPermission.Configuration.MANAGE_WIDGETS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> WidgetUpdate(WidgetModel model)
     {
         var widget = await _widgetPluginManager.LoadPluginBySystemNameAsync(model.SystemName);

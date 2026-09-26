@@ -31,7 +31,7 @@
     </div>
     @await Html.PartialAsync("_CreateOrUpdate", Model)
 </form>
-@if (!Model.IsLoggedInAsVendor)
+@if (!Model.IsLoggedInAsVendor && await permissionService.AuthorizeAsync(StandardPermission.Configuration.MANAGE_SETTINGS))
 {
     //product editor settings modal
     @await Html.PartialAsync("_ProductEditorSettingsModal", Model)

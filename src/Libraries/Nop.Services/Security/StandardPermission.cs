@@ -115,6 +115,7 @@ public partial class StandardPermission
         public const string MANAGE_COUNTRIES = $"{nameof(Configuration)}.ManageCountries";
         public const string MANAGE_LANGUAGES = $"{nameof(Configuration)}.ManageLanguages";
         public const string MANAGE_SETTINGS = $"{nameof(Configuration)}.ManageSettings";
+        public const string MANAGE_ADVANCED_SETTINGS = $"{nameof(Configuration)}.ManageAdvancedSettings";
         public const string MANAGE_PAYMENT_METHODS = $"{nameof(Configuration)}.ManagePaymentMethods";
         public const string MANAGE_TAX_SETTINGS = $"{nameof(Configuration)}.ManageTaxSettings";
         public const string MANAGE_SHIPPING_SETTINGS = $"{nameof(Configuration)}.ManageShippingSettings";
@@ -123,6 +124,7 @@ public partial class StandardPermission
         public const string MANAGE_EMAIL_ACCOUNTS = $"{nameof(Configuration)}.ManageEmailAccounts";
         public const string MANAGE_STORES = $"{nameof(Configuration)}.ManageStores";
         public const string MANAGE_PLUGINS = $"{nameof(Configuration)}.ManagePlugins";
+        public const string MANAGE_PLUGIN_AND_WIDGET_LISTS = $"{nameof(Configuration)}.ManagePluginAndWidgetLists";
     }
 
     public partial class System
@@ -138,6 +140,7 @@ public partial class StandardPermission
     public partial class Security
     {
         public const string ACCESS_ADMIN_PANEL = $"{nameof(Security)}.AccessAdminPanel";
+        public const string MANAGE_PERMISSIONS = $"{nameof(Security)}.ManagePermissions";
     }
 
     public partial class PublicStore

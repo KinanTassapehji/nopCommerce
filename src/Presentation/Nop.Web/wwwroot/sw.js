@@ -16,7 +16,7 @@
    Bump CACHE_VERSION to invalidate everything on the next activation.
    ============================================================================= */
 
-const CACHE_VERSION = 'v6';
+const CACHE_VERSION = 'v7';
 const STATIC_CACHE = `tmtm-static-${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline.html';
 
@@ -199,6 +199,9 @@ self.addEventListener('fetch', event => {
    ============================================================================= */
 
 const NOTIFICATION_ICON = '/icons/icons_0/android-chrome-192x192.png';
+/* Android paints the status-bar badge from the image's alpha only: a full-colour square becomes a white square,
+   so the badge is the white glyph on transparent. */
+const NOTIFICATION_BADGE = '/icons/icons_0/badge-96x96.png';
 
 self.addEventListener('push', event => {
   if (!event.data) return;
@@ -218,7 +221,7 @@ self.addEventListener('push', event => {
   event.waitUntil(self.registration.showNotification(title, {
     body: n.body || d.body || '',
     icon: n.icon || NOTIFICATION_ICON,
-    badge: NOTIFICATION_ICON,
+    badge: n.badge || NOTIFICATION_BADGE,
     /* Collapses repeat pushes about the same order into one notification. */
     tag: d.tag || d.orderId || undefined,
     data: { url: d.url || d.click_action || n.click_action || '/' }

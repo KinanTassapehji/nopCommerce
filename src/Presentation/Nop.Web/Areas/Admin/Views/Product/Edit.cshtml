@@ -47,7 +47,7 @@
 </form>
 <nop-delete-confirmation asp-model-id="@Model.Id" asp-button-id="product-delete" />
 
-@if (!Model.IsLoggedInAsVendor)
+@if (!Model.IsLoggedInAsVendor && await permissionService.AuthorizeAsync(StandardPermission.Configuration.MANAGE_SETTINGS))
 {
     //product editor settings modal
     @await Html.PartialAsync("_ProductEditorSettingsModal", Model)

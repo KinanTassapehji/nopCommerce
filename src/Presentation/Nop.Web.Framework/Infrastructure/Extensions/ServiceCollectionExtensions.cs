@@ -22,6 +22,7 @@ using Nop.Services.ArtificialIntelligence;
 using Nop.Services.Authentication;
 
 using Nop.Services.Common;
+using Nop.Web.Framework.Mvc.Filters;
 using Nop.Web.Framework.Mvc.ModelBinding;
 using Nop.Web.Framework.Mvc.ModelBinding.Binders;
 using Nop.Web.Framework.Mvc.Routing;
@@ -315,6 +316,9 @@ public static class ServiceCollectionExtensions
             //in .NET model binding for a non-nullable property may fail with an error message "The value '' is invalid"
             //here we set the locale name as the message, we'll replace it with the actual one later when not-null validation failed
             options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(_ => NopValidationDefaults.NotNullValidationLocaleName);
+
+            //compiled plugin pages that only super administrators may open
+            options.Filters.Add<SuperAdminPluginPagesFilter>();
         });
 
         //add fluent validation

@@ -109,6 +109,7 @@ public partial class PluginController : BaseAdminController
     #region Methods
 
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> List(bool showWarnings = true)
     {
         var model = await _pluginModelFactory.PreparePluginSearchModelAsync(new PluginSearchModel());
@@ -127,6 +128,7 @@ public partial class PluginController : BaseAdminController
 
     [HttpPost]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> ListSelect(PluginSearchModel searchModel)
     {
         //prepare model
@@ -153,6 +155,7 @@ public partial class PluginController : BaseAdminController
 
     [HttpPost]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> UploadPluginsAndThemes(IFormFile archivefile)
     {
         try
@@ -201,6 +204,7 @@ public partial class PluginController : BaseAdminController
     [HttpPost, ActionName("List")]
     [FormValueRequired(FormValueRequirement.StartsWith, "install-plugin-link-")]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> Install(IFormCollection form)
     {
         try
@@ -235,6 +239,7 @@ public partial class PluginController : BaseAdminController
     [HttpPost, ActionName("List")]
     [FormValueRequired(FormValueRequirement.StartsWith, "uninstall-plugin-link-")]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> Uninstall(IFormCollection form)
     {
         try
@@ -269,6 +274,7 @@ public partial class PluginController : BaseAdminController
     [HttpPost, ActionName("List")]
     [FormValueRequired(FormValueRequirement.StartsWith, "delete-plugin-link-")]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> Delete(IFormCollection form)
     {
         try
@@ -300,6 +306,7 @@ public partial class PluginController : BaseAdminController
     [HttpPost, ActionName("List")]
     [FormValueRequired("plugin-reload-grid")]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> ReloadList()
     {
         await _pluginService.UninstallPluginsAsync();
@@ -309,6 +316,7 @@ public partial class PluginController : BaseAdminController
     }
 
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> UninstallAndDeleteUnusedPlugins(string[] names)
     {
         foreach (var name in names)
@@ -326,6 +334,8 @@ public partial class PluginController : BaseAdminController
 
     [HttpPost, ActionName("List")]
     [FormValueRequired("plugin-apply-changes")]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> ApplyChanges()
     {
         return await ReloadList();
@@ -334,6 +344,7 @@ public partial class PluginController : BaseAdminController
     [HttpPost, ActionName("List")]
     [FormValueRequired("plugin-discard-changes")]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual IActionResult DiscardChanges()
     {
         _pluginService.ResetChanges();
@@ -342,6 +353,7 @@ public partial class PluginController : BaseAdminController
     }
 
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> EditPopup(string systemName)
     {
         //try to get a plugin with the specified system name
@@ -357,6 +369,7 @@ public partial class PluginController : BaseAdminController
 
     [HttpPost]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> EditPopup(PluginModel model)
     {
         //try to get a plugin with the specified system name
@@ -514,6 +527,7 @@ public partial class PluginController : BaseAdminController
     }
 
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> OfficialFeed()
     {
         //prepare model
@@ -524,6 +538,7 @@ public partial class PluginController : BaseAdminController
 
     [HttpPost]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGINS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_PLUGIN_AND_WIDGET_LISTS)]
     public virtual async Task<IActionResult> OfficialFeedSelect(OfficialFeedPluginSearchModel searchModel)
     {
         //prepare model

@@ -8161,3 +8161,147 @@ so the field stays visible beside the icon. */
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
+/* --- Topic pages as documents ---------------------------------------------
+   Long policy pages ("شروط الاستخدام" and the like) are a dozen <h2>
+   sections of bullets, authored in admin as plain HTML. They
+   inherited the base sheet's defaults — full-container line lengths, headings
+   the same weight as the body, and disc bullets — so the page read as a wall.
+
+   Everything here hangs off .topic-page .page-body and element selectors, so
+   it applies to whatever an admin writes in the editor without asking them for
+   a class, and the other topics (FAQ, privacy, conditions) get it too.
+
+   Logical properties throughout: the same rules serve the RTL sheet.
+   -------------------------------------------------------------------------- */
+.topic-page .page-body{
+  /* the base sheet justifies these pages. Justified Arabic stretches the
+     kashida and opens rivers between words. */
+  text-align: start;
+  color: var(--tm-ink);
+  font-size: var(--tm-fs-body-lg);
+  line-height: var(--tm-lh-body-lg);
+}
+
+/* Section heads. The page title already owns the gradient rule and its
+   terminal dot, so a second one per section would compete with it; these get a
+   start-side bar instead, which marks the sections down the page without
+   repeating the title's device. */
+.topic-page .page-body h2{
+  position: relative;
+  margin-block: var(--tm-stack-lg) var(--tm-stack-md);
+  padding-inline-start: var(--tm-stack-md);
+  color: var(--tm-teal-deep);
+  font-size: var(--tm-fs-headline-sm);
+  line-height: var(--tm-lh-headline-sm);
+  font-weight: 700;
+}
+
+.topic-page .page-body h2:before{
+  content: "";
+  position: absolute;
+  inset-block: 2px;
+  inset-inline-start: 0;
+  inline-size: 4px;
+  border-radius: 999px;
+  background: var(--tm-gradient);
+}
+
+/* First head sits right under the page title, which brings its own margin. */
+.topic-page .page-body > h2:first-child{
+  margin-block-start: 0;
+}
+
+.topic-page .page-body h3{
+  margin-block: var(--tm-stack-md) var(--tm-stack-sm);
+  color: var(--tm-teal);
+  font-size: var(--tm-fs-title);
+  line-height: var(--tm-lh-title);
+  font-weight: 700;
+}
+
+.topic-page .page-body p{
+  margin-block: 0 var(--tm-stack-md);
+}
+
+/* Brand markers rather than discs, and enough room between items that a
+   thirty-item policy list is still scannable. */
+.topic-page .page-body :is(ul, ol){
+  margin-block: 0 var(--tm-stack-md);
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+.topic-page .page-body li{
+  position: relative;
+  padding-inline-start: calc(var(--tm-stack-md) + var(--tm-stack-sm));
+  margin-block-end: var(--tm-stack-sm);
+}
+
+.topic-page .page-body ul > li:before{
+  content: "";
+  position: absolute;
+  /* centred on the first line, whatever the line-height resolves to */
+  inset-block-start: calc((var(--tm-lh-body-lg) - 7px) / 2);
+  inset-inline-start: var(--tm-stack-sm);
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 50%;
+  background: var(--tm-teal);
+}
+
+.topic-page .page-body ol{
+  counter-reset: tm-topic-item;
+}
+
+.topic-page .page-body ol > li{
+  counter-increment: tm-topic-item;
+}
+
+.topic-page .page-body ol > li:before{
+  content: counter(tm-topic-item) ".";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--tm-teal);
+  font-weight: 700;
+}
+
+/* A paragraph nested in a list item is a sub-point under its lead-in and
+   should not take the full block gap twice. */
+.topic-page .page-body li p{
+  margin-block: var(--tm-stack-sm) 0;
+}
+
+.topic-page .page-body li:last-child{
+  margin-block-end: 0;
+}
+
+/* The lead-in on an entry ("Commitment:", "Misuse:") is the thing being
+   scanned for, so it carries the darker ink. */
+.topic-page .page-body strong{
+  color: var(--tm-teal-deep);
+  font-weight: 700;
+}
+
+.topic-page .page-body a{
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (min-width: 1001px){
+
+  .topic-page .page-body{
+    font-size: var(--tm-fs-body-lg);
+  }
+
+  .topic-page .page-body h2{
+    font-size: var(--tm-fs-headline);
+    line-height: var(--tm-lh-headline);
+    padding-inline-start: var(--tm-stack-lg);
+  }
+
+  .topic-page .page-body h2:before{
+    inline-size: 6px;
+  }
+}
+

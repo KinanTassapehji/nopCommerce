@@ -119,7 +119,7 @@ public class CashOnDeliveryPaymentProcessor : BasePlugin, IPaymentMethod, IPlugi
 	{
 		CashOnDeliveryPaymentSettings settings = new CashOnDeliveryPaymentSettings
 		{
-			DescriptionText = "<p>في حال تقديم الطلب، سيقوم أحد ممثلينا المعتمدين بالتواصل معكم، شخصياً أو عبر الهاتف، لتأكيد الطلب.<br />بعد تأكيد الطلب، سيتم البدء بمعالجته.<br />لا يمكن إلغاء الطلبات بعد تأكيدها.</p><p>ملاحظة: يمكنكم تعديل هذا النص من لوحة التحكم.</p>",
+			DescriptionText = "<p>ادفع نقداً عند استلام طلبك.</p><p>بعد إتمام الطلب، سيتواصل معك أحد أفراد فريقنا هاتفياً لتأكيد الطلب وتحديد موعد التوصيل، ونبدأ بتجهيز طلبك فور تأكيده.</p><p>يُرجى العلم أنه لا يمكن إلغاء الطلب بعد تأكيده.</p>",
 			SkipPaymentInfo = false
 		};
 		await _settingService.SaveSettingAsync(settings);
