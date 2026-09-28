@@ -209,3 +209,9 @@ claude-hematogenix-opus.bat
 
 # Firebase service-account private keys — never commit these
 *firebase-adminsdk*.json
+
+# Product pictures saved to disk (store data, not code)
+src/Presentation/Nop.Web/wwwroot/images/[0-9]*_[0-9]*.*
+
+# Local VPN client configs
+Arabia-GW-*
