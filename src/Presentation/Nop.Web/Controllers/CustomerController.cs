@@ -427,6 +427,13 @@ public partial class CustomerController : BasePublicController
                         ? await _customerService.GetCustomerByUsernameAsync(customerUserName)
                         : await _customerService.GetCustomerByEmailAsync(customerEmail);
 
+                    //back to the page the customer came from, except the account page (reached by tapping "My account"
+                    //while logged out): that one lands on the home page
+                    var accountPage = Url.RouteUrl(NopRouteNames.General.CUSTOMER_INFO);
+                    var returnPath = returnUrl?.Split('?')[0].TrimEnd('/');
+                    if (!string.IsNullOrEmpty(returnPath) && returnPath.EndsWith(accountPage, StringComparison.OrdinalIgnoreCase))
+                        returnUrl = null;
+
                     return await _customerRegistrationService.SignInCustomerAsync(customer, returnUrl, model.RememberMe);
                 }
                 case CustomerLoginResults.CustomerNotExist:

@@ -122,6 +122,7 @@ public partial class PaymentController : BaseAdminController
     }
 
     [CheckPermission(StandardPermission.Configuration.MANAGE_PAYMENT_METHODS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     public virtual async Task<IActionResult> MethodRestrictions()
     {
         //prepare model
@@ -136,6 +137,7 @@ public partial class PaymentController : BaseAdminController
     [RequestFormLimits(ValueCountLimit = 2048)]
     [HttpPost, ActionName("MethodRestrictions")]
     [CheckPermission(StandardPermission.Configuration.MANAGE_PAYMENT_METHODS)]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     public virtual async Task<IActionResult> MethodRestrictionsSave(PaymentMethodsModel model, IFormCollection form)
     {
         var paymentMethods = await _paymentPluginManager.LoadAllPluginsAsync();

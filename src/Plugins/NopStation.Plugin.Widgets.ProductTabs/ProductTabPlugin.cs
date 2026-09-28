@@ -81,7 +81,7 @@ public class ProductTabPlugin : BasePlugin, IWidgetPlugin, IPlugin, INopStationP
 	{
 		return new Dictionary<string, string>
 		{
-			["Admin.NopStation.ProductTabs.Menu.ProductTab"] = "Product tab",
+			["Admin.NopStation.ProductTabs.Menu.ProductTab"] = "Product tabs",
 			["Admin.NopStation.ProductTabs.Menu.List"] = "List",
 			["Admin.NopStation.ProductTabs.Menu.Configuration"] = "Configuration",
 			["Admin.NopStation.ProductTabs.ProductTabs.List.SearchActive.Active"] = "Active",

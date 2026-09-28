@@ -255,6 +255,16 @@ public partial class CustomerController : BaseAdminController
         return customers.Any(c => c.Active && c.Id != customer.Id);
     }
 
+    /// <summary>
+    /// A super administrator account can only be changed by another super administrator,
+    /// so an administrator cannot demote, delete, impersonate or take over one
+    /// </summary>
+    protected virtual async Task<bool> CanManageCustomerAsync(Customer customer)
+    {
+        return !await _customerService.IsSuperAdminAsync(customer, false) ||
+            await _customerService.IsSuperAdminAsync(await _workContext.GetCurrentCustomerAsync());
+    }
+
     #endregion
 
     #region Customers
@@ -404,6 +414,10 @@ public partial class CustomerController : BaseAdminController
                 if (customerRole.SystemName == NopCustomerDefaults.AdministratorsRoleName && !await _customerService.IsAdminAsync(await _workContext.GetCurrentCustomerAsync()))
                     continue;
 
+                //likewise only a super administrator can grant "SuperAdministrators"
+                if (customerRole.SystemName == NopCustomerDefaults.SuperAdministratorsRoleName && !await _customerService.IsSuperAdminAsync(await _workContext.GetCurrentCustomerAsync()))
+                    continue;
+
                 await _customerService.AddCustomerRoleMappingAsync(new CustomerCustomerRoleMapping { CustomerId = customer.Id, CustomerRoleId = customerRole.Id });
             }
 
@@ -470,6 +484,12 @@ public partial class CustomerController : BaseAdminController
         var customer = await _customerService.GetCustomerByIdAsync(model.Id);
         if (customer == null || customer.Deleted)
             return RedirectToAction("List");
+
+        if (!await CanManageCustomerAsync(customer))
+        {
+            _notificationService.ErrorNotification(await _localizationService.GetResourceAsync("Admin.Customers.Customers.OnlySuperAdminCanManageSuperAdmin"));
+            return RedirectToAction("Edit", new { id = customer.Id });
+        }
 
         //validate customer roles
         var allCustomerRoles = await _customerService.GetAllCustomerRolesAsync(true);
@@ -601,6 +621,11 @@ public partial class CustomerController : BaseAdminController
                         !await _customerService.IsAdminAsync(await _workContext.GetCurrentCustomerAsync()))
                         continue;
 
+                    //likewise only a super administrator can grant or revoke "SuperAdministrators"
+                    if (customerRole.SystemName == NopCustomerDefaults.SuperAdministratorsRoleName &&
+                        !await _customerService.IsSuperAdminAsync(await _workContext.GetCurrentCustomerAsync()))
+                        continue;
+
                     if (model.SelectedCustomerRoleIds.Contains(customerRole.Id))
                     {
                         //new role
@@ -676,6 +701,12 @@ public partial class CustomerController : BaseAdminController
         var customer = await _customerService.GetCustomerByIdAsync(model.Id);
         if (customer == null)
             return RedirectToAction("List");
+
+        if (!await CanManageCustomerAsync(customer))
+        {
+            _notificationService.ErrorNotification(await _localizationService.GetResourceAsync("Admin.Customers.Customers.OnlySuperAdminCanManageSuperAdmin"));
+            return RedirectToAction("Edit", new { id = customer.Id });
+        }
 
         //ensure that the current customer cannot change passwords of "Administrators" if he's not an admin himself
         if (await _customerService.IsAdminAsync(customer) && !await _customerService.IsAdminAsync(await _workContext.GetCurrentCustomerAsync()))
@@ -755,6 +786,12 @@ public partial class CustomerController : BaseAdminController
 
         try
         {
+            if (!await CanManageCustomerAsync(customer))
+            {
+                _notificationService.ErrorNotification(await _localizationService.GetResourceAsync("Admin.Customers.Customers.OnlySuperAdminCanManageSuperAdmin"));
+                return RedirectToAction("Edit", new { id = customer.Id });
+            }
+
             //prevent attempts to delete the user, if it is the last active administrator
             if (await _customerService.IsAdminAsync(customer) && !await SecondAdminAccountExistsAsync(customer))
             {
@@ -810,6 +847,12 @@ public partial class CustomerController : BaseAdminController
             _notificationService.WarningNotification(
                 await _localizationService.GetResourceAsync("Admin.Customers.Customers.Impersonate.Inactive"));
             return RedirectToAction("Edit", customer.Id);
+        }
+
+        if (!await CanManageCustomerAsync(customer))
+        {
+            _notificationService.ErrorNotification(await _localizationService.GetResourceAsync("Admin.Customers.Customers.OnlySuperAdminCanManageSuperAdmin"));
+            return RedirectToAction("Edit", new { id = customer.Id });
         }
 
         //ensure that a non-admin user cannot impersonate as an administrator
@@ -1306,6 +1349,12 @@ public partial class CustomerController : BaseAdminController
 
         try
         {
+            if (!await CanManageCustomerAsync(customer))
+            {
+                _notificationService.ErrorNotification(await _localizationService.GetResourceAsync("Admin.Customers.Customers.OnlySuperAdminCanManageSuperAdmin"));
+                return RedirectToAction("Edit", new { id = customer.Id });
+            }
+
             //prevent attempts to delete the user, if it is the last active administrator
             if (await _customerService.IsAdminAsync(customer) && !await SecondAdminAccountExistsAsync(customer))
             {
@@ -1489,6 +1538,10 @@ public partial class CustomerController : BaseAdminController
     {
         if (await _workContext.GetCurrentVendorAsync() != null)
             //a vendor can not import customer
+            return AccessDeniedView();
+
+        //an import row can overwrite any account and its roles, super administrators included
+        if (!await _customerService.IsSuperAdminAsync(await _workContext.GetCurrentCustomerAsync()))
             return AccessDeniedView();
 
         try

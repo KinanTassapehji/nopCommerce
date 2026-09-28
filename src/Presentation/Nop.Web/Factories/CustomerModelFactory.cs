@@ -506,7 +506,8 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         {
             UsernamesEnabled = _customerSettings.UsernamesEnabled,
             RegistrationType = _customerSettings.UserRegistrationType,
-            CheckoutAsGuest = checkoutAsGuest.GetValueOrDefault(),
+            //the "checkout as guest or register" box only makes sense when guests may check out
+            CheckoutAsGuest = checkoutAsGuest.GetValueOrDefault() && _orderSettings.AnonymousCheckoutAllowed,
             DisplayCaptcha = _captchaSettings.Enabled && _captchaSettings.ShowOnLoginPage
         };
 

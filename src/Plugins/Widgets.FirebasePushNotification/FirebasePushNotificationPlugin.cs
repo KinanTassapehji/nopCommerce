@@ -81,7 +81,7 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 			["Plugins.Widgets.FirebasePushNotification.Fields.MessagingSenderId"] = "Messaging Sender ID",
 			["Plugins.Widgets.FirebasePushNotification.Fields.AppId"] = "App ID",
 			["Plugins.Widgets.FirebasePushNotification.Fields.VapidKey"] = "VAPID Key",
-			["Plugins.Widgets.FirebasePushNotification.Broadcast.PageTitle"] = "Send Broadcast Notification",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.PageTitle"] = "Push notifications",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Custom"] = "Send Custom Notification",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Target"] = "Target",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.SendToAll"] = "Send to all users",
@@ -107,7 +107,7 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 		});
 		foreach (var resource in new Dictionary<string, string>
 		{
-			["Plugins.Widgets.FirebasePushNotification.Broadcast.PageTitle"] = "الإشعارات",
+			["Plugins.Widgets.FirebasePushNotification.Broadcast.PageTitle"] = "الإشعارات الفورية",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Custom"] = "إرسال إشعار مخصص",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.Target"] = "الجهة المستهدفة",
 			["Plugins.Widgets.FirebasePushNotification.Broadcast.SendToAll"] = "إرسال إلى جميع المستخدمين",
@@ -153,12 +153,12 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 			Url = _webHelper.GetStoreLocation() + "Admin/FirebasePushNotification/SendBroadcast",
 			PermissionNames = new List<string>(1) { "Configuration.ManageWidgets" }
 		};
-		//under Customers, not Plugins: notifications go to customers. Top level only - Reports has
-		//a "Customers" child of its own that a tree search would find first
-		var customersNode = eventMessage.RootMenuItem.ChildNodes.FirstOrDefault(node => node.SystemName == "Customers");
-		if (customersNode != null && !customersNode.ContainsSystemName(pluginMenuItem.SystemName))
+		//under Marketing, not Plugins: a broadcast is a campaign, next to discounts
+		var marketingNode = eventMessage.RootMenuItem.ChildNodes.FirstOrDefault(node => node.SystemName == "Marketing");
+		if (marketingNode != null && !marketingNode.ContainsSystemName(pluginMenuItem.SystemName))
 		{
-			customersNode.ChildNodes.Add(pluginMenuItem);
+			if (!marketingNode.InsertAfter("Discounts", pluginMenuItem))
+				marketingNode.ChildNodes.Add(pluginMenuItem);
 		}
 		await Task.CompletedTask;
 	}

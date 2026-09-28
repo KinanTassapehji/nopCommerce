@@ -16,7 +16,8 @@
             @Model.Result
         </div>
         <div class="buttons">
-            <a href="@Model.ReturnUrl" class="button-1 register-continue-button">@T("Common.Continue")</a>
+            @* continue always lands on the home page, not the page registration started from *@
+            <a href="@Url.RouteUrl(NopRouteNames.General.HOMEPAGE)" class="button-1 register-continue-button">@T("Common.Continue")</a>
         </div>
     </div>
 </div>

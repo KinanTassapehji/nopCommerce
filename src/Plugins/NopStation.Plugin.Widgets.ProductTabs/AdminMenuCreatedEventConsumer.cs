@@ -1,14 +1,16 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Nop.Services.Events;
 using Nop.Services.Localization;
 using Nop.Services.Security;
+using Nop.Web.Framework.Events;
 using Nop.Web.Framework.Menu;
 using NopStation.Plugin.Misc.Core.Infrastructure;
 
 namespace NopStation.Plugin.Widgets.ProductTabs;
 
-public class AdminMenuCreatedEventConsumer : IConsumer<AdminMenuEvent>
+public class AdminMenuCreatedEventConsumer : IConsumer<AdminMenuEvent>, IConsumer<AdminMenuCreatedEvent>
 {
 	private readonly ILocalizationService _localizationService;
 
@@ -30,16 +32,9 @@ public class AdminMenuCreatedEventConsumer : IConsumer<AdminMenuEvent>
 		NopStationAdminMenuItem menuItem = nopStationAdminMenuItem;
 		if (await _permissionService.AuthorizeAsync("ManageNopStationProductTab"))
 		{
+			//the list lives under Content management, see the AdminMenuCreatedEvent handler below
 			AdminMenuItem adminMenuItem = new AdminMenuItem();
 			AdminMenuItem adminMenuItem2 = adminMenuItem;
-			adminMenuItem2.Title = await _localizationService.GetResourceAsync("Admin.NopStation.ProductTabs.Menu.List");
-			adminMenuItem.Url = "~/Admin/ProductTab/List";
-			adminMenuItem.Visible = true;
-			adminMenuItem.IconClass = "far fa-dot-circle";
-			adminMenuItem.SystemName = "ProductTabs";
-			menuItem.ChildNodes.Add(adminMenuItem);
-			adminMenuItem2 = new AdminMenuItem();
-			adminMenuItem = adminMenuItem2;
 			adminMenuItem.Title = await _localizationService.GetResourceAsync("Admin.NopStation.ProductTabs.Menu.Configuration");
 			adminMenuItem2.Url = "~/Admin/ProductTab/Configure";
 			adminMenuItem2.Visible = true;
@@ -59,5 +54,20 @@ public class AdminMenuCreatedEventConsumer : IConsumer<AdminMenuEvent>
 			menuItem.ChildNodes.Add(adminMenuItem);
 			createdEvent.PluginChildNodes.Add(menuItem);
 		}
+	}
+
+	public async Task HandleEventAsync(AdminMenuCreatedEvent eventMessage)
+	{
+		AdminMenuItem listItem = new AdminMenuItem
+		{
+			SystemName = "ProductTabs",
+			Title = await _localizationService.GetResourceAsync("Admin.NopStation.ProductTabs.Menu.List"),
+			Url = "~/Admin/ProductTab/List",
+			IconClass = "far fa-dot-circle",
+			PermissionNames = new List<string>(1) { "ManageNopStationProductTab" }
+		};
+		var contentNode = eventMessage.RootMenuItem.ChildNodes.FirstOrDefault(node => node.SystemName == "Content Management");
+		if (contentNode != null && !contentNode.ContainsSystemName(listItem.SystemName) && !contentNode.InsertAfter("Home page slider", listItem))
+			contentNode.ChildNodes.Add(listItem);
 	}
 }

@@ -62,7 +62,8 @@
                     <div class="float-left">
                         @await Component.InvokeAsync(typeof(SettingModeViewComponent), new { modeName = "product-advanced-mode" })
                     </div>
-                    @if (!Model.IsLoggedInAsVendor)
+                    @*saving the editor settings needs "manage settings", which only super administrators have*@
+                    @if (!Model.IsLoggedInAsVendor && await permissionService.AuthorizeAsync(StandardPermission.Configuration.MANAGE_SETTINGS))
                     {
                         <button type="button" class="btn btn-info float-left mx-2" id="product-editor-settings" data-toggle="modal" data-target="#productsettings-window">
                             <i class="fas fa-gear"></i>

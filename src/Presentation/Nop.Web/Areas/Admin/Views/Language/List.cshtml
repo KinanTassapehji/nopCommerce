@@ -13,10 +13,11 @@
         @T("Admin.Configuration.Languages")
     </h1>
     <div class="float-right">
-        <a asp-action="Create" class="btn btn-primary">
+        @* the store runs Arabic and English only; hidden, not removed *@
+        @*<a asp-action="Create" class="btn btn-primary">
             <i class="fas fa-square-plus"></i>
             @T("Admin.Common.AddNew")
-        </a>
+        </a>*@
         @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.LanguageListButtons, additionalData = Model })
     </div>
 </div>

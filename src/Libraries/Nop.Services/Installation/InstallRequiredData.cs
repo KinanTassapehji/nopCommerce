@@ -1745,7 +1745,8 @@ public partial class InstallationService
             MinOrderSubtotalAmountIncludingTax = false,
             MinOrderTotalAmount = 0,
             AutoUpdateOrderTotalsOnEditingOrder = false,
-            AnonymousCheckoutAllowed = true,
+            //registered customers only
+            AnonymousCheckoutAllowed = false,
             TermsOfServiceOnShoppingCartPage = true,
             TermsOfServiceOnOrderConfirmPage = false,
             OnePageCheckoutEnabled = true,
@@ -2135,6 +2136,13 @@ public partial class InstallationService
             IsSystemRole = true,
             SystemName = NopCustomerDefaults.AdministratorsRoleName
         };
+        var crSuperAdministrators = new CustomerRole
+        {
+            Name = "Super Administrators",
+            Active = true,
+            IsSystemRole = true,
+            SystemName = NopCustomerDefaults.SuperAdministratorsRoleName
+        };
         var crForumModerators = new CustomerRole
         {
             Name = "Forum Moderators",
@@ -2166,6 +2174,7 @@ public partial class InstallationService
         var customerRoles = new List<CustomerRole>
             {
                 crAdministrators,
+                crSuperAdministrators,
                 crForumModerators,
                 crRegistered,
                 crGuests,
@@ -2222,6 +2231,7 @@ public partial class InstallationService
 
         await _dataProvider.BulkInsertEntitiesAsync(new[]{
             new CustomerCustomerRoleMapping { CustomerId = adminUser.Id, CustomerRoleId = crAdministrators.Id },
+            new CustomerCustomerRoleMapping { CustomerId = adminUser.Id, CustomerRoleId = crSuperAdministrators.Id },
             new CustomerCustomerRoleMapping { CustomerId = adminUser.Id, CustomerRoleId = crForumModerators.Id },
             new CustomerCustomerRoleMapping { CustomerId = adminUser.Id, CustomerRoleId = crRegistered.Id }});
 
@@ -2319,8 +2329,8 @@ public partial class InstallationService
                     IsPasswordProtected = false,
                     DisplayOrder = 15,
                     Published = true,
-                    Title = "شروط الاستخدام",
-                    Body = "<p>اكتب هنا شروط الاستخدام. يمكنك تعديل هذا النص من لوحة التحكم.</p>",
+                    Title = ConditionsOfUseTopic.ArabicTitle,
+                    Body = ConditionsOfUseTopic.ArabicBody,
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2463,6 +2473,7 @@ public partial class InstallationService
         {
             ["AboutUs"] = ("Who We Are",
                 "<h2>Who Are We?</h2><p>Arabian Appliances Company was established in 2011 in the heart of the vibrant city of Riyadh, the capital of the Kingdom of Saudi Arabia. The company embarked on a mission to revolutionize the world of home appliances. Our journey began with our desire to achieve excellence and innovation, and build customer trust.</p><h2>Why Arabian Appliances?</h2><p>Choosing Arabian Appliances means commitment, excellence, and transparency. Why you should choose us:</p><ul><li>Integrated technologies</li><li>Comprehensive range</li><li>Commitment</li><li>Community and environment</li><li>Customer service</li></ul><h2>Outstanding Customer Service</h2><p>Our first-class after-sales customer support is here to ensure a smooth journey with us. Customer service is at the heart of our commitment. At Arabian Appliances we understand that it is not just about the products but the experience as a whole. We believe that exceptional service goes hand in hand with quality products, and we are committed to delivering both. Your satisfaction is our ultimate goal, and our customer support reflects our steadfast commitment to your needs.</p><h2>Arabian International Appliances weaves a canvas of aspirations, visions and mission that set us apart:</h2><ul><li><strong>Highest levels of quality:</strong> We are setting the new gold standards in the field of electrical appliances. We are here to provide products that redefine the essence of quality and performance.</li><li><strong>Innovation and comfort:</strong> Innovation is our middle name, and your comfort is the foundation on which we rely. Our goal is to transform your life with the latest technology and seamless comfort. We believe that you should have access to the latest technology for your daily life to become exceptional.</li><li><strong>Partnerships built on trust:</strong> We believe that trust forms the basis of our relationship with our customers and partners, and we strive to build lasting and reliable relationships.</li><li><strong>Exceed your expectations:</strong> At Arabian International Appliances, we not only meet your needs but also exceed your expectations. Our products achieve the perfect balance between quality and endurance, and meet your desires before you realize you need them.</li><li><strong>Sustainability champions:</strong> Our commitment is related to maintaining sustainability in our world. We offer an energy-saving solution that protects not only the environment but also your budget. We are your partners in a sustainable and environmentally friendly journey.</li></ul>"),
+            ["ConditionsOfUse"] = (ConditionsOfUseTopic.EnglishTitle, ConditionsOfUseTopic.EnglishBody),
             ["FAQ"] = ("Frequently Asked Questions",
                 "<ul><li><strong>How do I book a maintenance appointment for Arabian Appliances products?</strong><p>You can easily book a maintenance appointment through the website or by contacting customer service via the toll-free unified number (8001244080).</p></li><li><strong>What is the manufacture of Arabian Appliances products?</strong><p>Arabian Appliances supplies products of international quality from various manufacturing origins, including: Turkish - Chinese - Indian - Bahraini, etc.</p></li><li><strong>Where are Arabian Appliances products available in the Kingdom of Saudi Arabia?</strong><p>Riyadh - Mecca - Jeddah - Medina - Al-Khobar - Al-Qassim - Jizan - Tabuk - Khamis Mushayt - Hail - Taif - Shaqraa - Al-Quwayiyah - Qatif - Najran - Al-Dawadmi - Hotat Bani Tamim - Al-Kharj - Al-Majmaah.</p></li><li><strong>Is there a warranty available for the product after purchase?</strong><p>Yes, all products have a warranty for a period ranging from two to five years, and the compressor is ten years.</p></li><li><strong>Are spare parts available for Arabian Appliances products?</strong><p>Yes, they are available at the maintenance centers in Riyadh - Dammam - Jizan - Jeddah.</p></li><li><strong>What are the brands owned by Arabian Appliances Company?</strong><p>Starway - General Goldin - Starvision - Smartelctric - Gl-General - General plus.</p></li><li><strong>Does Arabian Appliances have a global agency?</strong><p>Yes, we have an exclusive agency for Hisense.</p></li><li><strong>What are the official working hours of the customer service team?</strong><p>The customer service team works from Sunday to Thursday, from 8 am to 4 pm.</p></li></ul>"),
             ["MaintenancePolicy"] = ("Maintenance Policy",

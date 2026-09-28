@@ -699,6 +699,7 @@ public partial class SettingController : BaseAdminController
 
     #region FilterLevel
 
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> FilterLevel()
     {
@@ -709,6 +710,7 @@ public partial class SettingController : BaseAdminController
     }
 
     [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> FilterLevel(FilterLevelSettingsModel model)
     {
@@ -741,6 +743,7 @@ public partial class SettingController : BaseAdminController
     }
 
     [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> FilterLevelList(FilterLevelSearchModel searchModel)
     {
@@ -750,6 +753,7 @@ public partial class SettingController : BaseAdminController
         return Json(model);
     }
 
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> EditFilterLevel(int id)
     {
@@ -760,6 +764,7 @@ public partial class SettingController : BaseAdminController
     }
 
     [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> EditFilterLevel(FilterLevelModel model, bool continueEditing)
     {
@@ -1212,6 +1217,7 @@ public partial class SettingController : BaseAdminController
 
     #region GDPR
 
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> Gdpr()
     {
@@ -1222,6 +1228,7 @@ public partial class SettingController : BaseAdminController
     }
 
     [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> Gdpr(GdprSettingsModel model)
     {
@@ -1260,6 +1267,7 @@ public partial class SettingController : BaseAdminController
     }
 
     [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> GdprConsentList(GdprConsentSearchModel searchModel)
     {
@@ -1269,6 +1277,7 @@ public partial class SettingController : BaseAdminController
         return Json(model);
     }
 
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> CreateGdprConsent()
     {
@@ -1279,6 +1288,7 @@ public partial class SettingController : BaseAdminController
     }
 
     [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> CreateGdprConsent(GdprConsentModel model, bool continueEditing)
     {
@@ -1302,6 +1312,7 @@ public partial class SettingController : BaseAdminController
         return View(model);
     }
 
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> EditGdprConsent(int id)
     {
@@ -1317,6 +1328,7 @@ public partial class SettingController : BaseAdminController
     }
 
     [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> EditGdprConsent(GdprConsentModel model, bool continueEditing)
     {
@@ -1346,6 +1358,7 @@ public partial class SettingController : BaseAdminController
     }
 
     [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> DeleteGdprConsent(int id)
     {
@@ -1798,6 +1811,7 @@ public partial class SettingController : BaseAdminController
         return RedirectToAction("GeneralCommon");
     }
 
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> AllSettings(string settingName)
     {
@@ -1808,6 +1822,7 @@ public partial class SettingController : BaseAdminController
     }
 
     [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> AllSettings(SettingSearchModel searchModel)
     {
@@ -1818,6 +1833,7 @@ public partial class SettingController : BaseAdminController
     }
 
     [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> SettingUpdate(SettingModel model)
     {
@@ -1843,6 +1859,7 @@ public partial class SettingController : BaseAdminController
     }
 
     [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> SettingAdd(SettingModel model)
     {
@@ -1861,6 +1878,7 @@ public partial class SettingController : BaseAdminController
     }
 
     [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ADVANCED_SETTINGS)]
     [CheckPermission(StandardPermission.Configuration.MANAGE_SETTINGS)]
     public virtual async Task<IActionResult> SettingDelete(int id)
     {

@@ -40,7 +40,7 @@ public static class CustomerRemindersDefaults
 		public static string ColumnCreatedOn => "Created On";
 	}
 
-	public static string PluginSystemName => "Misc.CustomerReminders";
+	public static string PluginSystemName => "NopStation.Plugin.Misc.CustomerReminders";
 
 	public static string PluginMenuSystemName => "NopStation.AdminMenu.CustomerReminders";
 
