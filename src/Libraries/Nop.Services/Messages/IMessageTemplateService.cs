@@ -71,4 +71,21 @@ public partial interface IMessageTemplateService
     /// The task result contains the message template copy
     /// </returns>
     Task<MessageTemplate> CopyMessageTemplateAsync(MessageTemplate messageTemplate);
+
+    /// <summary>
+    /// Gets the names of the message templates that administrators who are not super administrators may see
+    /// </summary>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the template names
+    /// </returns>
+    Task<IList<string>> GetAdminVisibleMessageTemplateNamesAsync();
+
+    /// <summary>
+    /// Sets whether administrators who are not super administrators may see a message template
+    /// </summary>
+    /// <param name="messageTemplate">Message template</param>
+    /// <param name="visible">Whether they may see it</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    Task SetMessageTemplateAdminVisibleAsync(MessageTemplate messageTemplate, bool visible);
 }

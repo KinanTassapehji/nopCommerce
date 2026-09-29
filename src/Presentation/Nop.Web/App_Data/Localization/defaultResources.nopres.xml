@@ -10178,6 +10178,12 @@
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Fields.IsActive.Hint">
     <Value>Indicating whether the message template is active.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Fields.VisibleToAdministrators">
+    <Value>Visible to administrators</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Fields.VisibleToAdministrators.Hint">
+    <Value>Administrators who are not super administrators see and edit only the message templates ticked here. Super administrators see them all.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Fields.LimitedToStores">
     <Value>Limited to stores</Value>
   </LocaleResource>

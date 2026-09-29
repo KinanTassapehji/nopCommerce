@@ -10180,6 +10180,12 @@
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Fields.IsActive.Hint">
     <Value>يشير إلى ما إذا كان قالب الرسالة نشطًا أم لا.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Fields.VisibleToAdministrators">
+    <Value>ظاهر للمشرفين</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Fields.VisibleToAdministrators.Hint">
+    <Value>المشرفون يرون ويعدّلون فقط قوالب الرسائل المحدد عليها هنا. المشرف العام يرى جميع القوالب.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Fields.LimitedToStores">
     <Value>يقتصر على المتاجر</Value>
   </LocaleResource>

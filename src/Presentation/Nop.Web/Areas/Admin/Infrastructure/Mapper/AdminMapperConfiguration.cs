@@ -1123,7 +1123,9 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.AvailableEmailAccounts, options => options.Ignore())
             .ForMember(model => model.HasAttachedDownload, options => options.Ignore())
             .ForMember(model => model.ListOfStores, options => options.Ignore())
-            .ForMember(model => model.SendImmediately, options => options.Ignore());
+            .ForMember(model => model.SendImmediately, options => options.Ignore())
+            .ForMember(model => model.VisibleToAdministrators, options => options.Ignore())
+            .ForMember(model => model.CanManageAdminVisibility, options => options.Ignore());
         CreateMap<MessageTemplateModel, MessageTemplate>()
             .ForMember(entity => entity.DelayPeriod, options => options.Ignore());
 

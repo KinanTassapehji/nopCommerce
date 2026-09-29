@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Nop.Core;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Messages;
+using Nop.Services.Customers;
 using Nop.Services.Localization;
 using Nop.Services.Messages;
 using Nop.Services.Stores;
@@ -21,12 +23,14 @@ public partial class MessageTemplateModelFactory : IMessageTemplateModelFactory
 
     protected readonly CatalogSettings _catalogSettings;
     protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
+    protected readonly ICustomerService _customerService;
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedModelFactory _localizedModelFactory;
     protected readonly IMessageTemplateService _messageTemplateService;
     protected readonly IMessageTokenProvider _messageTokenProvider;
     protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
     protected readonly IStoreService _storeService;
+    protected readonly IWorkContext _workContext;
 
     #endregion
 
@@ -34,21 +38,39 @@ public partial class MessageTemplateModelFactory : IMessageTemplateModelFactory
 
     public MessageTemplateModelFactory(CatalogSettings catalogSettings,
         IBaseAdminModelFactory baseAdminModelFactory,
+        ICustomerService customerService,
         ILocalizationService localizationService,
         ILocalizedModelFactory localizedModelFactory,
         IMessageTemplateService messageTemplateService,
         IMessageTokenProvider messageTokenProvider,
         IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
-        IStoreService storeService)
+        IStoreService storeService,
+        IWorkContext workContext)
     {
         _catalogSettings = catalogSettings;
         _baseAdminModelFactory = baseAdminModelFactory;
+        _customerService = customerService;
         _localizationService = localizationService;
         _localizedModelFactory = localizedModelFactory;
         _messageTemplateService = messageTemplateService;
         _messageTokenProvider = messageTokenProvider;
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
         _storeService = storeService;
+        _workContext = workContext;
+    }
+
+    #endregion
+
+    #region Utilities
+
+    /// <summary>
+    /// Gets a value indicating whether the current customer is a super administrator: they see every
+    /// message template and choose which ones the other administrators see
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    protected virtual async Task<bool> IsSuperAdminAsync()
+    {
+        return await _customerService.IsSuperAdminAsync(await _workContext.GetCurrentCustomerAsync());
     }
 
     #endregion
@@ -94,6 +116,8 @@ public partial class MessageTemplateModelFactory : IMessageTemplateModelFactory
             defaultItemText: await _localizationService.GetResourceAsync("Admin.ContentManagement.MessageTemplates.List.SearchEmailAccount.All"));
         searchModel.HideEmailAccount = searchModel.AvailableEmailAccounts.SelectionIsNotPossible();
 
+        searchModel.CanManageAdminVisibility = await IsSuperAdminAsync();
+
         //prepare page parameters
         searchModel.SetGridPageSize();
 
@@ -114,9 +138,14 @@ public partial class MessageTemplateModelFactory : IMessageTemplateModelFactory
 
         var isActive = searchModel.IsActiveId == 0 ? null : (bool?)(searchModel.IsActiveId == 1);
 
-        //get message templates
+        //get message templates; administrators who are not super administrators get only the ones picked for them
+        var isSuperAdmin = await IsSuperAdminAsync();
+        var adminVisibleNames = await _messageTemplateService.GetAdminVisibleMessageTemplateNamesAsync();
         var messageTemplates = (await _messageTemplateService
-            .GetAllMessageTemplatesAsync(searchModel.SearchStoreId, searchModel.SearchKeywords, isActive, searchModel.EmailAccountId)).ToPagedList(searchModel);
+            .GetAllMessageTemplatesAsync(searchModel.SearchStoreId, searchModel.SearchKeywords, isActive, searchModel.EmailAccountId))
+            .Where(messageTemplate => isSuperAdmin || adminVisibleNames.Contains(messageTemplate.Name))
+            .ToList()
+            .ToPagedList(searchModel);
 
         //prepare store names (to avoid loading for each message template)
         var stores = (await _storeService.GetAllStoresAsync()).Select(store => new { store.Id, store.Name }).ToList();
@@ -130,6 +159,7 @@ public partial class MessageTemplateModelFactory : IMessageTemplateModelFactory
                 var messageTemplateModel = messageTemplate.ToModel<MessageTemplateModel>();
 
                 //fill in additional values (not existing in the entity)
+                messageTemplateModel.VisibleToAdministrators = adminVisibleNames.Contains(messageTemplate.Name);
                 if (messageTemplate.LimitedToStores)
                 {
                     await _storeMappingSupportedModelFactory.PrepareModelStoresAsync(messageTemplateModel, messageTemplate, false);
@@ -193,6 +223,10 @@ public partial class MessageTemplateModelFactory : IMessageTemplateModelFactory
 
         model.SendImmediately = !model.DelayBeforeSend.HasValue;
         model.HasAttachedDownload = model.AttachedDownloadId > 0;
+
+        model.CanManageAdminVisibility = await IsSuperAdminAsync();
+        if (messageTemplate != null && !excludeProperties)
+            model.VisibleToAdministrators = (await _messageTemplateService.GetAdminVisibleMessageTemplateNamesAsync()).Contains(messageTemplate.Name);
 
         var allowedTokens = string.Join(", ", await _messageTokenProvider.GetListOfAllowedTokensAsync(_messageTokenProvider.GetTokenGroups(messageTemplate).ToList()));
         model.AllowedTokens = $"{allowedTokens}{Environment.NewLine}{Environment.NewLine}" +
