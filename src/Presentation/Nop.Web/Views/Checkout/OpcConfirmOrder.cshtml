@@ -25,9 +25,7 @@
         </div>
     }
     @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.OpCheckoutConfirmBottom, additionalData = Model })
-    <div class="section order-summary">
-        @await Component.InvokeAsync(typeof(OrderSummaryViewComponent), new { prepareAndDisplayOrderReviewData = true })
-    </div>
+    @*no order review here: the one page checkout shows it in its own "order details" step (_OpcSummary)*@
     @if (string.IsNullOrEmpty(Model.MinOrderTotalWarning) && Model.TermsOfServiceOnOrderConfirmPage)
     {
         <div id="terms-of-service-warning-box" title="@T("Checkout.TermsOfService")" style="display:none;">

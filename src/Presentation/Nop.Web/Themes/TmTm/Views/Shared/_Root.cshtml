@@ -9,6 +9,7 @@
     @{ await Html.RenderPartialAsync("_Header"); }
     <main class="master-wrapper-content" id="main">
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ContentBefore })
+        @{ await Html.RenderPartialAsync("_BackLink"); }
 
         @if (IsSectionDefined("Breadcrumb"))
         {

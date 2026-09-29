@@ -1473,6 +1473,15 @@ public partial class CheckoutController : BasePublicController
         return View(model);
     }
 
+    /// <summary>
+    /// Order summary panel of the one page checkout; reloaded after every step, since the delivery
+    /// and payment choices change the totals
+    /// </summary>
+    public virtual IActionResult OpcSummary()
+    {
+        return PartialView("_OpcSummary");
+    }
+
     [HttpPost]
     public virtual async Task<IActionResult> OpcSaveBilling(CheckoutBillingAddressModel model, IFormCollection form)
     {

@@ -1,0 +1,38 @@
+﻿@*
+    TmTm back link — the top of every inner page. The installed app (standalone
+    PWA) has no browser back button at all on iPhone, and the phone tab bar only
+    reaches the four section roots; checkout and the product page even hide the
+    tab bar behind their sticky buy bars.
+
+      * checkout: always shown, and always to the cart (the one way out short of
+        ordering);
+      * elsewhere: phones/tablets only (desktop has the browser's), back in
+        history when we came from this store, else to the section's root;
+      * none on the pages the tab bar itself lands on, nor after an order.
+*@
+@{
+    var controller = Context.Request.RouteValues["controller"]?.ToString() ?? string.Empty;
+    var action = Context.Request.RouteValues["action"]?.ToString() ?? string.Empty;
+    bool isPage(string c, string a = null) =>
+        string.Equals(controller, c, StringComparison.OrdinalIgnoreCase)
+        && (a is null || string.Equals(action, a, StringComparison.OrdinalIgnoreCase));
+
+    var hidden = isPage("Home") || isPage("ShoppingCart", "Cart") || isPage("Customer", "Info") || isPage("Checkout", "Completed");
+    var checkout = isPage("Checkout");
+    //signed-out pages go home: the account page would only bounce back to login
+    var inAccount = (isPage("Customer") && !isPage("Customer", "Login") && !isPage("Customer", "Register"))
+        || isPage("Order") || isPage("ReturnRequest");
+    var href = checkout ? Url.RouteUrl(NopRouteNames.General.CART)
+        : inAccount ? Url.RouteUrl(NopRouteNames.General.CUSTOMER_INFO)
+        : Url.RouteUrl(NopRouteNames.General.HOMEPAGE);
+}
+@if (!hidden)
+{
+    <a class="tm-back @(checkout ? "tm-back-always" : null)" href="@href"
+       onclick="@(checkout ? null : "if (history.length > 1 && document.referrer.indexOf(location.origin) === 0) { history.back(); return false; }")">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M15 5l-7 7 7 7" />
+        </svg>
+        @T("Common.Back")
+    </a>
+}

@@ -1,0 +1,41 @@
+﻿@using Nop.Core
+@using Nop.Core.Domain.Orders
+@using Nop.Services.Orders
+@using Nop.Web.Factories
+@inject IShoppingCartModelFactory shoppingCartModelFactory
+@inject IShoppingCartService shoppingCartService
+@inject IStoreContext storeContext
+@inject IWorkContext workContext
+@*Compact order summary for the one page checkout side panel (reloaded by checkout/OpcSummary)*@
+@{
+    var store = await storeContext.GetCurrentStoreAsync();
+    var cart = await shoppingCartService.GetShoppingCartAsync(await workContext.GetCurrentCustomerAsync(), ShoppingCartType.ShoppingCart, store.Id);
+    //review data carries the chosen payment method's name for the line under the total
+    var cartModel = await shoppingCartModelFactory.PrepareShoppingCartModelAsync(new ShoppingCartModel(), cart,
+        isEditable: false, prepareAndDisplayOrderReviewData: true);
+}
+<ul class="opc-summary-items">
+    @foreach (var item in cartModel.Items)
+    {
+        <li>
+            @if (!string.IsNullOrEmpty(item.Picture?.ImageUrl))
+            {
+                <img src="@item.Picture.ImageUrl" alt="@item.Picture.AlternateText" loading="lazy" />
+            }
+            <span class="opc-summary-name">
+                @item.ProductName
+                @if (!string.IsNullOrEmpty(item.AttributeInfo))
+                {
+                    <small>@Html.Raw(item.AttributeInfo)</small>
+                }
+            </span>
+            <span class="opc-summary-qty">&times;@item.Quantity</span>
+            <span class="opc-summary-price">@item.SubTotal</span>
+        </li>
+    }
+</ul>
+@await Component.InvokeAsync(typeof(OrderTotalsViewComponent), new { isEditable = false })
+@if (!string.IsNullOrEmpty(cartModel.OrderReviewData.PaymentMethod))
+{
+    <div class="opc-summary-payment">@cartModel.OrderReviewData.PaymentMethod</div>
+}

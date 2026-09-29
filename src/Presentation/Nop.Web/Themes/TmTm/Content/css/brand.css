@@ -729,16 +729,488 @@ which would
   font-weight: 700;
 }
 
-.opc .step-title,
 .checkout-page .section .title{
   background: var(--tm-teal-tint);
   color: var(--tm-teal-deep);
   border-radius: var(--tm-radius-sm);
 }
 
-.opc .allow .step-title{
+/* One page checkout — single page, not an accordion (public.onepagecheckout.js).
+   Each step is a white card headed by a numbered disc (a check once done);
+   choices are tappable cards; the last step is the order details. One column
+   everywhere, with a sticky total + confirm bar (the product page's .tm-buybar
+   on phones). The `.checkout-page .opc` prefix is there to outrank the base
+   sheets' `.opc .allow .step-title .number` family. */
+.checkout-page .opc .tab-section,
+.checkout-page .opc .opc-order-details{
+  margin-block-end: var(--tm-stack-md);
+  padding: var(--tm-stack-md);
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius);
+  background: var(--tm-surface);
+}
+
+.checkout-page .opc .step-title,
+.checkout-page .opc .allow .step-title{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  overflow: visible;
+  background: none;
+  cursor: default;
+}
+
+.checkout-page .opc .step-title .number,
+.checkout-page .opc .step-title .title{
+  float: none;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  line-height: var(--tm-lh-body);
+}
+
+.checkout-page .opc .step-title .number{
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 32px;
+  block-size: 32px;
+  border-radius: 50%;
   background: var(--tm-teal-deep);
   color: var(--tm-white);
+  font-size: var(--tm-fs-label);
+  font-weight: 700;
+}
+
+.checkout-page .opc .done .step-title .number{
+  position: relative;
+  color: transparent;
+}
+
+/* Laid over the number, not beside it: the (hidden) digit keeps its line box. */
+.checkout-page .opc .done .step-title .number::after{
+  content: "\2713";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--tm-white);
+  font-size: var(--tm-fs-body);
+}
+
+.checkout-page .opc .step-title .title{
+  color: var(--tm-ink);
+  font-size: var(--tm-fs-title);
+  font-weight: 700;
+}
+
+.checkout-page .opc .step{
+  margin: 0;
+  padding: var(--tm-stack-md) 0 0;
+  text-align: start;
+}
+
+.checkout-page .opc .section{
+  margin-block-end: 0;
+}
+
+/* Cards: addresses, delivery and payment methods share one look. */
+.opc-cards,
+.checkout-page .opc .method-list{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 0;
+  font-size: var(--tm-fs-body);
+  text-align: start;
+}
+
+.opc-card,
+.checkout-page .opc .method-list li{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  inline-size: auto;
+  margin: 0;
+  padding: 14px;
+  border: 1.5px solid var(--tm-line);
+  border-radius: var(--tm-radius);
+  background: var(--tm-surface);
+  cursor: pointer;
+  transition: border-color var(--tm-transition), background var(--tm-transition);
+}
+
+.opc-card:hover,
+.checkout-page .opc .method-list li:hover{
+  border-color: var(--tm-teal-border);
+}
+
+.opc-card:has(input:checked),
+.checkout-page .opc .method-list li:has(input:checked){
+  border-color: var(--tm-teal-deep);
+  background: var(--tm-teal-tint);
+  box-shadow: inset 0 0 0 1px var(--tm-teal-deep);
+}
+
+.opc-card{
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.opc-card input,
+.checkout-page .opc .method-list input{
+  accent-color: var(--tm-teal-deep);
+  margin-block-start: 4px;
+}
+
+.opc-card-body{
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-inline-size: 0;
+  color: var(--tm-ink-muted);
+  font-size: var(--tm-fs-label);
+}
+
+.opc-card-body strong{
+  color: var(--tm-ink);
+  font-size: var(--tm-fs-body);
+}
+
+.opc-card-add{
+  align-items: center;
+  border-style: dashed;
+}
+
+.opc-card-add strong{
+  color: var(--tm-teal-deep);
+}
+
+/* Edit: a pill on the selected address card only. Delete lives in edit mode. */
+.opc-card-edit{
+  display: none;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  margin-inline-start: auto;
+  padding: 4px 12px;
+  border: 1px solid var(--tm-teal-border);
+  border-radius: 999px;
+  background: var(--tm-surface);
+  color: var(--tm-teal-deep);
+  font: inherit;
+  font-size: var(--tm-fs-label);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.opc-card:has(input:checked) .opc-card-edit{
+  display: inline-flex;
+}
+
+.opc-card-edit:hover{
+  border-color: var(--tm-teal-deep);
+}
+
+.opc-card-edit svg{
+  inline-size: 16px;
+  block-size: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+
+/* The address form: fields as on the account pages (see "Fields"), without
+   the base sheet's grey band. */
+.checkout-page .enter-address .edit-address{
+  margin: 0;
+  padding: var(--tm-stack-md) 0 0;
+  border: 0;
+  background: none;
+}
+
+/* Save / Continue, Cancel, and Delete pushed to the far end. */
+.checkout-page #billing-buttons-container{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: var(--tm-stack-sm) 0 0;
+  text-align: start;
+}
+
+.checkout-page #billing-buttons-container .button-1,
+.checkout-page #billing-buttons-container .button-2{
+  min-block-size: 46px;
+  padding-inline: 32px;
+  border-radius: var(--tm-radius);
+}
+
+.checkout-page #delete-billing-address-button{
+  margin-inline-start: auto;
+}
+
+@media (max-width: 1000px){
+  .checkout-page #billing-buttons-container .button-1,
+  .checkout-page #billing-buttons-container .button-2{
+    flex: 1;
+  }
+}
+
+.opc-link-button{
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--tm-teal-deep);
+  font: inherit;
+  font-size: var(--tm-fs-label);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.opc-link-button.opc-danger{
+  color: var(--tm-error);
+}
+
+/* The label stretches over its whole card, so the card is the tap target. */
+.checkout-page .opc .method-list .method-name,
+.checkout-page .opc .method-list .payment-logo{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  background: none;
+}
+
+.checkout-page .opc .method-list .payment-details{
+  display: block;
+  inline-size: auto;
+  margin: 0;
+  text-align: start;
+}
+
+.checkout-page .opc .method-list li label{
+  color: var(--tm-ink);
+  font-size: var(--tm-fs-body);
+  font-weight: 700;
+}
+
+.checkout-page .opc .method-list li label::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.checkout-page .opc .method-list .method-description,
+.checkout-page .opc .method-list .payment-description{
+  margin: 0;
+  color: var(--tm-ink-muted);
+  font-size: var(--tm-fs-label);
+}
+
+.checkout-page .opc .payment-info .info{
+  padding: 0;
+  color: var(--tm-ink-muted);
+}
+
+/* Order details: the last step, a card like the others (_OpcSummary). */
+.opc-summary-items{
+  margin: 0 0 var(--tm-stack-md);
+  padding: 0 0 var(--tm-stack-sm);
+  border-block-end: 1px solid var(--tm-line);
+  list-style: none;
+}
+
+.opc-summary-items li{
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px;
+  margin-block-end: var(--tm-stack-sm);
+  font-size: var(--tm-fs-label);
+}
+
+.opc-summary-items img{
+  inline-size: 48px;
+  block-size: 48px;
+  object-fit: contain;
+  border-radius: var(--tm-radius-sm);
+  background: var(--tm-surface-alt);
+}
+
+.opc-summary-name{
+  color: var(--tm-ink);
+}
+
+.opc-summary-name small{
+  display: block;
+  color: var(--tm-ink-muted);
+}
+
+.opc-summary-qty{
+  color: var(--tm-ink-muted);
+}
+
+.opc-summary-price{
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.opc-order-details .cart-total{
+  inline-size: 100%;
+}
+
+.opc-order-details .cart-total td{
+  padding: 4px 0;
+  font-size: var(--tm-fs-label);
+  text-align: start;
+}
+
+.opc-order-details .cart-total td:last-child{
+  text-align: end;
+}
+
+.opc-order-details .cart-total .order-total td{
+  padding-block-start: var(--tm-stack-sm);
+  font-size: var(--tm-fs-body-lg);
+}
+
+/* How the order is paid, under the total. */
+.opc-summary-payment{
+  display: flex;
+  align-items: center;
+  gap: var(--tm-stack-sm);
+  margin-block-start: var(--tm-stack-sm);
+  padding: 10px 12px;
+  border-radius: var(--tm-radius-sm);
+  background: var(--tm-teal-tint);
+  color: var(--tm-teal-deep);
+  font-size: var(--tm-fs-label);
+  font-weight: 700;
+}
+
+.opc-summary-payment::before{
+  content: "";
+  flex: none;
+  inline-size: 20px;
+  block-size: 20px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%23000%27%20stroke-width%3D%271.6%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%272.5%27%20y%3D%276%27%20width%3D%2719%27%20height%3D%2712%27%20rx%3D%272%27%2F%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2712%27%20r%3D%272.6%27%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%23000%27%20stroke-width%3D%271.6%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%272.5%27%20y%3D%276%27%20width%3D%2719%27%20height%3D%2712%27%20rx%3D%272%27%2F%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2712%27%20r%3D%272.6%27%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+}
+
+.opc-place-order .tm-buybar-price{
+  flex: none;
+}
+
+.opc-place-order .tm-buybar-price:empty{
+  display: none;
+}
+
+.opc-busy .opc-place-order,
+.opc-busy .opc-order-details{
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (max-width: 1000px){
+  .checkout-page{
+    padding-block-end: 96px;
+  }
+}
+
+@media (min-width: 1001px){
+  /* One column at a comfortable reading width, bar included. */
+  .checkout-page .opc,
+  .checkout-page .opc-place-order{
+    max-inline-size: 880px;
+    margin-inline: auto;
+  }
+
+  /* .checkout-page prefix: the later `.tm-buybar{display:none}` has equal
+     specificity and would otherwise hide the bar on desktop. */
+  .checkout-page .opc-place-order{
+    position: sticky;
+    inset-block-end: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: var(--tm-stack-md);
+    padding: var(--tm-stack-md);
+    border: 1px solid var(--tm-line);
+    border-block-end: 0;
+    border-start-start-radius: var(--tm-radius);
+    border-start-end-radius: var(--tm-radius);
+    background: var(--tm-surface);
+    box-shadow: 0 -4px 20px rgba(2, 120, 126, 0.10);
+  }
+
+  .checkout-page .opc-place-order[hidden]{
+    display: none;
+  }
+
+  .opc-place-order .tm-buybar-price{
+    color: var(--tm-teal-deep);
+    font-size: var(--tm-fs-title);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .opc-place-order .button-1{
+    flex: 1;
+    min-block-size: 52px;
+    border-radius: var(--tm-radius);
+    font-size: var(--tm-fs-body-lg);
+  }
+}
+
+/* --- Back link (_BackLink.cshtml) ------------------------------------------
+   Top of every inner page on phones/tablets (the app shell has no browser back
+   on iPhone); on checkout at every width. The arrow is drawn pointing left and
+   mirrored for RTL, where "back" points right. */
+.tm-back{
+  display: none;
+  align-items: center;
+  gap: 4px;
+  margin-block: var(--tm-stack-sm);
+  padding-block: 6px;
+  color: var(--tm-teal-deep);
+  font-size: var(--tm-fs-label);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.tm-back.tm-back-always{
+  display: inline-flex;
+}
+
+.tm-back svg{
+  inline-size: 20px;
+  block-size: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+[dir="rtl"] .tm-back svg{
+  transform: scaleX(-1);
+}
+
+.tm-back:hover,
+.tm-back:focus-visible{
+  color: var(--tm-teal-hover);
+}
+
+@media (max-width: 1000px){
+  .tm-back{
+    display: inline-flex;
+  }
 }
 
 /* --- Notifications --------------------------------------------------------
@@ -5576,6 +6048,7 @@ so the field stays visible beside the icon. */
    while the field was a fixed 400px. */
 .login-page .inputs,
 .address-edit-page .inputs,
+.checkout-page .enter-address .inputs,
 .registration-page .inputs,
 .customer-info-page .inputs,
 .password-recovery-page .inputs{
@@ -5592,6 +6065,7 @@ so the field stays visible beside the icon. */
 
 .login-page .inputs > *,
 .address-edit-page .inputs > *,
+.checkout-page .enter-address .inputs > *,
 .registration-page .inputs > *,
 .customer-info-page .inputs > *,
 .password-recovery-page .inputs > *{
@@ -5601,6 +6075,7 @@ so the field stays visible beside the icon. */
 
 .login-page .inputs > label,
 .address-edit-page .inputs > label,
+.checkout-page .enter-address .inputs > label,
 .registration-page .inputs > label,
 .customer-info-page .inputs > label,
 .password-recovery-page .inputs > label{
@@ -5625,9 +6100,14 @@ so the field stays visible beside the icon. */
 .login-page .inputs input[type="email"],
 .login-page .inputs input[type="password"],
 .address-edit-page .inputs input[type="text"],
+.checkout-page .enter-address .inputs input[type="text"],
+.checkout-page .enter-address .inputs input[type="email"],
 .address-edit-page .inputs input[type="tel"],
+.checkout-page .enter-address .inputs input[type="tel"],
 .address-edit-page .inputs input[type="search"],
+.checkout-page .enter-address .inputs input[type="search"],
 .address-edit-page .inputs select,
+.checkout-page .enter-address .inputs select,
 .registration-page .inputs input[type="text"],
 .customer-info-page .inputs input[type="text"],
 .registration-page .inputs input[type="email"],
@@ -5655,6 +6135,7 @@ so the field stays visible beside the icon. */
    the field, where a full-width input had pushed it onto a line of its own. */
 .login-page .inputs > .required,
 .address-edit-page .inputs > .required,
+.checkout-page .enter-address .inputs > .required,
 .registration-page .inputs > .required,
 .customer-info-page .inputs > .required,
 .password-recovery-page .inputs > .required{
@@ -5668,6 +6149,7 @@ so the field stays visible beside the icon. */
 /* Errors belong under the field they are about, not centred on the card. */
 .login-page .field-validation-error,
 .address-edit-page .field-validation-error,
+.checkout-page .enter-address .field-validation-error,
 .registration-page .field-validation-error,
 .customer-info-page .field-validation-error,
 .password-recovery-page .field-validation-error,
