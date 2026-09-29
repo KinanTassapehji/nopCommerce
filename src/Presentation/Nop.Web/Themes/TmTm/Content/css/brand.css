@@ -1387,6 +1387,31 @@ body.tm-buybar-on .tm-cart-float:has(.cart-qty){
   }
 }
 
+/* Room for the card under the page, so the end of every page (a form's submit
+   button, the footer) scrolls clear of it instead of sitting underneath. On
+   phones it adds to the tab bar's 72px (78px installed) - same rules, one
+   card's height (52px + its 10px gap) more. */
+html:not(.tm-cart-float-closed) body:not(.tm-buybar-on):has(.tm-cart-float .cart-qty:not([data-qty="0"])) .master-wrapper-page{
+  padding-block-end: 88px;
+}
+
+@media (max-width: 1000px){
+  html:not(.tm-cart-float-closed) body:not(.tm-buybar-on):has(.tm-cart-float .cart-qty:not([data-qty="0"])) .master-wrapper-page{
+    padding-block-end: calc(72px + 64px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Typing: the keyboard is up and the card would ride on top of it. */
+  body:has(:is(input:not([type="radio"], [type="checkbox"], [type="button"], [type="submit"]), textarea, select):focus) .tm-cart-float:has(.cart-qty){
+    display: none;
+  }
+}
+
+@media (max-width: 1000px) and (display-mode: standalone){
+  html:not(.tm-cart-float-closed) body:not(.tm-buybar-on):has(.tm-cart-float .cart-qty:not([data-qty="0"])) .master-wrapper-page{
+    padding-block-end: calc(78px + 64px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 @keyframes tm-cart-float-in{
   from{ opacity: 0; transform: translateY(12px); }
   to{ opacity: 1; transform: translateY(0); }

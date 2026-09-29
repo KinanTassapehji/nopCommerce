@@ -118,7 +118,9 @@
     HeaderLinks keeps live after every AJAX add - so it appears with no reload). Not on the cart or
     checkout, which already are the goal. ✕ puts it away until the next visit or the next item
     added. Straight to checkout, unless the terms of service must be accepted on the cart page.*@
-@if (!cartActive)
+@*Nor in the account section (login, register, password recovery, my account, orders): the
+    shopper is filling in a form there, and the card sat on its submit button.*@
+@if (!cartActive && !accountActive)
 {
     <div class="tm-cart-float">
         <a class="tm-cart-float-link" href="@(orderSettings.TermsOfServiceOnShoppingCartPage ? Url.RouteUrl(NopRouteNames.General.CART) : Url.RouteUrl(NopRouteNames.Standard.CHECKOUT))">
