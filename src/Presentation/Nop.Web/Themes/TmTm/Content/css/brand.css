@@ -1235,13 +1235,16 @@ which would
     display: flex;
   }
 
+  /* 2.4 shares and no bag icon (the count badge already says "cart"): at a
+     360-384px phone that is room for "Complete order" in full, while the
+     other three tabs keep room for "Categories" / "My account". */
   .mobile-tab.tm-cart-pill{
-    flex: 2 1 0;
+    flex: 2.4 1 0;
     flex-direction: row;
     gap: 6px;
     align-self: center;
     min-height: 44px;
-    padding-inline: 12px;
+    padding-inline: 10px;
     border-radius: 999px;
     background: var(--tm-teal-deep);
     color: var(--tm-white);
@@ -1257,8 +1260,7 @@ which would
   }
 
   .tm-cart-pill .mobile-tab-icon{
-    flex: none;
-    stroke: currentColor;
+    display: none;
   }
 
   .tm-cart-pill-label{
