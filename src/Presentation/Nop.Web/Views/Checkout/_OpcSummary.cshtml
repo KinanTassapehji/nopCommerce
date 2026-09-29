@@ -34,6 +34,12 @@
         </li>
     }
 </ul>
+@*The coupon box moved here from the cart page; public.onepagecheckout.js posts it to
+  shoppingcart/OpcApplyDiscountCoupon / OpcRemoveDiscountCoupon and reloads this step.*@
+<div class="opc-coupon">
+    @await Html.PartialAsync("_DiscountBox", cartModel.DiscountBox)
+    <div class="opc-coupon-messages"></div>
+</div>
 @await Component.InvokeAsync(typeof(OrderTotalsViewComponent), new { isEditable = false })
 @if (!string.IsNullOrEmpty(cartModel.OrderReviewData.PaymentMethod))
 {

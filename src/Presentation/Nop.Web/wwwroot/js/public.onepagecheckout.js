@@ -16,10 +16,11 @@ var Checkout = {
     autoConfirm: false,
     current: 'billing',
 
-    init: function (failureUrl, summaryUrl) {
+    init: function (failureUrl, summaryUrl, couponUrl) {
         this.loadWaiting = false;
         this.failureUrl = failureUrl;
         this.summaryUrl = summaryUrl;
+        this.couponUrl = couponUrl;
     },
 
     start: function () {
@@ -29,6 +30,22 @@ var Checkout = {
             $('#billing-address-select').val(this.value).trigger('change');
         });
         $(document).on('change', '#billing-address-select', Checkout.addressChanged);
+        //the coupon box in the order details step (_OpcSummary): its buttons are the cart page's
+        //submit buttons, but there is no form here - post them instead
+        $(document).on('click', '#opc-summary-load .apply-discount-coupon-code-button', function (e) {
+            e.preventDefault();
+            Checkout.applyCoupon();
+        });
+        $(document).on('keydown', '#opc-summary-load #discountcouponcode', function (e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                Checkout.applyCoupon();
+            }
+        });
+        $(document).on('click', '#opc-summary-load .remove-discount-button', function (e) {
+            e.preventDefault();
+            Checkout.coupon('OpcRemoveDiscountCoupon', { discountId: this.name.replace('removediscount-', '') });
+        });
         $(document).on('change', '#co-shipping-method-form :input', function () {
             Checkout.queue(function () { ShippingMethod.save(); });
         });
@@ -141,7 +158,7 @@ var Checkout = {
         $('#checkout-steps > li:visible .step-title .number').each(function (i) { $(this).text(i + 1); });
     },
 
-    refreshSummary: function () {
+    refreshSummary: function (done) {
         $.ajax({
             cache: false,
             url: this.summaryUrl,
@@ -149,7 +166,32 @@ var Checkout = {
             success: function (html) {
                 $('#opc-summary-load').html(html);
                 $('#opc-order-total').text($('#opc-summary-load .order-total .value-summary').first().text().trim());
+                if (done) done();
             }
+        });
+    },
+
+    applyCoupon: function () {
+        Checkout.coupon('OpcApplyDiscountCoupon', { discountcouponcode: $('#opc-summary-load #discountcouponcode').val() });
+    },
+
+    //apply or remove a coupon, then reload the order details (the totals change) and say how it went
+    coupon: function (action, data) {
+        if (Checkout.loadWaiting !== false) return;
+        addAntiForgeryToken(data);
+        $.ajax({
+            cache: false,
+            url: Checkout.couponUrl + action,
+            type: 'POST',
+            data: data,
+            success: function (response) {
+                Checkout.refreshSummary(function () {
+                    $('#opc-summary-load .opc-coupon-messages').empty().append($.map(response.messages || [], function (message) {
+                        return $('<div>').addClass(response.applied ? 'message-success' : 'message-failure').text(message);
+                    }));
+                });
+            },
+            error: Checkout.ajaxFailure
         });
     },
 

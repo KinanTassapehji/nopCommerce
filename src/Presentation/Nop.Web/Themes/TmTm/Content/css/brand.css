@@ -1060,6 +1060,49 @@ which would
   white-space: nowrap;
 }
 
+/* The coupon box, moved here from the cart: between the items and the totals. */
+.opc-coupon{
+  margin-block-end: var(--tm-stack-md);
+  padding-block-end: var(--tm-stack-md);
+  border-block-end: 1px solid var(--tm-line);
+}
+
+.opc-coupon .coupon-box{
+  margin: 0;
+  padding: 0;
+  text-align: start;
+}
+
+/* A field label here, not a section heading: the step already has its own. */
+.opc-coupon .coupon-box .title{
+  margin: 0 0 4px;
+  text-align: start;
+  font-size: var(--tm-fs-label);
+  font-weight: 700;
+  color: var(--tm-ink);
+}
+
+.opc-coupon .coupon-box .title strong{
+  font: inherit;
+}
+
+.opc-coupon .coupon-box .hint{
+  margin: 0 0 var(--tm-stack-sm);
+  font-size: var(--tm-fs-label-sm);
+  color: var(--tm-ink-muted);
+}
+
+.opc-coupon .coupon-code button[type="submit"]{
+  border: 0;
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+  font-weight: 700;
+}
+
+.opc-coupon .coupon-code button[type="submit"]:hover{
+  background: var(--tm-teal-hover);
+}
+
 .opc-order-details .cart-total{
   inline-size: 100%;
 }
@@ -1213,71 +1256,75 @@ which would
   }
 }
 
-/* --- Cart pill -------------------------------------------------------------
-   While the cart holds items, the cart turns into a teal "complete order" pill:
-   the phone tab bar's cart tab (_MobileNav.cshtml) and the desktop header's
-   cart link (HeaderLinks). Both key off a .cart-qty's data-qty, which
-   HeaderLinks keeps live after every AJAX add, so no script decides it.
-   Always visible, but in space the chrome already had - no extra bar. */
-/* .mobile-tab here: the later `.mobile-tab{display:flex}` would otherwise
-   show the pill on an empty cart. */
-#topcartlink .tm-cart-pill-label,
-.mobile-tab.tm-cart-pill{
+/* --- "Complete order" card ------------------------------------------------
+   While the cart holds items, a teal "complete order" card floats at the
+   bottom of every page (_MobileNav.cshtml): just above the tab bar on phones,
+   in the bottom corner on desktop. The cart itself (tab bar / header) stays a
+   plain cart. The card keys off its own .cart-qty, whose data-qty HeaderLinks
+   keeps live after every AJAX add, so no script decides when it shows. */
+.tm-cart-float{
   display: none;
 }
 
-@media (max-width: 1000px){
-  .mobile-tab-bar:has(.tm-cart-pill .cart-qty:not([data-qty="0"])) .tm-cart-tab{
-    display: none;
-  }
-
-  .mobile-tab-bar:has(.tm-cart-pill .cart-qty:not([data-qty="0"])) .tm-cart-pill{
-    display: flex;
-  }
-
-  /* 2.4 shares and no bag icon (the count badge already says "cart"): at a
-     360-384px phone that is room for "Complete order" in full, while the
-     other three tabs keep room for "Categories" / "My account". */
-  .mobile-tab.tm-cart-pill{
-    flex: 2.4 1 0;
-    flex-direction: row;
-    gap: 6px;
-    align-self: center;
-    min-height: 44px;
-    padding-inline: 10px;
-    border-radius: 999px;
-    background: var(--tm-teal-deep);
-    color: var(--tm-white);
-    font-size: var(--tm-fs-label);
-    font-weight: 700;
-    white-space: nowrap;
-  }
-
-  .mobile-tab.tm-cart-pill:hover,
-  .mobile-tab.tm-cart-pill:focus-visible{
-    background: var(--tm-teal-hover);
-    color: var(--tm-white);
-  }
-
-  .tm-cart-pill .mobile-tab-icon{
-    display: none;
-  }
-
-  .tm-cart-pill-label{
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.tm-cart-float:has(.cart-qty:not([data-qty="0"])){
+  position: fixed;
+  inset-block-end: 24px;
+  inset-inline-end: 24px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  inline-size: 320px;
+  padding: 6px;
+  border-radius: 999px;
+  background: var(--tm-teal-deep);
+  box-shadow: var(--tm-shadow-lg);
+  animation: tm-cart-float-in 0.25s ease;
 }
 
-/* The count, white on the teal pill (text is the localised "({0})"; the
-   number comes from data-qty, as on the other badges). */
-.tm-cart-pill-qty,
-#topcartlink:has(.cart-qty:not([data-qty="0"])) .cart-qty{
+/* Put away with ✕ (until the next visit or the next item added); and out of
+   the way wherever a sticky buy bar takes the bottom of the screen. */
+.tm-cart-float-closed .tm-cart-float:has(.cart-qty),
+body.tm-buybar-on .tm-cart-float:has(.cart-qty){
+  display: none;
+}
+
+.tm-cart-float-link{
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  min-inline-size: 0;
+  min-height: 40px;
+  padding-inline: 10px 6px;
+  color: var(--tm-white);
+  font-size: var(--tm-fs-body);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.tm-cart-float-link:hover,
+.tm-cart-float-link:focus-visible{
+  color: var(--tm-white);
+}
+
+.tm-cart-float-label{
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The count: white on teal (text is the localised "({0})"; the number comes
+   from data-qty, as on the other badges). */
+.tm-cart-float .cart-qty{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-inline-size: 20px;
-  block-size: 20px;
+  flex: none;
+  min-inline-size: 22px;
+  block-size: 22px;
   padding-inline: 5px;
   border-radius: 999px;
   background: var(--tm-white);
@@ -1286,50 +1333,69 @@ which would
   line-height: 1;
 }
 
-.tm-cart-pill-qty::after{
+.tm-cart-float .cart-qty::after{
   content: attr(data-qty);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
-@media (min-width: 1001px){
-  #topcartlink:has(.cart-qty:not([data-qty="0"])) .ico-cart{
-    gap: 8px;
-    width: auto;
-    padding-inline: 14px 18px;
-    border-radius: 999px;
-    background: var(--tm-teal-deep);
-    color: var(--tm-white);
-    font-size: var(--tm-fs-label);
-    font-weight: 700;
-    line-height: 1;
-    white-space: nowrap;
-  }
+.tm-cart-float svg{
+  inline-size: 20px;
+  block-size: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
-  #topcartlink:has(.cart-qty:not([data-qty="0"])) .ico-cart:hover,
-  #topcartlink:has(.cart-qty:not([data-qty="0"])) .ico-cart:focus{
-    background: var(--tm-teal-hover);
-    color: var(--tm-white);
-  }
+/* drawn pointing forward in LTR; forward is left in Arabic */
+[dir="rtl"] .tm-cart-float-arrow{
+  transform: scaleX(-1);
+}
 
-  #topcartlink:has(.cart-qty:not([data-qty="0"])) .ico-cart:before{
-    width: 22px;
-    height: 22px;
-  }
+.tm-cart-float-close{
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 36px;
+  block-size: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--tm-white);
+  cursor: pointer;
+}
 
-  #topcartlink:has(.cart-qty:not([data-qty="0"])) .cart-qty{
-    position: static;
-  }
+.tm-cart-float-close:hover{
+  background: rgba(255, 255, 255, 0.28);
+}
 
-  #topcartlink:has(.cart-qty:not([data-qty="0"])) .tm-cart-pill-label{
-    display: inline;
+.tm-cart-float-close svg{
+  inline-size: 16px;
+  block-size: 16px;
+}
+
+/* Phones: full width, just above the tab bar (52px tabs + 6px padding each
+   side, plus the gesture inset). */
+@media (max-width: 1000px){
+  .tm-cart-float:has(.cart-qty:not([data-qty="0"])){
+    inset-inline: 12px;
+    inset-block-end: calc(64px + 10px + env(safe-area-inset-bottom, 0px));
+    inline-size: auto;
   }
 }
 
-/* First page of a visit (_MobileNav.cshtml sets the class): one bounce. */
-.tm-cart-pill-bounce .tm-cart-pill,
-.tm-cart-pill-bounce #topcartlink .ico-cart{
-  animation: tm-cart-pill-bounce 0.9s ease 0.6s 2;
+@keyframes tm-cart-float-in{
+  from{ opacity: 0; transform: translateY(12px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+/* First page of a visit (_MobileNav.cshtml sets the class): slide in, then
+   bounce twice, so a cart left from last time gets noticed. */
+.tm-cart-pill-bounce .tm-cart-float:has(.cart-qty:not([data-qty="0"])){
+  animation: tm-cart-float-in 0.25s ease, tm-cart-pill-bounce 0.9s ease 0.6s 2;
 }
 
 @keyframes tm-cart-pill-bounce{
@@ -1340,8 +1406,8 @@ which would
 }
 
 @media (prefers-reduced-motion: reduce){
-  .tm-cart-pill-bounce .tm-cart-pill,
-  .tm-cart-pill-bounce #topcartlink .ico-cart{
+  .tm-cart-float:has(.cart-qty:not([data-qty="0"])),
+  .tm-cart-pill-bounce .tm-cart-float:has(.cart-qty:not([data-qty="0"])){
     animation: none;
   }
 }
@@ -5535,15 +5601,17 @@ so the field stays visible beside the icon. */
        grid item it forced that track 44px wide on every row, and the name was
        left wrapping to three lines in what was left. */
     position: relative;
-    grid-template-columns: 88px minmax(0, 1fr) auto;
+    /* Three rows beside a 64px picture - name, unit price, then stepper and
+       line total - instead of the stepper taking a full-width row under the
+       picture: ~110px a line item rather than 245px. No SKU (hidden below). */
+    grid-template-columns: 64px minmax(0, 1fr) auto;
     grid-template-areas:
       "pic name  name"
-      "pic sku   sku"
       "pic price price"
-      "qty qty   total";
+      "pic qty   total";
     align-items: center;
-    column-gap: var(--tm-stack-md);
-    row-gap: 2px;
+    column-gap: 12px;
+    row-gap: 4px;
     float: none;
     inline-size: auto;
     margin: 0 0 var(--tm-stack-md);
@@ -5575,8 +5643,40 @@ so the field stays visible beside the icon. */
     text-align: start;
   }
 
-  .cart td.sku{ grid-area: sku; }
   .cart td.unit-price{ grid-area: price; }
+
+  /* `tr` in these three: the sitewide picture and stepper sizes further down
+     carry the same weight and would win on source order. */
+  .cart tr td.product-picture{
+    inline-size: auto;
+  }
+
+  /* The base sheet pads these cells 20px top and bottom (the name 5/15),
+     which the `.cart td` reset above is too light to reach: 100px of air. */
+  .cart tr td.product,
+  .cart tr td.unit-price,
+  .cart tr td.subtotal{
+    padding-block: 0;
+  }
+
+  .cart tr td.product-picture img{
+    inline-size: 64px;
+    block-size: 64px;
+  }
+
+  /* 36px stepper: still a thumb target, half the height of the old row. */
+  .cart tr .product-quantity div.up,
+  .cart tr .product-quantity div.down{
+    inline-size: 36px;
+    min-block-size: 36px;
+    font-size: 18px;
+  }
+
+  .cart tr td.quantity input,
+  .cart tr .product-quantity .qty-input{
+    inline-size: 40px;
+    min-block-size: 36px;
+  }
 
   .cart td.quantity{
     grid-area: qty;
@@ -5655,11 +5755,29 @@ so the field stays visible beside the icon. */
   object-fit: cover;
 }
 
-/* A SKU is one unbreakable token; the auto table layout still gave it the
-   narrowest track it could and wrapped "TM-DL-301" onto three lines. */
+/* Desktop rows: the base sheet pads every cell 20px top and bottom around an
+   80px picture - 126px a line item. 10px and a 56px picture: ~80px. */
+@media (min-width: 1001px){
+  .cart tbody tr td{
+    padding-block: 10px;
+  }
+
+  .cart th.product-picture,
+  .cart td.product-picture{
+    inline-size: 80px;
+  }
+
+  .cart tr td.product-picture img{
+    inline-size: 56px;
+    block-size: 56px;
+  }
+}
+
+/* The SKU is a warehouse code, not something a shopper decides on: it cost the
+   phone card a row and the desktop table a column. */
 .cart th.sku,
 .cart td.sku{
-  white-space: nowrap;
+  display: none;
 }
 
 /* The cart's own quantity control is a column: an up arrow, the box, a down
@@ -5755,27 +5873,32 @@ so the field stays visible beside the icon. */
 /* --- Coupon and gift-card boxes -------------------------------------------
    Two 36px halves floated against each other, one with the field's radius and
    one with the button's: on a phone they read as a broken control. */
-.cart-collaterals .coupon-code{
+.cart-collaterals .coupon-code,
+.opc-coupon .coupon-code{
   display: flex;
   gap: var(--tm-stack-sm);
   overflow: visible;
 }
 
 .cart-collaterals .coupon-code input[type="text"],
-.cart-collaterals .coupon-code button[type="submit"]{
+.cart-collaterals .coupon-code button[type="submit"],
+.opc-coupon .coupon-code input[type="text"],
+.opc-coupon .coupon-code button[type="submit"]{
   float: none;
   inline-size: auto;
   block-size: auto;
   min-block-size: 44px;
 }
 
-.cart-collaterals .coupon-code input[type="text"]{
+.cart-collaterals .coupon-code input[type="text"],
+.opc-coupon .coupon-code input[type="text"]{
   flex: 1 1 auto;
   min-inline-size: 0;
   margin: 0;
 }
 
-.cart-collaterals .coupon-code button[type="submit"]{
+.cart-collaterals .coupon-code button[type="submit"],
+.opc-coupon .coupon-code button[type="submit"]{
   flex: 0 0 auto;
   border-radius: var(--tm-radius);
   padding-inline: 16px;

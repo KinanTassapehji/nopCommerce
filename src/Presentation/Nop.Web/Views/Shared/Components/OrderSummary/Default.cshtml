@@ -274,7 +274,7 @@
                 {
                     <div class="cart-collaterals">
                         <div class="deals">
-                            @await Html.PartialAsync("_DiscountBox", Model.DiscountBox)
+                            @*TmTm: the coupon box lives in the checkout's order details step (_OpcSummary)*@
                             @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.OrderSummaryContentDeals, additionalData = Model })
                         </div>
                     </div>
