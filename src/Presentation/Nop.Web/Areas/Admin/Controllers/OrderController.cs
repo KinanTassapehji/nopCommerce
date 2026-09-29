@@ -239,6 +239,10 @@ public partial class OrderController : BaseAdminController
     {
         var order = await _orderService.GetOrderByCustomOrderNumberAsync(model.GoDirectlyToCustomOrderNumber);
 
+        //customers quote the code (TM-...); staff may use the internal Id
+        if (order == null && int.TryParse(model.GoDirectlyToCustomOrderNumber?.Trim().TrimStart('#'), out var orderId))
+            order = await _orderService.GetOrderByIdAsync(orderId);
+
         if (order == null)
             return await List();
 
