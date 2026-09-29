@@ -22,6 +22,7 @@
 @using Nop.Services.Orders
 
 @inject IShoppingCartService shoppingCartService
+@inject OrderSettings orderSettings
 @inject Nop.Core.IStoreContext storeContext
 @inject Nop.Core.IWorkContext workContext
 
@@ -89,7 +90,7 @@
         </span>
         <span class="mobile-tab-label">@T("Categories")</span>
     </button>
-    <a class="mobile-tab @(cartActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CART)" aria-current="@(cartActive ? "page" : null)">
+    <a class="mobile-tab tm-cart-tab @(cartActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CART)" aria-current="@(cartActive ? "page" : null)">
         <span class="mobile-tab-icon-wrap">
             <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path d="M5.6 8h12.8l.9 11.3a1.6 1.6 0 0 1-1.6 1.7H6.3a1.6 1.6 0 0 1-1.6-1.7Z" />
@@ -102,6 +103,18 @@
         </span>
         <span class="mobile-tab-label">@T("Mobile.Nav.Cart")</span>
     </a>
+    @*The cart pill: while the cart holds items it takes the cart tab's place (brand.css, off
+        this pill's own .cart-qty, which HeaderLinks keeps live after every AJAX add - so it
+        appears and disappears with no reload). Straight to checkout, unless the terms of
+        service must be accepted on the cart page first.*@
+    <a class="mobile-tab tm-cart-pill" href="@(orderSettings.TermsOfServiceOnShoppingCartPage ? Url.RouteUrl(NopRouteNames.General.CART) : Url.RouteUrl(NopRouteNames.Standard.CHECKOUT))">
+        <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M5.6 8h12.8l.9 11.3a1.6 1.6 0 0 1-1.6 1.7H6.3a1.6 1.6 0 0 1-1.6-1.7Z" />
+            <path d="M9 8V6.4a3 3 0 0 1 6 0V8" />
+        </svg>
+        <span class="tm-cart-pill-qty cart-qty" data-qty="@cartQuantity">@T("ShoppingCart.HeaderQuantity", cartQuantity)</span>
+        <span class="tm-cart-pill-label">@T("Mobile.Nav.CompleteOrder")</span>
+    </a>
     <a class="mobile-tab @(accountActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CUSTOMER_INFO)" aria-current="@(accountActive ? "page" : null)">
         <span class="mobile-tab-icon-wrap">
             <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -112,3 +125,14 @@
         <span class="mobile-tab-label">@T("Account.MyAccount")</span>
     </a>
 </nav>
+@*First page of a visit: the cart pill (phone tab bar and desktop header alike) bounces once,
+    so a cart left from last time gets noticed; brand.css only animates a pill that is showing.
+    Storage can throw (blocked site data) - then it simply doesn't bounce.*@
+<script>
+    try {
+        if (!sessionStorage.getItem('tm-cart-pill-seen')) {
+            sessionStorage.setItem('tm-cart-pill-seen', '1');
+            document.documentElement.classList.add('tm-cart-pill-bounce');
+        }
+    } catch (e) { }
+</script>

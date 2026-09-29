@@ -1213,6 +1213,137 @@ which would
   }
 }
 
+/* --- Cart pill -------------------------------------------------------------
+   While the cart holds items, the cart turns into a teal "complete order" pill:
+   the phone tab bar's cart tab (_MobileNav.cshtml) and the desktop header's
+   cart link (HeaderLinks). Both key off a .cart-qty's data-qty, which
+   HeaderLinks keeps live after every AJAX add, so no script decides it.
+   Always visible, but in space the chrome already had - no extra bar. */
+/* .mobile-tab here: the later `.mobile-tab{display:flex}` would otherwise
+   show the pill on an empty cart. */
+#topcartlink .tm-cart-pill-label,
+.mobile-tab.tm-cart-pill{
+  display: none;
+}
+
+@media (max-width: 1000px){
+  .mobile-tab-bar:has(.tm-cart-pill .cart-qty:not([data-qty="0"])) .tm-cart-tab{
+    display: none;
+  }
+
+  .mobile-tab-bar:has(.tm-cart-pill .cart-qty:not([data-qty="0"])) .tm-cart-pill{
+    display: flex;
+  }
+
+  .mobile-tab.tm-cart-pill{
+    flex: 2 1 0;
+    flex-direction: row;
+    gap: 6px;
+    align-self: center;
+    min-height: 44px;
+    padding-inline: 12px;
+    border-radius: 999px;
+    background: var(--tm-teal-deep);
+    color: var(--tm-white);
+    font-size: var(--tm-fs-label);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .mobile-tab.tm-cart-pill:hover,
+  .mobile-tab.tm-cart-pill:focus-visible{
+    background: var(--tm-teal-hover);
+    color: var(--tm-white);
+  }
+
+  .tm-cart-pill .mobile-tab-icon{
+    flex: none;
+    stroke: currentColor;
+  }
+
+  .tm-cart-pill-label{
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* The count, white on the teal pill (text is the localised "({0})"; the
+   number comes from data-qty, as on the other badges). */
+.tm-cart-pill-qty,
+#topcartlink:has(.cart-qty:not([data-qty="0"])) .cart-qty{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 20px;
+  block-size: 20px;
+  padding-inline: 5px;
+  border-radius: 999px;
+  background: var(--tm-white);
+  color: var(--tm-teal-deep);
+  font-size: 0;
+  line-height: 1;
+}
+
+.tm-cart-pill-qty::after{
+  content: attr(data-qty);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+@media (min-width: 1001px){
+  #topcartlink:has(.cart-qty:not([data-qty="0"])) .ico-cart{
+    gap: 8px;
+    width: auto;
+    padding-inline: 14px 18px;
+    border-radius: 999px;
+    background: var(--tm-teal-deep);
+    color: var(--tm-white);
+    font-size: var(--tm-fs-label);
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  #topcartlink:has(.cart-qty:not([data-qty="0"])) .ico-cart:hover,
+  #topcartlink:has(.cart-qty:not([data-qty="0"])) .ico-cart:focus{
+    background: var(--tm-teal-hover);
+    color: var(--tm-white);
+  }
+
+  #topcartlink:has(.cart-qty:not([data-qty="0"])) .ico-cart:before{
+    width: 22px;
+    height: 22px;
+  }
+
+  #topcartlink:has(.cart-qty:not([data-qty="0"])) .cart-qty{
+    position: static;
+  }
+
+  #topcartlink:has(.cart-qty:not([data-qty="0"])) .tm-cart-pill-label{
+    display: inline;
+  }
+}
+
+/* First page of a visit (_MobileNav.cshtml sets the class): one bounce. */
+.tm-cart-pill-bounce .tm-cart-pill,
+.tm-cart-pill-bounce #topcartlink .ico-cart{
+  animation: tm-cart-pill-bounce 0.9s ease 0.6s 2;
+}
+
+@keyframes tm-cart-pill-bounce{
+  0%, 100%{ transform: translateY(0); }
+  30%{ transform: translateY(-6px); }
+  55%{ transform: translateY(0); }
+  75%{ transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .tm-cart-pill-bounce .tm-cart-pill,
+  .tm-cart-pill-bounce #topcartlink .ico-cart{
+    animation: none;
+  }
+}
+
 /* --- Notifications --------------------------------------------------------
    DefaultClean pins a full-bleed coloured band to the top of the viewport, so
    "تم إضافة منتج إلى سلة التسوق" arrives looking like a browser warning strip

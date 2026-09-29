@@ -17180,6 +17180,9 @@
   <LocaleResource Name="Mobile.Nav.Cart">
     <Value>Cart</Value>
   </LocaleResource>
+  <LocaleResource Name="Mobile.Nav.CompleteOrder">
+    <Value>Complete order</Value>
+  </LocaleResource>
   <LocaleResource Name="Mobile.Nav.Home">
     <Value>Home</Value>
   </LocaleResource>

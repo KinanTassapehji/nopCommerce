@@ -17167,6 +17167,9 @@
   <LocaleResource Name="Mobile.Nav.Cart">
     <Value>السلة</Value>
   </LocaleResource>
+  <LocaleResource Name="Mobile.Nav.CompleteOrder">
+    <Value>أكمل الطلب</Value>
+  </LocaleResource>
   <LocaleResource Name="Mobile.Nav.Home">
     <Value>الرئيسية</Value>
   </LocaleResource>

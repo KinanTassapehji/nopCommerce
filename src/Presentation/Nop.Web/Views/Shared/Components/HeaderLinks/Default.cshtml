@@ -44,6 +44,8 @@
                     <span class="cart-label">@T(NopRouteNames.General.CART)</span>
                     @*data-qty carries the bare number the badge prints; the element's own text stays the localised "({0})" so it still reads correctly to a screen reader and to AjaxCart, which rewrites it wholesale*@
                     <span class="cart-qty" data-qty="@Model.ShoppingCartItems">@T("ShoppingCart.HeaderQuantity", Model.ShoppingCartItems)</span>
+                    @*TmTm: shown only while the cart holds items, when brand.css turns this link into the cart pill*@
+                    <span class="tm-cart-pill-label">@T("Mobile.Nav.CompleteOrder")</span>
                 </a>
             </li>
         }
