@@ -1,0 +1,212 @@
+﻿@model CustomerRoleModel
+
+@{
+    var categoryIcons = new Dictionary<string, string>
+    {
+        ["Security"] = "fa-shield-halved",
+        ["Orders"] = "fa-cart-shopping",
+        ["Catalog"] = "fa-book",
+        ["Customers"] = "fa-users",
+        ["Promotions"] = "fa-bullhorn",
+        ["ContentManagement"] = "fa-file-lines",
+        ["Reports"] = "fa-chart-line",
+        ["Configuration"] = "fa-gears",
+        ["System"] = "fa-server",
+        ["PublicStore"] = "fa-store"
+    };
+    string[] columns = ["View", "Edit", "Import"];
+
+    //in a plain list, "Countries" reads better than "Countries · Manage" when nearly everything in the area is "Manage"
+    string ItemLabel(CustomerRolePermissionModel permission, string dominantAction)
+    {
+        var section = string.Equals(permission.Section, permission.CategoryName, StringComparison.OrdinalIgnoreCase) ? null : permission.Section;
+        if (section is null)
+            return permission.Action;
+
+        return permission.Action == dominantAction ? section : $"{section} · {permission.Action}";
+    }
+}
+
+<style>
+    .role-permissions .card-header { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+    .role-permissions-tools { display: flex; align-items: center; gap: .75rem; margin-inline-start: auto; }
+    .role-permissions-tools input { width: 220px; }
+    .role-permissions-hint { color: var(--adm-ink-muted, #6c757d); margin-bottom: 1rem; }
+    .role-permissions input[type="checkbox"] { accent-color: var(--adm-accent, #02787e); width: 1.05rem; height: 1.05rem; margin: 0; cursor: pointer; vertical-align: middle; }
+    .permission-group { border: 1px solid var(--adm-line, #dee2e6); border-radius: var(--adm-r, 12px); margin-bottom: .6rem; overflow: hidden; }
+    .permission-group > summary { display: flex; align-items: center; gap: .6rem; padding: .7rem 1rem; background: var(--adm-surface-alt, #f4f6f9); font-weight: 600; cursor: pointer; list-style: none; user-select: none; }
+    .permission-group > summary::-webkit-details-marker { display: none; }
+    .permission-group > summary::after { content: "\25B8"; color: var(--adm-ink-muted, #6c757d); transition: transform var(--adm-t, .15s); }
+    [dir="rtl"] .permission-group > summary::after { content: "\25C2"; }
+    .permission-group[open] > summary::after { transform: rotate(90deg); }
+    [dir="rtl"] .permission-group[open] > summary::after { transform: rotate(-90deg); }
+    .permission-group[open] > summary { border-bottom: 1px solid var(--adm-line, #dee2e6); }
+    .permission-group > summary > i { color: var(--adm-accent, #02787e); width: 1.1rem; text-align: center; }
+    .permission-group-count { font-size: .8rem; font-weight: normal; color: var(--adm-ink-muted, #6c757d); min-width: 3.5rem; }
+    .permission-group-count.has-any { color: var(--adm-accent, #02787e); font-weight: 600; }
+    .permission-group-all-label { display: flex; align-items: center; gap: .4rem; margin: 0; margin-inline-start: auto; font-size: .85rem; font-weight: normal; cursor: pointer; }
+    .permission-table { width: 100%; margin: 0; table-layout: fixed; }
+    .permission-table th, .permission-table td { padding: .5rem 1rem; border-top: 1px solid var(--adm-line, #eef0f2); vertical-align: middle; }
+    .permission-table thead th { border-top: 0; font-size: .82rem; font-weight: 600; color: var(--adm-ink-muted, #6c757d); }
+    .permission-table .permission-col-name { width: 15rem; }
+    .permission-table .permission-col { width: 9.5rem; text-align: center; }
+    .permission-table tbody tr:hover { background: rgba(var(--adm-accent-rgb, 2, 120, 126), .04); }
+    .permission-cell { display: flex; justify-content: center; margin: 0; padding: .2rem 0; cursor: pointer; }
+    .role-permissions label.permission-other { display: inline-flex; align-items: center; gap: .4rem; margin: .15rem 0; margin-inline-end: 1rem; font-weight: normal; cursor: pointer; }
+    .permission-none { color: var(--adm-line, #ced4da); }
+    .permission-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .15rem 1.5rem; padding: .75rem 1rem; }
+    .role-permissions label.permission-item { display: flex; align-items: center; gap: .55rem; margin: 0; padding: .35rem 0; font-weight: normal; cursor: pointer; }
+    .permission-empty { display: none; color: var(--adm-ink-muted, #6c757d); }
+</style>
+
+<div class="card card-default role-permissions">
+    <div class="card-header">
+        <div class="card-title">
+            <i class="fas fa-key"></i>
+            @T("Admin.Customers.CustomerRoles.Permissions")
+        </div>
+        <div class="role-permissions-tools">
+            <span class="badge badge-info" id="permissions-selected-count" data-template="@T("Admin.Customers.CustomerRoles.Permissions.Selected")"></span>
+            <input type="search" id="permissions-search" class="form-control form-control-sm" placeholder="@T("Admin.Customers.CustomerRoles.Permissions.Search")" aria-label="@T("Admin.Customers.CustomerRoles.Permissions.Search")" />
+        </div>
+    </div>
+    <div class="card-body">
+        <p class="role-permissions-hint">@T("Admin.Customers.CustomerRoles.Permissions.Hint")</p>
+        @foreach (var category in Model.AvailablePermissions.GroupBy(permission => permission.Category))
+        {
+            var categoryName = category.First().CategoryName;
+            var open = category.Key == "Security" || category.Any(permission => permission.Selected);
+            var usedColumns = columns.Where(column => category.Any(permission => permission.Column == column)).ToList();
+
+            <details class="permission-group" open="@open">
+                <summary>
+                    <i class="fas @(categoryIcons.GetValueOrDefault(category.Key, "fa-puzzle-piece"))"></i>
+                    <span class="permission-group-name">@categoryName</span>
+                    <span class="permission-group-count"></span>
+                    <label class="permission-group-all-label">
+                        <input type="checkbox" class="permission-group-all" />
+                        @T("Admin.Customers.CustomerRoles.Permissions.All")
+                    </label>
+                </summary>
+
+                @if (usedColumns.Any())
+                {
+                    //the last column holds the odd ones out ("Allow impersonation") and otherwise soaks up the spare width
+                    <table class="permission-table">
+                        <thead>
+                            <tr>
+                                <th class="permission-col-name"></th>
+                                @foreach (var column in usedColumns)
+                                {
+                                    //the column is named by its own (localized) action text, e.g. "View" / "عرض"
+                                    <th class="permission-col">@category.Where(permission => permission.Column == column).GroupBy(permission => permission.Action).OrderByDescending(group => group.Count()).First().Key</th>
+                                }
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var row in category.GroupBy(permission => permission.Section))
+                            {
+                                <tr class="permission-row">
+                                    <td>@(row.Key ?? row.First().Action)</td>
+                                    @foreach (var column in usedColumns)
+                                    {
+                                        var permission = row.FirstOrDefault(item => item.Column == column);
+                                        <td class="permission-col">
+                                            @if (permission is null)
+                                            {
+                                                <span class="permission-none" aria-hidden="true">&ndash;</span>
+                                            }
+                                            else
+                                            {
+                                                <label class="permission-cell" title="@permission.Description" data-toggle="tooltip">
+                                                    <input type="checkbox" class="permission-toggle" name="@nameof(Model.SelectedPermissionIds)" value="@permission.Id" checked="@permission.Selected" aria-label="@row.Key @permission.Action" />
+                                                </label>
+                                            }
+                                        </td>
+                                    }
+                                    <td>
+                                        @foreach (var permission in row.Where(item => item.Column is null))
+                                        {
+                                            <label class="permission-other" title="@permission.Description" data-toggle="tooltip">
+                                                <input type="checkbox" class="permission-toggle" name="@nameof(Model.SelectedPermissionIds)" value="@permission.Id" checked="@permission.Selected" />
+                                                @permission.Action
+                                            </label>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    var dominant = category.GroupBy(permission => permission.Action).OrderByDescending(group => group.Count()).First();
+                    var dominantAction = dominant.Count() > 1 ? dominant.Key : null;
+
+                    <div class="permission-list">
+                        @foreach (var permission in category)
+                        {
+                            <label class="permission-item permission-row" title="@permission.Description" data-toggle="tooltip">
+                                <input type="checkbox" class="permission-toggle" name="@nameof(Model.SelectedPermissionIds)" value="@permission.Id" checked="@permission.Selected" />
+                                @ItemLabel(permission, dominantAction)
+                            </label>
+                        }
+                    </div>
+                }
+            </details>
+        }
+        <p class="permission-empty">@T("Admin.Customers.CustomerRoles.Permissions.NoMatch")</p>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        var toggles = '.permission-toggle';
+        var selectedText = $('#permissions-selected-count').data('template');
+
+        function refresh() {
+            $('.permission-group').each(function () {
+                var boxes = $(this).find(toggles);
+                var checked = boxes.filter(':checked').length;
+                $(this).find('.permission-group-count').text(checked + ' / ' + boxes.length).toggleClass('has-any', checked > 0);
+                $(this).find('.permission-group-all').prop('checked', checked === boxes.length);
+            });
+            $('#permissions-selected-count').text(selectedText.replace('{0}', $(toggles + ':checked').length).replace('{1}', $(toggles).length));
+        }
+
+        //"All" sits in the summary: tick the boxes without opening or closing the section
+        $('.permission-group-all-label').on('click', function (e) {
+            e.preventDefault();
+            var all = $(this).find('.permission-group-all');
+            all.prop('checked', !all.prop('checked'));
+            $(this).closest('.permission-group').find(toggles).prop('checked', all.prop('checked'));
+            refresh();
+        });
+        $(toggles).on('change', refresh);
+
+        //search matches the section's name, a row, or a description (bootstrap moves title into data-original-title);
+        //matching sections open, and closing the search puts them back as they were
+        var initiallyOpen = $('.permission-group').map(function () { return this.open; }).get();
+        $('#permissions-search').on('input', function () {
+            var term = this.value.trim().toLowerCase();
+            $('.permission-group').each(function (index) {
+                var groupMatches = $(this).find('.permission-group-name').text().toLowerCase().includes(term);
+                var anyRow = false;
+                $(this).find('.permission-row').each(function () {
+                    var descriptions = $(this).find('[data-toggle="tooltip"]').addBack('[data-toggle="tooltip"]').map(function () {
+                        return $(this).attr('data-original-title') || $(this).attr('title') || '';
+                    }).get().join(' ');
+                    var rowMatches = groupMatches || ($(this).text() + ' ' + descriptions).toLowerCase().includes(term);
+                    $(this).toggle(rowMatches);
+                    anyRow = anyRow || rowMatches;
+                });
+                $(this).toggle(anyRow);
+                this.open = term ? anyRow : initiallyOpen[index];
+            });
+            $('.permission-empty').toggle($('.permission-group:visible').length === 0);
+        });
+
+        refresh();
+    });
+</script>

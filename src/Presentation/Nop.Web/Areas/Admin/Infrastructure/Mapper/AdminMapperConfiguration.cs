@@ -714,7 +714,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateMap<CustomerAttributeValueModel, CustomerAttributeValue>();
 
         CreateMap<CustomerRole, CustomerRoleModel>()
+            .ForMember(model => model.AvailablePermissions, options => options.Ignore())
+            .ForMember(model => model.CanEditPermissions, options => options.Ignore())
             .ForMember(model => model.PurchasedWithProductName, options => options.Ignore())
+            .ForMember(model => model.SelectedPermissionIds, options => options.Ignore())
             .ForMember(model => model.TaxDisplayTypeValues, options => options.Ignore());
         CreateMap<CustomerRoleModel, CustomerRole>();
 

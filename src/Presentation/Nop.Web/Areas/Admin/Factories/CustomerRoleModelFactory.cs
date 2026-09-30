@@ -3,6 +3,8 @@ using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Customers;
 using Nop.Services.Catalog;
 using Nop.Services.Customers;
+using Nop.Services.Localization;
+using Nop.Services.Security;
 using Nop.Services.Seo;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.Catalog;
@@ -20,6 +22,8 @@ public partial class CustomerRoleModelFactory : ICustomerRoleModelFactory
 
     protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
     protected readonly ICustomerService _customerService;
+    protected readonly ILocalizationService _localizationService;
+    protected readonly IPermissionService _permissionService;
     protected readonly IProductService _productService;
     protected readonly IUrlRecordService _urlRecordService;
     protected readonly IWorkContext _workContext;
@@ -30,15 +34,42 @@ public partial class CustomerRoleModelFactory : ICustomerRoleModelFactory
 
     public CustomerRoleModelFactory(IBaseAdminModelFactory baseAdminModelFactory,
         ICustomerService customerService,
+        ILocalizationService localizationService,
+        IPermissionService permissionService,
         IProductService productService,
         IUrlRecordService urlRecordService,
         IWorkContext workContext)
     {
         _baseAdminModelFactory = baseAdminModelFactory;
         _customerService = customerService;
+        _localizationService = localizationService;
+        _permissionService = permissionService;
         _productService = productService;
         _urlRecordService = urlRecordService;
         _workContext = workContext;
+    }
+
+    #endregion
+
+    #region Utilities
+
+    /// <summary>
+    /// The column a core permission goes in, from its system name ("Orders.OrdersView" is View);
+    /// plugin permissions ("ManageNopStationQuickView") have no dot and never get a column
+    /// </summary>
+    protected virtual string GetPermissionColumn(string systemName)
+    {
+        if (!systemName.Contains('.'))
+            return null;
+
+        if (systemName.EndsWith("View", StringComparison.OrdinalIgnoreCase))
+            return "View";
+        if (systemName.Contains("CreateEdit", StringComparison.OrdinalIgnoreCase))
+            return "Edit";
+        if (systemName.EndsWith("ImportExport", StringComparison.OrdinalIgnoreCase))
+            return "Import";
+
+        return null;
     }
 
     #endregion
@@ -124,6 +155,75 @@ public partial class CustomerRoleModelFactory : ICustomerRoleModelFactory
 
         //prepare available tax display types
         await _baseAdminModelFactory.PrepareTaxDisplayTypesAsync(model.TaxDisplayTypeValues, false);
+
+        //system roles' permissions stay with super administrators (Access control list page)
+        var currentCustomer = await _workContext.GetCurrentCustomerAsync();
+        var isSuperAdmin = await _customerService.IsSuperAdminAsync(currentCustomer);
+        model.CanEditPermissions = isSuperAdmin || customerRole?.IsSystemRole != true;
+        if (!model.CanEditPermissions)
+            return model;
+
+        //only what the current user holds, so nobody can grant themselves more through a role
+        var permissions = await (await _permissionService.GetAllPermissionRecordsAsync())
+            .WhereAwait(async permission => isSuperAdmin || await _permissionService.AuthorizeAsync(permission.SystemName, currentCustomer))
+            .ToListAsync();
+
+        if (!excludeProperties && customerRole != null)
+        {
+            model.SelectedPermissionIds = await permissions
+                .WhereAwait(async permission => await _permissionService.AuthorizeAsync(permission.SystemName, customerRole.Id))
+                .Select(permission => permission.Id)
+                .ToListAsync();
+        }
+
+        //names read "Admin area. Orders. View": the first part repeats on almost every permission, so drop it
+        //and show "Orders" as a row with "View" in one of its columns
+        var names = new Dictionary<int, string[]>();
+        foreach (var permission in permissions)
+            names[permission.Id] = (await _localizationService.GetLocalizedPermissionNameAsync(permission))
+                .Split('.', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        var areaPrefixes = names.Values.Where(parts => parts.Length > 2).Select(parts => parts[0]).ToHashSet();
+
+        var languageId = (await _workContext.GetWorkingLanguageAsync()).Id;
+        var categoryNames = new Dictionary<string, string>();
+        foreach (var permission in permissions)
+        {
+            var parts = names[permission.Id];
+            if (parts.Length > 1 && areaPrefixes.Contains(parts[0]))
+                parts = parts[1..];
+            if (parts.Length == 0)
+                parts = [permission.Name];
+
+            if (!categoryNames.TryGetValue(permission.Category, out var categoryName))
+                categoryNames[permission.Category] = categoryName = await _localizationService.GetResourceAsync(
+                    $"Admin.Customers.CustomerRoles.Permissions.Category.{permission.Category}",
+                    languageId, false, CommonHelper.SplitCamelCaseWord(permission.Category));
+
+            model.AvailablePermissions.Add(new CustomerRolePermissionModel
+            {
+                Id = permission.Id,
+                Category = permission.Category,
+                CategoryName = categoryName,
+                Section = parts.Length == 1 ? null : string.Join(". ", parts[..^1]),
+                Action = parts[^1],
+                Column = GetPermissionColumn(permission.SystemName),
+                Description = await _localizationService.GetResourceAsync(
+                    $"Admin.Customers.CustomerRoles.Permissions.Description.{permission.SystemName}",
+                    languageId, false, string.Empty, true),
+                Selected = model.SelectedPermissionIds?.Contains(permission.Id) == true
+            });
+        }
+
+        //security (it holds "Access admin area") first, then the admin menu's order; within a section View, Edit, Import, the rest
+        string[] categoryOrder = ["Security", "Orders", "Catalog", "Customers", "Promotions", "ContentManagement",
+            "Reports", "Configuration", "System", "PublicStore"];
+        string[] columnOrder = ["View", "Edit", "Import"];
+        model.AvailablePermissions = model.AvailablePermissions
+            .OrderBy(permission => Array.IndexOf(categoryOrder, permission.Category) is var index and >= 0 ? index : categoryOrder.Length)
+            .ThenBy(permission => permission.CategoryName)
+            .ThenBy(permission => permission.Section)
+            .ThenBy(permission => Array.IndexOf(columnOrder, permission.Column) is var index and >= 0 ? index : columnOrder.Length)
+            .ToList();
 
         return model;
     }

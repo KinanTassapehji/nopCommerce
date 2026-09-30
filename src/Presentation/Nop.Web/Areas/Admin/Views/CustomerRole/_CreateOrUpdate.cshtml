@@ -146,6 +146,10 @@
                         </div>
                     </div>
                 </div>
+                @if (Model.CanEditPermissions)
+                {
+                    @await Html.PartialAsync("_CreateOrUpdate.Permissions", Model)
+                }
                 @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.CustomerRoleDetailsBottom, additionalData = Model })
             </div>
         </div>

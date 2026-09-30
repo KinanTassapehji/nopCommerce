@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
 using Nop.Core.Domain.Customers;
+using Nop.Core.Domain.Security;
 using Nop.Services.Catalog;
 using Nop.Services.Customers;
 using Nop.Services.Localization;
@@ -72,6 +73,38 @@ public partial class CustomerRoleController : BaseAdminController
             await _customerService.IsSuperAdminAsync(await _workContext.GetCurrentCustomerAsync());
     }
 
+    /// <summary>
+    /// Save the permissions ticked on the role page. Only permissions the current user holds are touched
+    /// (super administrators: all), and system roles are left to super administrators
+    /// </summary>
+    protected virtual async Task SavePermissionsAsync(CustomerRole customerRole, IList<int> selectedPermissionIds)
+    {
+        var currentCustomer = await _workContext.GetCurrentCustomerAsync();
+        var isSuperAdmin = await _customerService.IsSuperAdminAsync(currentCustomer);
+        if (customerRole.IsSystemRole && !isSuperAdmin)
+            return;
+
+        selectedPermissionIds ??= new List<int>();
+
+        foreach (var permission in await _permissionService.GetAllPermissionRecordsAsync())
+        {
+            if (!isSuperAdmin && !await _permissionService.AuthorizeAsync(permission.SystemName, currentCustomer))
+                continue;
+
+            var granted = await _permissionService.AuthorizeAsync(permission.SystemName, customerRole.Id);
+            var selected = selectedPermissionIds.Contains(permission.Id);
+
+            if (selected && !granted)
+                await _permissionService.InsertPermissionRecordCustomerRoleMappingAsync(new PermissionRecordCustomerRoleMapping
+                {
+                    PermissionRecordId = permission.Id,
+                    CustomerRoleId = customerRole.Id
+                });
+            else if (!selected && granted)
+                await _permissionService.DeletePermissionRecordCustomerRoleMappingAsync(permission.Id, customerRole.Id);
+        }
+    }
+
     #endregion
 
     #region Methods
@@ -122,6 +155,7 @@ public partial class CustomerRoleController : BaseAdminController
         {
             var customerRole = model.ToEntity<CustomerRole>();
             await _customerService.InsertCustomerRoleAsync(customerRole);
+            await SavePermissionsAsync(customerRole, model.SelectedPermissionIds);
 
             //activity log
             await _customerActivityService.InsertActivityAsync("AddNewCustomerRole",
@@ -190,6 +224,7 @@ public partial class CustomerRoleController : BaseAdminController
 
                 customerRole = model.ToEntity(customerRole);
                 await _customerService.UpdateCustomerRoleAsync(customerRole);
+                await SavePermissionsAsync(customerRole, model.SelectedPermissionIds);
 
                 //activity log
                 await _customerActivityService.InsertActivityAsync("EditCustomerRole",

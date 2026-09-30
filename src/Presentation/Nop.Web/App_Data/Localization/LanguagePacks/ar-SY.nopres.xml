@@ -11518,6 +11518,438 @@
   <LocaleResource Name="Admin.Customers.CustomerRoles.OnlySuperAdminCanManage">
     <Value>لا يمكن تعديل هذا الدور إلا من قبل مشرف عام.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions">
+    <Value>الصلاحيات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Hint">
+    <Value>حدّد ما يمكن لأصحاب هذا الدور فعله؛ مرّر المؤشر فوق أي خيار لمعرفة ما يسمح به. للسماح لهم بدخول لوحة الإدارة أصلاً، حدّد "الدخول للوحة التحكم" ضمن الأمان. لا يمكنك منح صلاحيات لا تملكها أنت.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.All">
+    <Value>الكل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Search">
+    <Value>ابحث في الصلاحيات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Selected">
+    <Value>{0} من {1} مسموحة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.NoMatch">
+    <Value>لا توجد صلاحيات مطابقة للبحث.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Security">
+    <Value>الأمان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Orders">
+    <Value>الطلبات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Catalog">
+    <Value>الكتالوج</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Customers">
+    <Value>العملاء</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Promotions">
+    <Value>العروض والتسويق</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.ContentManagement">
+    <Value>إدارة المحتوى</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Reports">
+    <Value>التقارير</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Configuration">
+    <Value>الإعدادات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.System">
+    <Value>النظام</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.PublicStore">
+    <Value>المتجر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Security.AccessAdminPanel">
+    <Value>يسمح لهم بدخول لوحة الإدارة. بدونها لا تعمل أي صلاحية أخرى في هذه الصفحة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Security.ManagePermissions">
+    <Value>فتح صفحة قائمة الصلاحيات وتغيير صلاحيات كل الأدوار، بما فيها أدوارهم.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.OrdersView">
+    <Value>عرض قائمة الطلبات وفتح أي طلب: المنتجات والعميل والعنوان وحالة الدفع.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.OrdersCreateEditDelete">
+    <Value>تعديل الطلبات: الحالة والمنتجات والأسعار والعناوين والملاحظات، وحذف الطلبات. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.OrdersImportExport">
+    <Value>تصدير الطلبات إلى Excel أو XML واستيرادها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.ShipmentsView">
+    <Value>عرض الشحنات وحالة التتبع والتسليم.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.ShipmentsCreateEditDelete">
+    <Value>إنشاء الشحنات وتحديدها كمشحونة أو مُسلّمة وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.ReturnRequestsView">
+    <Value>عرض طلبات الإرجاع التي يرسلها العملاء.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.ReturnRequestsCreateEditDelete">
+    <Value>قبول طلبات الإرجاع ورفضها وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.CurrentCartsManage">
+    <Value>عرض ما في سلال العملاء وقوائم أمنياتهم الآن.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductsView">
+    <Value>عرض قائمة المنتجات وفتح أي منتج.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductsCreateEditDelete">
+    <Value>إضافة المنتجات وتعديلها وحذفها: الأسماء والأسعار والمخزون والصور. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductsImportExport">
+    <Value>تصدير المنتجات إلى Excel أو XML واستيرادها دفعة واحدة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.CategoriesView">
+    <Value>عرض قائمة الفئات وفتح أي فئة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.CategoriesCreateEditDelete">
+    <Value>إضافة الفئات وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.CategoriesImportExport">
+    <Value>تصدير الفئات إلى Excel أو XML واستيرادها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ManufacturerView">
+    <Value>عرض قائمة المصنّعين (العلامات التجارية).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ManufacturerCreateEditDelete">
+    <Value>إضافة المصنّعين وتعديلهم وحذفهم. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ManufacturerImportExport">
+    <Value>تصدير المصنّعين إلى Excel أو XML واستيرادهم.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductAttributesView">
+    <Value>عرض سمات المنتج (خيارات مثل المقاس أو اللون).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductAttributesCreateEditDelete">
+    <Value>إضافة سمات المنتج وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.SpecificationAttributesView">
+    <Value>عرض سمات المواصفات (التفاصيل الظاهرة في جدول مواصفات المنتج).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.SpecificationAttributesCreateEditDelete">
+    <Value>إضافة سمات المواصفات وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.CheckoutAttributesView">
+    <Value>عرض سمات الدفع (أسئلة إضافية عند إتمام الطلب مثل تغليف الهدايا).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.CheckoutAttributesCreateEditDelete">
+    <Value>إضافة سمات الدفع وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductReviewsView">
+    <Value>عرض التقييمات التي يكتبها العملاء على المنتجات.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductReviewsCreateEditDelete">
+    <Value>اعتماد تقييمات المنتجات وتعديلها والرد عليها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductTagsView">
+    <Value>عرض وسوم المنتجات.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductTagsCreateEditDelete">
+    <Value>تعديل وسوم المنتجات وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.FilterLevelValueView">
+    <Value>عرض قيم مستويات الفلترة (فلاتر مثل الماركة والطراز والسنة).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.FilterLevelValueCreateEditDelete">
+    <Value>إضافة قيم مستويات الفلترة وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.FilterLevelValueImportExport">
+    <Value>تصدير قيم مستويات الفلترة إلى Excel واستيرادها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.CustomersView">
+    <Value>عرض قائمة العملاء وفتح حساباتهم.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.CustomersCreateEditDelete">
+    <Value>إضافة العملاء وتعديلهم وحذفهم، وإعادة تعيين كلمات المرور وتغيير أدوارهم. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.CustomersImportExport">
+    <Value>تصدير العملاء إلى Excel أو XML واستيرادهم.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.CustomersImpersonation">
+    <Value>الدخول إلى المتجر باسم أحد العملاء، مثلاً لإنشاء طلب نيابةً عنه.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.CustomerRolesView">
+    <Value>عرض قائمة أدوار العملاء.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.CustomerRolesCreateEditDelete">
+    <Value>إنشاء الأدوار وتعديلها وحذفها ومنحها صلاحيات (مما يملكونه فقط). يحتاج أيضاً "عرض" و"إدارة ACL".</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.VendorsView">
+    <Value>عرض قائمة البائعين.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.VendorsCreateEditDelete">
+    <Value>إضافة البائعين وتعديلهم وحذفهم. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.ActivityLogView">
+    <Value>عرض سجل النشاطات: ما فعله كل عميل ومشرف ومتى.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.ActivityLogDelete">
+    <Value>حذف سجلات من سجل النشاطات.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.ActivityLogManageTypes">
+    <Value>اختيار أنواع النشاطات التي تُسجَّل.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.GDPRManage">
+    <Value>معالجة طلبات حماية البيانات: تصدير بيانات العميل الشخصية أو حذفها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.DiscountsView">
+    <Value>عرض الخصومات وأكواد القسائم.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.DiscountsCreateEditDelete">
+    <Value>إضافة الخصومات وأكواد القسائم وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.AffiliatesView">
+    <Value>عرض المسوّقين بالعمولة والطلبات التي جلبوها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.AffiliatesCreateEditDelete">
+    <Value>إضافة المسوّقين بالعمولة وتعديلهم وحذفهم. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.CampaignsView">
+    <Value>عرض الحملات البريدية.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.CampaignsCreateEdit">
+    <Value>إنشاء الحملات البريدية وتعديلها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.CampaignsDelete">
+    <Value>حذف الحملات البريدية.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.CampaignsSendEmails">
+    <Value>إرسال حملة إلى مشتركي النشرة البريدية.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.SubscribersView">
+    <Value>عرض مشتركي النشرة البريدية.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.SubscribersCreateEditDelete">
+    <Value>إضافة مشتركي النشرة البريدية وتعديلهم وحذفهم. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.SubscribersImportExport">
+    <Value>تصدير مشتركي النشرة البريدية إلى CSV واستيرادهم.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.SubscriptionTypeView">
+    <Value>عرض قوائم النشرة البريدية (أنواع الاشتراك).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.SubscriptionTypeCreateEditDelete">
+    <Value>إضافة قوائم النشرة البريدية وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.TopicsView">
+    <Value>عرض الصفحات النصية (مثل من نحن ومعلومات الشحن والخصوصية).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.TopicsCreateEditDelete">
+    <Value>إضافة الصفحات النصية وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.MenusView">
+    <Value>عرض قوائم المتجر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.MenusCreateEditDelete">
+    <Value>إضافة قوائم المتجر وعناصرها وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.MessageTemplatesView">
+    <Value>عرض قوالب الرسائل التي يرسلها المتجر (تأكيد الطلب، الشحن، وغيرها).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.MessageTemplatesCreateEditDelete">
+    <Value>تعديل نصوص قوالب الرسائل وتفعيلها أو إيقافها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.NewsView">
+    <Value>عرض الأخبار.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.NewsCreateEditDelete">
+    <Value>إضافة الأخبار وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.NewsCommentsView">
+    <Value>عرض التعليقات على الأخبار.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.NewsCommentsCreateEditDelete">
+    <Value>اعتماد تعليقات الأخبار وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.BlogView">
+    <Value>عرض تدوينات المدونة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.BlogCreateEditDelete">
+    <Value>كتابة تدوينات المدونة وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.BlogCommentsView">
+    <Value>عرض التعليقات على التدوينات.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.BlogCommentsCreateEditDelete">
+    <Value>اعتماد تعليقات المدونة وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.PollsView">
+    <Value>عرض استطلاعات الرأي.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.PollsCreateEditDelete">
+    <Value>إضافة استطلاعات الرأي وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.ForumsView">
+    <Value>عرض المنتديات.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.ForumsCreateEditDelete">
+    <Value>إضافة المنتديات ومجموعاتها وتعديلها وحذفها. فعّل "عرض" أيضاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.SalesSummary">
+    <Value>عرض تقرير ملخص المبيعات (حسب اليوم أو الأسبوع أو الشهر).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.Bestsellers">
+    <Value>عرض تقرير المنتجات الأكثر مبيعاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.LowStock">
+    <Value>عرض المنتجات التي أوشك مخزونها على النفاد.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.ProductsNeverPurchased">
+    <Value>عرض المنتجات التي لم يشترها أحد بعد.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.CountrySales">
+    <Value>عرض المبيعات موزعة حسب الدولة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.CustomersByOrderTotal">
+    <Value>عرض العملاء الأكثر إنفاقاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.CustomersByNumberOfOrders">
+    <Value>عرض العملاء الأكثر طلباً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.RegisteredCustomers">
+    <Value>عرض عدد العملاء المسجلين خلال الفترات الزمنية.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageSettings">
+    <Value>تغيير صفحات إعدادات المتجر (الكتالوج والطلبات والعملاء وغيرها).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageAdvancedSettings">
+    <Value>تغيير الإعدادات المتقدمة: قائمة كل الإعدادات الخام، ومستويات الفلترة، وحماية البيانات، وقيود الدفع.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageStores">
+    <Value>تغيير بيانات المتجر مثل الاسم والرابط وSSL.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageCountries">
+    <Value>إضافة الدول ومناطقها وتعديلها وحذفها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageLanguages">
+    <Value>إضافة اللغات ونصوصها المترجمة وتعديلها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageCurrencies">
+    <Value>إضافة العملات وأسعار الصرف وتعديلها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManagePaymentMethods">
+    <Value>تفعيل طرق الدفع أو إيقافها وضبط إعداداتها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageShippingSettings">
+    <Value>ضبط طرق الشحن وأسعاره ومواعيد التسليم.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageTaxSettings">
+    <Value>ضبط الضرائب وفئاتها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageEmailAccounts">
+    <Value>ضبط حسابات البريد التي يرسل منها المتجر الرسائل.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageACL">
+    <Value>تحديد الأدوار التي يمكنها رؤية منتجات أو فئات أو مصنّعين أو صفحات معيّنة. مطلوبة أيضاً لفتح صفحات الأدوار.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManagePlugins">
+    <Value>تثبيت الإضافات وإلغاء تثبيتها وضبط إعداداتها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManagePluginAndWidgetLists">
+    <Value>عرض قوائم الإضافات والودجات وتفعيلها أو إيقافها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageWidgets">
+    <Value>تفعيل الودجات أو إيقافها وضبط إعداداتها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.System.ManageSystemLog">
+    <Value>عرض سجل أخطاء النظام ومسحه.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.System.ManageMessageQueue">
+    <Value>عرض قائمة الرسائل الصادرة وإعادة إرسالها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.System.ManageMaintenance">
+    <Value>تنفيذ أعمال الصيانة: حذف حسابات الزوار، ومسح الذاكرة المؤقتة، ونسخ قاعدة البيانات احتياطياً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.System.ManageScheduleTasks">
+    <Value>تشغيل المهام المجدولة وتعديلها وإيقافها مؤقتاً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.System.ManageAppSettings">
+    <Value>تغيير إعدادات الخادم (appsettings.json): قاعدة البيانات والذاكرة المؤقتة والاستضافة. أي خطأ قد يوقف المتجر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.System.HtmlEditor.ManagePictures">
+    <Value>رفع الصور وإدارتها داخل محرر النصوص.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.PublicStore.PublicStoreAllowNavigation">
+    <Value>تصفح واجهة المتجر. بدونها لا يرون إلا صفحة تسجيل الدخول.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.PublicStore.DisplayPrices">
+    <Value>رؤية أسعار المنتجات في المتجر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.PublicStore.EnableShoppingCart">
+    <Value>إضافة المنتجات إلى السلة وإتمام الطلبات.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.PublicStore.AccessClosedStore">
+    <Value>تصفح المتجر أثناء إغلاقه للصيانة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationCoreConfiguration">
+    <Value>تغيير إعدادات إضافة NopStation الأساسية.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationCoreLicense">
+    <Value>عرض تراخيص إضافات NopStation وتغييرها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationFeatures">
+    <Value>تفعيل ميزات NopStation أو إيقافها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ShowNopStationDocumentations">
+    <Value>عرض روابط المساعدة والتوثيق الخاصة بـ NopStation.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationSmsConfiguration">
+    <Value>ضبط إعدادات إرسال الرسائل النصية.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationSmsProviders">
+    <Value>اختيار مزوّد الرسائل النصية وضبط إعداداته.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationSmsQueue">
+    <Value>عرض الرسائل النصية في قائمة الانتظار وإعادة إرسالها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationSmsTemplates">
+    <Value>تعديل نصوص الرسائل النصية.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationProductTab">
+    <Value>إدارة التبويبات الإضافية الظاهرة في صفحات المنتجات.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageAdminReportExporterConfiguration">
+    <Value>ضبط إعدادات إضافة تصدير التقارير.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageAdminReportExporter">
+    <Value>تصدير تقارير الإدارة إلى ملفات.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationSliders">
+    <Value>إنشاء العارضات المتحركة في المتجر وتعديلها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationCancelOrder">
+    <Value>ضبط إمكانية إلغاء العملاء لطلباتهم ومتى.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageCustomerReminders">
+    <Value>ضبط رسائل التذكير للعملاء (السلال المتروكة والطلبات المعلقة).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationMegaMenu">
+    <Value>ضبط القائمة الكبرى في المتجر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationOCarousels">
+    <Value>إنشاء عارضات المنتجات الدوّارة وتعديلها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationPictureZoom">
+    <Value>ضبط تكبير الصور في صفحات المنتجات.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationPrevNextProduct">
+    <Value>ضبط أزرار المنتج السابق والتالي.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationProduct360View">
+    <Value>إدارة عرض المنتجات بزاوية 360°.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationProductRibbon">
+    <Value>إنشاء أشرطة المنتجات (علامات مثل "جديد" أو "تخفيض") وتعديلها.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationQuickView">
+    <Value>ضبط نافذة العرض السريع للمنتجات.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.OnlySuperAdminCanManageSuperAdmin">
     <Value>لا يمكن تعديل حسابات المشرف العام أو دوره إلا من قبل مشرف عام.</Value>
   </LocaleResource>

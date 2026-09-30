@@ -11516,6 +11516,438 @@
   <LocaleResource Name="Admin.Customers.CustomerRoles.OnlySuperAdminCanManage">
     <Value>Only a super administrator can change this role.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions">
+    <Value>Permissions</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Hint">
+    <Value>Tick what people in this role may do; hover over a box to see what it allows. To let them into the admin area at all, tick "Access admin area" under Security. You can only grant permissions you have yourself.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.All">
+    <Value>All</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Search">
+    <Value>Search permissions</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Selected">
+    <Value>{0} of {1} allowed</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.NoMatch">
+    <Value>No permissions match your search.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Security">
+    <Value>Security</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Orders">
+    <Value>Orders</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Catalog">
+    <Value>Catalog</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Customers">
+    <Value>Customers</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Promotions">
+    <Value>Promotions</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.ContentManagement">
+    <Value>Content management</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Reports">
+    <Value>Reports</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.Configuration">
+    <Value>Configuration</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.System">
+    <Value>System</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.PublicStore">
+    <Value>Public store</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Security.AccessAdminPanel">
+    <Value>Lets them sign in to the admin area. Without it, nothing else on this page has any effect.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Security.ManagePermissions">
+    <Value>Open the Access control list page and change what every role may do, including their own.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.OrdersView">
+    <Value>See the order list and open orders: items, customer, address and payment status.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.OrdersCreateEditDelete">
+    <Value>Change orders: status, items, prices, addresses, notes, and delete orders. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.OrdersImportExport">
+    <Value>Export orders to Excel or XML and import them back.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.ShipmentsView">
+    <Value>See shipments and their tracking and delivery status.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.ShipmentsCreateEditDelete">
+    <Value>Create shipments, mark them shipped or delivered, and delete them. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.ReturnRequestsView">
+    <Value>See the return requests customers send.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.ReturnRequestsCreateEditDelete">
+    <Value>Accept, reject, edit and delete return requests. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Orders.CurrentCartsManage">
+    <Value>See what customers have in their carts and wishlists right now.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductsView">
+    <Value>See the product list and open products.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductsCreateEditDelete">
+    <Value>Add, edit and delete products: names, prices, stock, pictures. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductsImportExport">
+    <Value>Export products to Excel or XML and import them in bulk.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.CategoriesView">
+    <Value>See the category list and open categories.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.CategoriesCreateEditDelete">
+    <Value>Add, edit and delete categories. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.CategoriesImportExport">
+    <Value>Export categories to Excel or XML and import them.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ManufacturerView">
+    <Value>See the manufacturer (brand) list.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ManufacturerCreateEditDelete">
+    <Value>Add, edit and delete manufacturers. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ManufacturerImportExport">
+    <Value>Export manufacturers to Excel or XML and import them.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductAttributesView">
+    <Value>See product attributes (options such as size or colour).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductAttributesCreateEditDelete">
+    <Value>Add, edit and delete product attributes. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.SpecificationAttributesView">
+    <Value>See specification attributes (the details shown in a product's specs table).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.SpecificationAttributesCreateEditDelete">
+    <Value>Add, edit and delete specification attributes. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.CheckoutAttributesView">
+    <Value>See checkout attributes (extra questions asked at checkout, such as gift wrapping).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.CheckoutAttributesCreateEditDelete">
+    <Value>Add, edit and delete checkout attributes. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductReviewsView">
+    <Value>See the reviews customers write on products.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductReviewsCreateEditDelete">
+    <Value>Approve, edit, reply to and delete product reviews. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductTagsView">
+    <Value>See product tags.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.ProductTagsCreateEditDelete">
+    <Value>Edit and delete product tags. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.FilterLevelValueView">
+    <Value>See filter level values (the make, model and year style filters).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.FilterLevelValueCreateEditDelete">
+    <Value>Add, edit and delete filter level values. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Catalog.FilterLevelValueImportExport">
+    <Value>Export filter level values to Excel and import them.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.CustomersView">
+    <Value>See the customer list and open customer accounts.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.CustomersCreateEditDelete">
+    <Value>Add, edit and delete customers, reset passwords and change their roles. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.CustomersImportExport">
+    <Value>Export customers to Excel or XML and import them.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.CustomersImpersonation">
+    <Value>Sign in to the store as a customer, for example to place an order for them.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.CustomerRolesView">
+    <Value>See the list of customer roles.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.CustomerRolesCreateEditDelete">
+    <Value>Create, edit and delete roles and give them permissions (only ones they have). Also needs View and "ACL. Manage".</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.VendorsView">
+    <Value>See the vendor list.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.VendorsCreateEditDelete">
+    <Value>Add, edit and delete vendors. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.ActivityLogView">
+    <Value>See the activity log: what each customer and admin did, and when.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.ActivityLogDelete">
+    <Value>Delete entries from the activity log.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.ActivityLogManageTypes">
+    <Value>Choose which kinds of activity get logged.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Customers.GDPRManage">
+    <Value>Handle GDPR requests: export or delete a customer's personal data.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.DiscountsView">
+    <Value>See discounts and coupon codes.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.DiscountsCreateEditDelete">
+    <Value>Add, edit and delete discounts and coupon codes. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.AffiliatesView">
+    <Value>See affiliates and the orders they brought in.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.AffiliatesCreateEditDelete">
+    <Value>Add, edit and delete affiliates. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.CampaignsView">
+    <Value>See email campaigns.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.CampaignsCreateEdit">
+    <Value>Create and edit email campaigns. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.CampaignsDelete">
+    <Value>Delete email campaigns.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.CampaignsSendEmails">
+    <Value>Send a campaign to newsletter subscribers.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.SubscribersView">
+    <Value>See newsletter subscribers.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.SubscribersCreateEditDelete">
+    <Value>Add, edit and delete newsletter subscribers. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.SubscribersImportExport">
+    <Value>Export newsletter subscribers to CSV and import them.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.SubscriptionTypeView">
+    <Value>See newsletter lists (subscription types).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Promotions.SubscriptionTypeCreateEditDelete">
+    <Value>Add, edit and delete newsletter lists. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.TopicsView">
+    <Value>See topics (pages such as About us, Shipping info, Privacy).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.TopicsCreateEditDelete">
+    <Value>Add, edit and delete topic pages. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.MenusView">
+    <Value>See the store's menus.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.MenusCreateEditDelete">
+    <Value>Add, edit and delete the store's menus and their items. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.MessageTemplatesView">
+    <Value>See the email templates the store sends (order placed, shipped, and so on).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.MessageTemplatesCreateEditDelete">
+    <Value>Edit the wording of email templates and turn them on or off. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.NewsView">
+    <Value>See news items.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.NewsCreateEditDelete">
+    <Value>Add, edit and delete news items. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.NewsCommentsView">
+    <Value>See comments on news items.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.NewsCommentsCreateEditDelete">
+    <Value>Approve, edit and delete news comments. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.BlogView">
+    <Value>See blog posts.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.BlogCreateEditDelete">
+    <Value>Write, edit and delete blog posts. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.BlogCommentsView">
+    <Value>See comments on blog posts.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.BlogCommentsCreateEditDelete">
+    <Value>Approve, edit and delete blog comments. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.PollsView">
+    <Value>See polls.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.PollsCreateEditDelete">
+    <Value>Add, edit and delete polls. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.ForumsView">
+    <Value>See forums.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ContentManagement.ForumsCreateEditDelete">
+    <Value>Add, edit and delete forums and forum groups. Also turn on View.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.SalesSummary">
+    <Value>See the sales summary report (sales by day, week or month).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.Bestsellers">
+    <Value>See the best-selling products report.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.LowStock">
+    <Value>See products that are running out of stock.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.ProductsNeverPurchased">
+    <Value>See products nobody has bought yet.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.CountrySales">
+    <Value>See sales broken down by country.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.CustomersByOrderTotal">
+    <Value>See the customers who spent the most.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.CustomersByNumberOfOrders">
+    <Value>See the customers who ordered most often.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Reports.RegisteredCustomers">
+    <Value>See how many customers registered over time.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageSettings">
+    <Value>Change the store's settings pages (catalog, orders, customers, and so on).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageAdvancedSettings">
+    <Value>Change advanced settings: the raw list of all settings, filter levels, GDPR and payment restrictions.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageStores">
+    <Value>Change store details such as name, URL and SSL.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageCountries">
+    <Value>Add, edit and delete countries and their states or provinces.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageLanguages">
+    <Value>Add and edit languages and their translated texts.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageCurrencies">
+    <Value>Add and edit currencies and exchange rates.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManagePaymentMethods">
+    <Value>Turn payment methods on or off and configure them.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageShippingSettings">
+    <Value>Configure shipping methods, rates and delivery dates.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageTaxSettings">
+    <Value>Configure taxes and tax categories.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageEmailAccounts">
+    <Value>Configure the email accounts the store sends mail from.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageACL">
+    <Value>Choose which roles can see specific products, categories, manufacturers and pages. Also needed to open role pages.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManagePlugins">
+    <Value>Install, uninstall and configure plugins.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManagePluginAndWidgetLists">
+    <Value>See the lists of plugins and widgets and turn them on or off.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.Configuration.ManageWidgets">
+    <Value>Turn widgets on or off and configure them.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.System.ManageSystemLog">
+    <Value>See and clear the system error log.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.System.ManageMessageQueue">
+    <Value>See and resend the queue of outgoing emails.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.System.ManageMaintenance">
+    <Value>Run maintenance: delete guest accounts, clear caches, back up the database.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.System.ManageScheduleTasks">
+    <Value>Run, edit and pause scheduled background tasks.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.System.ManageAppSettings">
+    <Value>Change server settings (appsettings.json): database, caching, hosting. Mistakes can take the store down.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.System.HtmlEditor.ManagePictures">
+    <Value>Upload and manage pictures inside the text editor.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.PublicStore.PublicStoreAllowNavigation">
+    <Value>Browse the storefront. Without it they only see the sign-in page.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.PublicStore.DisplayPrices">
+    <Value>See product prices in the store.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.PublicStore.EnableShoppingCart">
+    <Value>Add products to the cart and place orders.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.PublicStore.AccessClosedStore">
+    <Value>Browse the store while it is closed for maintenance.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationCoreConfiguration">
+    <Value>Change the NopStation core plugin's settings.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationCoreLicense">
+    <Value>See and change NopStation plugin licenses.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationFeatures">
+    <Value>Turn NopStation features on or off.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ShowNopStationDocumentations">
+    <Value>See the NopStation help and documentation links.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationSmsConfiguration">
+    <Value>Configure SMS sending.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationSmsProviders">
+    <Value>Choose and configure the SMS provider.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationSmsQueue">
+    <Value>See and resend queued SMS messages.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationSmsTemplates">
+    <Value>Edit the wording of SMS messages.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationProductTab">
+    <Value>Manage the extra tabs shown on product pages.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageAdminReportExporterConfiguration">
+    <Value>Configure the report exporter plugin.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageAdminReportExporter">
+    <Value>Export admin reports to files.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationSliders">
+    <Value>Create and edit the sliders shown around the store.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationCancelOrder">
+    <Value>Configure whether and when customers can cancel their own orders.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageCustomerReminders">
+    <Value>Configure reminder emails to customers (abandoned carts, pending orders).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationMegaMenu">
+    <Value>Configure the store's mega menu.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationOCarousels">
+    <Value>Create and edit product carousels.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationPictureZoom">
+    <Value>Configure picture zoom on product pages.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationPrevNextProduct">
+    <Value>Configure the previous/next product buttons.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationProduct360View">
+    <Value>Manage 360° product views.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationProductRibbon">
+    <Value>Create and edit product ribbons (labels such as "New" or "Sale").</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationQuickView">
+    <Value>Configure the quick view popup for products.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.OnlySuperAdminCanManageSuperAdmin">
     <Value>Only a super administrator can change super administrator accounts or the super administrators role.</Value>
   </LocaleResource>
