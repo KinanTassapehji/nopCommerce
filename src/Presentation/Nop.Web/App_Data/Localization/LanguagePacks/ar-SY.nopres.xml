@@ -18527,7 +18527,7 @@
     <Value>تمت إضافة المنتج إلى سلة التسوق الخاصة بك</Value>
   </LocaleResource>
   <LocaleResource Name="Products.ProductHasBeenAddedToTheCart.Link">
-    <Value><![CDATA[تم إضافة المنتج إلى  <a href="{0}">سلةا لتسوق</a>]]></Value>
+    <Value><![CDATA[تمت إضافة المنتج إلى <a href="{0}">سلة التسوق</a>]]></Value>
   </LocaleResource>
   <LocaleResource Name="Products.Qty">
     <Value>الكمية</Value>
