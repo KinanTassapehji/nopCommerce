@@ -924,6 +924,47 @@ which would
   stroke-linejoin: round;
 }
 
+/* The cart line's "Edit" (back to the product page to change its options):
+   the same pencil pill as the address cards, instead of the base sheet's blue
+   text link. 32px tall, so it is a comfortable tap on phones. */
+.cart .product .edit-item{
+  margin-block: 8px 0;
+}
+
+.cart .product .edit-item a{
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-block-size: 32px;
+  padding: 4px 12px;
+  border: 1px solid var(--tm-teal-border);
+  border-radius: 999px;
+  background: var(--tm-surface);
+  color: var(--tm-teal-deep);
+  font-size: var(--tm-fs-label);
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.cart .product .edit-item a:hover,
+.cart .product .edit-item a:focus-visible{
+  border-color: var(--tm-teal-deep);
+  background: var(--tm-teal-tint);
+  color: var(--tm-teal-deep);
+  text-decoration: none;
+}
+
+.cart .product .edit-item svg{
+  inline-size: 16px;
+  block-size: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+
 /* The address form: fields as on the account pages (see "Fields"), without
    the base sheet's grey band. */
 .checkout-page .enter-address .edit-address{
@@ -1316,6 +1357,19 @@ body.tm-buybar-on .tm-cart-float:has(.cart-qty){
   white-space: nowrap;
 }
 
+/* The cart subtotal, read from the mini cart (_MobileNav.cshtml). It keeps its
+   width; on a narrow phone the label shortens first. */
+.tm-cart-float-total{
+  flex: none;
+  font-weight: 500;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.tm-cart-float-total[hidden]{
+  display: none;
+}
+
 /* The count: white on teal (text is the localised "({0})"; the number comes
    from data-qty, as on the other badges). */
 .tm-cart-float .cart-qty{
@@ -1354,27 +1408,43 @@ body.tm-buybar-on .tm-cart-float:has(.cart-qty){
   transform: scaleX(-1);
 }
 
+/* ✕ is its own strip at the end of the pill, behind a thin divider, so "go"
+   (the arrow) and "close" never read as a pair of look-alike icons. It runs
+   the pill's full height out to its rounded end (the negative margins undo
+   the card's 6px padding): a 52px-tall, 48px-wide target on phones. */
 .tm-cart-float-close{
   display: grid;
   place-items: center;
   flex: none;
-  inline-size: 36px;
-  block-size: 36px;
+  align-self: stretch;
+  inline-size: 48px;
+  margin-block: -6px;
+  margin-inline-end: -6px;
   padding: 0;
   border: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
-  color: var(--tm-white);
+  border-inline-start: 1px solid rgba(255, 255, 255, 0.28);
+  border-start-end-radius: 999px;
+  border-end-end-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .tm-cart-float-close:hover{
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--tm-white);
+}
+
+.tm-cart-float-close:focus-visible{
+  outline: 2px solid var(--tm-white);
+  outline-offset: -4px;
 }
 
 .tm-cart-float-close svg{
-  inline-size: 16px;
-  block-size: 16px;
+  inline-size: 14px;
+  block-size: 14px;
+  stroke-width: 2.25;
 }
 
 /* Phones: full width, just above the tab bar (52px tabs + 6px padding each
@@ -1430,10 +1500,50 @@ html:not(.tm-cart-float-closed) body:not(.tm-buybar-on):has(.tm-cart-float .cart
   75%{ transform: translateY(-3px); }
 }
 
+/* An item went in (_MobileNav.cshtml adds the class): the card hops and the
+   count swells, so the add is seen even when no notification is read. */
+.tm-cart-float.tm-cart-float-bump:has(.cart-qty:not([data-qty="0"])){
+  animation: tm-cart-float-bump 0.45s ease;
+}
+
+.tm-cart-float.tm-cart-float-bump .cart-qty{
+  animation: tm-cart-qty-pop 0.45s ease;
+}
+
+@keyframes tm-cart-float-bump{
+  0%, 100%{ transform: translateY(0); }
+  40%{ transform: translateY(-8px); }
+  70%{ transform: translateY(1px); }
+}
+
+@keyframes tm-cart-qty-pop{
+  0%, 100%{ transform: scale(1); }
+  40%{ transform: scale(1.35); }
+}
+
+/* Scrolling down the page: the card slides out of the way; scrolling up, or
+   stopping, brings it back (_MobileNav.cshtml). */
+.tm-cart-float:has(.cart-qty:not([data-qty="0"])){
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.tm-cart-float.tm-cart-float-away:has(.cart-qty:not([data-qty="0"])){
+  opacity: 0;
+  transform: translateY(24px);
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce){
   .tm-cart-float:has(.cart-qty:not([data-qty="0"])),
-  .tm-cart-pill-bounce .tm-cart-float:has(.cart-qty:not([data-qty="0"])){
+  .tm-cart-pill-bounce .tm-cart-float:has(.cart-qty:not([data-qty="0"])),
+  .tm-cart-float.tm-cart-float-bump:has(.cart-qty:not([data-qty="0"])),
+  .tm-cart-float.tm-cart-float-bump .cart-qty{
     animation: none;
+  }
+
+  /* no slide, just out of sight */
+  .tm-cart-float.tm-cart-float-away:has(.cart-qty:not([data-qty="0"])){
+    transform: none;
   }
 }
 

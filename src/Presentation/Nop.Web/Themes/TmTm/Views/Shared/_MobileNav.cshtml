@@ -126,6 +126,7 @@
         <a class="tm-cart-float-link" href="@(orderSettings.TermsOfServiceOnShoppingCartPage ? Url.RouteUrl(NopRouteNames.General.CART) : Url.RouteUrl(NopRouteNames.Standard.CHECKOUT))">
             <span class="cart-qty" data-qty="@cartQuantity">@T("ShoppingCart.HeaderQuantity", cartQuantity)</span>
             <span class="tm-cart-float-label">@T("Mobile.Nav.CompleteOrder")</span>
+            <span class="tm-cart-float-total" hidden></span>
             <svg class="tm-cart-float-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path d="M9 5l7 7-7 7" />
             </svg>
@@ -154,16 +155,60 @@
     } catch (e) { }
 
     (function () {
-        var qty = document.querySelector('.tm-cart-float .cart-qty');
+        var card = document.querySelector('.tm-cart-float');
+        var qty = card && card.querySelector('.cart-qty');
         if (!qty) return;
+        var total = card.querySelector('.tm-cart-float-total');
+
+        //the total is the mini cart's subtotal: the header renders it on every page and AjaxCart swaps
+        //in a fresh #flyout-cart after each add, so the card reads it rather than asking the server again
+        function syncTotal() {
+            var subtotal = document.querySelector('#flyout-cart .totals strong');
+            var text = subtotal ? subtotal.textContent.trim() : '';
+            total.textContent = text;
+            total.hidden = !text;
+        }
+
         var last = parseInt(qty.getAttribute('data-qty'), 10) || 0;
         new MutationObserver(function () {
             var now = parseInt(qty.getAttribute('data-qty'), 10) || 0;
             if (now > last) {
                 document.documentElement.classList.remove('tm-cart-float-closed');
                 try { sessionStorage.removeItem('tm-cart-float-closed'); } catch (e) { }
+                //an item went in: the card comes back into view and gives a small hop
+                card.classList.remove('tm-cart-float-away', 'tm-cart-float-bump');
+                void card.offsetWidth;
+                card.classList.add('tm-cart-float-bump');
             }
             last = now;
         }).observe(qty, { attributes: true, attributeFilter: ['data-qty'] });
+        card.addEventListener('animationend', function (e) {
+            if (e.animationName === 'tm-cart-float-bump') card.classList.remove('tm-cart-float-bump');
+        });
+
+        function watchFlyout() {
+            syncTotal();
+            var flyout = document.querySelector('#flyout-cart');
+            //replaceWith swaps the node itself, so watch its parent
+            if (flyout && flyout.parentNode)
+                new MutationObserver(syncTotal).observe(flyout.parentNode, { childList: true, subtree: true });
+        }
+        if (document.readyState === 'loading')
+            document.addEventListener('DOMContentLoaded', watchFlyout);
+        else
+            watchFlyout();
+
+        //out of the way while the shopper scrolls down the page, back on scrolling up or stopping
+        var lastY = window.scrollY, settle = 0;
+        window.addEventListener('scroll', function () {
+            var y = window.scrollY, delta = y - lastY;
+            if (Math.abs(delta) < 8) return;
+            card.classList.toggle('tm-cart-float-away', delta > 0 && y > 120);
+            lastY = y;
+            clearTimeout(settle);
+            settle = setTimeout(function () { card.classList.remove('tm-cart-float-away'); }, 900);
+        }, { passive: true });
+        //a keyboard user tabbing to it gets it back at once
+        card.addEventListener('focusin', function () { card.classList.remove('tm-cart-float-away'); });
     })();
 </script>
