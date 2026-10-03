@@ -1323,10 +1323,8 @@ which would
   animation: tm-cart-float-in 0.25s ease;
 }
 
-/* Put away with ✕ (until the next visit or the next item added); and out of
-   the way wherever a sticky buy bar takes the bottom of the screen. */
-.tm-cart-float-closed .tm-cart-float:has(.cart-qty),
-body.tm-buybar-on .tm-cart-float:has(.cart-qty){
+/* Put away with ✕ (until the next visit or the next item added). */
+.tm-cart-float-closed .tm-cart-float:has(.cart-qty){
   display: none;
 }
 
@@ -1455,18 +1453,26 @@ body.tm-buybar-on .tm-cart-float:has(.cart-qty){
     inset-block-end: calc(64px + 10px + env(safe-area-inset-bottom, 0px));
     inline-size: auto;
   }
+
+  /* The product page's buy bar carries its own "complete order" button
+     (.tm-buybar-checkout), so the card steps aside rather than stacking a
+     second bar on top of it. Phones only: the buy bar never shows above
+     1000px, and the card stays put there. */
+  body.tm-buybar-on .tm-cart-float:has(.cart-qty){
+    display: none;
+  }
 }
 
 /* Room for the card under the page, so the end of every page (a form's submit
    button, the footer) scrolls clear of it instead of sitting underneath. On
    phones it adds to the tab bar's 72px (78px installed) - same rules, one
    card's height (52px + its 10px gap) more. */
-html:not(.tm-cart-float-closed) body:not(.tm-buybar-on):has(.tm-cart-float .cart-qty:not([data-qty="0"])) .master-wrapper-page{
+html:not(.tm-cart-float-closed) body:has(.tm-cart-float .cart-qty:not([data-qty="0"])) .master-wrapper-page{
   padding-block-end: 88px;
 }
 
 @media (max-width: 1000px){
-  html:not(.tm-cart-float-closed) body:not(.tm-buybar-on):has(.tm-cart-float .cart-qty:not([data-qty="0"])) .master-wrapper-page{
+  html:not(.tm-cart-float-closed) body:has(.tm-cart-float .cart-qty:not([data-qty="0"])) .master-wrapper-page{
     padding-block-end: calc(72px + 64px + env(safe-area-inset-bottom, 0px));
   }
 
@@ -1477,7 +1483,7 @@ html:not(.tm-cart-float-closed) body:not(.tm-buybar-on):has(.tm-cart-float .cart
 }
 
 @media (max-width: 1000px) and (display-mode: standalone){
-  html:not(.tm-cart-float-closed) body:not(.tm-buybar-on):has(.tm-cart-float .cart-qty:not([data-qty="0"])) .master-wrapper-page{
+  html:not(.tm-cart-float-closed) body:has(.tm-cart-float .cart-qty:not([data-qty="0"])) .master-wrapper-page{
     padding-block-end: calc(78px + 64px + env(safe-area-inset-bottom, 0px));
   }
 }
@@ -1521,29 +1527,12 @@ html:not(.tm-cart-float-closed) body:not(.tm-buybar-on):has(.tm-cart-float .cart
   40%{ transform: scale(1.35); }
 }
 
-/* Scrolling down the page: the card slides out of the way; scrolling up, or
-   stopping, brings it back (_MobileNav.cshtml). */
-.tm-cart-float:has(.cart-qty:not([data-qty="0"])){
-  transition: transform 0.25s ease, opacity 0.25s ease;
-}
-
-.tm-cart-float.tm-cart-float-away:has(.cart-qty:not([data-qty="0"])){
-  opacity: 0;
-  transform: translateY(24px);
-  pointer-events: none;
-}
-
 @media (prefers-reduced-motion: reduce){
   .tm-cart-float:has(.cart-qty:not([data-qty="0"])),
   .tm-cart-pill-bounce .tm-cart-float:has(.cart-qty:not([data-qty="0"])),
   .tm-cart-float.tm-cart-float-bump:has(.cart-qty:not([data-qty="0"])),
   .tm-cart-float.tm-cart-float-bump .cart-qty{
     animation: none;
-  }
-
-  /* no slide, just out of sight */
-  .tm-cart-float.tm-cart-float-away:has(.cart-qty:not([data-qty="0"])){
-    transform: none;
   }
 }
 
@@ -3360,9 +3349,10 @@ so the field stays visible beside the icon. */
   cursor: pointer;
 }
 
-/* Two targets in one row: the label navigates to the category, the chevron
-   opens its children. Stock nopCommerce nests the link inside the toggle, so
-   without this split a tap on the name both navigated and expanded. */
+/* Two targets in one row: the chevron opens and closes the children; the
+   label opens them on a first tap and navigates on the next (_MobileNav.cshtml).
+   Stock nopCommerce nests the link inside the toggle, so without that script a
+   tap on the name both navigated and expanded. */
 .tm-sheet .menu__link{
   flex: 1 1 auto;
   min-inline-size: 0;
@@ -5691,6 +5681,68 @@ so the field stays visible beside the icon. */
     padding-inline: 16px;
     font-size: var(--tm-fs-body);
     text-transform: none;
+  }
+
+  /* "Complete order", once the cart holds items: the two actions split the
+     bar evenly, and the price gives up its place - it is a scroll away in the
+     buy box, and three items do not fit a 360px phone. Outlined, so the bar
+     still has one filled button. */
+  .tm-buybar-checkout{
+    display: none;
+  }
+
+  .tm-buybar-checkout:has(.cart-qty:not([data-qty="0"])){
+    display: flex;
+    flex: 1 1 0;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-inline-size: 0;
+    min-height: 48px;
+    padding-inline: 12px;
+    border: 2px solid var(--tm-teal-deep);
+    border-radius: var(--tm-radius);
+    background: var(--tm-white);
+    color: var(--tm-teal-deep);
+    font-size: var(--tm-fs-body);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .tm-buybar:has(.tm-buybar-checkout .cart-qty:not([data-qty="0"])) .tm-buybar-price{
+    display: none;
+  }
+
+  .tm-buybar:has(.tm-buybar-checkout .cart-qty:not([data-qty="0"])) .tm-buybar-cta{
+    flex: 1 1 0;
+  }
+
+  .tm-buybar-checkout-label{
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* the count as a filled badge, like the floating card's */
+  .tm-buybar-checkout .cart-qty{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    min-inline-size: 22px;
+    block-size: 22px;
+    padding-inline: 5px;
+    border-radius: 999px;
+    background: var(--tm-teal-deep);
+    color: var(--tm-white);
+    font-size: 0;
+    line-height: 1;
+  }
+
+  .tm-buybar-checkout .cart-qty::after{
+    content: attr(data-qty);
+    font-size: 12px;
+    font-weight: 700;
   }
 
   .mobile-tab-bar{

@@ -144,6 +144,38 @@
     visit - until an item is added, when the reminder is relevant again: the count going up (its
     data-qty, kept live by HeaderLinks) brings it back. Storage can throw (blocked site data) -
     then there is simply no bounce, and ✕ lasts for the page.*@
+@*Categories sheet: a parent category's name opens its children on the first tap and goes to the
+    category on the next, once they are showing - so a shopper sees what is inside before landing
+    on a page. Capture phase, so this runs before public.menu.js's toggle on the row: a first tap
+    keeps the link from navigating and lets the toggle expand; a second stops the toggle, so the
+    row does not fold shut as the page leaves. The chevron still opens and closes as before.*@
+<script>
+    document.getElementById('tm-menu-sheet').addEventListener('click', function (event) {
+        var link = event.target.closest('.menu__item-toggle .menu__link');
+        if (!link)
+            return;
+        if (link.closest('.menu-dropdown').classList.contains('menu-dropdown--active'))
+            event.stopPropagation();
+        else
+            event.preventDefault();
+    }, true);
+
+    //One open at a time per level: bubble phase, so public.menu.js has already toggled the row
+    document.getElementById('tm-menu-sheet').addEventListener('click', function (event) {
+        var toggle = event.target.closest('.menu__item-toggle');
+        var item = toggle && toggle.parentNode;
+        if (!item || !item.classList.contains('menu-dropdown--active'))
+            return;
+        Array.prototype.forEach.call(item.parentNode.children, function (sibling) {
+            if (sibling === item || !sibling.classList.contains('menu-dropdown--active'))
+                return;
+            sibling.classList.remove('menu-dropdown--active');
+            var siblingToggle = sibling.querySelector(':scope > .menu__item-toggle');
+            if (siblingToggle)
+                siblingToggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+</script>
 <script>
     try {
         if (!sessionStorage.getItem('tm-cart-pill-seen')) {
@@ -175,16 +207,15 @@
             if (now > last) {
                 document.documentElement.classList.remove('tm-cart-float-closed');
                 try { sessionStorage.removeItem('tm-cart-float-closed'); } catch (e) { }
-                //an item went in: the card comes back into view and gives a small hop
-                card.classList.remove('tm-cart-float-away', 'tm-cart-float-bump');
+                //an item went in: the card gives a small hop. The class stays on
+                //until the next add - taking it off when the hop ends hands the
+                //card back its slide-in (and first-visit bounce), which then replay
+                card.classList.remove('tm-cart-float-bump');
                 void card.offsetWidth;
                 card.classList.add('tm-cart-float-bump');
             }
             last = now;
         }).observe(qty, { attributes: true, attributeFilter: ['data-qty'] });
-        card.addEventListener('animationend', function (e) {
-            if (e.animationName === 'tm-cart-float-bump') card.classList.remove('tm-cart-float-bump');
-        });
 
         function watchFlyout() {
             syncTotal();
@@ -197,18 +228,5 @@
             document.addEventListener('DOMContentLoaded', watchFlyout);
         else
             watchFlyout();
-
-        //out of the way while the shopper scrolls down the page, back on scrolling up or stopping
-        var lastY = window.scrollY, settle = 0;
-        window.addEventListener('scroll', function () {
-            var y = window.scrollY, delta = y - lastY;
-            if (Math.abs(delta) < 8) return;
-            card.classList.toggle('tm-cart-float-away', delta > 0 && y > 120);
-            lastY = y;
-            clearTimeout(settle);
-            settle = setTimeout(function () { card.classList.remove('tm-cart-float-away'); }, 900);
-        }, { passive: true });
-        //a keyboard user tabbing to it gets it back at once
-        card.addEventListener('focusin', function () { card.classList.remove('tm-cart-float-away'); });
     })();
 </script>
