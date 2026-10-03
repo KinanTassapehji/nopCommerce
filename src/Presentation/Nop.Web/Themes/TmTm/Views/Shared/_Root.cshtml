@@ -34,6 +34,69 @@
             if (!event.target.closest('input, textarea, [contenteditable]'))
                 event.preventDefault();
         });
+
+    //Form pages: the keyboard's Enter key reads "Next" and moves to the next
+    //field, scrolled to the middle of the screen; on the last one it reads "Go"
+    //and submits as before. Deliberately not auto-advance-while-typing: a name
+    //or an address has no length that says "done", so that jumps mid-word.
+    (function () {
+        if (!/\bhtml-(registration|login|checkout|billing-address|shipping-address|address-edit|customer-info)-page\b/.test(document.documentElement.className))
+            return;
+
+        var fieldSelector = 'input:not([type="hidden"], [type="checkbox"], [type="radio"], [type="submit"], [type="button"], [type="image"], [type="file"], [type="reset"]), select, textarea';
+
+        //the checkout's order summary has Enter handlers of its own (coupon,
+        //gift card, quantities) - its fields are neither a source nor a target
+        function inScope(el) {
+            return el.matches && el.matches(fieldSelector) && !el.closest('#opc-summary-load, .order-summary-content');
+        }
+
+        //later fields of the same form a shopper can actually type into - one
+        //page checkout keeps its other steps in the DOM, hidden
+        function nextField(field) {
+            var scope = field.form || document;
+            var fields = Array.prototype.filter.call(scope.querySelectorAll(fieldSelector), function (el) {
+                return inScope(el) && !el.disabled && !el.readOnly && el.tabIndex !== -1 && el.getClientRects().length;
+            });
+            return fields[fields.indexOf(field) + 1] || null;
+        }
+
+        //set on every focus, before the keyboard opens, so it stays right for
+        //fields AJAX adds or reveals later (checkout steps, address forms)
+        document.addEventListener('focusin', function (event) {
+            var field = event.target;
+            if (inScope(field) && field.tagName !== 'TEXTAREA')
+                field.setAttribute('enterkeyhint', nextField(field) ? 'next' : 'go');
+        });
+
+        document.addEventListener('keydown', function (event) {
+            var field = event.target;
+            //isComposing: Enter that confirms an IME candidate is not "next"
+            if (event.key !== 'Enter' || event.isComposing || event.defaultPrevented || field.tagName !== 'INPUT' || !inScope(field))
+                return;
+            var next = nextField(field);
+            if (!next)
+                return;
+            event.preventDefault();
+            moveTo(next);
+        });
+
+        //A dropdown has no Enter key on a phone - its picker closes on a choice.
+        //Picking is a "done" a typed name never gives, so it moves on by itself.
+        document.addEventListener('change', function (event) {
+            var field = event.target;
+            if (field.tagName !== 'SELECT' || !inScope(field))
+                return;
+            var next = nextField(field);
+            if (next)
+                moveTo(next);
+        });
+
+        function moveTo(next) {
+            next.focus({ preventScroll: true });
+            next.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }
+    })();
 </script>
 @await Component.InvokeAsync(typeof(EuCookieLawViewComponent))
 @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.BodyEndHtmlTagBefore })
