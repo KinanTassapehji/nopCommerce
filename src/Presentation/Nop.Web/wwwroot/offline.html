@@ -295,6 +295,12 @@
   </main>
 
 <script>
+/* Shown in place of a form submission that never reached the server (sw.js):
+   make the entry a plain GET, so the reload below - or Back - loads the page
+   afresh instead of re-sending the form or stopping on Chrome's "Confirm Form
+   Resubmission". The shopper re-submits on purpose, never by accident. */
+history.replaceState(history.state, '', location.href);
+
 (function () {
   var btn = document.getElementById('retry');
   var status = document.getElementById('status');

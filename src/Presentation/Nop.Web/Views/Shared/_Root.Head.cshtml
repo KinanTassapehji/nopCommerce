@@ -59,6 +59,7 @@
 <!DOCTYPE html>
 <html lang="@CultureInfo.CurrentUICulture.TwoLetterISOLanguageName" dir="@Html.GetUIDirection(!await Html.ShouldUseRtlThemeAsync())" class="@NopHtml.GeneratePageCssClasses()">
 <head>
+    @await Html.PartialAsync("_PostHistoryAsGet")
     <title>@title</title>
 
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
