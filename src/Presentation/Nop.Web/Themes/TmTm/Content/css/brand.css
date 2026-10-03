@@ -924,45 +924,69 @@ which would
   stroke-linejoin: round;
 }
 
-/* The cart line's "Edit" (back to the product page to change its options):
-   the same pencil pill as the address cards, instead of the base sheet's blue
-   text link. 32px tall, so it is a comfortable tap on phones. */
+/* The cart line's "Edit" (back to the product page to change its options) has
+   no row of its own: the options line is the link, a pencil at its end says
+   so - tapping what you want to change, the way the big carts do it. Muted
+   like the options text it is, teal on hover/focus. A line that cannot be a
+   link (it carries a file's download link) gets the pencil alone. */
 .cart .product .edit-item{
-  margin-block: 8px 0;
-}
-
-.cart .product .edit-item a{
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  min-block-size: 32px;
-  padding: 4px 12px;
-  border: 1px solid var(--tm-teal-border);
-  border-radius: 999px;
-  background: var(--tm-surface);
-  color: var(--tm-teal-deep);
+  margin: 0;
+  /* a taller tap target without making the lines look taller */
+  padding-block: 6px;
+  color: var(--tm-ink-muted);
   font-size: var(--tm-fs-label);
-  font-weight: 700;
-  line-height: 1;
+  line-height: var(--tm-lh-label);
   text-decoration: none;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-.cart .product .edit-item a:hover,
-.cart .product .edit-item a:focus-visible{
-  border-color: var(--tm-teal-deep);
-  background: var(--tm-teal-tint);
+/* a block of text, so the pencil (inline) follows the last word of the last
+   option line instead of floating beside the whole block */
+.cart .product a.edit-item:not(.edit-item--icon){
+  display: block;
+  margin-block-start: 2px;
+  padding-block: 0;
+}
+
+.cart .product .edit-item:hover,
+.cart .product .edit-item:focus-visible{
   color: var(--tm-teal-deep);
   text-decoration: none;
 }
 
 .cart .product .edit-item svg{
+  display: inline-block;
   inline-size: 16px;
   block-size: 16px;
+  margin-inline-start: 6px;
+  vertical-align: -3px;
   fill: none;
-  stroke: currentColor;
+  stroke: var(--tm-teal-deep);
   stroke-width: 1.8;
   stroke-linejoin: round;
+}
+
+.cart .product .edit-item--icon{
+  display: inline-grid;
+  place-items: center;
+  inline-size: 32px;
+  block-size: 32px;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+}
+
+.cart .product .edit-item--icon:hover,
+.cart .product .edit-item--icon:focus-visible{
+  background: var(--tm-teal-tint);
+}
+
+.cart .visually-hidden{
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* The address form: fields as on the account pages (see "Fields"), without
@@ -5921,6 +5945,33 @@ so the field stays visible beside the icon. */
     font-weight: 700;
     color: var(--tm-teal-deep);
   }
+
+  /* One of a thing: its price is its line total, said once. The unit price
+     comes back (labelled) only when the quantity makes the two differ. The
+     line total needs no label - bold, at the end of the stepper's row. */
+  .cart tr:not(.qty-many) td.unit-price{
+    display: none;
+  }
+
+  .cart tr:not(.qty-many){
+    grid-template-areas:
+      "pic name  name"
+      "pic qty   total";
+  }
+
+  .cart td.subtotal .td-title{
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* breathing room between the options line and the stepper row */
+  .cart tr td.product{
+    padding-block-end: 6px;
+  }
 }
 
 /* The view asks for an 80px thumbnail, but the base sheet's `img{max-width:
@@ -6128,16 +6179,53 @@ so the field stays visible beside the icon. */
    its own above the terms it belongs to, and the checkout CTA the same width
    as "continue shopping". On a phone each of these is one decision per row.
    -------------------------------------------------------------------------- */
+/* One filled button on the page, and it is checkout. Estimating shipping is a
+   side question (outlined); continuing to shop is a way out (a text link) -
+   both were solid teal, as loud as the button the page is there for. */
+.shopping-cart-page .common-buttons .continue-shopping-button{
+  border: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--tm-teal-deep);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--tm-teal-border);
+}
+
+.shopping-cart-page .common-buttons .continue-shopping-button:hover,
+.shopping-cart-page .common-buttons .continue-shopping-button:focus-visible{
+  background: none;
+  color: var(--tm-teal-hover);
+  text-decoration-color: currentColor;
+}
+
+.shopping-cart-page .common-buttons .estimate-shipping-button{
+  border: 1px solid var(--tm-teal-border);
+  background: var(--tm-white);
+  box-shadow: none;
+  color: var(--tm-teal-deep);
+}
+
+.shopping-cart-page .common-buttons .estimate-shipping-button:hover,
+.shopping-cart-page .common-buttons .estimate-shipping-button:focus-visible{
+  border-color: var(--tm-teal);
+  background: var(--tm-teal-tint);
+  color: var(--tm-teal-deep);
+}
+
 @media (max-width: 1000px){
 
+  /* No band of its own: the two quiet actions sit straight under the items,
+     estimate first, the way back last. */
   .shopping-cart-page .common-buttons{
     display: flex;
     flex-direction: column;
     gap: var(--tm-stack-sm);
-    margin-block-end: var(--tm-stack-lg);
-    border-radius: var(--tm-radius);
-    background: var(--tm-surface-alt);
-    padding: var(--tm-stack-md);
+    margin-block-end: var(--tm-stack-md);
+    border-radius: 0;
+    background: none;
+    padding: 0;
   }
 
   .shopping-cart-page .common-buttons button,
@@ -6145,6 +6233,169 @@ so the field stays visible beside the icon. */
     display: block;
     inline-size: 100%;
     margin: 0;
+  }
+
+  .shopping-cart-page .common-buttons .estimate-shipping-button{
+    order: -1;
+  }
+
+  .shopping-cart-page .common-buttons .continue-shopping-button{
+    min-block-size: 44px;
+  }
+}
+
+/* Desktop: the product column is the one with something to read, yet the
+   auto table layout gave it the width of its longest line (rounded down, so
+   the options' pencil wrapped) and handed the unit price 450px of nothing.
+   Below it, the same three fixes as on a phone: no grey band under the
+   actions, no rule and gap before the totals, and the totals as a card at
+   the end of the row with a full-width checkout button. */
+@media (min-width: 1001px){
+
+  .shopping-cart-page .cart th.product{
+    inline-size: 40%;
+  }
+
+  .shopping-cart-page .cart-options{
+    background: none;
+    padding: var(--tm-stack-md) 0;
+  }
+
+  .shopping-cart-page .common-buttons{
+    display: flex;
+    align-items: center;
+    gap: var(--tm-stack-md);
+    padding: 0;
+    background: none;
+  }
+
+  .shopping-cart-page .common-buttons button,
+  .shopping-cart-page .common-buttons .estimate-shipping-button{
+    margin: 0;
+  }
+
+  .shopping-cart-page .cart-footer{
+    margin: 0;
+    border: 0;
+    padding: 0;
+  }
+
+  .shopping-cart-page .cart-footer .cart-collaterals,
+  .shopping-cart-page .cart-footer .deals,
+  .shopping-cart-page .cart-footer .addon-buttons{
+    margin: 0;
+    padding: 0;
+  }
+
+  .shopping-cart-page .cart-footer .totals{
+    float: none;
+    inline-size: 420px;
+    max-inline-size: 100%;
+    margin-block: 0;
+    margin-inline: auto 0;
+    border: 1px solid var(--tm-line);
+    border-radius: var(--tm-radius);
+    background: var(--tm-surface);
+    padding: var(--tm-stack-md) var(--tm-stack-lg);
+  }
+
+  .shopping-cart-page .cart-footer .total-info{
+    margin: 0;
+    border: 0;
+    padding: 0;
+  }
+
+  .shopping-cart-page .cart-total td{
+    padding-block: 4px;
+    padding-inline: 0;
+  }
+
+  .shopping-cart-page .cart-total .order-total td{
+    padding-block-start: var(--tm-stack-sm);
+    border-block-start: 1px solid var(--tm-line);
+  }
+
+  .shopping-cart-page .cart-footer .terms-of-service{
+    margin-block: var(--tm-stack-md) var(--tm-stack-sm);
+    padding: 0;
+    text-align: start;
+  }
+
+  .shopping-cart-page .cart-footer .checkout-buttons{
+    margin: 0;
+    padding: 0;
+  }
+
+  .shopping-cart-page .cart-footer .checkout-button{
+    inline-size: 100%;
+    margin: 0;
+  }
+}
+
+@media (max-width: 1000px){
+
+  /* The totals as one more card in the column - same width, border and
+     radius as the line items above it - instead of a narrower grey box
+     dropped below a rule and a gap. */
+  .shopping-cart-page .cart-footer{
+    margin: 0;
+    border: 0;
+    padding: 0;
+  }
+
+  .shopping-cart-page .cart-footer .totals{
+    float: none;
+    inline-size: auto;
+    max-inline-size: none;
+    margin: 0;
+    border: 1px solid var(--tm-line);
+    border-radius: var(--tm-radius);
+    background: var(--tm-surface);
+    padding: var(--tm-stack-md);
+  }
+
+  .shopping-cart-page .cart-footer .total-info{
+    margin: 0;
+    border: 0;
+    padding: 0;
+  }
+
+  .shopping-cart-page .cart-total td{
+    padding-block: 4px;
+    padding-inline: 0;
+  }
+
+  .shopping-cart-page .cart-total .order-total td{
+    padding-block-start: var(--tm-stack-sm);
+    border-block-start: 1px solid var(--tm-line);
+  }
+
+  .shopping-cart-page .cart-footer .terms-of-service{
+    margin-block: var(--tm-stack-md) var(--tm-stack-sm);
+  }
+
+  .shopping-cart-page .cart-footer .checkout-buttons{
+    margin: 0;
+    padding: 0;
+  }
+
+  /* The coupon box moved to checkout (_OpcSummary), and no payment-button
+     plugin is installed: both wrappers render empty but kept 75px and 20px
+     of spacing - a blank band above the totals and under the CTA. Spacing
+     now comes from whatever a widget does put in them. */
+  .shopping-cart-page .cart-footer .cart-collaterals,
+  .shopping-cart-page .cart-footer .deals,
+  .shopping-cart-page .cart-footer .addon-buttons{
+    margin: 0;
+    padding: 0;
+  }
+
+  .shopping-cart-page .cart-footer .deals > *{
+    margin-block-end: var(--tm-stack-md);
+  }
+
+  .shopping-cart-page .cart-footer .addon-buttons > *{
+    margin-block-start: var(--tm-stack-sm);
   }
 
   /* Checkbox and its label on one line, the label carrying the wrap. */

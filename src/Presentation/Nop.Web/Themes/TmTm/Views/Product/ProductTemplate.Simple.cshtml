@@ -303,6 +303,9 @@
             var gone = !entries[0].isIntersecting;
             bar.hidden = !gone;
             document.body.classList.toggle('tm-buybar-on', gone);
-        }, { rootMargin: '0px 0px -20px 0px' }).observe(panel);
+        }, {
+            //the tab bar covers the bottom of the screen: a button behind it is not on screen
+            rootMargin: '0px 0px -' + (((document.querySelector('.mobile-tab-bar') || {}).offsetHeight || 0) + 20) + 'px 0px'
+        }).observe(panel);
     })();
 </script>
