@@ -167,9 +167,6 @@ public partial class AddressService : IAddressService
         if (string.IsNullOrWhiteSpace(address.LastName))
             return false;
 
-        if (string.IsNullOrWhiteSpace(address.Email))
-            return false;
-
         if (_addressSettings.CompanyEnabled &&
             _addressSettings.CompanyRequired &&
             string.IsNullOrWhiteSpace(address.Company))

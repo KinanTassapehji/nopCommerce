@@ -2614,6 +2614,10 @@ public partial class WorkflowMessageService : IWorkflowMessageService
 
         ArgumentNullException.ThrowIfNull(emailAccount);
 
+        //email is optional for customers (they log in by phone): nothing to send to
+        if (string.IsNullOrWhiteSpace(toEmailAddress))
+            return 0;
+
         //retrieve localized message template data
         var bcc = await _localizationService.GetLocalizedAsync(messageTemplate, mt => mt.BccEmailAddresses, languageId);
         if (string.IsNullOrEmpty(subject))

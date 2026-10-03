@@ -414,7 +414,10 @@ public partial class CustomerController : BasePublicController
 
         if (ModelState.IsValid)
         {
-            var customerUserName = model.Username;
+            //the username is the phone number in E.164; an account without one (admins) still logs in with its email
+            var customerUserName = model.Username?.Contains('@') == true
+                ? model.Username
+                : CustomerPhoneHelper.ToE164(model.Username, model.PhoneCountry) ?? model.Username;
             var customerEmail = model.Email;
             var userNameOrEmail = _customerSettings.UsernamesEnabled ? customerUserName : customerEmail;
 
@@ -471,7 +474,9 @@ public partial class CustomerController : BasePublicController
         }
 
         //If we got this far, something failed, redisplay form
+        var phoneCountry = model.PhoneCountry;
         model = await _customerModelFactory.PrepareLoginModelAsync(model.CheckoutAsGuest);
+        model.PhoneCountry = phoneCountry ?? model.PhoneCountry;
         return View(model);
     }
 
@@ -666,7 +671,7 @@ public partial class CustomerController : BasePublicController
             return View(model);
 
         var response = await _customerRegistrationService
-            .ChangePasswordAsync(new ChangePasswordRequest(customer.Email, false, _customerSettings.DefaultPasswordFormat, model.NewPassword));
+            .ChangePasswordAsync(new ChangePasswordRequest(customer.Email ?? customer.Username, false, _customerSettings.DefaultPasswordFormat, model.NewPassword));
         if (!response.Success)
         {
             model.Result = string.Join(';', response.Errors);
@@ -760,7 +765,9 @@ public partial class CustomerController : BasePublicController
 
         if (ModelState.IsValid)
         {
-            var customerUserName = model.Username;
+            //the phone number is the username
+            var phone = CustomerPhoneHelper.ToE164(model.Phone, model.PhoneCountry);
+            var customerUserName = phone;
             var customerEmail = model.Email;
 
             var isApproved = _customerSettings.UserRegistrationType == UserRegistrationType.Standard;
@@ -816,7 +823,7 @@ public partial class CustomerController : BasePublicController
                 if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled)
                     customer.StateProvinceId = model.StateProvinceId;
                 if (_customerSettings.PhoneEnabled)
-                    customer.Phone = model.Phone;
+                    customer.Phone = phone;
                 if (_customerSettings.FaxEnabled)
                     customer.Fax = model.Fax;
 
@@ -1160,7 +1167,21 @@ public partial class CustomerController : BasePublicController
         {
             if (ModelState.IsValid)
             {
-                //username 
+                //phone number, which is also the username
+                var phone = CustomerPhoneHelper.ToE164(model.Phone, model.PhoneCountry);
+                if (_customerSettings.UsernamesEnabled && !string.IsNullOrEmpty(phone) &&
+                    !phone.Equals(customer.Username, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    //throws when another account already has this number
+                    await _customerRegistrationService.SetUsernameAsync(customer, phone);
+
+                    //re-authenticate: the login cookie carries the username
+                    //do not authenticate users in impersonation mode
+                    if (_workContext.OriginalCustomerIfImpersonated == null)
+                        await _authenticationService.SignInAsync(customer, true);
+                }
+
+                //username
                 if (_customerSettings.UsernamesEnabled && _customerSettings.AllowUsersToChangeUsernames)
                 {
                     var userName = model.Username;
@@ -1177,7 +1198,12 @@ public partial class CustomerController : BasePublicController
                 }
                 //email
                 var email = model.Email;
-                if (!customer.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase))
+                if (string.IsNullOrEmpty(email) && _customerSettings.UsernamesEnabled)
+                {
+                    //email is optional when the phone number is the login
+                    customer.Email = null;
+                }
+                else if (!string.Equals(customer.Email, email, StringComparison.InvariantCultureIgnoreCase))
                 {
                     //change email
                     var requireValidation = _customerSettings.UserRegistrationType == UserRegistrationType.EmailValidation;
@@ -1239,7 +1265,7 @@ public partial class CustomerController : BasePublicController
                 if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled)
                     customer.StateProvinceId = model.StateProvinceId;
                 if (_customerSettings.PhoneEnabled)
-                    customer.Phone = model.Phone;
+                    customer.Phone = phone;
                 if (_customerSettings.FaxEnabled)
                     customer.Fax = model.Fax;
 
@@ -1566,7 +1592,7 @@ public partial class CustomerController : BasePublicController
 
         if (ModelState.IsValid)
         {
-            var changePasswordRequest = new ChangePasswordRequest(customer.Email,
+            var changePasswordRequest = new ChangePasswordRequest(customer.Email ?? customer.Username,
                 true, _customerSettings.DefaultPasswordFormat, model.NewPassword, model.OldPassword);
             var changePasswordResult = await _customerRegistrationService.ChangePasswordAsync(changePasswordRequest);
             if (changePasswordResult.Success)

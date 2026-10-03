@@ -201,13 +201,14 @@ public partial class CustomerRegistrationService : ICustomerRegistrationService
             return result;
         }
 
-        if (string.IsNullOrEmpty(request.Email))
+        //with usernames on, the username (the phone number) is the login and email is optional
+        if (string.IsNullOrEmpty(request.Email) && !_customerSettings.UsernamesEnabled)
         {
             result.AddError(await _localizationService.GetResourceAsync("Account.Register.Errors.EmailIsNotProvided"));
             return result;
         }
 
-        if (!CommonHelper.IsValidEmail(request.Email))
+        if (!string.IsNullOrEmpty(request.Email) && !CommonHelper.IsValidEmail(request.Email))
         {
             result.AddError(await _localizationService.GetResourceAsync("Common.WrongEmail"));
             return result;
@@ -226,7 +227,7 @@ public partial class CustomerRegistrationService : ICustomerRegistrationService
         }
 
         //validate unique user
-        if (await _customerService.GetCustomerByEmailAsync(request.Email) != null)
+        if (!string.IsNullOrEmpty(request.Email) && await _customerService.GetCustomerByEmailAsync(request.Email) != null)
         {
             result.AddError(await _localizationService.GetResourceAsync("Account.Register.Errors.EmailAlreadyExists"));
             return result;
@@ -309,7 +310,10 @@ public partial class CustomerRegistrationService : ICustomerRegistrationService
             return result;
         }
 
+        //customers who log in by phone may have no email: callers then pass the username instead
         var customer = await _customerService.GetCustomerByEmailAsync(request.Email);
+        if (customer == null && _customerSettings.UsernamesEnabled)
+            customer = await _customerService.GetCustomerByUsernameAsync(request.Email);
         if (customer == null)
         {
             result.AddError(await _localizationService.GetResourceAsync("Account.ChangePassword.Errors.EmailNotFound"));

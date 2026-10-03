@@ -16,8 +16,13 @@ public partial class CustomerValidator : BaseNopValidator<CustomerModel>
         IStateProvinceService stateProvinceService)
     {
         //ensure that valid email address is entered if Registered role is checked to avoid registered customers with empty email address
+        //with usernames on, customers log in by phone and email is optional
+        if (!customerSettings.UsernamesEnabled)
+            RuleFor(x => x.Email)
+                .NotEmpty()
+                .WithMessageAwait(localizationService.GetResourceAsync("Admin.Common.WrongEmail"))
+                .WhenAwait(async x => await IsRegisteredCustomerRoleCheckedAsync(x, customerService));
         RuleFor(x => x.Email)
-            .NotEmpty()
             .IsEmailAddress()
             //.WithMessage("Valid Email is required for customer to be in 'Registered' role")
             .WithMessageAwait(localizationService.GetResourceAsync("Admin.Common.WrongEmail"))

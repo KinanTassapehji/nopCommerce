@@ -55,7 +55,6 @@
                     <div class="inputs">
                         <label asp-for="Email" asp-postfix=":"></label>
                         <input asp-for="Email" />
-                        <nop-required />
                         <span asp-validation-for="Email"></span>
                     </div>
                     @if (Model.CityEnabled)
@@ -76,7 +75,10 @@
                     {
                         <div class="inputs">
                             <label asp-for="Phone" asp-postfix=":"></label>
-                            <input asp-for="Phone" />
+                            <div class="phone-input">
+                                @await Html.PartialAsync("_PhoneCountry", (Model.PhoneCountry, Model.AvailablePhoneCountries))
+                                <input asp-for="Phone" type="tel" dir="ltr" autocomplete="tel-national" />
+                            </div>
                             @if (Model.PhoneRequired)
                             {
                                 <nop-required />
@@ -142,29 +144,6 @@
                                 <em>@T("Account.Fields.EmailToRevalidate.Note")</em>
                             </span>
                         </div>
-                    }
-                    @if (Model.UsernamesEnabled)
-                    {
-                        if (Model.AllowUsersToChangeUsernames)
-                        {
-                            <div class="inputs">
-                                <label asp-for="Username" asp-postfix=":"></label>
-                                <input asp-for="Username" />
-                                <nop-required />
-                                <span asp-validation-for="Username"></span>
-                                @if (Model.CheckUsernameAvailabilityEnabled)
-                                {
-                                    @await Html.PartialAsync("_CheckUsernameAvailability")
-                                }
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="inputs">
-                                <label asp-for="Username" asp-postfix=":"></label>
-                                <span class="readonly-username">@Model.Username</span>
-                            </div>
-                        }
                     }
                 </div>
             </section>

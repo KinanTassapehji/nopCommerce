@@ -1,0 +1,41 @@
+﻿@model (string Selected, IList<SelectListItem> Items)
+@using Nop.Services.Customers
+
+@*The country picked beside a phone number, shown as its flag and dialling code. Flags are
+    images: devices draw flag emoji their own way, and many still draw Syria's old flag.
+    - Browsers with the customizable <select> (Chrome, Edge) render the markup inside the
+      options, so the list itself carries the flags and <selectedcontent> is the closed box.
+    - The rest drop that markup and keep each option's text ("Syria +963"); for them the
+      .phone-country-shown box draws the flag and code, with the dropdown invisible on top
+      of it so a tap still opens the device's own list*@
+@{
+    var flags = Url.Content("~/images/flags/");
+}
+<span class="phone-country">
+    <span class="phone-country-shown" aria-hidden="true">
+        <img class="phone-country-flag" src="@(flags + Model.Selected?.ToLowerInvariant()).svg" alt="" width="24" height="18" />
+        <span class="phone-country-code">+@CustomerPhoneHelper.GetCountryCode(Model.Selected)</span>
+    </span>
+    <select id="PhoneCountry" name="PhoneCountry" aria-label="@T("Account.Fields.PhoneCountry")">
+        <button type="button"><selectedcontent></selectedcontent></button>
+        @foreach (var item in Model.Items)
+        {
+            var code = CustomerPhoneHelper.GetCountryCode(item.Value);
+            <option value="@item.Value" data-code="+@code" selected="@(item.Value.Equals(Model.Selected, StringComparison.OrdinalIgnoreCase))">
+                <img class="phone-option-flag" src="@(flags + item.Value.ToLowerInvariant()).svg" alt="" width="24" height="18" loading="lazy" />
+                <span class="phone-option-name">@item.Text</span>
+                <span class="phone-option-code">+@code</span>
+            </option>
+        }
+    </select>
+</span>
+<script asp-location="Footer">
+    $(function () {
+        $(".phone-country select").on("change", function () {
+            var option = this.options[this.selectedIndex];
+            var shown = $(this).closest(".phone-country").find(".phone-country-shown");
+            shown.find(".phone-country-flag").attr("src", "@flags" + option.value.toLowerCase() + ".svg");
+            shown.find(".phone-country-code").text(option.dataset.code);
+        });
+    });
+</script>

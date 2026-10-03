@@ -107,6 +107,10 @@ public partial record CustomerInfoModel : BaseNopModel
     [NopResourceDisplayName("Account.Fields.Phone")]
     public string Phone { get; set; }
 
+    //two-letter ISO code of the country picked beside the phone number
+    public string PhoneCountry { get; set; }
+    public IList<SelectListItem> AvailablePhoneCountries { get; set; } = new List<SelectListItem>();
+
     public bool FaxEnabled { get; set; }
     public bool FaxRequired { get; set; }
     [DataType(DataType.PhoneNumber)]

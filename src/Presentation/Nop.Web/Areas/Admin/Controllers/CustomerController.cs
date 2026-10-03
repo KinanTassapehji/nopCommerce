@@ -143,6 +143,22 @@ public partial class CustomerController : BaseAdminController
 
     #region Utilities
 
+    /// <summary>
+    /// Store the phone number in E.164 and, with usernames on, make it the username (customers log in by phone).
+    /// A number that does not parse is kept as typed, and the username field then counts as entered
+    /// </summary>
+    /// <param name="model">Customer model</param>
+    protected virtual void UsePhoneAsUsername(CustomerModel model)
+    {
+        var phone = CustomerPhoneHelper.ToE164(model.Phone, null);
+        if (phone == null)
+            return;
+
+        model.Phone = phone;
+        if (_customerSettings.UsernamesEnabled)
+            model.Username = phone;
+    }
+
     protected virtual async Task<string> ValidateCustomerRolesAsync(IList<CustomerRole> customerRoles, IList<CustomerRole> existingCustomerRoles)
     {
         ArgumentNullException.ThrowIfNull(customerRoles);
@@ -307,6 +323,8 @@ public partial class CustomerController : BaseAdminController
     [CheckPermission(StandardPermission.Customers.CUSTOMERS_CREATE_EDIT_DELETE)]
     public virtual async Task<IActionResult> Create(CustomerModel model, bool continueEditing, IFormCollection form)
     {
+        UsePhoneAsUsername(model);
+
         if (!string.IsNullOrWhiteSpace(model.Email) && await _customerService.GetCustomerByEmailAsync(model.Email) != null)
             ModelState.AddModelError(string.Empty, "Email is already registered");
 
@@ -398,7 +416,7 @@ public partial class CustomerController : BaseAdminController
             //password
             if (!string.IsNullOrWhiteSpace(model.Password))
             {
-                var changePassRequest = new ChangePasswordRequest(model.Email, false, _customerSettings.DefaultPasswordFormat, model.Password);
+                var changePassRequest = new ChangePasswordRequest(customer.Email ?? customer.Username, false, _customerSettings.DefaultPasswordFormat, model.Password);
                 var changePassResult = await _customerRegistrationService.ChangePasswordAsync(changePassRequest);
                 if (!changePassResult.Success)
                 {
@@ -490,6 +508,8 @@ public partial class CustomerController : BaseAdminController
             _notificationService.ErrorNotification(await _localizationService.GetResourceAsync("Admin.Customers.Customers.OnlySuperAdminCanManageSuperAdmin"));
             return RedirectToAction("Edit", new { id = customer.Id });
         }
+
+        UsePhoneAsUsername(model);
 
         //validate customer roles
         var allCustomerRoles = await _customerService.GetAllCustomerRolesAsync(true);
@@ -715,7 +735,7 @@ public partial class CustomerController : BaseAdminController
             return RedirectToAction("Edit", new { id = customer.Id });
         }
 
-        var changePassRequest = new ChangePasswordRequest(customer.Email,
+        var changePassRequest = new ChangePasswordRequest(customer.Email ?? customer.Username,
             false, _customerSettings.DefaultPasswordFormat, model.Password);
         var changePassResult = await _customerRegistrationService.ChangePasswordAsync(changePassRequest);
         if (changePassResult.Success)

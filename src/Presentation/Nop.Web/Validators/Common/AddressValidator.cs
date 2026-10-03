@@ -21,9 +21,7 @@ public partial class AddressValidator : BaseNopValidator<AddressModel>
         RuleFor(x => x.LastName)
             .NotEmpty()
             .WithMessageAwait(localizationService.GetResourceAsync("Address.Fields.LastName.Required"));
-        RuleFor(x => x.Email)
-            .NotEmpty()
-            .WithMessageAwait(localizationService.GetResourceAsync("Address.Fields.Email.Required"));
+        //email is optional: customers log in by phone and may have none
         RuleFor(x => x.Email)
             .IsEmailAddress()
             .WithMessageAwait(localizationService.GetResourceAsync("Common.WrongEmail"));

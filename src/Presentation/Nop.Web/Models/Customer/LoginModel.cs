@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Core.Domain.Customers;
 using Nop.Web.Framework.Models;
 using Nop.Web.Framework.Mvc;
@@ -20,6 +21,10 @@ public partial record LoginModel : BaseNopModel
 
     [NopResourceDisplayName("Account.Login.Fields.Username")]
     public string Username { get; set; }
+
+    //two-letter ISO code of the country picked beside the phone number (the username)
+    public string PhoneCountry { get; set; }
+    public IList<SelectListItem> AvailablePhoneCountries { get; set; } = new List<SelectListItem>();
 
     [DataType(DataType.Password)]
     [NoTrim]

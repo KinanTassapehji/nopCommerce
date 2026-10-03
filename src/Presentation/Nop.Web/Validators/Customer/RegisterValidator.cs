@@ -2,6 +2,7 @@
 using Nop.Core;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Tax;
+using Nop.Services.Customers;
 using Nop.Services.Directory;
 using Nop.Services.Localization;
 using Nop.Web.Framework.Validators;
@@ -16,7 +17,9 @@ public partial class RegisterValidator : BaseNopValidator<RegisterModel>
         CustomerSettings customerSettings,
         TaxSettings taxSettings)
     {
-        RuleFor(x => x.Email).NotEmpty().WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.Email.Required"));
+        //with usernames on, the phone number is the login and email is optional
+        if (!customerSettings.UsernamesEnabled)
+            RuleFor(x => x.Email).NotEmpty().WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.Email.Required"));
         RuleFor(x => x.Email)
             .IsEmailAddress()
             .WithMessageAwait(localizationService.GetResourceAsync("Common.WrongEmail"));
@@ -28,12 +31,6 @@ public partial class RegisterValidator : BaseNopValidator<RegisterModel>
                 .IsEmailAddress()
                 .WithMessageAwait(localizationService.GetResourceAsync("Common.WrongEmail"));
             RuleFor(x => x.ConfirmEmail).Equal(x => x.Email).WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.Email.EnteredEmailsDoNotMatch"));
-        }
-
-        if (customerSettings.UsernamesEnabled)
-        {
-            RuleFor(x => x.Username).NotEmpty().WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.Username.Required"));
-            RuleFor(x => x.Username).IsUsername(customerSettings).WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.Username.NotValid"));
         }
 
         if (customerSettings.FirstNameEnabled && customerSettings.FirstNameRequired)
@@ -128,13 +125,16 @@ public partial class RegisterValidator : BaseNopValidator<RegisterModel>
         {
             RuleFor(x => x.Gender).NotEmpty().WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.Gender.Required"));
         }
-        if (customerSettings.PhoneRequired && customerSettings.PhoneEnabled)
+        //with usernames on, the phone number is the username, so it is always required
+        if ((customerSettings.PhoneRequired && customerSettings.PhoneEnabled) || customerSettings.UsernamesEnabled)
         {
             RuleFor(x => x.Phone).NotEmpty().WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.Phone.Required"));
         }
         if (customerSettings.PhoneEnabled)
         {
-            RuleFor(x => x.Phone).IsPhoneNumber(customerSettings).WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.Phone.NotValid"));
+            RuleFor(x => x.Phone)
+                .Must((x, phone) => string.IsNullOrEmpty(phone) || CustomerPhoneHelper.ToE164(phone, x.PhoneCountry) != null)
+                .WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.Phone.NotValid"));
         }
         if (customerSettings.FaxRequired && customerSettings.FaxEnabled)
         {

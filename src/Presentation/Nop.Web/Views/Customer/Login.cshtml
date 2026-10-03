@@ -66,7 +66,11 @@
                         {
                             <div class="inputs">
                                 <label asp-for="Username" asp-postfix=":"></label>
-                                <input asp-for="Username" class="username" autofocus="autofocus" />
+                                @*the username is the phone number; an email still works for accounts without one*@
+                                <div class="phone-input">
+                                    @await Html.PartialAsync("_PhoneCountry", (Model.PhoneCountry, Model.AvailablePhoneCountries))
+                                    <input asp-for="Username" class="username" type="tel" dir="ltr" autocomplete="username" autofocus="autofocus" />
+                                </div>
                                 <span asp-validation-for="Username"></span>
                             </div>
                         }

@@ -9178,3 +9178,135 @@ so the field stays visible beside the icon. */
   }
 }
 
+/* Phone number = login. The country sits before the number, left of it in Arabic
+   too: a phone number reads left to right either way. */
+.page .inputs .phone-input{
+  display: flex;
+  gap: 8px;
+  direction: ltr;
+  inline-size: 100%;
+}
+
+/* The box shows the flag and the dialling code. The real dropdown lies invisible on
+   top of it, so a tap still opens the device's own list (country names) and the form
+   still posts it. */
+.page .inputs .phone-country{
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.page .inputs .phone-country-shown{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  block-size: 100%;
+  min-height: 46px;
+  padding-inline: 12px 32px;
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius);
+  background: var(--tm-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%235c6b6a' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center / 12px 8px;
+  color: var(--tm-ink);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: border-color var(--tm-transition), box-shadow var(--tm-transition);
+}
+
+.page .inputs .phone-country-flag{
+  display: block;
+  inline-size: 24px;
+  block-size: 18px;
+  border-radius: 3px;
+  object-fit: cover;
+  /* white stripes still read as a flag on a white field */
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.page .inputs .phone-country select{
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  min-height: 0;
+  opacity: 0;
+  cursor: pointer;
+  /* the native list, not the theme's base-select one: that one is drawn by the
+     invisible element and would be invisible with it */
+  appearance: auto;
+  -webkit-appearance: auto;
+}
+
+.page .inputs .phone-country:hover .phone-country-shown{
+  border-color: var(--tm-teal-border);
+}
+
+.page .inputs .phone-country:focus-within .phone-country-shown{
+  border-color: var(--tm-teal);
+  box-shadow: 0 0 0 3px rgba(0, 154, 149, 0.18);
+}
+
+.page .inputs .phone-input input{
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  inline-size: auto;
+  min-height: 46px;
+  padding-inline: 14px;
+}
+
+/* Chrome and Edge build the list themselves from the options' markup (customizable
+   <select>), so there the dropdown is the box: visible again, flag and code in the
+   closed field, flag, name and code on each row of the list. */
+@supports (appearance: base-select){
+  .page .inputs .phone-country-shown{
+    display: none;
+  }
+
+  .page .inputs .phone-country select{
+    position: static;
+    opacity: 1;
+    appearance: base-select;
+    -webkit-appearance: base-select;
+    inline-size: auto;
+    block-size: auto;
+    min-height: 46px;
+    padding-inline: 12px;
+    font-weight: 600;
+    direction: ltr;
+  }
+
+  .page .inputs .phone-country select::picker(select){
+    direction: ltr;
+    min-inline-size: 300px;
+    max-inline-size: calc(100vw - 32px);
+  }
+
+  .page .inputs .phone-country selectedcontent,
+  .page .inputs .phone-country option{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* the closed field has room for the flag and the code only */
+  .page .inputs .phone-country selectedcontent .phone-option-name{
+    display: none;
+  }
+
+  .page .inputs .phone-option-flag{
+    flex: 0 0 auto;
+    inline-size: 24px;
+    block-size: 18px;
+    border-radius: 3px;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+  }
+
+  .page .inputs .phone-country option .phone-option-name{
+    flex: 1 1 auto;
+    font-weight: 400;
+  }
+
+  .page .inputs .phone-country option .phone-option-code{
+    color: var(--tm-ink-muted);
+    font-variant-numeric: tabular-nums;
+  }
+}

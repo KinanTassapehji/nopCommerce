@@ -405,7 +405,7 @@ public partial class OrderProcessingService : IOrderProcessingService
 
                 var shippingAddress = await _customerService.GetCustomerShippingAddressAsync(details.Customer);
 
-                if (!CommonHelper.IsValidEmail(shippingAddress?.Email))
+                if (!string.IsNullOrEmpty(shippingAddress?.Email) && !CommonHelper.IsValidEmail(shippingAddress.Email))
                     throw new NopException("Email is not valid");
 
                 //clone shipping address
@@ -495,7 +495,7 @@ public partial class OrderProcessingService : IOrderProcessingService
 
         var billingAddress = await _customerService.GetCustomerBillingAddressAsync(details.Customer);
 
-        if (!CommonHelper.IsValidEmail(billingAddress?.Email))
+        if (!string.IsNullOrEmpty(billingAddress?.Email) && !CommonHelper.IsValidEmail(billingAddress.Email))
             throw new NopException("Email is not valid");
 
         details.BillingAddress = _addressService.CloneAddress(billingAddress);

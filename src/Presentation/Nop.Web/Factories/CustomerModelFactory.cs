@@ -152,6 +152,28 @@ public partial class CustomerModelFactory : ICustomerModelFactory
 
     #region Utilities
 
+    /// <summary>
+    /// Prepare the countries listed beside a phone number field
+    /// </summary>
+    /// <param name="items">List to fill</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    protected virtual async Task PreparePhoneCountriesAsync(IList<SelectListItem> items)
+    {
+        foreach (var country in await _countryService.GetAllCountriesAsync(showHidden: true))
+        {
+            var code = CustomerPhoneHelper.GetCountryCode(country.TwoLetterIsoCode);
+            if (code == 0)
+                continue;
+
+            items.Add(new SelectListItem
+            {
+                //the view adds the flag and the dialling code
+                Text = await _localizationService.GetLocalizedAsync(country, x => x.Name),
+                Value = country.TwoLetterIsoCode
+            });
+        }
+    }
+
     /// <returns>A task that represents the asynchronous operation</returns>
     protected virtual async Task<GdprConsentModel> PrepareGdprConsentModelAsync(GdprConsent consent, bool accepted)
     {
@@ -218,7 +240,7 @@ public partial class CustomerModelFactory : ICustomerModelFactory
             model.County = customer.County;
             model.CountryId = customer.CountryId;
             model.StateProvinceId = customer.StateProvinceId;
-            model.Phone = customer.Phone;
+            (model.PhoneCountry, model.Phone) = CustomerPhoneHelper.Split(customer.Phone);
             model.Fax = customer.Fax;
 
             //newsletter subscriptions
@@ -322,6 +344,8 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         model.StateProvinceRequired = _customerSettings.StateProvinceRequired;
         model.PhoneEnabled = _customerSettings.PhoneEnabled;
         model.PhoneRequired = _customerSettings.PhoneRequired;
+        model.PhoneCountry ??= CustomerPhoneHelper.DefaultRegion;
+        await PreparePhoneCountriesAsync(model.AvailablePhoneCountries);
         model.FaxEnabled = _customerSettings.FaxEnabled;
         model.FaxRequired = _customerSettings.FaxRequired;
         model.NewsletterEnabled = _customerSettings.NewsletterEnabled;
@@ -404,6 +428,8 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         model.StateProvinceRequired = _customerSettings.StateProvinceRequired;
         model.PhoneEnabled = _customerSettings.PhoneEnabled;
         model.PhoneRequired = _customerSettings.PhoneRequired;
+        model.PhoneCountry ??= CustomerPhoneHelper.DefaultRegion;
+        await PreparePhoneCountriesAsync(model.AvailablePhoneCountries);
         model.FaxEnabled = _customerSettings.FaxEnabled;
         model.FaxRequired = _customerSettings.FaxRequired;
         model.NewsletterEnabled = _customerSettings.NewsletterEnabled;
@@ -500,7 +526,7 @@ public partial class CustomerModelFactory : ICustomerModelFactory
     /// A task that represents the asynchronous operation
     /// The task result contains the login model
     /// </returns>
-    public virtual Task<LoginModel> PrepareLoginModelAsync(bool? checkoutAsGuest)
+    public virtual async Task<LoginModel> PrepareLoginModelAsync(bool? checkoutAsGuest)
     {
         var model = new LoginModel
         {
@@ -508,10 +534,12 @@ public partial class CustomerModelFactory : ICustomerModelFactory
             RegistrationType = _customerSettings.UserRegistrationType,
             //the "checkout as guest or register" box only makes sense when guests may check out
             CheckoutAsGuest = checkoutAsGuest.GetValueOrDefault() && _orderSettings.AnonymousCheckoutAllowed,
-            DisplayCaptcha = _captchaSettings.Enabled && _captchaSettings.ShowOnLoginPage
+            DisplayCaptcha = _captchaSettings.Enabled && _captchaSettings.ShowOnLoginPage,
+            PhoneCountry = CustomerPhoneHelper.DefaultRegion
         };
+        await PreparePhoneCountriesAsync(model.AvailablePhoneCountries);
 
-        return Task.FromResult(model);
+        return model;
     }
 
     /// <summary>
