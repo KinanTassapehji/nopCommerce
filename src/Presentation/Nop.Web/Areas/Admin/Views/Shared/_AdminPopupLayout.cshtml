@@ -14,6 +14,7 @@
 <!DOCTYPE html>
 <html lang="@CultureInfo.CurrentUICulture.TwoLetterISOLanguageName" dir="@Html.GetUIDirection(localizationSettings.IgnoreRtlPropertyForAdminArea)">
 <head>
+    @await Html.PartialAsync("~/Views/Shared/_PostHistoryAsGet.cshtml")
     <title>@adminPageTitle</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />

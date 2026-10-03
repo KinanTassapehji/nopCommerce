@@ -1,0 +1,19 @@
+﻿@*
+    A page rendered straight from a form POST (the cart after +/-, login or register with an
+    error, a checkout step, an admin save that failed validation...) sits in history as that
+    POST. Every such page carries an antiforgery token, so it is sent no-store and is never
+    kept: Back or refresh has to send the POST again, and Chrome stops on its own "Confirm Form
+    Resubmission" (ERR_CACHE_MISS) screen - inside the installed app too, with no way out.
+
+    This turns the entry into a plain GET of the same address the moment the page starts to
+    load, so Back and refresh simply load the page again. Done once here rather than as a
+    redirect in every action: thirty-odd store actions, admin, and plugins whose code we do not
+    own all render views from a POST, and a redirect would also lose their validation messages.
+    Every one of those addresses also answers a GET (nopCommerce pairs them by ActionName).
+*@
+@if (Microsoft.AspNetCore.Http.HttpMethods.IsPost(Context.Request.Method))
+{
+    <script>
+        history.replaceState(history.state, '', location.href);
+    </script>
+}

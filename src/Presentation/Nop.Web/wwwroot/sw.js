@@ -16,7 +16,7 @@
    Bump CACHE_VERSION to invalidate everything on the next activation.
    ============================================================================= */
 
-const CACHE_VERSION = 'v7';
+const CACHE_VERSION = 'v8';
 const STATIC_CACHE = `tmtm-static-${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline.html';
 
@@ -118,14 +118,34 @@ async function trim(cache) {
   for (const k of keys.slice(0, keys.length - MAX_ENTRIES)) await cache.delete(k);
 }
 
+async function offlinePage() {
+  const cache = await caches.open(STATIC_CACHE);
+  const offline = await cache.match(OFFLINE_URL);
+  return offline || new Response('You are offline.', {
+    status: 503,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+  });
+}
+
 self.addEventListener('fetch', event => {
   const req = event.request;
-
-  if (req.method !== 'GET') return;                       // never intercept mutations
 
   let url;
   try { url = new URL(req.url); } catch { return; }
   if (url.origin !== self.location.origin) return;        // never intercept third parties
+
+  /* --- Form submissions (login, cart update, a checkout step, place order):
+     passed to the network untouched and never cached. Taken over only so a
+     dropped connection lands on the offline page instead of Chrome's own
+     "No internet" screen, which inside the installed app has no way back.
+     offline.html turns its history entry into a GET, so reconnecting reloads
+     the page rather than silently re-sending the form (no double order). */
+  if (req.method === 'POST' && req.mode === 'navigate') {
+    event.respondWith(fetch(req).catch(offlinePage));
+    return;
+  }
+
+  if (req.method !== 'GET') return;                       // never intercept mutations
   if (req.headers.has('range')) return;                   // let media range requests through
 
   /* --- Navigations: network-first, offline page as the only fallback ------ */
@@ -136,12 +156,7 @@ self.addEventListener('fetch', event => {
         if (preload) return preload;
         return await fetch(req);
       } catch {
-        const cache = await caches.open(STATIC_CACHE);
-        const offline = await cache.match(OFFLINE_URL);
-        return offline || new Response('You are offline.', {
-          status: 503,
-          headers: { 'Content-Type': 'text/plain; charset=utf-8' }
-        });
+        return offlinePage();
       }
     })());
     return;
