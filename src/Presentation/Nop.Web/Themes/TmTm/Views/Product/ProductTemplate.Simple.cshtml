@@ -300,12 +300,13 @@
         //back — two states, no scroll maths. body carries the class so the tab bar
         //can step aside for it instead of stacking with it.
         new IntersectionObserver(function (entries) {
-            var gone = !entries[0].isIntersecting;
+            var gone = entries[0].intersectionRatio < 0.99; //half a button under the tab bar is not a button
             bar.hidden = !gone;
             document.body.classList.toggle('tm-buybar-on', gone);
         }, {
             //the tab bar covers the bottom of the screen: a button behind it is not on screen
-            rootMargin: '0px 0px -' + (((document.querySelector('.mobile-tab-bar') || {}).offsetHeight || 0) + 20) + 'px 0px'
+            rootMargin: '0px 0px -' + ((document.querySelector('.mobile-tab-bar') || {}).offsetHeight || 0) + 'px 0px',
+            threshold: [0, 0.99]
         }).observe(panel);
     })();
 </script>
