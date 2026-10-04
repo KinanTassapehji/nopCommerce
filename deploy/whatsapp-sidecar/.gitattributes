@@ -1,0 +1,3 @@
+# run on Linux: a CRLF checkout breaks the shell script and systemd units
+systemd/* text eol=lf
+*.js text eol=lf

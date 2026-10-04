@@ -1,0 +1,7 @@
+[Unit]
+Description=Health watchdog for TmTm's WhatsApp sidecar
+After=tmtm-whatsapp.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/tmtm-whatsapp-health.sh

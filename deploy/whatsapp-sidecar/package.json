@@ -1,0 +1,16 @@
+{
+  "name": "tmtm-whatsapp-sidecar",
+  "version": "1.0.0",
+  "description": "WhatsApp Web sidecar (whatsapp-web.js) that sends the TmTm store's phone verification codes",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "qrcode": "^1.5.4",
+    "whatsapp-web.js": "^1.26.0"
+  }
+}

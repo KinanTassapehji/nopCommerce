@@ -489,6 +489,13 @@ public partial class AdminMenu : IAdminMenu
                                 },
                                 new()
                                 {
+                                    SystemName = "Phone verification settings",
+                                    Title = await _localizationService.GetResourceAsync("Admin.Configuration.Settings.PhoneVerification"),
+                                    Url = GetMenuItemUrl("PhoneVerification", "Index"),
+                                    IconClass = "far fa-circle"
+                                },
+                                new()
+                                {
                                     SystemName = "Order settings",
                                     Title = await _localizationService.GetResourceAsync("Admin.Configuration.Settings.Order"),
                                     Url = GetMenuItemUrl("Setting", "Order"),

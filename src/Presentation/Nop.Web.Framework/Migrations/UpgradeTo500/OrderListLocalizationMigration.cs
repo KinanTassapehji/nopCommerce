@@ -6,7 +6,7 @@ using Nop.Services.Localization;
 
 namespace Nop.Web.Framework.Migrations.UpgradeTo500;
 
-[NopUpdateMigration("2026-09-01 00:00:02", "5.00", UpdateMigrationType.Localization)]
+[NopUpdateMigration("2026-09-01 00:00:06", "5.00", UpdateMigrationType.Localization)]
 public class OrderListLocalizationMigration : MigrationBase
 {
     /// <summary>Collect the UP migration expressions</summary>

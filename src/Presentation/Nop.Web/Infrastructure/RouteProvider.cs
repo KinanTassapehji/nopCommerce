@@ -301,6 +301,11 @@ public partial class RouteProvider : BaseRouteProvider, IRouteProvider
             pattern: $"{lang}/passwordrecovery/confirm",
             defaults: new { controller = "Customer", action = "PasswordRecoveryConfirm" });
 
+        //code sent to the customer's phone (new account, new number, forgotten password)
+        endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.Standard.VERIFY_PHONE,
+            pattern: $"{lang}/verifyphone",
+            defaults: new { controller = "Customer", action = "VerifyPhone" });
+
         //topics (AJAX)
         endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.Ajax.TOPIC_POPUP,
             pattern: $"t-popup/{{SystemName}}",

@@ -163,6 +163,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IMaintenanceService, MaintenanceService>();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<ICustomerRegistrationService, CustomerRegistrationService>();
+        services.AddScoped<IPhoneVerificationService, PhoneVerificationService>();
         services.AddScoped<ICustomerReportService, CustomerReportService>();
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<IAclService, AclService>();

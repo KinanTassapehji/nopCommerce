@@ -252,6 +252,11 @@ public static partial class NopRouteNames
         public const string PASSWORD_RECOVERY_CONFIRM = "PasswordRecoveryConfirm";
 
         /// <summary>
+        /// Gets the route name of the page where a code sent to the customer's phone is entered
+        /// </summary>
+        public const string VERIFY_PHONE = "VerifyPhone";
+
+        /// <summary>
         /// Gets the blog by tag route name
         /// </summary>
         public const string BLOG_BY_TAG = "BlogByTag";

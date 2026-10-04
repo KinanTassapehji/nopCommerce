@@ -1,0 +1,39 @@
+﻿@model VerifyPhoneModel
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("Account.PhoneVerification").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-password-recovery-page html-verify-phone-page");
+}
+@*the code entry for a new account, a new number and a forgotten password; it borrows the
+    password recovery page's look*@
+<div class="page password-recovery-page verify-phone-page">
+    <div class="page-title">
+        <h1>@T("Account.PhoneVerification")</h1>
+    </div>
+    <div class="page-body">
+        <form asp-route="@NopRouteNames.Standard.VERIFY_PHONE" asp-route-guid="@Model.Guid" asp-route-returnurl="@Model.ReturnUrl" method="post" autocomplete="off">
+            <div asp-validation-summary="ModelOnly" class="message-error"></div>
+            @*the number isolated left-to-right, or an Arabic sentence moves its + to the far end*@
+            <p class="tooltip">@T("Account.PhoneVerification.Sent", "⁦" + Model.Phone + "⁩")</p>
+            <section class="fieldset">
+                <div class="form-fields">
+                    <div class="inputs">
+                        <label asp-for="Code" asp-postfix=":"></label>
+                        @*one-time-code lets phones offer the code from the incoming message*@
+                        <input asp-for="Code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="12" dir="ltr" class="verify-phone-code" autofocus="autofocus" />
+                    </div>
+                </div>
+            </section>
+            <section class="buttons">
+                <button type="submit" name="verify" class="button-1 verify-phone-button">@T("Account.PhoneVerification.Verify")</button>
+            </section>
+            <section class="buttons">
+                @*no validation: resending needs no code*@
+                <button type="submit" name="resend" formnovalidate="formnovalidate" class="button-2 verify-phone-resend-button">@T("Account.PhoneVerification.Resend")</button>
+            </section>
+        </form>
+    </div>
+</div>

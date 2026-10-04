@@ -22,6 +22,7 @@ using Nop.Services.ArtificialIntelligence;
 using Nop.Services.Authentication;
 
 using Nop.Services.Common;
+using Nop.Services.Customers;
 using Nop.Web.Framework.Mvc.Filters;
 using Nop.Web.Framework.Mvc.ModelBinding;
 using Nop.Web.Framework.Mvc.ModelBinding.Binders;
@@ -431,6 +432,9 @@ public static class ServiceCollectionExtensions
 
         //client to request reCAPTCHA service
         services.AddHttpClient<CaptchaHttpClient>().WithProxy();
+
+        //client of the WhatsApp sidecar that sends phone verification codes (loopback, so no proxy)
+        services.AddHttpClient<WhatsAppSidecarClient>();
 
         //client to request artificial intelligence service
         services.AddHttpClient<ArtificialIntelligenceHttpClient>().WithProxy();

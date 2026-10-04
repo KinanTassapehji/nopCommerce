@@ -69,6 +69,7 @@ public partial class CustomerModelFactory : ICustomerModelFactory
     protected readonly IWorkContext _workContext;
     protected readonly MediaSettings _mediaSettings;
     protected readonly OrderSettings _orderSettings;
+    protected readonly PhoneVerificationSettings _phoneVerificationSettings;
     protected readonly SecuritySettings _securitySettings;
     protected readonly TaxSettings _taxSettings;
     protected readonly VendorSettings _vendorSettings;
@@ -108,6 +109,7 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         IWorkContext workContext,
         MediaSettings mediaSettings,
         OrderSettings orderSettings,
+        PhoneVerificationSettings phoneVerificationSettings,
         SecuritySettings securitySettings,
         TaxSettings taxSettings,
         VendorSettings vendorSettings)
@@ -143,6 +145,7 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         _workContext = workContext;
         _mediaSettings = mediaSettings;
         _orderSettings = orderSettings;
+        _phoneVerificationSettings = phoneVerificationSettings;
         _securitySettings = securitySettings;
         _taxSettings = taxSettings;
         _vendorSettings = vendorSettings;
@@ -550,13 +553,18 @@ public partial class CustomerModelFactory : ICustomerModelFactory
     /// A task that represents the asynchronous operation
     /// The task result contains the password recovery model
     /// </returns>
-    public virtual Task<PasswordRecoveryModel> PreparePasswordRecoveryModelAsync(PasswordRecoveryModel model)
+    public virtual async Task<PasswordRecoveryModel> PreparePasswordRecoveryModelAsync(PasswordRecoveryModel model)
     {
         ArgumentNullException.ThrowIfNull(model);
 
         model.DisplayCaptcha = _captchaSettings.Enabled && _captchaSettings.ShowOnForgotPasswordPage;
 
-        return Task.FromResult(model);
+        model.PhoneEnabled = _phoneVerificationSettings.Enabled;
+        model.PhoneCountry ??= CustomerPhoneHelper.DefaultRegion;
+        if (model.PhoneEnabled)
+            await PreparePhoneCountriesAsync(model.AvailablePhoneCountries);
+
+        return model;
     }
 
     /// <summary>

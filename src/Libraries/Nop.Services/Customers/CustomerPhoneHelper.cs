@@ -59,6 +59,24 @@ public static partial class CustomerPhoneHelper
     }
 
     /// <summary>
+    /// Format a stored number for reading: +963 944 555 123
+    /// </summary>
+    /// <param name="phone">Number, E.164</param>
+    /// <returns>Formatted number; the number as given when it does not parse</returns>
+    public static string FormatInternational(string phone)
+    {
+        var util = PhoneNumberUtil.GetInstance();
+        try
+        {
+            return util.Format(util.Parse(phone, DefaultRegion), PhoneNumberFormat.INTERNATIONAL);
+        }
+        catch (NumberParseException)
+        {
+            return phone;
+        }
+    }
+
+    /// <summary>
     /// Get the dialling code of a country (963 for SY)
     /// </summary>
     /// <param name="region">Two-letter ISO code</param>

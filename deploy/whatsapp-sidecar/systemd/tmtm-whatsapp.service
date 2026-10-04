@@ -1,0 +1,29 @@
+# TmTm's WhatsApp sidecar: sends the store's phone verification codes.
+# Install at /etc/systemd/system/tmtm-whatsapp.service (see ../README.md).
+# Modelled on the mosque's bader-mosque-sidecar.service on the same server, which
+# runs the same code with its own number - the two never share a port or session.
+
+[Unit]
+Description=TmTm WhatsApp sidecar (whatsapp-web.js) - phone verification codes
+After=network.target
+# never give up restarting, however fast it crash-loops
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/tmtm-whatsapp
+ExecStart=/usr/bin/node /var/www/tmtm-whatsapp/index.js
+Environment=PORT=3210
+# the linked WhatsApp login: outside the code folder so a redeploy never logs the number out
+Environment=WWEBJS_DATA=/var/www/tmtm-whatsapp-session
+Restart=always
+RestartSec=5
+User=root
+# Headless Chrome grows; the server froze once (2026-10-01) before the mosque sidecar
+# got these same caps. MemoryHigh throttles first, MemoryMax kills and restarts it.
+MemoryHigh=1300M
+MemoryMax=1536M
+MemorySwapMax=512M
+
+[Install]
+WantedBy=multi-user.target

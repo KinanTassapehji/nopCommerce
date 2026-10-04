@@ -77,6 +77,7 @@ public partial class CustomerController : BasePublicController
     protected readonly INotificationService _notificationService;
     protected readonly IOrderService _orderService;
     protected readonly IPermissionService _permissionService;
+    protected readonly IPhoneVerificationService _phoneVerificationService;
     protected readonly IPictureService _pictureService;
     protected readonly IPriceFormatter _priceFormatter;
     protected readonly IProductService _productService;
@@ -87,6 +88,7 @@ public partial class CustomerController : BasePublicController
     protected readonly IWorkflowMessageService _workflowMessageService;
     protected readonly LocalizationSettings _localizationSettings;
     protected readonly MediaSettings _mediaSettings;
+    protected readonly PhoneVerificationSettings _phoneVerificationSettings;
     protected readonly StoreInformationSettings _storeInformationSettings;
     protected readonly TaxSettings _taxSettings;
     private static readonly char[] _separator = [','];
@@ -125,6 +127,7 @@ public partial class CustomerController : BasePublicController
         INotificationService notificationService,
         IOrderService orderService,
         IPermissionService permissionService,
+        IPhoneVerificationService phoneVerificationService,
         IPictureService pictureService,
         IPriceFormatter priceFormatter,
         IProductService productService,
@@ -135,6 +138,7 @@ public partial class CustomerController : BasePublicController
         IWorkflowMessageService workflowMessageService,
         LocalizationSettings localizationSettings,
         MediaSettings mediaSettings,
+        PhoneVerificationSettings phoneVerificationSettings,
         StoreInformationSettings storeInformationSettings,
         TaxSettings taxSettings)
     {
@@ -168,6 +172,7 @@ public partial class CustomerController : BasePublicController
         _notificationService = notificationService;
         _orderService = orderService;
         _permissionService = permissionService;
+        _phoneVerificationService = phoneVerificationService;
         _pictureService = pictureService;
         _priceFormatter = priceFormatter;
         _productService = productService;
@@ -178,6 +183,7 @@ public partial class CustomerController : BasePublicController
         _workflowMessageService = workflowMessageService;
         _localizationSettings = localizationSettings;
         _mediaSettings = mediaSettings;
+        _phoneVerificationSettings = phoneVerificationSettings;
         _storeInformationSettings = storeInformationSettings;
         _taxSettings = taxSettings;
     }
@@ -446,8 +452,21 @@ public partial class CustomerController : BasePublicController
                     ModelState.AddModelError("", await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.Deleted"));
                     break;
                 case CustomerLoginResults.NotActive:
+                {
+                    //a new account that never entered its phone code (the password was right): on to the code
+                    var unconfirmed = _customerSettings.UsernamesEnabled
+                        ? await _customerService.GetCustomerByUsernameAsync(customerUserName)
+                        : await _customerService.GetCustomerByEmailAsync(customerEmail);
+                    if (_phoneVerificationSettings.Enabled && await _phoneVerificationService.IsActivationPendingAsync(unconfirmed))
+                    {
+                        await NotifyPhoneCodeNotSentAsync(await _phoneVerificationService.SendCodeAsync(unconfirmed, unconfirmed.Phone, PhoneVerificationPurpose.Activate));
+
+                        return RedirectToRoute(NopRouteNames.Standard.VERIFY_PHONE, new { guid = unconfirmed.CustomerGuid, returnUrl });
+                    }
+
                     ModelState.AddModelError("", await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.NotActive"));
                     break;
+                }
                 case CustomerLoginResults.NotRegistered:
                     ModelState.AddModelError("", await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.NotRegistered"));
                     break;
@@ -564,7 +583,20 @@ public partial class CustomerController : BasePublicController
             ModelState.AddModelError("", await _localizationService.GetResourceAsync("Common.WrongCaptchaMessage"));
         }
 
-        if (ModelState.IsValid)
+        //by phone: a code over WhatsApp, then the same new-password page the email link opens
+        if (ModelState.IsValid && _phoneVerificationSettings.Enabled && !string.IsNullOrEmpty(model.Phone))
+        {
+            var phone = CustomerPhoneHelper.ToE164(model.Phone, model.PhoneCountry);
+            var customer = await _customerService.GetCustomerByUsernameAsync(phone);
+            if (customer != null && customer.Active && !customer.Deleted)
+            {
+                if (await NotifyPhoneCodeNotSentAsync(await _phoneVerificationService.SendCodeAsync(customer, phone, PhoneVerificationPurpose.ResetPassword)))
+                    return RedirectToRoute(NopRouteNames.Standard.VERIFY_PHONE, new { guid = customer.CustomerGuid });
+            }
+            else
+                _notificationService.ErrorNotification(await _localizationService.GetResourceAsync("Account.PasswordRecovery.PhoneNotFound"));
+        }
+        else if (ModelState.IsValid)
         {
             var customer = await _customerService.GetCustomerByEmailAsync(model.Email);
             if (customer != null && customer.Active && !customer.Deleted)
@@ -691,7 +723,168 @@ public partial class CustomerController : BasePublicController
         return View(model);
     }
 
-    #endregion     
+    #endregion
+
+    #region Phone verification
+
+    /// <summary>
+    /// Prepare the page where a code sent to the customer's phone is entered
+    /// </summary>
+    protected virtual VerifyPhoneModel PrepareVerifyPhoneModel(Customer customer, PhoneCode code, string returnUrl)
+    {
+        return new VerifyPhoneModel
+        {
+            Guid = customer.CustomerGuid,
+            Phone = CustomerPhoneHelper.FormatInternational(code.Phone),
+            Purpose = code.Purpose,
+            ReturnUrl = returnUrl
+        };
+    }
+
+    /// <summary>
+    /// Tell the customer when sending a code did not go well (the verify page itself says it was sent)
+    /// </summary>
+    /// <returns>True when a code is on its way, or one just was</returns>
+    protected virtual async Task<bool> NotifyPhoneCodeNotSentAsync(PhoneCodeSendResult result)
+    {
+        if (result is not PhoneCodeSendResult.Sent)
+            _notificationService.ErrorNotification(await _localizationService.GetResourceAsync($"Account.PhoneVerification.Send.{result}"));
+
+        return result is PhoneCodeSendResult.Sent or PhoneCodeSendResult.TooSoon;
+    }
+
+    /// <summary>
+    /// Get the customer a verify page is for, and the code they were sent
+    /// </summary>
+    protected virtual async Task<(Customer customer, PhoneCode code)> GetPhoneCodeAsync(Guid guid)
+    {
+        var customer = await _customerService.GetCustomerByGuidAsync(guid);
+        if (customer == null || customer.Deleted)
+            return (null, null);
+
+        var code = await _phoneVerificationService.GetCodeAsync(customer);
+        //a new account whose first code did not go out: the page still opens, to send one
+        if (code == null && await _phoneVerificationService.IsActivationPendingAsync(customer))
+            code = new PhoneCode { Phone = customer.Phone, Purpose = PhoneVerificationPurpose.Activate };
+        if (code == null)
+            return (null, null);
+
+        //a new number is confirmed by the account holder only: the code was asked for while signed in
+        if (code.Purpose == PhoneVerificationPurpose.ChangePhone && (await _workContext.GetCurrentCustomerAsync()).Id != customer.Id)
+            return (null, null);
+
+        return (customer, code);
+    }
+
+    //available even when navigation is not allowed
+    [CheckAccessPublicStore(ignore: true)]
+    //available even when a store is closed
+    [CheckAccessClosedStore(ignore: true)]
+    public virtual async Task<IActionResult> VerifyPhone(Guid guid, string returnUrl)
+    {
+        var (customer, code) = await GetPhoneCodeAsync(guid);
+        if (customer == null)
+            return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
+
+        return View(PrepareVerifyPhoneModel(customer, code, returnUrl));
+    }
+
+    [HttpPost, ActionName("VerifyPhone")]
+    [FormValueRequired("verify")]
+    //available even when navigation is not allowed
+    [CheckAccessPublicStore(ignore: true)]
+    //available even when a store is closed
+    [CheckAccessClosedStore(ignore: true)]
+    public virtual async Task<IActionResult> VerifyPhoneCheck(Guid guid, string returnUrl, VerifyPhoneModel model)
+    {
+        var (customer, code) = await GetPhoneCodeAsync(guid);
+        if (customer == null)
+            return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
+
+        var result = await _phoneVerificationService.CheckCodeAsync(customer, model.Code);
+        if (result != PhoneCodeCheckResult.Valid)
+        {
+            ModelState.AddModelError("", await _localizationService.GetResourceAsync($"Account.PhoneVerification.Check.{result}"));
+            return View(PrepareVerifyPhoneModel(customer, code, returnUrl));
+        }
+
+        switch (code.Purpose)
+        {
+            case PhoneVerificationPurpose.Activate:
+            {
+                if (!await _phoneVerificationService.IsActivationPendingAsync(customer))
+                    return RedirectToRoute(NopRouteNames.General.LOGIN);
+
+                customer.Active = true;
+                await _customerService.UpdateCustomerAsync(customer);
+                await _phoneVerificationService.SetActivationPendingAsync(customer, false);
+
+                //what a standard registration does straight away
+                await _workflowMessageService.SendCustomerWelcomeMessageAsync(customer, (await _workContext.GetWorkingLanguageAsync()).Id);
+                await _eventPublisher.PublishAsync(new CustomerActivatedEvent(customer));
+
+                returnUrl = Url.RouteUrl(NopRouteNames.Standard.REGISTER_RESULT, new { resultId = (int)UserRegistrationType.Standard, returnUrl });
+                return await _customerRegistrationService.SignInCustomerAsync(customer, returnUrl, true);
+            }
+
+            case PhoneVerificationPurpose.ChangePhone:
+            {
+                try
+                {
+                    //throws when another account took the number meanwhile
+                    await _customerRegistrationService.SetUsernameAsync(customer, code.Phone);
+                }
+                catch (NopException exception)
+                {
+                    _notificationService.ErrorNotification(exception.Message);
+                    return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
+                }
+
+                customer.Phone = code.Phone;
+                await _customerService.UpdateCustomerAsync(customer);
+
+                //the login cookie carries the username
+                if (_workContext.OriginalCustomerIfImpersonated == null)
+                    await _authenticationService.SignInAsync(customer, true);
+
+                _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Account.PhoneVerification.PhoneChanged"));
+                return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
+            }
+
+            default:
+            {
+                //the number is confirmed: hand over to the page the email link opens
+                var token = Guid.NewGuid().ToString();
+                await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.PasswordRecoveryTokenAttribute, token);
+                await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.PasswordRecoveryTokenDateGeneratedAttribute, (DateTime?)DateTime.UtcNow);
+
+                return RedirectToRoute(NopRouteNames.Standard.PASSWORD_RECOVERY_CONFIRM, new { token, guid = customer.CustomerGuid });
+            }
+        }
+    }
+
+    [HttpPost, ActionName("VerifyPhone")]
+    [FormValueRequired("resend")]
+    //available even when navigation is not allowed
+    [CheckAccessPublicStore(ignore: true)]
+    //available even when a store is closed
+    [CheckAccessClosedStore(ignore: true)]
+    public virtual async Task<IActionResult> VerifyPhoneResend(Guid guid, string returnUrl)
+    {
+        var (customer, code) = await GetPhoneCodeAsync(guid);
+        if (customer == null)
+            return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
+
+        var result = await _phoneVerificationService.SendCodeAsync(customer, code.Phone, code.Purpose);
+        if (result == PhoneCodeSendResult.Sent)
+            _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Account.PhoneVerification.Send.Sent"));
+        else
+            await NotifyPhoneCodeNotSentAsync(result);
+
+        return RedirectToRoute(NopRouteNames.Standard.VERIFY_PHONE, new { guid, returnUrl });
+    }
+
+    #endregion
 
     #region Register
 
@@ -763,10 +956,26 @@ public partial class CustomerController : BasePublicController
             ValidateRequiredConsents(consents, form);
         }
 
+        //the phone number is the username
+        var phone = CustomerPhoneHelper.ToE164(model.Phone, model.PhoneCountry);
+
+        //the account is confirmed with a code over WhatsApp: refuse a number that cannot get one
+        //before there is an account (and the guest's cart in it) to be stuck unconfirmed
+        if (ModelState.IsValid && _phoneVerificationSettings.Enabled && !await _phoneVerificationService.CanReceiveCodeAsync(phone))
+            ModelState.AddModelError("", await _localizationService.GetResourceAsync("Account.PhoneVerification.Send.NotOnWhatsApp"));
+
         if (ModelState.IsValid)
         {
-            //the phone number is the username
-            var phone = CustomerPhoneHelper.ToE164(model.Phone, model.PhoneCountry);
+            //an account that never confirmed this number gives it up to whoever registers it now
+            if (_phoneVerificationSettings.Enabled &&
+                await _customerService.GetCustomerByUsernameAsync(phone) is Customer unconfirmed &&
+                unconfirmed.Id != customer.Id && await _phoneVerificationService.IsActivationPendingAsync(unconfirmed))
+            {
+                unconfirmed.Username = null;
+                unconfirmed.Email = null;
+                await _customerService.DeleteCustomerAsync(unconfirmed);
+            }
+
             var customerUserName = phone;
             var customerEmail = model.Email;
 
@@ -976,8 +1185,21 @@ public partial class CustomerController : BasePublicController
                     await _workflowMessageService.SendCustomerRegisteredStoreOwnerNotificationMessageAsync(customer,
                         _localizationSettings.DefaultAdminLanguageId);
 
-                //raise event       
+                //raise event
                 await _eventPublisher.PublishAsync(new CustomerRegisteredEvent(customer));
+
+                //the account opens once the code sent to the phone is entered (VerifyPhoneCheck does
+                //the welcome message and the activation event, as a standard registration would here)
+                if (_phoneVerificationSettings.Enabled)
+                {
+                    customer.Active = false;
+                    await _customerService.UpdateCustomerAsync(customer);
+                    await _phoneVerificationService.SetActivationPendingAsync(customer, true);
+
+                    await NotifyPhoneCodeNotSentAsync(await _phoneVerificationService.SendCodeAsync(customer, phone, PhoneVerificationPurpose.Activate));
+
+                    return RedirectToRoute(NopRouteNames.Standard.VERIFY_PHONE, new { guid = customer.CustomerGuid, returnUrl });
+                }
 
                 switch (_customerSettings.UserRegistrationType)
                 {
@@ -1169,6 +1391,19 @@ public partial class CustomerController : BasePublicController
             {
                 //phone number, which is also the username
                 var phone = CustomerPhoneHelper.ToE164(model.Phone, model.PhoneCountry);
+
+                //with verification on, a new number waits for its code; the rest of the form saves now
+                string newPhone = null;
+                if (_phoneVerificationSettings.Enabled && !string.IsNullOrEmpty(phone) &&
+                    !phone.Equals(customer.Phone, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    if (await _customerService.GetCustomerByUsernameAsync(phone) is Customer holder && holder.Id != customer.Id)
+                        throw new NopException(await _localizationService.GetResourceAsync("Account.EmailUsernameErrors.UsernameAlreadyExists"));
+
+                    newPhone = phone;
+                    phone = customer.Phone;
+                }
+
                 if (_customerSettings.UsernamesEnabled && !string.IsNullOrEmpty(phone) &&
                     !phone.Equals(customer.Username, StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -1333,6 +1568,12 @@ public partial class CustomerController : BasePublicController
                     await LogGdprAsync(customer, oldCustomerModel, model, form);
 
                 _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Account.CustomerInfo.Updated"));
+
+                if (newPhone != null &&
+                    await NotifyPhoneCodeNotSentAsync(await _phoneVerificationService.SendCodeAsync(customer, newPhone, PhoneVerificationPurpose.ChangePhone)))
+                {
+                    return RedirectToRoute(NopRouteNames.Standard.VERIFY_PHONE, new { guid = customer.CustomerGuid });
+                }
 
                 return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
             }

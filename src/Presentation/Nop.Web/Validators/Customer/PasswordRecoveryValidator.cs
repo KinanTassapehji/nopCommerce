@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Nop.Services.Customers;
 using Nop.Services.Localization;
 using Nop.Web.Framework.Validators;
 using Nop.Web.Models.Customer;
@@ -9,9 +10,14 @@ public partial class PasswordRecoveryValidator : BaseNopValidator<PasswordRecove
 {
     public PasswordRecoveryValidator(ILocalizationService localizationService)
     {
-        RuleFor(x => x.Email).NotEmpty().WithMessageAwait(localizationService.GetResourceAsync("Account.PasswordRecovery.Email.Required"));
+        //by phone or by email: one of the two
+        RuleFor(x => x.Email).NotEmpty().When(x => string.IsNullOrEmpty(x.Phone))
+            .WithMessageAwait(localizationService.GetResourceAsync("Account.PasswordRecovery.Email.Required"));
         RuleFor(x => x.Email)
             .IsEmailAddress()
             .WithMessageAwait(localizationService.GetResourceAsync("Common.WrongEmail"));
+        RuleFor(x => x.Phone)
+            .Must((x, phone) => string.IsNullOrEmpty(phone) || CustomerPhoneHelper.ToE164(phone, x.PhoneCountry) != null)
+            .WithMessageAwait(localizationService.GetResourceAsync("Account.Fields.Phone.NotValid"));
     }
 }

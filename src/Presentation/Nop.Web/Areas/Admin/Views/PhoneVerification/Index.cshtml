@@ -1,0 +1,125 @@
+﻿@model PhoneVerificationSettingsModel
+@using Nop.Services.Customers
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Configuration.Settings.PhoneVerification").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Phone verification settings");
+
+    var ready = Model.Accounts?.Any(account => account.State == "ready") == true;
+    //a QR code changes every ~20 seconds and the state moves on once it is scanned
+    var waiting = Model.Accounts?.Any(account => account.State is "starting" or "qr" or "authenticated") == true;
+}
+
+<form asp-controller="PhoneVerification" asp-action="Index" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.Configuration.Settings.PhoneVerification")
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-floppy-disk"></i>
+                @T("Admin.Common.Save")
+            </button>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                @if (Model.Enabled && !string.IsNullOrEmpty(Model.WhatsAppSidecarUrl) && !ready)
+                {
+                    <div class="callout bg-white">
+                        <p class="text-danger">@T("Admin.Configuration.Settings.PhoneVerification.NoNumberWarning")</p>
+                    </div>
+                }
+                <div class="card card-default">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <nop-label asp-for="Enabled" />
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="Enabled" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <nop-label asp-for="WhatsAppSidecarUrl" />
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="WhatsAppSidecarUrl" />
+                                @if (string.IsNullOrEmpty(Model.WhatsAppSidecarUrl))
+                                {
+                                    <em>@T("Admin.Configuration.Settings.PhoneVerification.LogMode")</em>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.WhatsAppSidecarUrl))
+{
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card card-default">
+                <div class="card-header">
+                    <h3 class="card-title">@T("Admin.Configuration.Settings.PhoneVerification.Numbers")</h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.Accounts == null)
+                    {
+                        <p class="text-danger">@T("Admin.Configuration.Settings.PhoneVerification.SidecarOffline")</p>
+                    }
+                    else
+                    {
+                        if (!Model.Accounts.Any())
+                        {
+                            <p>@T("Admin.Configuration.Settings.PhoneVerification.NoNumbers")</p>
+                        }
+                        foreach (var account in Model.Accounts)
+                        {
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <strong dir="ltr">@(string.IsNullOrEmpty(account.Phone) ? "—" : CustomerPhoneHelper.FormatInternational("+" + account.Phone))</strong>
+                                    <div>@T($"Admin.Configuration.Settings.PhoneVerification.State.{account.State}")</div>
+                                </div>
+                                <div class="col-md-6">
+                                    @if (!string.IsNullOrEmpty(account.Qr))
+                                    {
+                                        <p>@T("Admin.Configuration.Settings.PhoneVerification.ScanQr")</p>
+                                        <img src="@account.Qr" alt="QR" width="264" height="264" />
+                                    }
+                                </div>
+                                <div class="col-md-3">
+                                    <form asp-controller="PhoneVerification" asp-action="Unlink" asp-route-id="@account.Id" method="post">
+                                        @*unlinking logs WhatsApp out on that phone; linking again means another scan*@
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('@T("Admin.Common.AreYouSure")');">@T("Admin.Configuration.Settings.PhoneVerification.Unlink")</button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                        <form asp-controller="PhoneVerification" asp-action="AddNumber" method="post">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus-square"></i>
+                                @T("Admin.Configuration.Settings.PhoneVerification.AddNumber")
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+@if (waiting)
+{
+    <script>
+        setTimeout(function () { location.reload(); }, 5000);
+    </script>
+}

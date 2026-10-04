@@ -130,8 +130,6 @@ public partial class CustomerRegistrationService : ICustomerRegistrationService
             return CustomerLoginResults.CustomerNotExist;
         if (customer.Deleted)
             return CustomerLoginResults.Deleted;
-        if (!customer.Active)
-            return CustomerLoginResults.NotActive;
         //only registered can login
         if (!await _customerService.IsRegisteredAsync(customer))
             return CustomerLoginResults.NotRegistered;
@@ -156,6 +154,11 @@ public partial class CustomerRegistrationService : ICustomerRegistrationService
 
             return CustomerLoginResults.WrongPassword;
         }
+
+        //only after the password: an account waiting for its phone code is sent on to enter it
+        //(and a code is sent), which must not happen for someone who just knows the number
+        if (!customer.Active)
+            return CustomerLoginResults.NotActive;
 
         //update login details
         customer.FailedLoginAttempts = 0;
