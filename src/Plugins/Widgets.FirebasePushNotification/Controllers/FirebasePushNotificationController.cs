@@ -13,6 +13,7 @@ using Nop.Services.Configuration;
 using Nop.Services.Customers;
 using Nop.Services.Localization;
 using Nop.Services.Messages;
+using Nop.Services.Security;
 using Nop.Web.Framework.Controllers;
 using Nop.Web.Framework.Mvc.Filters;
 using Widgets.FirebasePushNotification.Models;
@@ -37,14 +38,27 @@ public class FirebasePushNotificationController : BasePluginController
 
 	private readonly ILanguageService _languageService;
 
-	public FirebasePushNotificationController(ISettingService settingService, INotificationService notificationService, ILocalizationService localizationService, IFirebaseNotificationService firebaseNotificationService, ICustomerService customerService, ILanguageService languageService)
+	private readonly InboxNotificationService _inboxNotificationService;
+
+	public FirebasePushNotificationController(ISettingService settingService, INotificationService notificationService, ILocalizationService localizationService, IFirebaseNotificationService firebaseNotificationService, ICustomerService customerService, ILanguageService languageService, InboxNotificationService inboxNotificationService)
 	{
+		_inboxNotificationService = inboxNotificationService;
 		_settingService = settingService;
 		_notificationService = notificationService;
 		_localizationService = localizationService;
 		_firebaseNotificationService = firebaseNotificationService;
 		_customerService = customerService;
 		_languageService = languageService;
+	}
+
+	//the store events feed (orders, customers, reviews, stock) - anyone who may see orders
+	[CheckPermission(StandardPermission.Orders.ORDERS_VIEW)]
+	public async Task<IActionResult> Inbox(int page = 1)
+	{
+		//loaded before marking, so what was new on arrival still shows as new
+		var model = await _inboxNotificationService.GetPageAsync(InboxNotificationService.AdminInbox, Math.Max(page, 1) - 1, 30);
+		await _inboxNotificationService.MarkAllReadAsync(InboxNotificationService.AdminInbox);
+		return View("~/Plugins/Widgets.FirebasePushNotification/Views/AdminInbox.cshtml", model);
 	}
 
 	[CheckPermission("Configuration.ManageWidgets", CheckPermissionAttribute.CheckPermissionResultType.Default)]

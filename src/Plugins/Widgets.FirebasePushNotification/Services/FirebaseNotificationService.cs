@@ -16,10 +16,13 @@ public class FirebaseNotificationService : IFirebaseNotificationService
 
 	private readonly IRepository<FirebaseDeviceToken> _tokenRepository;
 
-	public FirebaseNotificationService(ILogger logger, IRepository<FirebaseDeviceToken> tokenRepository)
+	private readonly InboxNotificationService _inboxNotificationService;
+
+	public FirebaseNotificationService(ILogger logger, IRepository<FirebaseDeviceToken> tokenRepository, InboxNotificationService inboxNotificationService)
 	{
 		_logger = logger;
 		_tokenRepository = tokenRepository;
+		_inboxNotificationService = inboxNotificationService;
 	}
 
 	private static void Log(string message)
@@ -84,6 +87,8 @@ public class FirebaseNotificationService : IFirebaseNotificationService
 		{
 			return false;
 		}
+		//kept before the token lookup: a customer without push still finds it on the notifications page
+		await _inboxNotificationService.AddAsync(new[] { customerId }, title, body, data?.GetValueOrDefault("url"));
 		string normalizedPlatform = NormalizePlatform(platform);
 		IQueryable<FirebaseDeviceToken> tokensQuery = _tokenRepository.Table.Where((FirebaseDeviceToken x) => x.CustomerId == customerId && x.IsActive && x.Token != "");
 		if (normalizedPlatform != "all")
@@ -117,6 +122,7 @@ public class FirebaseNotificationService : IFirebaseNotificationService
 		}
 		try
 		{
+			await _inboxNotificationService.AddAsync(customerIds, title, body, data?.GetValueOrDefault("url"));
 			string normalizedPlatform = NormalizePlatform(platform);
 			IQueryable<FirebaseDeviceToken> tokensQuery = _tokenRepository.Table.Where((FirebaseDeviceToken x) => customerIds.Contains(x.CustomerId) && x.IsActive && x.Token != "");
 			if (normalizedPlatform != "all")

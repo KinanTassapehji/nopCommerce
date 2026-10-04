@@ -1,0 +1,8 @@
+@model int
+<a class="nav-link position-relative" href="@Url.Content("~/Admin/FirebasePushNotification/Inbox")" title="@T("Plugins.Widgets.FirebasePushNotification.Inbox.Title")">
+    <i class="far fa-bell"></i>
+    @if (Model > 0)
+    {
+        <span class="badge badge-danger navbar-badge">@(Model > 99 ? "99+" : Model.ToString())</span>
+    }
+</a>

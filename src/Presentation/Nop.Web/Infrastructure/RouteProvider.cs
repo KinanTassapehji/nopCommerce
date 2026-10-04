@@ -427,6 +427,14 @@ public partial class RouteProvider : BaseRouteProvider, IRouteProvider
             pattern: $"{lang}/customer/gdpr",
             defaults: new { controller = "Customer", action = "GdprTools" });
 
+        endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.Standard.CUSTOMER_CONDITIONS_OF_USE,
+            pattern: $"{lang}/customer/conditionsofuse",
+            defaults: new { controller = "Customer", action = "ConditionsOfUse" });
+
+        endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.Standard.CUSTOMER_DELETE_ACCOUNT,
+            pattern: $"{lang}/customer/deleteaccount",
+            defaults: new { controller = "Customer", action = "DeleteAccount" });
+
         //poll vote (AJAX)
         endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.Ajax.POLL_VOTE,
             pattern: $"poll/vote",

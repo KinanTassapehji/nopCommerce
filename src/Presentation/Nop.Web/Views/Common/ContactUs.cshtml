@@ -12,6 +12,7 @@
         <h1>@T("PageTitle.ContactUs")</h1>
     </div>
     <div class="page-body">
+        @await Html.PartialAsync("_ContactChannels")
         @await Component.InvokeAsync(typeof(TopicBlockViewComponent), new { systemName = "ContactUs" })
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ContactUsTop, additionalData = Model })
         @if (Model.SuccessfullySent)

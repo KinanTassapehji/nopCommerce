@@ -1775,5 +1775,62 @@ public partial class CustomerController : BasePublicController
 
     #endregion
 
+    #region Conditions of use and account closing
+
+    public virtual async Task<IActionResult> ConditionsOfUse()
+    {
+        if (!await _customerService.IsRegisteredAsync(await _workContext.GetCurrentCustomerAsync()))
+            return Challenge();
+
+        return View();
+    }
+
+    public virtual async Task<IActionResult> DeleteAccount()
+    {
+        if (!await _customerService.IsRegisteredAsync(await _workContext.GetCurrentCustomerAsync()))
+            return Challenge();
+
+        return View(new DeleteAccountModel());
+    }
+
+    //Closing an account deactivates it rather than deleting it: the orders, addresses and
+    //personal details stay as they were, the customer simply can no longer sign in. The admin
+    //comment and the admin inbox say it was the customer's doing, not an admin's.
+    [HttpPost]
+    public virtual async Task<IActionResult> DeleteAccount(DeleteAccountModel model)
+    {
+        var customer = await _workContext.GetCurrentCustomerAsync();
+        if (!await _customerService.IsRegisteredAsync(customer))
+            return Challenge();
+
+        //the same check as signing in, lockout after repeated wrong passwords included
+        var login = _customerSettings.UsernamesEnabled ? customer.Username : customer.Email;
+        var result = string.IsNullOrEmpty(model.Password)
+            ? CustomerLoginResults.WrongPassword
+            : await _customerRegistrationService.ValidateCustomerAsync(login, model.Password);
+        if (result != CustomerLoginResults.Successful)
+        {
+            ModelState.AddModelError(nameof(model.Password), await _localizationService.GetResourceAsync(result == CustomerLoginResults.LockedOut
+                ? "Account.Login.WrongCredentials.LockedOut"
+                : "Account.DeleteAccount.WrongPassword"));
+            return View(new DeleteAccountModel());
+        }
+
+        var note = string.Format(await _localizationService.GetResourceAsync("Account.DeleteAccount.AdminComment", _localizationSettings.DefaultAdminLanguageId),
+            DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm"));
+        customer.Active = false;
+        customer.AdminComment = string.IsNullOrWhiteSpace(customer.AdminComment) ? note : customer.AdminComment + Environment.NewLine + note;
+        await _customerService.UpdateCustomerAsync(customer);
+
+        await _eventPublisher.PublishAsync(new CustomerAccountClosedEvent(customer));
+
+        await _authenticationService.SignOutAsync();
+        _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Account.DeleteAccount.Done"));
+
+        return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
+    }
+
+    #endregion
+
     #endregion
 }

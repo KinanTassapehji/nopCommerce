@@ -657,6 +657,32 @@ public partial class CustomerModelFactory : ICustomerModelFactory
             });
         }
 
+        //the store's terms and a way to reach the store are always one tap away from the account;
+        //"Rate us" sits after these in the view - it is an external link, not a route
+        model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
+        {
+            RouteName = NopRouteNames.Standard.CUSTOMER_CONDITIONS_OF_USE,
+            Title = await _localizationService.GetResourceAsync("Account.ConditionsOfUse"),
+            Tab = (int)CustomerNavigationEnum.ConditionsOfUse,
+            ItemClass = "customer-conditions-of-use"
+        });
+
+        model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
+        {
+            RouteName = NopRouteNames.General.CONTACT_US,
+            Title = await _localizationService.GetResourceAsync("PageTitle.ContactUs"),
+            Tab = (int)CustomerNavigationEnum.ContactUs,
+            ItemClass = "customer-contact-us"
+        });
+
+        model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
+        {
+            RouteName = NopRouteNames.Standard.CUSTOMER_DELETE_ACCOUNT,
+            Title = await _localizationService.GetResourceAsync("Account.DeleteAccount"),
+            Tab = (int)CustomerNavigationEnum.DeleteAccount,
+            ItemClass = "customer-delete-account"
+        });
+
         model.SelectedTab = selectedTabId;
 
         return model;

@@ -34,5 +34,8 @@ public enum CustomerNavigationEnum
     ProductReviews = 100,
     VendorInfo = 110,
     GdprTools = 120,
+    ConditionsOfUse = 130,
+    ContactUs = 140,
+    DeleteAccount = 150,
 
 }
