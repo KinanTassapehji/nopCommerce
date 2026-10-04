@@ -6580,6 +6580,335 @@ so the field stays visible beside the icon. */
   mask: var(--tm-mark-empty) center / contain no-repeat;
 }
 
+/* --- Page not found ---------------------------------------------------------
+   The offline page's card, inside the store chrome: white, a hairline border,
+   the brand rule across the top, the tmtm cart for a mark. Behind the cart a
+   pale "404" carries the code without a sentence having to; a "?" bubble over
+   the cart says lost, not broken. Below: the PageNotFound topic (still edited
+   in admin) as a lead line and tips, then the ways out - search, home,
+   categories - and what the shopper was last looking at (Common/PageNotFound).
+   -------------------------------------------------------------------------- */
+.tm-notfound{
+  position: relative;
+  max-inline-size: 480px;
+  margin: var(--tm-stack-lg) auto;
+  padding: 36px var(--tm-margin-mobile) 28px;
+  overflow: hidden;
+  border: 1px solid var(--tm-line);
+  border-radius: 22px;
+  background: var(--tm-surface);
+  box-shadow: var(--tm-shadow-lg);
+  text-align: center;
+}
+
+.tm-notfound::before{
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 4px;
+  background: var(--tm-gradient);
+}
+
+/* the mark: pale 404 behind, the cart in brand teal, a "?" bubble over it */
+.tm-notfound-mark{
+  position: relative;
+  display: grid;
+  place-items: center;
+  block-size: 150px;
+  margin-block-end: var(--tm-stack-md);
+}
+
+.tm-notfound-code{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 128px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -4px;
+  direction: ltr;
+  background: var(--tm-gradient-diagonal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 0.14;
+  user-select: none;
+}
+
+.tm-notfound-logo{
+  position: relative;
+  inline-size: 92px;
+  block-size: 92px;
+  fill: var(--tm-teal-deep);
+  animation: tm-notfound-look 4s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+
+/* the floor it stands on - a cart in mid air reads as a broken image */
+.tm-notfound-mark::after{
+  content: "";
+  position: absolute;
+  inset-block-end: 22px;
+  inset-inline: calc(50% - 70px);
+  block-size: 2px;
+  background: repeating-linear-gradient(to left, var(--tm-line) 0 9px, transparent 9px 18px);
+}
+
+.tm-notfound-bubble{
+  position: absolute;
+  inset-block-start: 6px;
+  /* physical, not logical: the logo is not mirrored in RTL, so the bubble
+     sits on the cart's basket side in both directions, clear of the "4" */
+  left: calc(50% + 30px);
+  display: grid;
+  place-items: center;
+  inline-size: 34px;
+  block-size: 34px;
+  border-radius: 50% 50% 50% 4px;
+  background: var(--tm-teal-tint);
+  color: var(--tm-teal-deep);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  animation: tm-notfound-float 3s ease-in-out infinite;
+}
+
+@keyframes tm-notfound-look{
+  0%, 60%, 100%{ transform: rotate(0); }
+  70%{ transform: rotate(-5deg); }
+  85%{ transform: rotate(4deg); }
+}
+
+@keyframes tm-notfound-float{
+  0%, 100%{ transform: translateY(0); }
+  50%{ transform: translateY(-5px); }
+}
+
+.tm-notfound-title{
+  margin: 0;
+  color: var(--tm-ink);
+  font-size: var(--tm-fs-headline-sm);
+  line-height: var(--tm-lh-headline-sm);
+  font-weight: 700;
+}
+
+/* The topic body: its bold opening line becomes the lead, its list the tips -
+   the offline page's two blocks, from text the admin owns. */
+.tm-notfound-text{
+  margin-block-start: var(--tm-stack-sm);
+  color: var(--tm-ink-muted);
+  font-size: var(--tm-fs-body);
+  line-height: var(--tm-lh-body);
+}
+
+.tm-notfound-text .topic-block,
+.tm-notfound-text .topic-block-body,
+.tm-notfound-text p{
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.tm-notfound-text strong{
+  font-weight: 400;
+}
+
+.tm-notfound-text p{
+  text-align: center;
+  text-wrap: balance;
+}
+
+.tm-notfound-text ul{
+  margin: var(--tm-stack-md) 0 0;
+  padding: var(--tm-stack-sm) 0 0;
+  border-block-start: 1px solid var(--tm-line);
+  list-style: none;
+  font-size: var(--tm-fs-label);
+  line-height: 2;
+  text-align: start;
+}
+
+.tm-notfound-text li::before{
+  content: "\2022";
+  margin-inline-end: 8px;
+  color: var(--tm-teal);
+}
+
+/* search first: of the three ways out it is the one that finds the thing */
+.tm-notfound-search{
+  display: flex;
+  margin-block-start: var(--tm-stack-lg);
+  border: 1px solid var(--tm-teal-border);
+  border-radius: 999px;
+  background: var(--tm-surface);
+  overflow: hidden;
+  transition: border-color var(--tm-transition), box-shadow var(--tm-transition);
+}
+
+.tm-notfound-search:focus-within{
+  border-color: var(--tm-teal);
+  box-shadow: 0 0 0 3px var(--tm-teal-tint);
+}
+
+.tm-notfound-search input{
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  block-size: 48px;
+  margin: 0;
+  border: 0;
+  padding-inline: 18px 8px;
+  background: none;
+  color: var(--tm-ink);
+  font: inherit;
+  outline: 0;
+}
+
+.tm-notfound-search button{
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 48px;
+  block-size: 48px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+  cursor: pointer;
+}
+
+.tm-notfound-search button:hover{
+  background: var(--tm-teal-hover);
+}
+
+.tm-notfound-search svg{
+  inline-size: 20px;
+  block-size: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.tm-notfound-actions{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--tm-stack-sm);
+  margin-block-start: var(--tm-stack-md);
+}
+
+.tm-notfound-actions a{
+  display: inline-flex;
+  flex: 1 1 160px;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 48px;
+  padding-inline: 18px;
+  border-radius: var(--tm-radius);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* recently viewed: the offline page's strip, same tiles */
+.tm-notfound-recent{
+  margin-block-start: var(--tm-stack-lg);
+  padding-block-start: var(--tm-stack-md);
+  border-block-start: 1px solid var(--tm-line);
+  text-align: start;
+}
+
+.tm-notfound-recent h2{
+  margin: 0;
+  color: var(--tm-ink-muted);
+  font-size: var(--tm-fs-label);
+  font-weight: 600;
+}
+
+.tm-notfound-strip{
+  display: flex;
+  gap: 10px;
+  margin-block-start: 12px;
+  margin-inline: calc(-1 * var(--tm-margin-mobile));
+  padding-inline: var(--tm-margin-mobile);
+  padding-block-end: 6px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.tm-notfound-strip::-webkit-scrollbar{
+  display: none;
+}
+
+.tm-notfound-tile{
+  flex: 0 0 106px;
+  padding: 8px;
+  border: 1px solid var(--tm-line);
+  border-radius: 14px;
+  background: var(--tm-surface-alt);
+  color: inherit;
+  text-decoration: none;
+  scroll-snap-align: start;
+  transition: border-color var(--tm-transition), transform var(--tm-transition);
+}
+
+.tm-notfound-tile:hover{
+  border-color: var(--tm-teal);
+  transform: translateY(-2px);
+  color: inherit;
+}
+
+.tm-notfound-tile img{
+  display: block;
+  inline-size: 100%;
+  block-size: 74px;
+  border-radius: 9px;
+  background: var(--tm-surface);
+  object-fit: contain;
+}
+
+.tm-notfound-tile-name{
+  display: block;
+  max-block-size: 3em;
+  margin-block-start: 8px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.tm-notfound-tile-price{
+  display: block;
+  margin-block-start: 4px;
+  color: var(--tm-teal-deep);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+@media (min-width: 1001px){
+  .tm-notfound{
+    margin-block: 48px;
+    padding: 44px 40px 32px;
+  }
+
+  .tm-notfound-strip{
+    margin-inline: -40px;
+    padding-inline: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .tm-notfound-logo,
+  .tm-notfound-bubble{
+    animation: none;
+  }
+}
+
 /* --- Checkout: no checkout attributes --------------------------------------
    TmTm sells nothing that needs gift wrapping or any other checkout attribute,
    so the store has none. The base sheet reserves a 60px band for them on the
@@ -7154,6 +7483,319 @@ so the field stays visible beside the icon. */
   font-weight: 400;
 }
 
+/* --- Register: conditions of use -------------------------------------------
+   One consent row between the last card and the button: a soft teal strip,
+   the box ticked by default, the words "conditions of use" a link-styled
+   button that opens them. Unticked at submit, the strip turns red and says
+   why, under the box - no alert(). The terms open in a native <dialog>: a
+   bottom sheet on a phone (the categories sheet's shape), a centred card from
+   1001px; title and agree button stay put while the terms scroll.
+   (Register.cshtml)
+   -------------------------------------------------------------------------- */
+.tm-terms-consent{
+  margin-block: var(--tm-stack-md);
+  padding: 12px 14px;
+  border: 1px solid var(--tm-teal-border);
+  border-radius: var(--tm-radius);
+  background: var(--tm-teal-tint);
+  text-align: start;
+  transition: border-color var(--tm-transition), background-color var(--tm-transition);
+}
+
+.tm-terms-consent-row{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 4px;
+  min-block-size: 44px;
+  color: var(--tm-ink);
+  font-size: var(--tm-fs-body);
+  line-height: var(--tm-lh-body);
+}
+
+.tm-terms-consent-row input[type="checkbox"]{
+  flex: none;
+  inline-size: 22px !important;
+  block-size: 22px !important;
+  margin: 0;
+  margin-inline-end: 8px;
+  accent-color: var(--tm-teal-deep);
+  cursor: pointer;
+}
+
+.tm-terms-consent-row label{
+  margin: 0;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.tm-terms-open{
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--tm-teal-deep);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--tm-teal-border);
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.tm-terms-open:hover,
+.tm-terms-open:focus-visible{
+  background: none;
+  color: var(--tm-teal-hover);
+  text-decoration-color: currentColor;
+}
+
+.tm-terms-consent-error{
+  margin: 6px 0 0;
+  padding-inline-start: 30px;
+  color: var(--tm-error);
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  font-weight: 600;
+}
+
+.tm-terms-consent.is-invalid{
+  border-color: var(--tm-error);
+  background: color-mix(in srgb, var(--tm-error) 7%, var(--tm-surface));
+  animation: tm-terms-shake 0.35s ease;
+}
+
+@keyframes tm-terms-shake{
+  0%, 100%{ transform: translateX(0); }
+  25%{ transform: translateX(-6px); }
+  50%{ transform: translateX(5px); }
+  75%{ transform: translateX(-3px); }
+}
+
+/* the dialog: a bottom sheet on a phone */
+.tm-terms-dialog{
+  position: fixed;
+  inset: auto 0 0 0;
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  max-block-size: 88dvh;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  border-start-start-radius: 22px;
+  border-start-end-radius: 22px;
+  background: var(--tm-surface);
+  color: var(--tm-ink);
+  box-shadow: var(--tm-shadow-lg);
+  opacity: 0;
+  transform: translateY(100%);
+  transition:
+    transform 0.28s ease,
+    opacity 0.28s ease,
+    overlay 0.28s allow-discrete,
+    display 0.28s allow-discrete;
+}
+
+.tm-terms-dialog:not([open]){
+  display: none;
+}
+
+.tm-terms-dialog[open]{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@starting-style{
+  .tm-terms-dialog[open]{
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+.tm-terms-dialog::backdrop{
+  background: rgba(16, 32, 31, 0.45);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
+/* the brand rule, as on the offline and not-found cards */
+.tm-terms-dialog::before{
+  content: "";
+  flex: none;
+  block-size: 4px;
+  background: var(--tm-gradient);
+}
+
+.tm-terms-dialog-head{
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tm-stack-sm);
+  padding: 14px var(--tm-margin-mobile) 12px;
+  border-block-end: 1px solid var(--tm-line);
+}
+
+.tm-terms-dialog-head h2{
+  margin: 0;
+  color: var(--tm-ink);
+  font-size: var(--tm-fs-title);
+  line-height: var(--tm-lh-title);
+  font-weight: 700;
+}
+
+.tm-terms-dialog-close{
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  margin: 0;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  background: var(--tm-surface-alt);
+  color: var(--tm-ink-muted);
+  cursor: pointer;
+}
+
+.tm-terms-dialog-close:hover,
+.tm-terms-dialog-close:focus-visible{
+  background: var(--tm-teal-tint);
+  color: var(--tm-teal-deep);
+}
+
+.tm-terms-dialog-close svg{
+  inline-size: 20px;
+  block-size: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.tm-terms-dialog-body{
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--tm-stack-md) var(--tm-margin-mobile);
+  color: var(--tm-ink);
+  font-size: var(--tm-fs-body);
+  line-height: 1.9;
+  text-align: start;
+}
+
+.tm-terms-dialog-body:focus-visible{
+  outline: 2px solid var(--tm-teal);
+  outline-offset: -2px;
+}
+
+/* the modal header already carries the title */
+.tm-terms-dialog-body .topic-block-title{
+  display: none;
+}
+
+.tm-terms-dialog-body .topic-block,
+.tm-terms-dialog-body .topic-block-body{
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.tm-terms-dialog-body h2,
+.tm-terms-dialog-body h3{
+  margin: var(--tm-stack-md) 0 6px;
+  color: var(--tm-teal-deep);
+  font-size: var(--tm-fs-body-lg);
+  line-height: var(--tm-lh-body-lg);
+  font-weight: 700;
+}
+
+.tm-terms-dialog-body p{
+  margin: 0 0 10px;
+}
+
+.tm-terms-dialog-body ul,
+.tm-terms-dialog-body ol{
+  margin: 0 0 10px;
+  padding-inline-start: 22px;
+}
+
+.tm-terms-dialog-body li{
+  margin-block-end: 4px;
+}
+
+.tm-terms-dialog-foot{
+  flex: none;
+  padding: 12px var(--tm-margin-mobile);
+  padding-block-end: max(env(safe-area-inset-bottom, 0px), 12px);
+  border-block-start: 1px solid var(--tm-line);
+  background: var(--tm-surface);
+}
+
+.tm-terms-dialog-foot .tm-terms-agree{
+  inline-size: 100%;
+  min-block-size: 48px;
+  margin: 0;
+}
+
+/* no page scroll behind the open sheet */
+html:has(.tm-terms-dialog[open]){
+  overflow: hidden;
+}
+
+/* desktop: a centred card */
+@media (min-width: 1001px){
+  .tm-terms-dialog{
+    inset: 0;
+    inline-size: min(680px, calc(100vw - 48px));
+    max-block-size: min(82vh, 760px);
+    margin: auto;
+    border-radius: 22px;
+    transform: translateY(16px) scale(0.98);
+  }
+
+  .tm-terms-dialog[open]{
+    transform: none;
+  }
+
+  @starting-style{
+    .tm-terms-dialog[open]{
+      opacity: 0;
+      transform: translateY(16px) scale(0.98);
+    }
+  }
+
+  .tm-terms-dialog-head,
+  .tm-terms-dialog-body,
+  .tm-terms-dialog-foot{
+    padding-inline: 28px;
+  }
+
+  .tm-terms-dialog-foot{
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .tm-terms-dialog-foot .tm-terms-agree{
+    inline-size: auto;
+    padding-inline: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .tm-terms-dialog,
+  .tm-terms-consent.is-invalid{
+    transition: none;
+    animation: none;
+  }
+}
+
 /* The base sheet's 20px block margin is a second gap on top of the row gap
    the .inputs flex box already provides. */
 .registration-page .attributes,
@@ -7283,6 +7925,91 @@ so the field stays visible beside the icon. */
   .login-page .returning-wrapper .inputs.reversed .forgot-password{
     flex: 1 0 100%;
     margin-inline-start: 0;
+  }
+}
+
+
+/* --- Register on a phone: compact -----------------------------------------
+   Measured on a 412px phone: 1581px, 1.9 screens (2.4 on an iPhone SE), and
+   only four fields on the first one. A third of that was not fields: the title
+   block, a card heading and rule, a second whole card for two password fields,
+   and 18px under every field. Same fields, same 46px boxes - less around them:
+     * first and family name share a row (short words, the usual pattern);
+     * the two cards read as one: the password card joins the one above it
+       and its heading becomes a section label;
+     * 12px between fields, a lighter title block.
+   -------------------------------------------------------------------------- */
+@media (max-width: 699px){
+
+  .html-registration-page .page-title{
+    margin-block-end: 10px;
+    padding-block: 0 10px;
+  }
+
+  .html-registration-page .page-title h1{
+    font-size: var(--tm-fs-headline-sm);
+    line-height: var(--tm-lh-headline-sm);
+  }
+
+  .registration-page .fieldset{
+    padding-block: 18px 20px;
+  }
+
+  .registration-page .fieldset > .title{
+    margin-block-end: 14px;
+    padding-block-end: 10px;
+  }
+
+  .registration-page .inputs{
+    margin-block-end: 12px;
+  }
+
+  /* first + family name, two to a row */
+  .registration-page .form-fields{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 10px;
+  }
+
+  .registration-page .form-fields > *{
+    grid-column: 1 / -1;
+  }
+
+  .registration-page .form-fields > .inputs:has(#FirstName),
+  .registration-page .form-fields > .inputs:has(#LastName){
+    grid-column: auto;
+  }
+
+  /* One card: a fieldset followed by another loses its bottom edge, the next
+     one its top edge and gradient strip, and each clips the shadow it would
+     cast across the seam. */
+  .registration-page .fieldset:has(+ .fieldset){
+    margin-block-end: 0;
+    padding-block-end: 6px;
+    border-block-end: 0;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+    clip-path: inset(-40px -40px 0 -40px);
+  }
+
+  .registration-page .fieldset + .fieldset{
+    padding-block-start: 6px;
+    border-block-start: 0;
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
+    background: var(--tm-surface);
+    clip-path: inset(0 -40px -40px -40px);
+  }
+
+  /* its heading becomes a section label inside the one card */
+  .registration-page .fieldset + .fieldset > .title{
+    margin-block: 4px 12px;
+    padding: 12px 0 0;
+    border-block-start: 1px solid var(--tm-line);
+    border-block-end: 0;
+    color: var(--tm-teal-deep);
+    font-size: var(--tm-fs-body);
+    line-height: var(--tm-lh-body);
   }
 }
 
@@ -8412,6 +9139,13 @@ so the field stays visible beside the icon. */
   list-style: none;
 }
 
+/* two to a row on a phone; an odd one out takes the whole last row */
+@media (max-width: 1000px){
+  .home-usp li:last-child:nth-child(odd){
+    grid-column: 1 / -1;
+  }
+}
+
 .home-usp li{
   display: flex;
   align-items: center;
@@ -8804,8 +9538,11 @@ so the field stays visible beside the icon. */
     display: flex;
   }
 
+  /* The admin sets how many items there are (Content management > Home page
+     features): as many to a row as fit at 220px, so three or five spread
+     evenly across instead of leaving a gap in a fixed four. */
   .home-usp{
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: var(--tm-stack-md);
   }
 

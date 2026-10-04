@@ -654,6 +654,12 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
     /// </summary>
     protected virtual void CreateCommonMaps()
     {
+        CreateMap<HomepageFeature, HomepageFeatureModel>()
+            .ForMember(model => model.AvailableIcons, options => options.Ignore())
+            .ForMember(model => model.IconName, options => options.Ignore());
+        CreateMap<HomepageFeatureModel, HomepageFeature>()
+            .ForMember(entity => entity.Icon, options => options.Ignore());
+
         CreateMap<Address, AddressModel>()
             .ForMember(model => model.AddressHtml, options => options.Ignore())
             .ForMember(model => model.AvailableCountries, options => options.Ignore())

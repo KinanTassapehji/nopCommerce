@@ -1,0 +1,147 @@
+﻿@model HomepageFeatureModel
+
+<div asp-validation-summary="All"></div>
+<input asp-for="Id" type="hidden" />
+
+<div class="cards-group">
+    <div class="card card-default">
+        <div class="card-body">
+            @(await Html.LocalizedEditorAsync<HomepageFeatureModel, HomepageFeatureLocalizedModel>("homepagefeature-localized",
+            @<div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="@Model.Locales[item].Title" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="@Model.Locales[item].Title" />
+                        <span asp-validation-for="@Model.Locales[item].Title"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="@Model.Locales[item].Hint" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="@Model.Locales[item].Hint" />
+                        <span asp-validation-for="@Model.Locales[item].Hint"></span>
+                    </div>
+                </div>
+                <input type="hidden" asp-for="@Model.Locales[item].LanguageId" />
+            </div>
+            ,
+            @<div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="Title" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="Title" asp-required="true" />
+                        <span asp-validation-for="Title"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="Hint" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="Hint" />
+                        <span asp-validation-for="Hint"></span>
+                    </div>
+                </div>
+            </div>
+            ))
+            @*The icon picker: the icons themselves, drawn by the same partial as the home page, as
+                radio buttons - a name alone ("Genuine", "Offers") does not say what the shopper sees.*@
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="IconId" />
+                </div>
+                <div class="col-md-9">
+                    <div class="homepage-feature-icons" role="radiogroup">
+                        @foreach (var icon in Model.AvailableIcons)
+                        {
+                            var iconId = int.Parse(icon.Value);
+                            <label class="homepage-feature-icon" title="@icon.Text">
+                                <input type="radio" name="@nameof(Model.IconId)" value="@iconId" checked="@(iconId == Model.IconId)" />
+                                <span class="homepage-feature-icon-mark">
+                                    @await Html.PartialAsync("~/Views/Shared/_HomepageFeatureIcon.cshtml", (Nop.Core.Domain.Common.HomepageFeatureIcon)iconId)
+                                </span>
+                                <span class="homepage-feature-icon-name">@icon.Text</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="Published" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="Published" />
+                    <span asp-validation-for="Published"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="DisplayOrder" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="DisplayOrder" />
+                    <span asp-validation-for="DisplayOrder"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .homepage-feature-icons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .homepage-feature-icon {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        width: 84px;
+        margin: 0;
+        padding: 10px 4px 8px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: normal;
+        text-align: center;
+    }
+
+    .homepage-feature-icon input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .homepage-feature-icon-mark svg {
+        width: 28px;
+        height: 28px;
+        color: #02787e;
+    }
+
+    .homepage-feature-icon-name {
+        font-size: 12px;
+        line-height: 1.3;
+    }
+
+    .homepage-feature-icon:has(input:checked) {
+        border-color: #02787e;
+        background: #e6f4f4;
+        box-shadow: 0 0 0 1px #02787e;
+    }
+
+    .homepage-feature-icon:has(input:focus-visible) {
+        outline: 2px solid #02787e;
+        outline-offset: 2px;
+    }
+</style>

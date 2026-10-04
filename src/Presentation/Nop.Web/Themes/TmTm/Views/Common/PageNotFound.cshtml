@@ -1,0 +1,91 @@
+﻿@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.PageNotFound").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-not-found-page");
+}
+@*TmTm "page not found" - the same card as the offline page (wwwroot/offline.html): the brand
+    rule across the top, the tmtm cart for a mark, calm copy, a way forward. The words under the
+    title are still the PageNotFound topic, so the admin rewords them (Content management > Topics).
+    A dead end offers the three ways out a shopper actually takes: search, home, categories -
+    and the products they were just looking at, from the strip the theme keeps for offline.html.*@
+<div class="page not-found-page">
+    <section class="tm-notfound">
+        <div class="tm-notfound-mark" aria-hidden="true">
+            <span class="tm-notfound-code">404</span>
+            <svg class="tm-notfound-logo" viewBox="0 0 249.71 249.71" focusable="false">
+                <path fill-rule="evenodd" d="M247.57 189.36C246.52 182.21 235.86 176.04 224.0 176.04L96.67 176.09C84.31 176.09 74.62 182.32 73.87 189.35L247.57 189.36Z" />
+                <path d="M127.77 209.3C127.77 218.01 120.71 225.07 112.0 225.07C103.29 225.07 96.22 218.01 96.22 209.3C96.22 200.59 103.29 193.52 112.0 193.52C120.71 193.52 127.77 200.59 127.77 209.3Z" />
+                <path d="M223.14 209.28C223.14 217.99 216.08 225.05 207.38 225.05C198.67 225.05 191.61 217.99 191.61 209.28C191.61 200.58 198.67 193.52 207.38 193.52C216.08 193.52 223.14 200.58 223.14 209.28Z" />
+                <path fill-rule="evenodd" d="M191.7 104.23L191.33 133.76L191.05 167.52L167.92 167.47L168.26 134.4L168.21 103.96C168.2 98.3 164.12 93.75 158.76 92.55C153.97 91.48 149.25 91.57 144.43 92.26C136.93 93.33 133.53 98.69 133.35 106.33L137.44 167.48L114.31 167.49L111.84 130.11L110.45 108.59C109.35 91.57 115.69 75.3 132.86 70.62C138.81 68.99 144.73 68.56 150.95 68.72C162.19 68.42 173.64 70.96 180.02 81.05C186.72 70.68 198.39 68.43 210.36 68.71C223.87 68.45 237.27 71.5 244.39 83.54C247.66 89.05 249.57 95.18 249.63 101.59L249.71 109.44L240.5 167.51L217.38 167.48L226.42 109.05C227.36 101.0 224.28 93.82 216.32 92.4C211.56 91.54 206.78 91.5 201.97 92.38C196.26 93.43 191.78 98.1 191.7 104.23Z" />
+                <path fill-rule="evenodd" d="M87.35 143.33L103.4 143.49L104.74 167.54L86.13 167.38C78.38 167.32 71.26 163.97 66.05 158.34C61.39 153.06 59.01 146.85 57.87 139.85L43.74 52.97C43.17 49.47 39.31 47.7 36.48 47.69L11.79 47.58C4.65 47.54 0.0 40.48 1.46 33.69C2.5 28.9 6.2 24.66 11.48 24.65L39.92 24.64C49.52 24.64 57.8 30.19 62.6 38.22C65.11 42.46 66.26 46.92 67.04 51.77L69.79 68.68L100.04 68.69L100.98 91.79L73.48 91.91L80.92 137.53C81.42 140.59 84.34 143.3 87.35 143.33Z" />
+            </svg>
+            <span class="tm-notfound-bubble">؟</span>
+        </div>
+
+        <h1 class="tm-notfound-title">@T("PageTitle.PageNotFound")</h1>
+        <div class="tm-notfound-text">
+            @await Component.InvokeAsync(typeof(TopicBlockViewComponent), new { systemName = "PageNotFound" })
+        </div>
+
+        <form class="tm-notfound-search" asp-route="@NopRouteNames.General.SEARCH" method="get" role="search">
+            <input type="search" name="q" aria-label="@T("PageNotFound.Search.Placeholder")" placeholder="@T("PageNotFound.Search.Placeholder")" autocomplete="off" enterkeyhint="search" />
+            <button type="submit" aria-label="@T("PageNotFound.Search.Button")">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+            </button>
+        </form>
+
+        <div class="tm-notfound-actions">
+            <a class="button-1" href="@Url.RouteUrl(NopRouteNames.General.HOMEPAGE)">@T("PageNotFound.GoHome")</a>
+            <a class="button-2" href="@Url.RouteUrl(NopRouteNames.General.CATEGORIES)">@T("PageNotFound.BrowseCategories")</a>
+        </div>
+
+        <section class="tm-notfound-recent" hidden>
+            <h2>@T("PageNotFound.RecentlyViewed")</h2>
+            <div class="tm-notfound-strip"></div>
+        </section>
+    </section>
+</div>
+
+<script asp-location="Footer">
+    //The products this shopper looked at last - the list the theme keeps on every product page
+    //(Head.cshtml) for offline.html. It is data the page did not author: tiles are built with
+    //textContent, and a link is followed only if it is a same-site path.
+    (function () {
+        var items;
+        try { items = JSON.parse(localStorage.getItem('recently-viewed') || '[]'); }
+        catch (e) { return; }
+        if (!Array.isArray(items) || !items.length)
+            return;
+
+        var section = document.querySelector('.tm-notfound-recent');
+        var strip = section.querySelector('.tm-notfound-strip');
+        items.slice(0, 6).forEach(function (x) {
+            if (!x || typeof x.u !== 'string' || x.u.charAt(0) !== '/' || x.u.charAt(1) === '/' || x.u.charAt(1) === '\\')
+                return;
+            var a = document.createElement('a');
+            a.className = 'tm-notfound-tile';
+            a.href = x.u;
+            var img = document.createElement('img');
+            img.alt = '';
+            img.loading = 'lazy';
+            try {
+                var src = new URL(x.i, location.href);
+                if (src.origin === location.origin)
+                    img.src = src.href;
+            } catch (e) { }
+            var name = document.createElement('span');
+            name.className = 'tm-notfound-tile-name';
+            name.textContent = x.n || '';
+            var price = document.createElement('span');
+            price.className = 'tm-notfound-tile-price';
+            //the product page's price line can carry its label ("Price: 119"); the tile shows the amount
+            price.textContent = (x.p || '').replace(/^[^:\d]*:\s*/, '');
+            a.append(img, name, price);
+            strip.append(a);
+        });
+        section.hidden = !strip.children.length;
+    })();
+</script>

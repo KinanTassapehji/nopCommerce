@@ -2,6 +2,7 @@
 @using Nop.Core
 @inject ILocalizationService localizationService
 @inject IStoreContext storeContext
+@inject Nop.Services.Common.IHomepageFeatureService homepageFeatureService
 
 @{
     Layout = "_ColumnsOne";
@@ -28,26 +29,30 @@
 <div class="page home-page">
     <div class="page-body">
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageTop })
-        @*the reasons to buy here, straight under the hero. Copy lives in locale resources, so the
-            admin rewords it without a deploy; the icons are plain stroke marks painted in the brand colour*@
-        <ul class="home-usp">
-            <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
-                <div><strong>@T("Homepage.Usp.Delivery")</strong><span>@T("Homepage.Usp.Delivery.Hint")</span></div>
-            </li>
-            <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/></svg>
-                <div><strong>@T("Homepage.Usp.Cod")</strong><span>@T("Homepage.Usp.Cod.Hint")</span></div>
-            </li>
-            <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
-                <div><strong>@T("Homepage.Usp.Genuine")</strong><span>@T("Homepage.Usp.Genuine.Hint")</span></div>
-            </li>
-            <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13v-2a8 8 0 0116 0v2"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19a3 3 0 01-3 3h-3"/></svg>
-                <div><strong>@T("Homepage.Usp.Support")</strong><span>@T("Homepage.Usp.Support.Hint")</span></div>
-            </li>
-        </ul>
+        @*the reasons to buy here, straight under the hero. The admin manages the list (Content
+            management > Home page features): text per language, icon, order, published*@
+        @{
+            var homepageFeatures = await homepageFeatureService.GetAllHomepageFeaturesAsync();
+        }
+        @if (homepageFeatures.Any())
+        {
+            <ul class="home-usp">
+                @foreach (var feature in homepageFeatures)
+                {
+                    var hint = await localizationService.GetLocalizedAsync(feature, f => f.Hint);
+                    <li>
+                        @await Html.PartialAsync("_HomepageFeatureIcon", feature.Icon)
+                        <div>
+                            <strong>@(await localizationService.GetLocalizedAsync(feature, f => f.Title))</strong>
+                            @if (!string.IsNullOrEmpty(hint))
+                            {
+                                <span>@hint</span>
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
         @await Component.InvokeAsync(typeof(TopicBlockViewComponent), new { systemName = "HomepageText" })
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeCategories })
         @await Component.InvokeAsync(typeof(HomepageCategoriesViewComponent))
