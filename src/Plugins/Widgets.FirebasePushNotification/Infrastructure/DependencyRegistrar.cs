@@ -15,6 +15,7 @@ public class DependencyRegistrar : INopStartup
 	{
 		services.AddHttpClient();
 		services.AddScoped<IFirebaseNotificationService, FirebaseNotificationService>();
+		services.AddScoped<InboxNotificationService>();
 		services.AddFirebase();
 	}
 

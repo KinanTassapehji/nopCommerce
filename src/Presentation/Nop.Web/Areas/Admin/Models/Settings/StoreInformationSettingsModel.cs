@@ -64,6 +64,22 @@ public partial record StoreInformationSettingsModel : BaseNopModel, ISettingsMod
     public string WhatsAppLink { get; set; }
     public bool WhatsAppLink_OverrideForStore { get; set; }
 
+    [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.ContactPhoneNumber")]
+    public string ContactPhoneNumber { get; set; }
+    public bool ContactPhoneNumber_OverrideForStore { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.ContactEmail")]
+    public string ContactEmail { get; set; }
+    public bool ContactEmail_OverrideForStore { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.GooglePlayAppLink")]
+    public string GooglePlayAppLink { get; set; }
+    public bool GooglePlayAppLink_OverrideForStore { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.AppStoreAppLink")]
+    public string AppStoreAppLink { get; set; }
+    public bool AppStoreAppLink_OverrideForStore { get; set; }
+
     [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.SubjectFieldOnContactUsForm")]
     public bool SubjectFieldOnContactUsForm { get; set; }
     public bool SubjectFieldOnContactUsForm_OverrideForStore { get; set; }

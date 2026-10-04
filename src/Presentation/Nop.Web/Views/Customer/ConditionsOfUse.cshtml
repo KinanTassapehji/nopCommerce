@@ -1,0 +1,21 @@
+﻿@{
+    Layout = "_ColumnsTwo";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Account").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-account-page");
+    NopHtml.AppendPageCssClassParts("html-conditions-of-use-page");
+}
+@section left
+{
+    @await Component.InvokeAsync(typeof(CustomerNavigationViewComponent), new { selectedTabId = CustomerNavigationEnum.ConditionsOfUse })
+}
+@*The ConditionsOfUse topic (edited in admin under pages), kept inside the account section so it
+    is always one tap away - the same text the register page asks the shopper to accept. No page title of its own:
+    the topic prints its title*@
+<div class="page account-page conditions-of-use-page">
+    <div class="page-body">
+        @await Component.InvokeAsync(typeof(TopicBlockViewComponent), new { systemName = "ConditionsOfUse" })
+    </div>
+</div>

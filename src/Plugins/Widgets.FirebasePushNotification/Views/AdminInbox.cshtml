@@ -1,0 +1,62 @@
+@model Nop.Core.IPagedList<Widgets.FirebasePushNotification.Domain.InboxNotification>
+@inject Nop.Services.Helpers.IDateTimeHelper dateTimeHelper
+@{
+    Layout = "_AdminLayout";
+    ViewBag.PageTitle = T("Plugins.Widgets.FirebasePushNotification.Inbox.Title").Text;
+    NopHtml.SetActiveMenuItemSystemName("Widgets.FirebasePushNotification.Menu.Inbox");
+}
+
+<div class="content-header clearfix">
+    <h1 class="float-left">@T("Plugins.Widgets.FirebasePushNotification.Inbox.Title")</h1>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            @if (Model.TotalCount == 0)
+            {
+                <div class="card-body text-muted">@T("Plugins.Widgets.FirebasePushNotification.Inbox.Empty")</div>
+            }
+            else
+            {
+                <div class="list-group list-group-flush">
+                    @foreach (var item in Model)
+                    {
+                        var created = await dateTimeHelper.ConvertToUserTimeAsync(item.CreatedOnUtc, DateTimeKind.Utc);
+                        //admin links are written by the event consumers, always a path on this store
+                        <a class="list-group-item list-group-item-action @(item.IsRead ? null : "list-group-item-info")" href="@(item.Link ?? "#")">
+                            <div class="d-flex flex-wrap justify-content-between">
+                                <strong class="mr-2">
+                                    @if (!item.IsRead)
+                                    {
+                                        <i class="fas fa-circle text-primary mr-1" style="font-size:.5rem;vertical-align:middle"></i>
+                                    }
+                                    @item.Title
+                                </strong>
+                                <small class="text-muted">@created.ToString("g")</small>
+                            </div>
+                            <div class="text-break">@item.Body</div>
+                        </a>
+                    }
+                </div>
+                @if (Model.TotalPages > 1)
+                {
+                    <div class="card-footer d-flex justify-content-between">
+                        <span>
+                            @if (Model.HasPreviousPage)
+                            {
+                                <a class="btn btn-default" href="?page=@(Model.PageIndex)">@T("Pager.Previous")</a>
+                            }
+                        </span>
+                        <span>
+                            @if (Model.HasNextPage)
+                            {
+                                <a class="btn btn-default" href="?page=@(Model.PageIndex + 2)">@T("Pager.Next")</a>
+                            }
+                        </span>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>

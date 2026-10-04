@@ -382,6 +382,16 @@ public static partial class NopRouteNames
         public const string GDPR_TOOLS = "GdprTools";
 
         /// <summary>
+        /// Gets the conditions of use, shown inside the account section, route name
+        /// </summary>
+        public const string CUSTOMER_CONDITIONS_OF_USE = "CustomerConditionsOfUse";
+
+        /// <summary>
+        /// Gets the customer's own account closing route name
+        /// </summary>
+        public const string CUSTOMER_DELETE_ACCOUNT = "CustomerDeleteAccount";
+
+        /// <summary>
         /// Gets the remove product from compare list route name
         /// </summary>
         public const string REMOVE_PRODUCT_FROM_COMPARE_LIST = "RemoveProductFromCompareList";
