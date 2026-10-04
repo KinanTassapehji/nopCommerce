@@ -7033,6 +7033,7 @@ so the field stays visible beside the icon. */
 
 .login-page .customer-blocks,
 .address-edit-page .edit-address,
+.contact-page .fieldset,
 .registration-page .fieldset,
 .customer-info-page .fieldset,
 .password-recovery-page .fieldset{
@@ -7052,6 +7053,7 @@ so the field stays visible beside the icon. */
 
 /* Inside a card the grey band and its rule are one border too many. */
 .login-page .returning-wrapper .form-fields,
+.contact-page .form-fields,
 .registration-page .form-fields,
 .customer-info-page .form-fields,
 .password-recovery-page .form-fields{
@@ -7072,6 +7074,7 @@ so the field stays visible beside the icon. */
 .login-page .inputs,
 .address-edit-page .inputs,
 .checkout-page .enter-address .inputs,
+.contact-page .inputs,
 .registration-page .inputs,
 .customer-info-page .inputs,
 .password-recovery-page .inputs{
@@ -7089,6 +7092,7 @@ so the field stays visible beside the icon. */
 .login-page .inputs > *,
 .address-edit-page .inputs > *,
 .checkout-page .enter-address .inputs > *,
+.contact-page .inputs > *,
 .registration-page .inputs > *,
 .customer-info-page .inputs > *,
 .password-recovery-page .inputs > *{
@@ -7099,6 +7103,7 @@ so the field stays visible beside the icon. */
 .login-page .inputs > label,
 .address-edit-page .inputs > label,
 .checkout-page .enter-address .inputs > label,
+.contact-page .inputs > label,
 .registration-page .inputs > label,
 .customer-info-page .inputs > label,
 .password-recovery-page .inputs > label{
@@ -7131,18 +7136,25 @@ so the field stays visible beside the icon. */
 .checkout-page .enter-address .inputs input[type="search"],
 .address-edit-page .inputs select,
 .checkout-page .enter-address .inputs select,
+.contact-page .inputs input[type="text"],
 .registration-page .inputs input[type="text"],
 .customer-info-page .inputs input[type="text"],
+.contact-page .inputs input[type="email"],
 .registration-page .inputs input[type="email"],
 .customer-info-page .inputs input[type="email"],
+.contact-page .inputs input[type="tel"],
 .registration-page .inputs input[type="tel"],
 .customer-info-page .inputs input[type="tel"],
+.contact-page .inputs input[type="password"],
 .registration-page .inputs input[type="password"],
 .customer-info-page .inputs input[type="password"],
+.contact-page .inputs input[type="number"],
 .registration-page .inputs input[type="number"],
 .customer-info-page .inputs input[type="number"],
+.contact-page .inputs select,
 .registration-page .inputs select,
 .customer-info-page .inputs select,
+.contact-page .inputs textarea,
 .registration-page .inputs textarea,
 .customer-info-page .inputs textarea,
 .password-recovery-page .inputs input[type="text"],
@@ -7159,6 +7171,7 @@ so the field stays visible beside the icon. */
 .login-page .inputs > .required,
 .address-edit-page .inputs > .required,
 .checkout-page .enter-address .inputs > .required,
+.contact-page .inputs > .required,
 .registration-page .inputs > .required,
 .customer-info-page .inputs > .required,
 .password-recovery-page .inputs > .required{
@@ -7173,6 +7186,7 @@ so the field stays visible beside the icon. */
 .login-page .field-validation-error,
 .address-edit-page .field-validation-error,
 .checkout-page .enter-address .field-validation-error,
+.contact-page .field-validation-error,
 .registration-page .field-validation-error,
 .customer-info-page .field-validation-error,
 .password-recovery-page .field-validation-error,
@@ -7187,6 +7201,7 @@ so the field stays visible beside the icon. */
 
 .login-page .message-error,
 .address-edit-page .message-error,
+.contact-page .message-error,
 .registration-page .message-error,
 .customer-info-page .message-error,
 .password-recovery-page .message-error{
@@ -7201,6 +7216,7 @@ so the field stays visible beside the icon. */
 
 .login-page .message-error:empty,
 .address-edit-page .message-error:empty,
+.contact-page .message-error:empty,
 .registration-page .message-error:empty,
 .customer-info-page .message-error:empty,
 .password-recovery-page .message-error:empty{
@@ -7361,6 +7377,7 @@ so the field stays visible beside the icon. */
 /* --- Register ------------------------------------------------------------- */
 
 .address-edit-page .edit-address,
+.contact-page .fieldset,
 .registration-page .fieldset,
 .customer-info-page .fieldset,
 .password-recovery-page .fieldset{
@@ -7940,16 +7957,6 @@ html:has(.tm-terms-dialog[open]){
      * 12px between fields, a lighter title block.
    -------------------------------------------------------------------------- */
 @media (max-width: 699px){
-
-  .html-registration-page .page-title{
-    margin-block-end: 10px;
-    padding-block: 0 10px;
-  }
-
-  .html-registration-page .page-title h1{
-    font-size: var(--tm-fs-headline-sm);
-    line-height: var(--tm-lh-headline-sm);
-  }
 
   .registration-page .fieldset{
     padding-block: 18px 20px;
@@ -10218,3 +10225,103 @@ html:has(.tm-terms-dialog[open]){
   }
 }
 
+/* ==========================================================================
+   Phone density pass
+   A measured audit of every page at 412px (header to first content, and every
+   empty band over 40px) found the same desktop spacing on all of them: 32px of
+   page padding plus the back link's 8px margins - 40px blank under the header -
+   then the column's 32px gap, then a 30px title with 32px of rule and margin
+   under it. On a phone that was ~110px before any content, every page. The
+   same tokens one step down; desktop unchanged.
+   ========================================================================== */
+@media (max-width: 1000px){
+
+  /* the back link sits in this padding: 32px of it left a blank band above */
+  .master-wrapper-content{
+    padding-block-start: var(--tm-stack-sm);
+  }
+
+  .tm-back{
+    margin-block: 0 4px;
+  }
+
+  /* chips / breadcrumb / back link to the page's own content */
+  .master-column-wrapper{
+    gap: var(--tm-stack-md);
+  }
+
+  /* titles: a heading, not a hero - 24px, a tighter rule */
+  .page-title{
+    padding-block-end: 10px;
+    margin-block-end: 12px;
+  }
+
+  .page-title h1{
+    font-size: var(--tm-fs-headline-sm);
+    line-height: var(--tm-lh-headline-sm);
+  }
+
+  /* product: gallery to name, and company line to the price box */
+  .product-essential{
+    gap: var(--tm-stack-md);
+  }
+
+  .product-details-page .tm-identity{
+    margin-block-end: var(--tm-stack-sm);
+  }
+
+  /* search: the base sheet's 30px stacked on the sort bar's own 16px */
+  .search-page .search-results{
+    margin-block-start: 0;
+  }
+
+  /* ...and the keyword box: a 30px band around one field, 30px under it */
+  .search-input .fieldset{
+    margin-block-end: var(--tm-stack-sm);
+  }
+
+  .search-input .form-fields{
+    padding: 14px 14px 6px;
+  }
+
+  /* Forms on the register card (login, account, address, password, contact):
+     the register page's phone rhythm, so they read as one family. */
+  :is(.login-page, .customer-info-page, .address-edit-page, .password-recovery-page, .contact-page) .inputs{
+    margin-block-end: 12px;
+  }
+
+  :is(.customer-info-page, .password-recovery-page, .contact-page) .fieldset{
+    padding-block: 18px 20px;
+  }
+
+  .customer-info-page .fieldset > .title{
+    margin-block-end: 14px;
+    padding-block-end: 10px;
+  }
+
+  .login-page .returning-wrapper{
+    padding-block: 20px;
+  }
+
+  /* contact: the send button under the card, full width, not 80px below it */
+  .contact-page .buttons{
+    margin: 0;
+    padding: 0;
+  }
+
+  .contact-page .contact-us-button{
+    inline-size: 100%;
+    min-block-size: 48px;
+    margin: 0;
+  }
+
+  /* brands: a logo is a wide mark, not a square photo - 330px squares put
+     two brands on a screen */
+  .manufacturer-grid .picture a:before{
+    padding-top: 56%;
+  }
+
+  .manufacturer-grid .title{
+    margin-block-end: 6px;
+  }
+}
