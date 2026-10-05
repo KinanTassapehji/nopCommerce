@@ -1,8 +1,7 @@
-/* Notifications page, header bell and account-nav badge.
+/* Notifications page, the header unread dot and the account-nav badge.
    Lives with the plugin so both stores share it; colours come from whichever
    theme is loaded - --tm-* in TmTm, --ar-* in Arabia - with plain fallbacks.
    Logical properties throughout, so one sheet serves LTR and RTL. */
-.tm-inbox-bell-item,
 .notifications-page {
   --inbox-accent: var(--tm-teal-deep, var(--ar-blue, #02787e));
   --inbox-accent-hover: var(--tm-teal-hover, var(--ar-blue-hover, #01585c));
@@ -18,26 +17,34 @@
   --inbox-badge: var(--tm-teal-deep, var(--ar-blue, #02787e));
 }
 
-/* --- Header bell: same 48px round glyph as the account and cart links ---- */
-.tm-inbox-bell {
+/* --- Unread dot on the header's account glyph ---------------------------
+   The header has no bell (see Views/Components/InboxLink/Header.cshtml): the
+   widget's hidden item only marks that something is unread. */
+.header-links .tm-inbox-unread {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.header-links:has(.tm-inbox-unread) .ico-account {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
+}
+
+.header-links:has(.tm-inbox-unread) .ico-account::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 9px;
+  inset-inline-end: 9px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  color: var(--inbox-accent);
-  transition: background .18s ease, color .18s ease;
+  background: var(--tm-teal-deep, var(--ar-blue, #02787e));
+  box-shadow: 0 0 0 2px var(--tm-surface, var(--ar-surface, #fff));
 }
 
-.tm-inbox-bell:hover,
-.tm-inbox-bell:focus-visible {
-  background: var(--inbox-tint);
-  color: var(--inbox-accent-hover);
-}
-
-.tm-inbox-bell svg,
 .tm-inbox-icon {
   width: 24px;
   height: 24px;
