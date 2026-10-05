@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using LinqToDB;
 using Nop.Core;
@@ -15,6 +17,69 @@ namespace Widgets.FirebasePushNotification.Services;
 public class InboxNotificationService
 {
 	public const int AdminInbox = 0;
+
+	/// <summary>
+	/// Prefix of the admin messages' resources: {prefix}{key}.Title and {prefix}{key}.Body ({0}, {1}... = arguments)
+	/// </summary>
+	public const string AdminMessagePrefix = "Plugins.Widgets.FirebasePushNotification.Admin.";
+
+	//The admin inbox is read by admins in whatever language their panel is in, so its rows keep
+	//the message key (Title) and its arguments as a JSON array (Body), and the page writes the
+	//text when it shows it. Customer rows stay plain text: one reader, written in their language.
+	public Task AddAdminMessageAsync(string key, string link, params object[] args)
+	{
+		var arguments = JsonSerializer.Serialize(args.Select(arg => Convert.ToString(arg, System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty));
+		return AddAsync(new[] { AdminInbox }, key, arguments, link);
+	}
+
+	/// <summary>
+	/// The message key and arguments of an admin row; null for plain text (rows from before keys)
+	/// </summary>
+	public static (string Key, string[] Args)? GetAdminMessage(InboxNotification notification)
+	{
+		if (notification.CustomerId != AdminInbox || !notification.Body.StartsWith('['))
+			return null;
+		try
+		{
+			return (notification.Title, JsonSerializer.Deserialize<string[]>(notification.Body) ?? Array.Empty<string>());
+		}
+		catch (JsonException)
+		{
+			return null;
+		}
+	}
+
+	/// <summary>
+	/// Turns admin rows written as English text (before keys) into key + arguments, by matching
+	/// them against each message's English title and body
+	/// </summary>
+	/// <param name="englishMessages">key -> (English title, English body format)</param>
+	public async Task ConvertAdminTextRowsAsync(IDictionary<string, (string Title, string Body)> englishMessages)
+	{
+		var rows = await _repository.Table
+			.Where(x => x.CustomerId == AdminInbox && !x.Body.StartsWith("["))
+			.ToListAsync();
+		var converted = new List<InboxNotification>();
+		foreach (var row in rows)
+		{
+			foreach (var (key, (title, body)) in englishMessages)
+			{
+				if (row.Title != title)
+					continue;
+				//"Order #{0} from {1}, total {2}." -> ^Order\ \#(.*?)\ from\ (.*?),\ total\ (.*?)\.$
+				var pattern = "^" + Regex.Replace(Regex.Escape(body), @"\\\{\d+}", "(.*?)") + "$";
+				var match = Regex.Match(row.Body, pattern, RegexOptions.Singleline);
+				if (!match.Success)
+					continue;
+				row.Title = key;
+				row.Body = JsonSerializer.Serialize(match.Groups.Cast<Group>().Skip(1).Select(group => group.Value));
+				converted.Add(row);
+				break;
+			}
+		}
+		if (converted.Count > 0)
+			await _repository.UpdateAsync(converted, publishEvent: false);
+	}
 
 	private readonly IRepository<InboxNotification> _repository;
 

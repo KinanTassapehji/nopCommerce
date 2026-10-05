@@ -15,6 +15,7 @@ using Nop.Web.Framework.Infrastructure;
 using Nop.Web.Framework.Menu;
 using Widgets.FirebasePushNotification.Components;
 using Widgets.FirebasePushNotification.Models;
+using Widgets.FirebasePushNotification.Services;
 
 namespace Widgets.FirebasePushNotification;
 
@@ -28,10 +29,16 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 
 	private readonly IMigrationManager _migrationManager;
 
+	private readonly ILanguageService _languageService;
+
+	private readonly InboxNotificationService _inboxNotificationService;
+
 	public bool HideInWidgetList => false;
 
-	public FirebasePushNotificationPlugin(IWebHelper webHelper, ISettingService settingService, ILocalizationService localizationService, IMigrationManager migrationManager)
+	public FirebasePushNotificationPlugin(IWebHelper webHelper, ISettingService settingService, ILocalizationService localizationService, IMigrationManager migrationManager, ILanguageService languageService, InboxNotificationService inboxNotificationService)
 	{
+		_languageService = languageService;
+		_inboxNotificationService = inboxNotificationService;
 		_webHelper = webHelper;
 		_settingService = settingService;
 		_localizationService = localizationService;
@@ -74,8 +81,28 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 		//4.80.2: the Arabic menu entry and page title are just "الإشعارات"
 		//4.80.3: notifications pages (account + admin inbox); order pushes in the customer's language
 		//4.80.4: an admin notification when a customer closes their own account
+		//4.80.5: admin notifications are written in the reading admin's language; rows stored as
+		//        English text until now become key + arguments
 		await AddResourcesAsync();
+		await ConvertAdminTextRowsAsync();
 		await base.UpdateAsync(currentVersion, targetVersion);
+	}
+
+	private static readonly string[] AdminMessageKeys = { "NewOrder", "OrderCancelled", "NewCustomer", "NewReview", "LowStock", "AccountClosed" };
+
+	private async Task ConvertAdminTextRowsAsync()
+	{
+		//the rows were written in the default admin language, which has been English on both stores
+		var english = (await _languageService.GetAllLanguagesAsync(showHidden: true))
+			.FirstOrDefault(language => language.LanguageCulture.StartsWith("en", StringComparison.OrdinalIgnoreCase));
+		if (english == null)
+			return;
+
+		var messages = new Dictionary<string, (string Title, string Body)>();
+		foreach (var key in AdminMessageKeys)
+			messages[key] = (await _localizationService.GetResourceAsync(InboxNotificationService.AdminMessagePrefix + key + ".Title", english.Id),
+				await _localizationService.GetResourceAsync(InboxNotificationService.AdminMessagePrefix + key + ".Body", english.Id));
+		await _inboxNotificationService.ConvertAdminTextRowsAsync(messages);
 	}
 
 	//English text for every language first, then the Arabic one overwritten -
