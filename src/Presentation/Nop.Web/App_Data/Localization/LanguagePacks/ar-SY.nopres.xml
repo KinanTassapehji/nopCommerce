@@ -11888,16 +11888,16 @@
     <Value>تصفح المتجر أثناء إغلاقه للصيانة.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationCoreConfiguration">
-    <Value>تغيير إعدادات إضافة NopStation الأساسية.</Value>
+    <Value>تغيير الإعدادات المشتركة لإضافات المتجر.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationCoreLicense">
-    <Value>عرض تراخيص إضافات NopStation وتغييرها.</Value>
+    <Value>عرض تراخيص الإضافات وتغييرها.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationFeatures">
-    <Value>تفعيل ميزات NopStation أو إيقافها.</Value>
+    <Value>تفعيل ميزات الإضافات أو إيقافها.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ShowNopStationDocumentations">
-    <Value>عرض روابط المساعدة والتوثيق الخاصة بـ NopStation.</Value>
+    <Value>عرض روابط المساعدة والتوثيق الخاصة بالإضافات.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationSmsConfiguration">
     <Value>ضبط إعدادات إرسال الرسائل النصية.</Value>
@@ -22569,55 +22569,55 @@
     <Value>لا توجد نتائج مطابقة في هذا التبويب.</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationcancelorder">
-    <Value>إلغاء الطلب من NopStation. إدارة إلغاء الطلب</Value>
+    <Value>إلغاء الطلبات. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationcoreconfiguration">
-    <Value>نواة NopStation. إدارة الإعدادات</Value>
+    <Value>الإضافات. الإعدادات</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationcorelicense">
-    <Value>نواة NopStation. إدارة الترخيص</Value>
+    <Value>الإضافات. التراخيص</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationfeatures">
-    <Value>نواة NopStation. إدارة ميزات NopStation</Value>
+    <Value>الإضافات. الميزات</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationmegamenu">
-    <Value>القائمة الكبيرة من NopStation. إدارة القائمة الكبيرة</Value>
+    <Value>القائمة الكبرى. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationocarousels">
-    <Value>الكاروسيل من NopStation. إدارة الكاروسيلات</Value>
+    <Value>عارضات المنتجات الدوّارة. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationpicturezoom">
-    <Value>تكبير الصورة من NopStation. إدارة تكبير الصورة</Value>
+    <Value>تكبير الصور. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationprevnextproduct">
-    <Value>المنتج السابق/التالي من NopStation. إدارة الإعدادات</Value>
+    <Value>المنتج السابق/التالي. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationproductribbon">
-    <Value>شارة المنتج من NopStation. إدارة شارة المنتج</Value>
+    <Value>أشرطة المنتجات. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationproducttab">
-    <Value>منطقة الإدارة. إدارة تبويب المنتج من NopStation</Value>
+    <Value>تبويبات المنتج. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationquickview">
-    <Value>العرض السريع من NopStation. إدارة العرض السريع</Value>
+    <Value>العرض السريع. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationsliders">
-    <Value>شريط العرض المرن من NopStation. إدارة شريط العرض</Value>
+    <Value>العارضات المتحركة. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationsmsconfiguration">
-    <Value>نواة NopStation. إدارة إعدادات الرسائل النصية</Value>
+    <Value>الرسائل النصية. الإعدادات</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationsmsproviders">
-    <Value>نواة NopStation. إدارة مزوّدي الرسائل النصية</Value>
+    <Value>الرسائل النصية. المزوّدون</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationsmsqueue">
-    <Value>نواة NopStation. إدارة طابور الرسائل النصية</Value>
+    <Value>الرسائل النصية. قائمة الانتظار</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationsmstemplates">
-    <Value>نواة NopStation. إدارة قوالب الرسائل النصية</Value>
+    <Value>الرسائل النصية. القوالب</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.shownopstationdocumentations">
-    <Value>نواة NopStation. إظهار التوثيق</Value>
+    <Value>الإضافات. المساعدة والتوثيق</Value>
   </LocaleResource>
   <LocaleResource Name="admin.nopstation.discountrules.carttotal.fields.minimumcarttotal">
     <Value>الحد الأدنى لإجمالي السلة</Value>
@@ -23205,7 +23205,7 @@
     <Value>الصور البانورامية</Value>
   </LocaleResource>
   <LocaleResource Name="security.permission.managenopstationproduct360view">
-    <Value>العرض 360 للمنتج من NopStation. إدارة العرض 360 للمنتج</Value>
+    <Value>عرض المنتج 360°. إدارة</Value>
   </LocaleResource>
   <LocaleResource Name="Homepage.Categories">
     <Value>تسوق حسب الفئة</Value>
@@ -23962,5 +23962,17 @@
   </LocaleResource>
   <LocaleResource Name="Mobile.Nav.Products">
     <Value>المنتجات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.NopStation">
+    <Value>ميزات إضافية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageAdminReportExporter">
+    <Value>تصدير التقارير. إدارة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageAdminReportExporterConfiguration">
+    <Value>تصدير التقارير. الإعدادات</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageCustomerReminders">
+    <Value>تذكيرات العملاء. إدارة</Value>
   </LocaleResource>
 </Language>
