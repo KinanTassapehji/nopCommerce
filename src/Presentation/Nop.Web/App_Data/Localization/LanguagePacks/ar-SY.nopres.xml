@@ -23783,6 +23783,45 @@
   <LocaleResource Name="Admin.ContentManagement.HomepageFeatures">
     <Value>مميزات الصفحة الرئيسية</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner">
+    <Value>بانر الصفحة الرئيسية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Enabled">
+    <Value>عرض في الصفحة الرئيسية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Enabled.Hint">
+    <Value>ألغِ التحديد لإخفاء البانر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Picture">
+    <Value>صورة الغلاف</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Picture.Hint">
+    <Value>صورة عريضة خلف النص (حوالي 1600×500). اتركها فارغة لاستخدام لون العلامة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Title">
+    <Value>العنوان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Title.Hint">
+    <Value>عنوان البانر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Text">
+    <Value>النص</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Text.Hint">
+    <Value>السطر تحت العنوان.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonText">
+    <Value>نص الزر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonText.Hint">
+    <Value>اتركه فارغاً لإخفاء الزر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonUrl">
+    <Value>رابط الزر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonUrl.Hint">
+    <Value>وجهة الزر، مثل /new-arrivals. اتركه فارغاً لصفحة جميع الفئات.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Hint">
     <Value>أسباب الشراء القصيرة التي تظهر في شريط تحت عارض الصور في الصفحة الرئيسية (توصيل سريع، الدفع عند الاستلام...). ألغِ نشر عنصر لإخفائه دون حذفه.</Value>
   </LocaleResource>
@@ -23899,5 +23938,29 @@
   </LocaleResource>
   <LocaleResource Name="Account.Fields.AcceptTerms.Agree">
     <Value>أوافق على الشروط</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Title">
+    <Value>أهلاً بك في {0}!</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.TitleNamed">
+    <Value>أهلاً بك في {0}، {1}!</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Pending">
+    <Value>خطوة أخيرة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Perk.Orders">
+    <Value>تابع طلباتك وسجلّها في أي وقت</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Perk.Addresses">
+    <Value>احفظ عناوينك لإتمام الطلب بخطوات أقل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Perk.Cart">
+    <Value>سلّتك محفوظة لك على كل أجهزتك</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Shop">
+    <Value>ابدأ التسوق</Value>
+  </LocaleResource>
+  <LocaleResource Name="Mobile.Nav.Products">
+    <Value>المنتجات</Value>
   </LocaleResource>
 </Language>

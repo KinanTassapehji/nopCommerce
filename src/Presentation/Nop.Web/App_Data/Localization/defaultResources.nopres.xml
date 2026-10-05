@@ -19640,6 +19640,45 @@
   <LocaleResource Name="Admin.ContentManagement.HomepageFeatures">
     <Value>Home page features</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner">
+    <Value>Home page banner</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Enabled">
+    <Value>Show on home page</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Enabled.Hint">
+    <Value>Untick to hide the banner.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Picture">
+    <Value>Cover picture</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Picture.Hint">
+    <Value>Wide image behind the text (about 1600x500). Leave empty for the plain brand colour.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Title">
+    <Value>Title</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Title.Hint">
+    <Value>The heading of the banner.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Text">
+    <Value>Text</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Text.Hint">
+    <Value>The line under the heading.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonText">
+    <Value>Button text</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonText.Hint">
+    <Value>Leave empty to hide the button.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonUrl">
+    <Value>Button link</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonUrl.Hint">
+    <Value>Where the button goes, e.g. /new-arrivals. Leave empty for the all-categories page.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Hint">
     <Value>The short reasons to buy shown in a strip under the home page slider (fast delivery, cash on delivery...). Unpublish an item to hide it without deleting it.</Value>
   </LocaleResource>
@@ -19756,5 +19795,29 @@
   </LocaleResource>
   <LocaleResource Name="Account.Fields.AcceptTerms.Agree">
     <Value>I agree</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Title">
+    <Value>Welcome to {0}!</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.TitleNamed">
+    <Value>Welcome to {0}, {1}!</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Pending">
+    <Value>One more step</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Perk.Orders">
+    <Value>Track your orders and their history any time</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Perk.Addresses">
+    <Value>Save your addresses for a faster checkout</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Perk.Cart">
+    <Value>Your cart is kept for you on every device</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Shop">
+    <Value>Start shopping</Value>
+  </LocaleResource>
+  <LocaleResource Name="Mobile.Nav.Products">
+    <Value>Products</Value>
   </LocaleResource>
 </Language>
