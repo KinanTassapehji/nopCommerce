@@ -83,6 +83,7 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 		//4.80.4: an admin notification when a customer closes their own account
 		//4.80.5: admin notifications are written in the reading admin's language; rows stored as
 		//        English text until now become key + arguments
+		//4.80.6: the admin inbox's filter tabs
 		await AddResourcesAsync();
 		await ConvertAdminTextRowsAsync();
 		await base.UpdateAsync(currentVersion, targetVersion);
@@ -143,6 +144,11 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Title"] = "Notifications",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Empty"] = "You have no notifications yet.",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Open"] = "View details",
+			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.All"] = "All",
+			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.orders"] = "Orders",
+			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.customers"] = "Customers",
+			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.reviews"] = "Reviews",
+			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.stock"] = "Stock",
 			["Plugins.Widgets.FirebasePushNotification.Order.Placed.Title"] = "Order placed",
 			["Plugins.Widgets.FirebasePushNotification.Order.Placed.Body"] = "Your order #{0} has been placed.",
 			["Plugins.Widgets.FirebasePushNotification.Order.Processing.Title"] = "Order processing",
@@ -200,6 +206,11 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Title"] = "الإشعارات",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Empty"] = "لا توجد لديك إشعارات بعد.",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Open"] = "عرض التفاصيل",
+			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.All"] = "الكل",
+			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.orders"] = "الطلبات",
+			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.customers"] = "العملاء",
+			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.reviews"] = "التقييمات",
+			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.stock"] = "المخزون",
 			["Plugins.Widgets.FirebasePushNotification.Order.Placed.Title"] = "تم استلام الطلب",
 			["Plugins.Widgets.FirebasePushNotification.Order.Placed.Body"] = "تم تقديم طلبك رقم {0} بنجاح.",
 			["Plugins.Widgets.FirebasePushNotification.Order.Processing.Title"] = "الطلب قيد التجهيز",

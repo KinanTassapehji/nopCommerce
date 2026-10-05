@@ -104,11 +104,40 @@ public class InboxNotificationService
 			await _repository.InsertAsync(rows, publishEvent: false);
 	}
 
-	public Task<IPagedList<InboxNotification>> GetPageAsync(int customerId, int pageIndex, int pageSize)
+	/// <summary>
+	/// The admin inbox's filter tabs: group -> the message keys it shows
+	/// </summary>
+	public static readonly IReadOnlyDictionary<string, string[]> AdminMessageGroups = new Dictionary<string, string[]>
 	{
-		return _repository.GetAllPagedAsync(query => query
-			.Where(x => x.CustomerId == customerId)
-			.OrderByDescending(x => x.CreatedOnUtc).ThenByDescending(x => x.Id), pageIndex, pageSize);
+		["orders"] = new[] { "NewOrder", "OrderCancelled" },
+		["customers"] = new[] { "NewCustomer", "AccountClosed" },
+		["reviews"] = new[] { "NewReview" },
+		["stock"] = new[] { "LowStock" }
+	};
+
+	/// <param name="keys">admin message keys to keep; null for all</param>
+	public Task<IPagedList<InboxNotification>> GetPageAsync(int customerId, int pageIndex, int pageSize, string[]? keys = null)
+	{
+		return _repository.GetAllPagedAsync(query =>
+		{
+			query = query.Where(x => x.CustomerId == customerId);
+			if (keys != null)
+				query = query.Where(x => keys.Contains(x.Title));
+			return query.OrderByDescending(x => x.CreatedOnUtc).ThenByDescending(x => x.Id);
+		}, pageIndex, pageSize);
+	}
+
+	/// <summary>
+	/// Unread admin rows per message key, for the counts on the filter tabs
+	/// </summary>
+	public async Task<Dictionary<string, int>> CountUnreadAdminByKeyAsync()
+	{
+		return (await _repository.Table
+			.Where(x => x.CustomerId == AdminInbox && !x.IsRead)
+			.GroupBy(x => x.Title)
+			.Select(group => new { group.Key, Count = group.Count() })
+			.ToListAsync())
+			.ToDictionary(row => row.Key, row => row.Count);
 	}
 
 	//ponytail: one indexed COUNT per page view for the bell; cache it if it ever shows in profiling
@@ -119,10 +148,13 @@ public class InboxNotificationService
 
 	//opening the page reads everything on it, as in most inboxes - no per-item ticking.
 	//ponytail: the admin inbox has one read flag shared by every admin; per-admin state if the team grows
-	public Task MarkAllReadAsync(int customerId)
+	/// <param name="keys">admin message keys to mark (a filter tab); null for all</param>
+	public Task MarkAllReadAsync(int customerId, string[]? keys = null)
 	{
-		return _repository.Table
-			.Where(x => x.CustomerId == customerId && !x.IsRead)
+		var unread = _repository.Table.Where(x => x.CustomerId == customerId && !x.IsRead);
+		if (keys != null)
+			unread = unread.Where(x => keys.Contains(x.Title));
+		return unread
 			.Set(x => x.IsRead, true)
 			.UpdateAsync();
 	}
