@@ -1487,19 +1487,13 @@ which would
   }
 }
 
-/* Room for the card under the page, so the end of every page (a form's submit
-   button, the footer) scrolls clear of it instead of sitting underneath. On
-   phones it adds to the tab bar's 72px (78px installed) - same rules, one
-   card's height (52px + its 10px gap) more.
-   On desktop the room goes inside the footer, which is the last thing on the
-   page: as padding on the wrapper it came after the footer and painted an 88px
-   white strip under it on every page the card showed on. */
-@media (min-width: 1001px){
-  html:not(.tm-cart-float-closed) body:has(.tm-cart-float .cart-qty:not([data-qty="0"])) .master-wrapper-page > .footer{
-    padding-block-end: 88px;
-  }
-}
-
+/* Room for the card under the page on phones, so the end of every page (a
+   form's submit button) scrolls clear of it instead of sitting underneath. It
+   adds to the tab bar's 72px (78px installed) - same rules, one card's height
+   (52px + its 10px gap) more.
+   None on desktop: there the card sits in the footer's bottom corner and covers
+   only the "Powered by" credit. Room for it - after the footer, or inside it -
+   made the footer change height from page to page with the cart. */
 @media (max-width: 1000px){
   html:not(.tm-cart-float-closed) body:has(.tm-cart-float .cart-qty:not([data-qty="0"])) .master-wrapper-page{
     padding-block-end: calc(72px + 64px + env(safe-area-inset-bottom, 0px));
