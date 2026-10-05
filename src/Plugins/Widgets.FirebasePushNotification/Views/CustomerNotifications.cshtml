@@ -1,0 +1,69 @@
+@model Nop.Core.IPagedList<Widgets.FirebasePushNotification.Domain.InboxNotification>
+@using Nop.Web.Components
+@using Nop.Web.Framework.Infrastructure
+@inject Nop.Services.Helpers.IDateTimeHelper dateTimeHelper
+@{
+    Layout = "_ColumnsTwo";
+
+    NopHtml.AddTitleParts(T("PageTitle.Account").Text);
+    NopHtml.AppendPageCssClassParts("html-account-page");
+    NopHtml.AppendPageCssClassParts("html-notifications-page");
+    NopHtml.AppendCssFileParts("~/Plugins/Widgets.FirebasePushNotification/Content/notifications.css");
+}
+@section left
+{
+    @*-1: no core tab is current - 0 would be "Customer info"; this page lights its own entry*@
+    @await Component.InvokeAsync(typeof(CustomerNavigationViewComponent), new { selectedTabId = -1 })
+}
+<div class="page account-page notifications-page">
+    <div class="page-title">
+        <h1>@T("Account.MyAccount") - @T("Plugins.Widgets.FirebasePushNotification.Inbox.Title")</h1>
+    </div>
+    <div class="page-body">
+        @if (Model.TotalCount == 0)
+        {
+            <div class="no-data tm-inbox-empty">@T("Plugins.Widgets.FirebasePushNotification.Inbox.Empty")</div>
+        }
+        else
+        {
+            <ul class="tm-inbox">
+                @foreach (var item in Model)
+                {
+                    @*a broadcast link is normalised on the way in; this keeps anything else to http(s) or a path here*@
+                    var link = item.Link is string l && ((l.StartsWith('/') && !l.StartsWith("//")) || l.StartsWith("https://") || l.StartsWith("http://")) ? l : null;
+                    var created = await dateTimeHelper.ConvertToUserTimeAsync(item.CreatedOnUtc, DateTimeKind.Utc);
+                    <li class="tm-inbox-item @(item.IsRead ? null : "unread")">
+                        <svg class="tm-inbox-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                            <path d="M10.3 21a1.9 1.9 0 0 0 3.4 0" />
+                        </svg>
+                        <div class="tm-inbox-text">
+                            <div class="tm-inbox-head">
+                                <strong class="tm-inbox-title">@item.Title</strong>
+                                <time class="tm-inbox-date" datetime="@item.CreatedOnUtc.ToString("o")">@created.ToString("g")</time>
+                            </div>
+                            <p class="tm-inbox-body">@item.Body</p>
+                            @if (link != null)
+                            {
+                                <a class="tm-inbox-link" href="@link">@T("Plugins.Widgets.FirebasePushNotification.Inbox.Open")</a>
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
+            @if (Model.TotalPages > 1)
+            {
+                <div class="tm-inbox-pager">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <a class="button-2" href="?page=@(Model.PageIndex)">@T("Pager.Previous")</a>
+                    }
+                    @if (Model.HasNextPage)
+                    {
+                        <a class="button-2" href="?page=@(Model.PageIndex + 2)">@T("Pager.Next")</a>
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,115 @@
+﻿@model HomepageBannerModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.ContentManagement.HomepageBanner").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Home page banner");
+}
+
+<form asp-controller="HomepageBanner" asp-action="Configure" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.ContentManagement.HomepageBanner")
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-floppy-disk"></i>
+                @T("Admin.Common.Save")
+            </button>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="Enabled" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="Enabled" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="PictureId" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="PictureId" />
+                                </div>
+                            </div>
+                            @(await Html.LocalizedEditorAsync<HomepageBannerModel, HomepageBannerLocalizedModel>("homepagebanner-localized",
+                            @<div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="@Model.Locales[item].Title" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <nop-editor asp-for="@Model.Locales[item].Title" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="@Model.Locales[item].Text" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <nop-textarea asp-for="@Model.Locales[item].Text" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="@Model.Locales[item].ButtonText" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <nop-editor asp-for="@Model.Locales[item].ButtonText" />
+                                    </div>
+                                </div>
+                                <input type="hidden" asp-for="@Model.Locales[item].LanguageId" />
+                            </div>
+                            ,
+                            @<div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="Title" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <nop-editor asp-for="Title" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="Text" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <nop-textarea asp-for="Text" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="ButtonText" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <nop-editor asp-for="ButtonText" />
+                                    </div>
+                                </div>
+                            </div>
+                            ))
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="ButtonUrl" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="ButtonUrl" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

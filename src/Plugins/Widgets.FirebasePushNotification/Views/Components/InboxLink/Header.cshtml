@@ -1,0 +1,13 @@
+@model int
+@using Widgets.FirebasePushNotification.Infrastructure
+@*No bell of its own in the header - search, account and cart are the bar's three glyphs, and a
+    fourth crowded it. Unread notifications put a dot on the account glyph instead (notifications.css,
+    off this item's class); the account menu carries the count. The link stays for screen readers
+    and keyboard users, visually hidden.*@
+@if (Model > 0)
+{
+    NopHtml.AppendCssFileParts("~/Plugins/Widgets.FirebasePushNotification/Content/notifications.css");
+    <li class="tm-inbox-unread">
+        <a href="@Url.RouteUrl(RouteProvider.NotificationsRouteName)">@T("Plugins.Widgets.FirebasePushNotification.Inbox.Title") (@Model)</a>
+    </li>
+}

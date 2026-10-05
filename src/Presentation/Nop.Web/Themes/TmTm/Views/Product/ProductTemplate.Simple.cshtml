@@ -3,10 +3,16 @@
 @using Nop.Core
 @using Nop.Core.Domain.Catalog
 @using Nop.Core.Domain.Seo
+@using Nop.Core.Domain.Orders
 @using Nop.Services.Html
+@using Nop.Services.Orders
 
 @inject IHtmlFormatter htmlFormatter
+@inject IShoppingCartService shoppingCartService
+@inject IStoreContext storeContext
 @inject IWebHelper webHelper
+@inject IWorkContext workContext
+@inject OrderSettings orderSettings
 @inject SeoSettings seoSettings
 
 @*
@@ -93,6 +99,17 @@
     var buyBarPrice = string.IsNullOrWhiteSpace(Model.ProductPrice.PriceWithDiscount)
         ? Model.ProductPrice.Price
         : Model.ProductPrice.PriceWithDiscount;
+
+    //the buy bar's "complete order" button - same count and target as the
+    //floating card in _MobileNav.cshtml, which it stands in for on this page
+    var cartQuantity = 0;
+    var customer = await workContext.GetCurrentCustomerAsync();
+    if (showBuyBar && customer.HasShoppingCartItems)
+    {
+        var store = await storeContext.GetCurrentStoreAsync();
+        cartQuantity = (await shoppingCartService.GetShoppingCartAsync(customer, ShoppingCartType.ShoppingCart, store.Id))
+            .Sum(item => item.Quantity);
+    }
 }
 <!--product breadcrumb-->
 @section Breadcrumb
@@ -228,6 +245,13 @@
         <button type="button" class="button-1 tm-buybar-cta" data-target="add-to-cart-button-@Model.Id">
             @T("ShoppingCart.AddToCart")
         </button>
+        @*Shows once the cart holds items (brand.css, off its .cart-qty, which
+            HeaderLinks keeps live after every AJAX add), so the next step sits
+            beside the button just pressed and the floating card can step aside.*@
+        <a class="tm-buybar-checkout" href="@(orderSettings.TermsOfServiceOnShoppingCartPage ? Url.RouteUrl(NopRouteNames.General.CART) : Url.RouteUrl(NopRouteNames.Standard.CHECKOUT))">
+            <span class="cart-qty" data-qty="@cartQuantity">@T("ShoppingCart.HeaderQuantity", cartQuantity)</span>
+            <span class="tm-buybar-checkout-label">@T("Mobile.Nav.CompleteOrder")</span>
+        </a>
     </div>
 }
 
@@ -276,9 +300,13 @@
         //back — two states, no scroll maths. body carries the class so the tab bar
         //can step aside for it instead of stacking with it.
         new IntersectionObserver(function (entries) {
-            var gone = !entries[0].isIntersecting;
+            var gone = entries[0].intersectionRatio < 0.99; //half a button under the tab bar is not a button
             bar.hidden = !gone;
             document.body.classList.toggle('tm-buybar-on', gone);
-        }, { rootMargin: '0px 0px -20px 0px' }).observe(panel);
+        }, {
+            //the tab bar covers the bottom of the screen: a button behind it is not on screen
+            rootMargin: '0px 0px -' + ((document.querySelector('.mobile-tab-bar') || {}).offsetHeight || 0) + 'px 0px',
+            threshold: [0, 0.99]
+        }).observe(panel);
     })();
 </script>

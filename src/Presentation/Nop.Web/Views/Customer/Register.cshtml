@@ -445,10 +445,92 @@
                 </section>
             }
 
+            @*TmTm: the conditions of use, agreed to here rather than buried - ticked by default, the
+                words open the terms in a modal (bottom sheet on a phone), and its button agrees and
+                closes. Unticked, the form stops with a message under the box; the server checks too
+                (CustomerController.Register). The terms are the ConditionsOfUse topic, edited in admin.*@
+            <section class="tm-terms-consent">
+                <div class="tm-terms-consent-row">
+                    <input id="accept-terms" type="checkbox" name="accept-terms" value="true" checked aria-describedby="accept-terms-error" />
+                    <label for="accept-terms">@T("Account.Fields.AcceptTerms")</label>
+                    <button type="button" class="tm-terms-open" aria-haspopup="dialog" aria-controls="tm-terms-dialog">@T("Account.Fields.AcceptTerms.Link")</button>
+                </div>
+                <p class="tm-terms-consent-error" id="accept-terms-error" role="alert" hidden>@T("Account.Fields.AcceptTerms.Required")</p>
+            </section>
+
+            <dialog id="tm-terms-dialog" class="tm-terms-dialog" aria-labelledby="tm-terms-dialog-title">
+                <header class="tm-terms-dialog-head">
+                    <h2 id="tm-terms-dialog-title">@T("Account.Fields.AcceptTerms.Link")</h2>
+                    <button type="button" class="tm-terms-dialog-close" aria-label="@T("Common.Close")">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18" /></svg>
+                    </button>
+                </header>
+                <div class="tm-terms-dialog-body" tabindex="0">
+                    @await Component.InvokeAsync(typeof(TopicBlockViewComponent), new { systemName = "ConditionsOfUse" })
+                </div>
+                <footer class="tm-terms-dialog-foot">
+                    <button type="button" class="button-1 tm-terms-agree">@T("Account.Fields.AcceptTerms.Agree")</button>
+                </footer>
+            </dialog>
+
             <section class="buttons">
                 <button type="submit" name="register-button" id="register-button" class="button-1 register-next-step-button">@T("Account.Register.Button")</button>
             </section>
         </form>
+        <script asp-location="Footer">
+            (function () {
+                var box = document.getElementById('accept-terms');
+                var error = document.getElementById('accept-terms-error');
+                var dialog = document.getElementById('tm-terms-dialog');
+                if (!box || !dialog)
+                    return;
+                var consent = box.closest('.tm-terms-consent');
+
+                function setError(on) {
+                    error.hidden = !on;
+                    consent.classList.toggle('is-invalid', on);
+                    box.setAttribute('aria-invalid', on ? 'true' : 'false');
+                }
+
+                function close() {
+                    if (dialog.open)
+                        dialog.close();
+                }
+
+                consent.querySelector('.tm-terms-open').addEventListener('click', function () {
+                    dialog.showModal();
+                    dialog.querySelector('.tm-terms-dialog-body').scrollTop = 0;
+                });
+                dialog.querySelector('.tm-terms-dialog-close').addEventListener('click', close);
+                dialog.querySelector('.tm-terms-agree').addEventListener('click', function () {
+                    box.checked = true;
+                    setError(false);
+                    close();
+                });
+                //a tap on the dimmed backdrop (the dialog element itself, outside its content) closes it
+                dialog.addEventListener('click', function (event) {
+                    if (event.target === dialog)
+                        close();
+                });
+                //back to the box the shopper came from
+                dialog.addEventListener('close', function () {
+                    box.focus({ preventScroll: true });
+                });
+
+                box.addEventListener('change', function () {
+                    if (box.checked)
+                        setError(false);
+                });
+                box.form.addEventListener('submit', function (event) {
+                    if (box.checked)
+                        return;
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    setError(true);
+                    consent.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                }, true);
+            })();
+        </script>
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.RegisterBottom, additionalData = Model })
     </div>
 </div>

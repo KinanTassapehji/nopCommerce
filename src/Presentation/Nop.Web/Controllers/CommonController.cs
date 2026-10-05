@@ -184,8 +184,11 @@ public partial class CommonController : BasePublicController
         var model = new ContactUsModel();
         model = await _commonModelFactory.PrepareContactUsModelAsync(model, false);
 
-        return View(model);
+        return View(ContactUsViewName, model);
     }
+
+    //a signed-in customer gets the page inside the account section, with its menu
+    protected virtual string ContactUsViewName => User.Identity?.IsAuthenticated == true ? "ContactUs.Account" : "ContactUs";
 
     [HttpPost, ActionName("ContactUs")]
     [ValidateCaptcha]
@@ -216,10 +219,10 @@ public partial class CommonController : BasePublicController
             await _customerActivityService.InsertActivityAsync("PublicStore.ContactUs",
                 await _localizationService.GetResourceAsync("ActivityLog.PublicStore.ContactUs"));
 
-            return View(model);
+            return View(ContactUsViewName, model);
         }
 
-        return View(model);
+        return View(ContactUsViewName, model);
     }
 
     //contact vendor page

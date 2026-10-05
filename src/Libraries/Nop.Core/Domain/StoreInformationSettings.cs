@@ -62,4 +62,24 @@ public partial class StoreInformationSettings : ISettings
     /// Gets or sets a value of WhatsApp chat URL of the site (e.g. https://wa.me/9665xxxxxxxx)
     /// </summary>
     public string WhatsAppLink { get; set; }
+
+    /// <summary>
+    /// Gets or sets the phone number customers call, shown on the contact page
+    /// </summary>
+    public string ContactPhoneNumber { get; set; }
+
+    /// <summary>
+    /// Gets or sets the email address customers write to, shown on the contact page
+    /// </summary>
+    public string ContactEmail { get; set; }
+
+    /// <summary>
+    /// Gets or sets the store's Google Play listing, opened by "Rate us"
+    /// </summary>
+    public string GooglePlayAppLink { get; set; }
+
+    /// <summary>
+    /// Gets or sets the store's App Store listing, opened by "Rate us" on iPhone and iPad
+    /// </summary>
+    public string AppStoreAppLink { get; set; }
 }

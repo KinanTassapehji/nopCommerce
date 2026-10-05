@@ -10658,10 +10658,10 @@
     <Value>تحقق لتضمين هذا الموضوع في ملف sitemap.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Topics.Fields.IsPasswordProtected">
-    <Value>كلمة السر المحمية</Value>
+    <Value>محمية بكلمة مرور</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Topics.Fields.IsPasswordProtected.Hint">
-    <Value>تحقق مما إذا كان هذا الموضوع محمي بكلمة مرور.</Value>
+    <Value>حدّد لحماية هذه الصفحة بكلمة مرور.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Topics.Fields.LimitedToStores">
     <Value>يقتصر على المتاجر</Value>
@@ -23779,5 +23779,188 @@
   </LocaleResource>
   <LocaleResource Name="Admin.ActivityLogType.UploadNewTheme">
     <Value>رفع قالب تصميم</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures">
+    <Value>مميزات الصفحة الرئيسية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner">
+    <Value>بانر الصفحة الرئيسية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Enabled">
+    <Value>عرض في الصفحة الرئيسية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Enabled.Hint">
+    <Value>ألغِ التحديد لإخفاء البانر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Picture">
+    <Value>صورة الغلاف</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Picture.Hint">
+    <Value>صورة عريضة خلف النص (حوالي 1600×500). اتركها فارغة لاستخدام لون العلامة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Title">
+    <Value>العنوان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Title.Hint">
+    <Value>عنوان البانر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Text">
+    <Value>النص</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Text.Hint">
+    <Value>السطر تحت العنوان.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonText">
+    <Value>نص الزر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonText.Hint">
+    <Value>اتركه فارغاً لإخفاء الزر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonUrl">
+    <Value>رابط الزر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonUrl.Hint">
+    <Value>وجهة الزر، مثل /new-arrivals. اتركه فارغاً لصفحة جميع الفئات.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Hint">
+    <Value>أسباب الشراء القصيرة التي تظهر في شريط تحت عارض الصور في الصفحة الرئيسية (توصيل سريع، الدفع عند الاستلام...). ألغِ نشر عنصر لإخفائه دون حذفه.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.AddNew">
+    <Value>إضافة ميزة جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.EditDetails">
+    <Value>تعديل الميزة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.BackToList">
+    <Value>العودة إلى مميزات الصفحة الرئيسية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Added">
+    <Value>تمت إضافة الميزة بنجاح.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Updated">
+    <Value>تم تحديث الميزة بنجاح.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Deleted">
+    <Value>تم حذف الميزة بنجاح.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Fields.Title">
+    <Value>العنوان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Fields.Title.Hint">
+    <Value>السطر العريض، مثل "توصيل سريع". يُفضّل كلمتان أو ثلاث.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Fields.Title.Required">
+    <Value>يرجى إدخال العنوان.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Fields.Hint">
+    <Value>السطر الفرعي</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Fields.Hint.Hint">
+    <Value>السطر القصير تحت العنوان، مثل "إلى باب منزلك". اختياري.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Fields.Icon">
+    <Value>الأيقونة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Fields.Icon.Hint">
+    <Value>الصورة التي تظهر بجانب النص.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Fields.Published">
+    <Value>منشور</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Fields.Published.Hint">
+    <Value>إظهار هذا العنصر في الصفحة الرئيسية.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Fields.DisplayOrder">
+    <Value>ترتيب العرض</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageFeatures.Fields.DisplayOrder.Hint">
+    <Value>تُعرض العناصر من الرقم الأصغر إلى الأكبر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Delivery">
+    <Value>توصيل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.CashOnDelivery">
+    <Value>نقود</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Genuine">
+    <Value>أصلي</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Support">
+    <Value>خدمة العملاء</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Returns">
+    <Value>إرجاع</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.SecurePayment">
+    <Value>دفع آمن</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Gift">
+    <Value>هدية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Offers">
+    <Value>عروض</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Clock">
+    <Value>ساعة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Star">
+    <Value>نجمة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Phone">
+    <Value>هاتف</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Store">
+    <Value>متجر</Value>
+  </LocaleResource>
+  <LocaleResource Name="PageNotFound.Search.Placeholder">
+    <Value>ابحث عن منتج...</Value>
+  </LocaleResource>
+  <LocaleResource Name="PageNotFound.Search.Button">
+    <Value>بحث</Value>
+  </LocaleResource>
+  <LocaleResource Name="PageNotFound.GoHome">
+    <Value>العودة إلى الرئيسية</Value>
+  </LocaleResource>
+  <LocaleResource Name="PageNotFound.BrowseCategories">
+    <Value>تصفّح الأقسام</Value>
+  </LocaleResource>
+  <LocaleResource Name="PageNotFound.RecentlyViewed">
+    <Value>تصفّحته مؤخرًا</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Fields.AcceptTerms">
+    <Value>أوافق على</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Fields.AcceptTerms.Link">
+    <Value>شروط الاستخدام</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Fields.AcceptTerms.Required">
+    <Value>يرجى الموافقة على شروط الاستخدام لإنشاء حسابك.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Fields.AcceptTerms.Agree">
+    <Value>أوافق على الشروط</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Title">
+    <Value>أهلاً بك في {0}!</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.TitleNamed">
+    <Value>أهلاً بك في {0}، {1}!</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Pending">
+    <Value>خطوة أخيرة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Perk.Orders">
+    <Value>تابع طلباتك وسجلّها في أي وقت</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Perk.Addresses">
+    <Value>احفظ عناوينك لإتمام الطلب بخطوات أقل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Perk.Cart">
+    <Value>سلّتك محفوظة لك على كل أجهزتك</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Register.Welcome.Shop">
+    <Value>ابدأ التسوق</Value>
+  </LocaleResource>
+  <LocaleResource Name="Mobile.Nav.Products">
+    <Value>المنتجات</Value>
   </LocaleResource>
 </Language>

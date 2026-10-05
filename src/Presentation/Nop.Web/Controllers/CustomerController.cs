@@ -956,6 +956,11 @@ public partial class CustomerController : BasePublicController
             ValidateRequiredConsents(consents, form);
         }
 
+        //TmTm: the conditions of use checkbox (Register.cshtml) - the page stops an unticked form,
+        //this stops one posted without the page's script
+        if (!string.Equals(form["accept-terms"], "true", StringComparison.OrdinalIgnoreCase))
+            ModelState.AddModelError("", await _localizationService.GetResourceAsync("Account.Fields.AcceptTerms.Required"));
+
         //the phone number is the username
         var phone = CustomerPhoneHelper.ToE164(model.Phone, model.PhoneCountry);
 
@@ -2033,6 +2038,61 @@ public partial class CustomerController : BasePublicController
         model.Result = await _localizationService.GetResourceAsync("Gdpr.DeleteRequested.Success");
 
         return View(model);
+    }
+
+    #endregion
+
+    #region Conditions of use and account closing
+
+    public virtual async Task<IActionResult> ConditionsOfUse()
+    {
+        if (!await _customerService.IsRegisteredAsync(await _workContext.GetCurrentCustomerAsync()))
+            return Challenge();
+
+        return View();
+    }
+
+    //the form lives at the foot of the customer info page; this address only forwards there
+    public virtual IActionResult DeleteAccount()
+    {
+        return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
+    }
+
+    //Closing an account deactivates it rather than deleting it: the orders, addresses and
+    //personal details stay as they were, the customer simply can no longer sign in. The admin
+    //comment and the admin inbox say it was the customer's doing, not an admin's.
+    [HttpPost]
+    public virtual async Task<IActionResult> DeleteAccount(DeleteAccountModel model)
+    {
+        var customer = await _workContext.GetCurrentCustomerAsync();
+        if (!await _customerService.IsRegisteredAsync(customer))
+            return Challenge();
+
+        //the same check as signing in, lockout after repeated wrong passwords included
+        var login = _customerSettings.UsernamesEnabled ? customer.Username : customer.Email;
+        var result = string.IsNullOrEmpty(model.Password)
+            ? CustomerLoginResults.WrongPassword
+            : await _customerRegistrationService.ValidateCustomerAsync(login, model.Password);
+        if (result != CustomerLoginResults.Successful)
+        {
+            _notificationService.ErrorNotification(await _localizationService.GetResourceAsync(result == CustomerLoginResults.LockedOut
+                ? "Account.Login.WrongCredentials.LockedOut"
+                : "Account.DeleteAccount.WrongPassword"));
+            return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
+        }
+
+        var note = string.Format(await _localizationService.GetResourceAsync("Account.DeleteAccount.AdminComment", _localizationSettings.DefaultAdminLanguageId),
+            DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm"));
+        customer.Active = false;
+        customer.AdminComment = string.IsNullOrWhiteSpace(customer.AdminComment) ? note : customer.AdminComment + Environment.NewLine + note;
+        await _customerService.UpdateCustomerAsync(customer);
+
+        await _eventPublisher.PublishAsync(new CustomerAccountClosedEvent(customer));
+
+        await _authenticationService.SignOutAsync();
+        _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Account.DeleteAccount.Done"));
+
+        return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
     }
 
     #endregion

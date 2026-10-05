@@ -1,0 +1,82 @@
+﻿@model RegisterResultModel
+
+@using Nop.Core
+@using Nop.Core.Domain.Customers
+@using Nop.Services.Localization
+
+@inject ILocalizationService localizationService
+@inject IStoreContext storeContext
+@inject IWorkContext workContext
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Register").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-registration-result-page");
+
+    //1 standard (signed in, done); 2 e-mail validation, 3 admin approval (one more step); 4 disabled
+    int.TryParse(Context.Request.RouteValues["resultId"]?.ToString(), out var resultId);
+    var done = resultId == (int)UserRegistrationType.Standard;
+    var pending = resultId == (int)UserRegistrationType.EmailValidation || resultId == (int)UserRegistrationType.AdminApproval;
+
+    var storeName = await localizationService.GetLocalizedAsync(await storeContext.GetCurrentStoreAsync(), store => store.Name);
+    var firstName = done ? (await workContext.GetCurrentCustomerAsync()).FirstName : null;
+    var title = done
+        ? (string.IsNullOrWhiteSpace(firstName) ? T("Account.Register.Welcome.Title", storeName).Text : T("Account.Register.Welcome.TitleNamed", storeName, firstName).Text)
+        : pending ? T("Account.Register.Welcome.Pending").Text : T("Account.Register").Text;
+}
+@*TmTm welcome after registering - the card of the offline and not-found pages: the brand rule,
+    a mark, the shopper's name, what the account is for, and where to go next. The mark draws
+    itself once (a check in a teal disc, a few brand dots bursting out); "one more step" results
+    (e-mail validation, admin approval) get an envelope or a clock instead and no perks yet.*@
+<div class="page registration-result-page">
+    <section class="tm-welcome @(done ? "is-done" : pending ? "is-pending" : null)">
+        <div class="tm-welcome-mark" aria-hidden="true">
+            @if (done)
+            {
+                <span class="tm-welcome-burst"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+                <svg viewBox="0 0 64 64" focusable="false"><circle cx="32" cy="32" r="30" /><path d="M19 33.5 28 42l17-19" /></svg>
+            }
+            else if (resultId == (int)UserRegistrationType.EmailValidation)
+            {
+                <svg viewBox="0 0 64 64" focusable="false"><circle cx="32" cy="32" r="30" /><path d="M18 23h28v19H18zM18 24l14 10 14-10" /></svg>
+            }
+            else
+            {
+                <svg viewBox="0 0 64 64" focusable="false"><circle cx="32" cy="32" r="30" /><path d="M32 19v13l8 5" /></svg>
+            }
+        </div>
+
+        <h1 class="tm-welcome-title">@title</h1>
+        <p class="tm-welcome-lead">@Model.Result</p>
+
+        @if (done)
+        {
+            <ul class="tm-welcome-perks">
+                <li>
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /></svg>
+                    <span>@T("Account.Register.Welcome.Perk.Orders")</span>
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" /></svg>
+                    <span>@T("Account.Register.Welcome.Perk.Addresses")</span>
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.6 8h12.8l.9 11.3a1.6 1.6 0 0 1-1.6 1.7H6.3a1.6 1.6 0 0 1-1.6-1.7Z" /><path d="M9 8V6.4a3 3 0 0 1 6 0V8" /></svg>
+                    <span>@T("Account.Register.Welcome.Perk.Cart")</span>
+                </li>
+            </ul>
+        }
+
+        <div class="tm-welcome-actions">
+            @* "start shopping" always lands on the home page, not the page registration started from *@
+            <a href="@Url.RouteUrl(NopRouteNames.General.HOMEPAGE)" class="button-1 register-continue-button">@T("Account.Register.Welcome.Shop")</a>
+            @if (done)
+            {
+                <a href="@Url.RouteUrl(NopRouteNames.General.CUSTOMER_INFO)" class="button-2">@T("Account.MyAccount")</a>
+            }
+        </div>
+    </section>
+</div>

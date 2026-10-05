@@ -356,6 +356,13 @@
                 </div>
             </div>
         </section>
+        @*last, where a destructive action belongs - not a tab of the account menu*@
+        <section class="fieldset customer-delete-account">
+            <h2 class="title">
+                @T("Account.DeleteAccount")
+            </h2>
+            @await Html.PartialAsync("_DeleteAccountForm", new DeleteAccountModel())
+        </section>
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CustomerInfoBottom, additionalData = Model })
     </div>
 </div>

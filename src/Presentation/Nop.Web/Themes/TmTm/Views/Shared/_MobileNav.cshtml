@@ -4,19 +4,11 @@
     ~400px tall and, sitting under the three-band header, pushed the first
     product more than three screens down.
 
-    In its place:
-      * a bottom tab bar with the four destinations a shopper actually uses —
-        home, categories, cart, account — thumb-reachable and always visible;
-      * the full category tree in a bottom sheet behind the "Categories" tab.
-
-    The sheet is a native popover. The browser supplies light dismiss, Esc,
-    top-layer stacking and the invoker wiring, so no script ships with it.
-    Browsers without popover lay the sheet out inline instead, which keeps the
-    tree reachable; brand.css hides the trigger there via @@supports so the tab
-    never dead-ends.
-
-    The tree itself is the stock MainMenu component, so the menu configured in
-    admin, its accordion script and every localisation still apply.
+    In its place, a bottom tab bar with the four destinations a shopper actually
+    uses - home, products, cart, account - thumb-reachable and always visible.
+    "Products" goes to the all-categories page (the catalogue's front door); it
+    used to open the category tree in a bottom sheet, one tap more to the same
+    place.
 *@
 @using Nop.Core.Domain.Orders
 @using Nop.Services.Orders
@@ -49,25 +41,19 @@
     var homeActive = inSection("Home");
     var browseActive = inSection("Catalog", "Product");
     var cartActive = inSection("ShoppingCart", "Checkout");
-    var accountActive = inSection("Customer", "Order", "ReturnRequest");
+    var action = Context.Request.RouteValues["action"]?.ToString() ?? string.Empty;
+    bool onPage(string controllerName, params string[] actions) =>
+        inSection(controllerName) && actions.Any(name => string.Equals(action, name, StringComparison.OrdinalIgnoreCase));
+    var contactPage = onPage("Common", "ContactUs");
+    //Notifications (a plugin page) and, for a signed-in customer, Contact us are account pages too
+    var accountActive = inSection("Customer", "Order", "ReturnRequest", "CustomerNotifications")
+        || (contactPage && User.Identity?.IsAuthenticated == true);
+    //the store's other forms - the card sat on their submit buttons the same way
+    var formPage = contactPage
+        || onPage("Common", "ContactVendor")
+        || onPage("Product", "ProductEmailAFriend", "ProductReviews")
+        || onPage("Vendor", "ApplyVendor");
 }
-
-<div id="tm-menu-sheet" class="tm-sheet" popover>
-    <div class="tm-sheet-grip" aria-hidden="true"></div>
-    <div class="tm-sheet-head">
-        <h2 class="tm-sheet-title">@T("Categories")</h2>
-        <button class="tm-sheet-close" type="button" popovertarget="tm-menu-sheet" popovertargetaction="hide" aria-label="@T("Common.Close")">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path d="m6 6 12 12M18 6 6 18" />
-            </svg>
-        </button>
-    </div>
-    <div class="tm-sheet-body">
-        <div class="header-menu">
-            @await Component.InvokeAsync(typeof(MainMenuViewComponent))
-        </div>
-    </div>
-</div>
 
 <nav class="mobile-tab-bar" aria-label="@T("Menu")">
     <a class="mobile-tab @(homeActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.HOMEPAGE)" aria-current="@(homeActive ? "page" : null)">
@@ -79,17 +65,15 @@
         </span>
         <span class="mobile-tab-label">@T("Mobile.Nav.Home")</span>
     </a>
-    <button class="mobile-tab @(browseActive ? "active" : null)" type="button" popovertarget="tm-menu-sheet">
+    <a class="mobile-tab @(browseActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CATEGORIES)" aria-current="@(browseActive ? "page" : null)">
         <span class="mobile-tab-icon-wrap">
             <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <rect x="3.2" y="3.2" width="7.6" height="7.6" rx="2.2" />
-                <rect x="13.2" y="3.2" width="7.6" height="7.6" rx="2.2" />
-                <rect x="3.2" y="13.2" width="7.6" height="7.6" rx="2.2" />
-                <rect x="13.2" y="13.2" width="7.6" height="7.6" rx="2.2" />
+                <path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3.4 13.4V3.4h10l7.2 7.2a2 2 0 0 1 0 2.8Z" />
+                <circle cx="8" cy="8" r="1.4" />
             </svg>
         </span>
-        <span class="mobile-tab-label">@T("Categories")</span>
-    </button>
+        <span class="mobile-tab-label">@T("Mobile.Nav.Products")</span>
+    </a>
     <a class="mobile-tab @(cartActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CART)" aria-current="@(cartActive ? "page" : null)">
         <span class="mobile-tab-icon-wrap">
             <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -118,9 +102,11 @@
     HeaderLinks keeps live after every AJAX add - so it appears with no reload). Not on the cart or
     checkout, which already are the goal. ✕ puts it away until the next visit or the next item
     added. Straight to checkout, unless the terms of service must be accepted on the cart page.*@
-@*Nor in the account section (login, register, password recovery, my account, orders): the
-    shopper is filling in a form there, and the card sat on its submit button.*@
-@if (!cartActive && !accountActive)
+@*Nor in the account section (login, register, password recovery, my account, orders) or on
+    any other form (contact us, email a friend): the shopper is filling it in, and the card sat on
+    its submit button. It shows where the shopper browses: home, catalogue, product, search, info
+    pages.*@
+@if (!cartActive && !accountActive && !formPage)
 {
     <div class="tm-cart-float">
         <a class="tm-cart-float-link" href="@(orderSettings.TermsOfServiceOnShoppingCartPage ? Url.RouteUrl(NopRouteNames.General.CART) : Url.RouteUrl(NopRouteNames.Standard.CHECKOUT))">
@@ -175,16 +161,15 @@
             if (now > last) {
                 document.documentElement.classList.remove('tm-cart-float-closed');
                 try { sessionStorage.removeItem('tm-cart-float-closed'); } catch (e) { }
-                //an item went in: the card comes back into view and gives a small hop
-                card.classList.remove('tm-cart-float-away', 'tm-cart-float-bump');
+                //an item went in: the card gives a small hop. The class stays on
+                //until the next add - taking it off when the hop ends hands the
+                //card back its slide-in (and first-visit bounce), which then replay
+                card.classList.remove('tm-cart-float-bump');
                 void card.offsetWidth;
                 card.classList.add('tm-cart-float-bump');
             }
             last = now;
         }).observe(qty, { attributes: true, attributeFilter: ['data-qty'] });
-        card.addEventListener('animationend', function (e) {
-            if (e.animationName === 'tm-cart-float-bump') card.classList.remove('tm-cart-float-bump');
-        });
 
         function watchFlyout() {
             syncTotal();
@@ -197,18 +182,5 @@
             document.addEventListener('DOMContentLoaded', watchFlyout);
         else
             watchFlyout();
-
-        //out of the way while the shopper scrolls down the page, back on scrolling up or stopping
-        var lastY = window.scrollY, settle = 0;
-        window.addEventListener('scroll', function () {
-            var y = window.scrollY, delta = y - lastY;
-            if (Math.abs(delta) < 8) return;
-            card.classList.toggle('tm-cart-float-away', delta > 0 && y > 120);
-            lastY = y;
-            clearTimeout(settle);
-            settle = setTimeout(function () { card.classList.remove('tm-cart-float-away'); }, 900);
-        }, { passive: true });
-        //a keyboard user tabbing to it gets it back at once
-        card.addEventListener('focusin', function () { card.classList.remove('tm-cart-float-away'); });
     })();
 </script>

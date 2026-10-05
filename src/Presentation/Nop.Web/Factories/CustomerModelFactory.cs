@@ -693,6 +693,26 @@ public partial class CustomerModelFactory : ICustomerModelFactory
             });
         }
 
+        //the store's terms and a way to reach the store are always one tap away from the account
+        //(closing it is at the foot of the customer info page);
+        //"Rate us" sits after these in the view - it is an external link, not a route
+        model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
+        {
+            RouteName = NopRouteNames.Standard.CUSTOMER_CONDITIONS_OF_USE,
+            Title = await _localizationService.GetResourceAsync("Account.ConditionsOfUse"),
+            Tab = (int)CustomerNavigationEnum.ConditionsOfUse,
+            ItemClass = "customer-conditions-of-use"
+        });
+
+        model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
+        {
+            //the store's page, which keeps the account menu for a signed-in customer
+            RouteName = NopRouteNames.General.CONTACT_US,
+            Title = await _localizationService.GetResourceAsync("PageTitle.ContactUs"),
+            Tab = (int)CustomerNavigationEnum.ContactUs,
+            ItemClass = "customer-contact-us"
+        });
+
         model.SelectedTab = selectedTabId;
 
         return model;

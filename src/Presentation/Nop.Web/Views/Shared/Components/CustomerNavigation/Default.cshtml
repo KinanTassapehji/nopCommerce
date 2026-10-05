@@ -1,5 +1,14 @@
 ﻿@model CustomerNavigationModel
+@inject Nop.Core.Domain.StoreInformationSettings storeInformationSettings
 @{
+    //"Rate us" opens the store listing for the device in hand: the App Store on iPhone and iPad,
+    //Google Play everywhere else (the Android app included) - whichever of the two is set
+    var userAgent = Context.Request.Headers.UserAgent.ToString();
+    var isApple = userAgent.Contains("iPhone") || userAgent.Contains("iPad") || userAgent.Contains("iPod");
+    string firstSet(params string[] links) => links.FirstOrDefault(link => !string.IsNullOrWhiteSpace(link));
+    var rateUsLink = isApple
+        ? firstSet(storeInformationSettings.AppStoreAppLink, storeInformationSettings.GooglePlayAppLink)
+        : firstSet(storeInformationSettings.GooglePlayAppLink, storeInformationSettings.AppStoreAppLink);
     var logoutUrl = Url.RouteUrl(NopRouteNames.Standard.LOGOUT);
     var logoutConfirm = JavaScriptEncoder.Default.Encode(T("Account.Logout.Confirm").Text);
     var yesText = JavaScriptEncoder.Default.Encode(T("Common.Yes").Text);
@@ -18,6 +27,12 @@
                     <a href="@Url.RouteUrl(item.RouteName)">@(item.Title)</a>
                 </li>
             }
+            @if (!string.IsNullOrWhiteSpace(rateUsLink))
+            {
+                <li class="customer-rate-us inactive">
+                    <a href="@rateUsLink" target="_blank" rel="noopener noreferrer">@T("Account.RateUs")</a>
+                </li>
+            }
             @*logout is an action rather than a tab, so it is not one of the
                 CustomerNavigationItems - it lives here now that the header no longer shows it*@
             <li class="customer-logout inactive">
@@ -29,3 +44,11 @@
         </ul>
     </div>
 </section>
+@*On phones the menu is a row of pills that scrolls sideways; the page's own pill can sit past the
+    edge (Contact us, Delete account), so bring it into view - the link, since the theme lays the li out as display:contents. "nearest" leaves the page itself where it is.*@
+<script>
+    (function () {
+        var active = document.querySelector('.block-account-navigation li.active > a');
+        if (active) active.scrollIntoView({ block: 'nearest', inline: 'center' });
+    })();
+</script>

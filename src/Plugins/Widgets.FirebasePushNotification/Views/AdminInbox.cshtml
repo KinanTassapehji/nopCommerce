@@ -1,0 +1,94 @@
+@model Nop.Core.IPagedList<Widgets.FirebasePushNotification.Domain.InboxNotification>
+@inject Nop.Services.Helpers.IDateTimeHelper dateTimeHelper
+@using Widgets.FirebasePushNotification.Services
+@{
+    Layout = "_AdminLayout";
+    ViewBag.PageTitle = T("Plugins.Widgets.FirebasePushNotification.Inbox.Title").Text;
+    NopHtml.SetActiveMenuItemSystemName("Widgets.FirebasePushNotification.Menu.Inbox");
+}
+
+<div class="content-header clearfix">
+    <h1 class="float-left">@T("Plugins.Widgets.FirebasePushNotification.Inbox.Title")</h1>
+</div>
+
+@{
+    var type = ViewData["InboxType"] as string;
+    var unread = ViewData["InboxUnread"] as Dictionary<string, int> ?? new();
+    var tabs = new List<(string Type, string Label, int Unread)>
+    {
+        (null, T("Plugins.Widgets.FirebasePushNotification.Inbox.Filter.All").Text, unread.Values.Sum())
+    };
+    foreach (var (group, keys) in InboxNotificationService.AdminMessageGroups)
+        tabs.Add((group, T("Plugins.Widgets.FirebasePushNotification.Inbox.Filter." + group).Text, keys.Sum(key => unread.GetValueOrDefault(key))));
+    string pageUrl(int page) => "?page=" + page + (type == null ? null : "&type=" + type);
+}
+
+<section class="content">
+    <div class="container-fluid">
+        @*filter by kind; each tab carries its unread count, counted before this visit marked anything*@
+        <ul class="nav nav-pills flex-wrap mb-3">
+            @foreach (var tab in tabs)
+            {
+                <li class="nav-item">
+                    <a class="nav-link @(tab.Type == type ? "active" : null)" href="@(tab.Type == null ? "?" : "?type=" + tab.Type)">
+                        @tab.Label
+                        @if (tab.Unread > 0)
+                        {
+                            <span class="badge @(tab.Type == type ? "badge-light" : "badge-danger") ml-1">@tab.Unread</span>
+                        }
+                    </a>
+                </li>
+            }
+        </ul>
+        <div class="card card-default">
+            @if (Model.TotalCount == 0)
+            {
+                <div class="card-body text-muted">@T("Plugins.Widgets.FirebasePushNotification.Inbox.Empty")</div>
+            }
+            else
+            {
+                <div class="list-group list-group-flush">
+                    @foreach (var item in Model)
+                    {
+                        var created = await dateTimeHelper.ConvertToUserTimeAsync(item.CreatedOnUtc, DateTimeKind.Utc);
+                        //written here, in the language of the admin reading it (rows from before keys are text)
+                        var message = InboxNotificationService.GetAdminMessage(item);
+                        var title = message is { } m ? T(InboxNotificationService.AdminMessagePrefix + m.Key + ".Title").Text : item.Title;
+                        var body = message is { } n ? T(InboxNotificationService.AdminMessagePrefix + n.Key + ".Body", n.Args).Text : item.Body;
+                        //admin links are written by the event consumers, always a path on this store
+                        <a class="list-group-item list-group-item-action @(item.IsRead ? null : "list-group-item-info")" href="@(item.Link ?? "#")">
+                            <div class="d-flex flex-wrap justify-content-between">
+                                <strong class="mr-2">
+                                    @if (!item.IsRead)
+                                    {
+                                        <i class="fas fa-circle text-primary mr-1" style="font-size:.5rem;vertical-align:middle"></i>
+                                    }
+                                    @title
+                                </strong>
+                                <small class="text-muted">@created.ToString("g")</small>
+                            </div>
+                            <div class="text-break">@body</div>
+                        </a>
+                    }
+                </div>
+                @if (Model.TotalPages > 1)
+                {
+                    <div class="card-footer d-flex justify-content-between">
+                        <span>
+                            @if (Model.HasPreviousPage)
+                            {
+                                <a class="btn btn-default" href="@pageUrl(Model.PageIndex)">@T("Pager.Previous")</a>
+                            }
+                        </span>
+                        <span>
+                            @if (Model.HasNextPage)
+                            {
+                                <a class="btn btn-default" href="@pageUrl(Model.PageIndex + 2)">@T("Pager.Next")</a>
+                            }
+                        </span>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>

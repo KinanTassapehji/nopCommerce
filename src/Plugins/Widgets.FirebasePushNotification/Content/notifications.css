@@ -1,0 +1,193 @@
+/* Notifications page, the header unread dot and the account-nav badge.
+   Lives with the plugin so both stores share it; colours come from whichever
+   theme is loaded - --tm-* in TmTm, --ar-* in Arabia - with plain fallbacks.
+   Logical properties throughout, so one sheet serves LTR and RTL. */
+.notifications-page {
+  --inbox-accent: var(--tm-teal-deep, var(--ar-blue, #02787e));
+  --inbox-accent-hover: var(--tm-teal-hover, var(--ar-blue-hover, #01585c));
+  --inbox-tint: var(--tm-teal-tint, var(--ar-blue-tint, #e6f4f4));
+  --inbox-border: var(--tm-teal-border, var(--ar-blue-border, #b3dedc));
+  --inbox-ink: var(--tm-ink, var(--ar-ink, #10201f));
+  --inbox-muted: var(--tm-ink-muted, var(--ar-ink-muted, #5c6b6a));
+  --inbox-line: var(--tm-line, var(--ar-line, #dfe5e5));
+  --inbox-surface: var(--tm-surface, var(--ar-surface, #fff));
+  --inbox-radius: var(--tm-radius, var(--ar-radius, 12px));
+  --inbox-shadow: var(--tm-shadow, var(--ar-shadow, 0 6px 20px rgba(0, 0, 0, .08)));
+  /* the cart badge's colour, so the two counts beside each other read as one family */
+  --inbox-badge: var(--tm-teal-deep, var(--ar-blue, #02787e));
+}
+
+/* --- Unread dot on the header's account glyph ---------------------------
+   The header has no bell (see Views/Components/InboxLink/Header.cshtml): the
+   widget's hidden item only marks that something is unread. */
+.header-links .tm-inbox-unread {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.header-links:has(.tm-inbox-unread) .ico-account {
+  position: relative;
+}
+
+.header-links:has(.tm-inbox-unread) .ico-account::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 9px;
+  inset-inline-end: 9px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--tm-teal-deep, var(--ar-blue, #02787e));
+  box-shadow: 0 0 0 2px var(--tm-surface, var(--ar-surface, #fff));
+}
+
+.tm-inbox-icon {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tm-inbox-badge {
+  position: absolute;
+  inset-block-start: 4px;
+  inset-inline-end: 4px;
+  min-width: 18px;
+  height: 18px;
+  padding-inline: 5px;
+  border-radius: 999px;
+  background: var(--inbox-badge, var(--tm-teal-deep, var(--ar-blue, #02787e)));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+/* in the account navigation the count follows the label instead of sitting on a glyph */
+.tm-inbox-badge--inline {
+  position: static;
+  display: inline-block;
+  margin-inline-start: 6px;
+  vertical-align: middle;
+}
+
+/* --- The page ------------------------------------------------------------ */
+.tm-inbox {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tm-inbox-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px 20px;
+  border: 1px solid var(--inbox-line);
+  border-radius: var(--inbox-radius);
+  background: var(--inbox-surface);
+  text-align: start;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.tm-inbox-item:hover {
+  border-color: var(--inbox-border);
+  box-shadow: var(--inbox-shadow);
+}
+
+/* new since the last visit: tinted, with the accent down the leading edge */
+.tm-inbox-item.unread {
+  background: var(--inbox-tint);
+  border-color: var(--inbox-border);
+  border-inline-start: 4px solid var(--inbox-accent);
+}
+
+.tm-inbox-icon {
+  flex: none;
+  margin-block-start: 2px;
+  color: var(--inbox-accent);
+}
+
+.tm-inbox-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.tm-inbox-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+
+.tm-inbox-title {
+  color: var(--inbox-ink);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.tm-inbox-date {
+  color: var(--inbox-muted);
+  font-size: 12px;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.tm-inbox-body {
+  margin: 4px 0 0;
+  color: var(--inbox-muted);
+  font-size: 14px;
+  line-height: 22px;
+  overflow-wrap: anywhere;
+}
+
+.tm-inbox-link {
+  display: inline-block;
+  margin-block-start: 8px;
+  color: var(--inbox-accent);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tm-inbox-link:hover {
+  color: var(--inbox-accent-hover);
+  text-decoration: underline;
+}
+
+.tm-inbox-empty {
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.tm-inbox-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-block-start: 20px;
+}
+
+@media (max-width: 480px) {
+  .tm-inbox-item {
+    gap: 10px;
+    padding: 14px;
+  }
+
+  /* the date drops under the title rather than squeezing it */
+  .tm-inbox-head {
+    flex-direction: column;
+  }
+
+  .tm-inbox-date {
+    line-height: 16px;
+  }
+}

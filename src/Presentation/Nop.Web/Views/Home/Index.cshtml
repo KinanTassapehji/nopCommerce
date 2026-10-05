@@ -2,6 +2,10 @@
 @using Nop.Core
 @inject ILocalizationService localizationService
 @inject IStoreContext storeContext
+@inject IWorkContext workContext
+@inject Nop.Services.Media.IPictureService pictureService
+@inject Nop.Core.Domain.Common.HomepageBannerSettings homepageBannerSettings
+@inject Nop.Services.Common.IHomepageFeatureService homepageFeatureService
 
 @{
     Layout = "_ColumnsOne";
@@ -28,26 +32,30 @@
 <div class="page home-page">
     <div class="page-body">
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageTop })
-        @*the reasons to buy here, straight under the hero. Copy lives in locale resources, so the
-            admin rewords it without a deploy; the icons are plain stroke marks painted in the brand colour*@
-        <ul class="home-usp">
-            <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
-                <div><strong>@T("Homepage.Usp.Delivery")</strong><span>@T("Homepage.Usp.Delivery.Hint")</span></div>
-            </li>
-            <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/></svg>
-                <div><strong>@T("Homepage.Usp.Cod")</strong><span>@T("Homepage.Usp.Cod.Hint")</span></div>
-            </li>
-            <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
-                <div><strong>@T("Homepage.Usp.Genuine")</strong><span>@T("Homepage.Usp.Genuine.Hint")</span></div>
-            </li>
-            <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13v-2a8 8 0 0116 0v2"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19a3 3 0 01-3 3h-3"/></svg>
-                <div><strong>@T("Homepage.Usp.Support")</strong><span>@T("Homepage.Usp.Support.Hint")</span></div>
-            </li>
-        </ul>
+        @*the reasons to buy here, straight under the hero. The admin manages the list (Content
+            management > Home page features): text per language, icon, order, published*@
+        @{
+            var homepageFeatures = await homepageFeatureService.GetAllHomepageFeaturesAsync();
+        }
+        @if (homepageFeatures.Any())
+        {
+            <ul class="home-usp">
+                @foreach (var feature in homepageFeatures)
+                {
+                    var hint = await localizationService.GetLocalizedAsync(feature, f => f.Hint);
+                    <li>
+                        @await Html.PartialAsync("_HomepageFeatureIcon", feature.Icon)
+                        <div>
+                            <strong>@(await localizationService.GetLocalizedAsync(feature, f => f.Title))</strong>
+                            @if (!string.IsNullOrEmpty(hint))
+                            {
+                                <span>@hint</span>
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
         @await Component.InvokeAsync(typeof(TopicBlockViewComponent), new { systemName = "HomepageText" })
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeCategories })
         @await Component.InvokeAsync(typeof(HomepageCategoriesViewComponent))
@@ -55,14 +63,35 @@
         @await Component.InvokeAsync(typeof(HomepageDealsViewComponent))
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeProducts })
         @await Component.InvokeAsync(typeof(HomepageProductsViewComponent))
-        @*one call to action between the curated bands and the long tail below*@
-        <section class="home-cta">
-            <div>
-                <h2>@T("Homepage.Cta.Title")</h2>
-                <p>@T("Homepage.Cta.Text")</p>
-            </div>
-            <a class="button-1" href="@Url.RouteUrl(NopRouteNames.General.CATEGORIES)">@T("Homepage.Cta.Button")</a>
-        </section>
+        @*one call to action between the curated bands and the brands below. No all-products feed: the home
+            page shows the products marked "show on home page" (the band above) - the catalogue is a tap away*@
+        @*the admin edits it under Content management > Home page banner*@
+        @if (homepageBannerSettings.Enabled)
+        {
+            var languageId = (await workContext.GetWorkingLanguageAsync()).Id;
+            var ctaTitle = await localizationService.GetLocalizedSettingAsync(homepageBannerSettings, s => s.Title, languageId, 0);
+            var ctaText = await localizationService.GetLocalizedSettingAsync(homepageBannerSettings, s => s.Text, languageId, 0);
+            var ctaButton = await localizationService.GetLocalizedSettingAsync(homepageBannerSettings, s => s.ButtonText, languageId, 0);
+            var ctaCover = homepageBannerSettings.PictureId > 0
+                ? await pictureService.GetPictureUrlAsync(homepageBannerSettings.PictureId, showDefaultPicture: false)
+                : null;
+            <section class="home-cta@(string.IsNullOrEmpty(ctaCover) ? "" : " has-cover")" style="@(string.IsNullOrEmpty(ctaCover) ? null : $"background-image:url('{ctaCover}')")">
+                <div>
+                    @if (!string.IsNullOrEmpty(ctaTitle))
+                    {
+                        <h2>@ctaTitle</h2>
+                    }
+                    @if (!string.IsNullOrEmpty(ctaText))
+                    {
+                        <p>@ctaText</p>
+                    }
+                </div>
+                @if (!string.IsNullOrEmpty(ctaButton))
+                {
+                    <a class="button-1" href="@(string.IsNullOrEmpty(homepageBannerSettings.ButtonUrl) ? Url.RouteUrl(NopRouteNames.General.CATEGORIES) : homepageBannerSettings.ButtonUrl)">@ctaButton</a>
+                }
+            </section>
+        }
         @*rendered with the page, not the OCarousel band that waited for a scroll and a POST*@
         @await Component.InvokeAsync(typeof(ManufacturerNavigationViewComponent), new { currentManufacturerId = 0 })
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeBestSellers })
@@ -71,83 +100,9 @@
         @await Component.InvokeAsync(typeof(HomepageNewsViewComponent))
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforePoll })
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBottom })
-        <section class="product-grid home-page-all-products" id="home-products">
-            @*the heading only makes sense once the first page of the feed has landed*@
-            <h2 class="title" id="home-products-title" hidden>
-                <span>@T("Homepage.AllProducts")</span>
-                <a class="view-all" href="@Url.RouteUrl(NopRouteNames.General.CATEGORIES)">@T("Homepage.ViewAll")<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
-            </h2>
-            <div class="item-grid" id="home-products-grid"></div>
-            <div class="home-products-loader" id="home-products-loader" role="status" aria-label="@T("Homepage.AllProducts.Loading")" hidden><span></span><span></span><span></span></div>
-            <div id="home-products-pager"></div>
-        </section>
-        <div id="home-products-sentinel"></div>
     </div>
 </div>
 
-<script asp-location="Footer">
-    $(function () {
-        //the all-products feed is paged on desktop and infinitely scrolled on mobile
-        //ponytail: 1000px is the theme's own mobile/desktop split; the mode is picked once, a resize
-        //across the breakpoint keeps whatever the page loaded with
-        var url = '@Url.RouteUrl(NopRouteNames.Ajax.HOMEPAGE_PRODUCTS)';
-        var $grid = $('#home-products-grid'), $pager = $('#home-products-pager'), $loader = $('#home-products-loader');
-        var sentinel = document.getElementById('home-products-sentinel');
-        var infinite = window.matchMedia('(max-width: 1000px)').matches;
-        var page = 1, busy = false;
-        //what the bands above already show - read once, while the feed is still empty, so every
-        //page is cut from the same list and the pager's totals hold
-        var excludedIds = $.map($('[data-productid]'), function (el) { return $(el).data('productid'); }).join(',');
-
-        var observer = new IntersectionObserver(function (entries) {
-            if (entries[0].isIntersecting)
-                load(page);
-        }, { rootMargin: '400px' });
-
-        function load(pageNumber, scroll) {
-            if (busy)
-                return;
-            busy = true;
-            $loader.prop('hidden', false);
-            $.get(url, { pageNumber: pageNumber, excludedIds: excludedIds }, function (html) {
-                $loader.prop('hidden', true);
-                if (!$.trim(html)) {
-                    //no more products
-                    observer.disconnect();
-                    $pager.empty();
-                    return;
-                }
-                page = pageNumber + 1;
-                var $html = $(html);
-                if (!infinite)
-                    $grid.empty();
-                $grid.append($html.filter('.item-box'));
-                $('#home-products-title').prop('hidden', !$grid.children().length);
-                if (!infinite)
-                    $pager.empty().append($html.filter('.pager'));
-                //a new page starts at its own heading, not wherever the pager left the scroll
-                if (scroll)
-                    document.getElementById('home-products').scrollIntoView({ block: 'start' });
-                busy = false;
-                if (infinite) {
-                    //re-trigger when the sentinel is still visible (short or fully skipped page)
-                    observer.unobserve(sentinel);
-                    observer.observe(sentinel);
-                }
-            }).fail(function () { busy = false; $loader.prop('hidden', true); });
-        }
-
-        $pager.on('click', '[data-page]', function (e) {
-            e.preventDefault();
-            load($(this).data('page'), true);
-        });
-
-        if (infinite)
-            observer.observe(sentinel);
-        else
-            load(1);
-    });
-</script>
 <script asp-location="Footer">
     $(function () {
         //the curated bands are rails: a thumb swipes them, but a wheel cannot

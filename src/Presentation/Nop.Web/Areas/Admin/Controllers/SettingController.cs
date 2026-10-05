@@ -1412,6 +1412,11 @@ public partial class SettingController : BaseAdminController
             storeInformationSettings.YoutubeLink = model.StoreInformationSettings.YoutubeLink;
             storeInformationSettings.InstagramLink = model.StoreInformationSettings.InstagramLink;
             storeInformationSettings.WhatsAppLink = model.StoreInformationSettings.WhatsAppLink;
+            //contact channels and app store listings
+            storeInformationSettings.ContactPhoneNumber = model.StoreInformationSettings.ContactPhoneNumber;
+            storeInformationSettings.ContactEmail = model.StoreInformationSettings.ContactEmail;
+            storeInformationSettings.GooglePlayAppLink = model.StoreInformationSettings.GooglePlayAppLink;
+            storeInformationSettings.AppStoreAppLink = model.StoreInformationSettings.AppStoreAppLink;
             //contact us
             commonSettings.SubjectFieldOnContactUsForm = model.StoreInformationSettings.SubjectFieldOnContactUsForm;
             commonSettings.UseSystemEmailForContactUsForm = model.StoreInformationSettings.UseSystemEmailForContactUsForm;
@@ -1449,6 +1454,10 @@ public partial class SettingController : BaseAdminController
             await _settingService.SaveSettingOverridablePerStoreAsync(storeInformationSettings, x => x.YoutubeLink, model.StoreInformationSettings.YoutubeLink_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(storeInformationSettings, x => x.InstagramLink, model.StoreInformationSettings.InstagramLink_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(storeInformationSettings, x => x.WhatsAppLink, model.StoreInformationSettings.WhatsAppLink_OverrideForStore, storeScope, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(storeInformationSettings, x => x.ContactPhoneNumber, model.StoreInformationSettings.ContactPhoneNumber_OverrideForStore, storeScope, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(storeInformationSettings, x => x.ContactEmail, model.StoreInformationSettings.ContactEmail_OverrideForStore, storeScope, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(storeInformationSettings, x => x.GooglePlayAppLink, model.StoreInformationSettings.GooglePlayAppLink_OverrideForStore, storeScope, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(storeInformationSettings, x => x.AppStoreAppLink, model.StoreInformationSettings.AppStoreAppLink_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(commonSettings, x => x.SubjectFieldOnContactUsForm, model.StoreInformationSettings.SubjectFieldOnContactUsForm_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(commonSettings, x => x.UseSystemEmailForContactUsForm, model.StoreInformationSettings.UseSystemEmailForContactUsForm_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(commonSettings, x => x.PopupForTermsOfServiceLinks, model.StoreInformationSettings.PopupForTermsOfServiceLinks_OverrideForStore, storeScope, false);

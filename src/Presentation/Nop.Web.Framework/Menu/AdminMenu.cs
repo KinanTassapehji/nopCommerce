@@ -282,6 +282,22 @@ public partial class AdminMenu : IAdminMenu
                         },
                         new()
                         {
+                            SystemName = "Homepage features",
+                            Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.HomepageFeatures"),
+                            PermissionNames = new List<string> { StandardPermission.ContentManagement.TOPICS_VIEW },
+                            Url = GetMenuItemUrl("HomepageFeature", "List"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
+                            SystemName = "Home page banner",
+                            Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.HomepageBanner"),
+                            PermissionNames = new List<string> { StandardPermission.ContentManagement.TOPICS_VIEW },
+                            Url = GetMenuItemUrl("HomepageBanner", "Configure"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
                             SystemName = "Menus",
                             Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Menus"),
                             PermissionNames = new List<string> { StandardPermission.ContentManagement.MENU_VIEW },

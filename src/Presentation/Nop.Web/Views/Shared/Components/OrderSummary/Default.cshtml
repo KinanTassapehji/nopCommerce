@@ -96,7 +96,8 @@
                     <tbody>
                         @foreach (var item in Model.Items)
                         {
-                            <tr>
+                            @*TmTm: qty-many lets the phone card show the unit price only when it differs from the line total*@
+                            <tr class="@(item.Quantity > 1 ? "qty-many" : null)">
                                 @if (Model.ShowSku)
                                 {
                                     <td class="sku">
@@ -114,7 +115,29 @@
                                 }
                                 <td class="product">
                                     <a href="@(await NopUrl.RouteGenericUrlAsync<Product>(new { SeName = item.ProductSeName }))" class="product-name">@item.ProductName</a>
-                                    @if (!string.IsNullOrEmpty(item.AttributeInfo))
+                                    @{
+                                        //TmTm: no "Edit" button of its own - the options line is the way to change the options
+                                        //(a pencil at its end says so). Only where that line has no link of its own (a file
+                                        //upload's download link): a link inside a link is invalid, so that one keeps the icon.
+                                        string editCartItemUrl = null;
+                                        if (Model.IsEditable && item.AllowItemEditing)
+                                        {
+                                            editCartItemUrl = await NopUrl.RouteGenericUrlAsync<Product>(new { SeName = item.ProductSeName }, webHelper.GetCurrentRequestProtocol());
+                                            editCartItemUrl = webHelper.ModifyQueryString(editCartItemUrl, "updatecartitemid", item.Id.ToString());
+                                        }
+                                        var attributesAreEditLink = editCartItemUrl != null
+                                            && !string.IsNullOrEmpty(item.AttributeInfo)
+                                            && !item.AttributeInfo.Contains("<a", StringComparison.OrdinalIgnoreCase);
+                                    }
+                                    @if (attributesAreEditLink)
+                                    {
+                                        <a class="attributes edit-item" href="@editCartItemUrl" title="@T("Common.Edit")">
+                                            <span class="attributes-text">@Html.Raw(item.AttributeInfo)</span>
+                                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" /></svg>
+                                            <span class="visually-hidden">@T("Common.Edit")</span>
+                                        </a>
+                                    }
+                                    else if (!string.IsNullOrEmpty(item.AttributeInfo))
                                     {
                                         <div class="attributes">
                                             @Html.Raw(item.AttributeInfo)
@@ -127,16 +150,12 @@
                                             @Html.Raw(item.RentalInfo)
                                         </div>
                                     }
-                                    @if (Model.IsEditable && item.AllowItemEditing)
+                                    @if (editCartItemUrl != null && !attributesAreEditLink)
                                     {
-                                        var editCartItemUrl = await NopUrl.RouteGenericUrlAsync<Product>(new { SeName = item.ProductSeName }, webHelper.GetCurrentRequestProtocol());
-                                        editCartItemUrl = webHelper.ModifyQueryString(editCartItemUrl, "updatecartitemid", item.Id.ToString());
-                                        <div class="edit-item">
-                                            <a href="@editCartItemUrl">
-                                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" /></svg>
-                                                @T("Common.Edit")
-                                            </a>
-                                        </div>
+                                        <a class="edit-item edit-item--icon" href="@editCartItemUrl" title="@T("Common.Edit")">
+                                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" /></svg>
+                                            <span class="visually-hidden">@T("Common.Edit")</span>
+                                        </a>
                                     }
                                     @if (item.Warnings.Count > 0)
                                     {
@@ -361,6 +380,38 @@
                                     <button type="submit" id="checkout" name="checkout" value="checkout" class="button-1 checkout-button">
                                         @T("Checkout.Button")
                                     </button>
+                                    @if (Model.IsEditable)
+                                    {
+                                        @*TmTm: phones only (brand.css) - the product page's sticky bar, here with the order
+                                            total, while the real button is off screen. It clicks that button, so the terms of
+                                            service check above runs exactly as it does there.*@
+                                        <div class="tm-buybar tm-cart-checkoutbar" hidden>
+                                            <span class="tm-buybar-price"></span>
+                                            <button type="button" class="button-1 tm-buybar-cta">@T("Checkout.Button")</button>
+                                        </div>
+                                        <script asp-location="Footer">
+                                            (function () {
+                                                var bar = document.querySelector('.tm-cart-checkoutbar');
+                                                var button = document.getElementById('checkout');
+                                                var total = document.querySelector('.cart-footer .order-total .value-summary');
+                                                if (!bar || !button || !('IntersectionObserver' in window))
+                                                    return;
+                                                bar.querySelector('.tm-buybar-price').textContent = total ? total.textContent.trim() : '';
+                                                bar.querySelector('.tm-buybar-cta').addEventListener('click', function () {
+                                                    button.click();
+                                                });
+                                                new IntersectionObserver(function (entries) {
+                                                    var gone = entries[0].intersectionRatio < 0.99; //half a button under the tab bar is not a button
+                                                    bar.hidden = !gone;
+                                                    document.body.classList.toggle('tm-buybar-on', gone);
+                                                }, {
+                                                    //the tab bar covers the bottom of the screen: a button behind it is not on screen
+                                                    rootMargin: '0px 0px -' + ((document.querySelector('.mobile-tab-bar') || {}).offsetHeight || 0) + 'px 0px',
+                                                    threshold: [0, 0.99]
+                                                }).observe(button);
+                                            })();
+                                        </script>
+                                    }
                                 }
                             }
                         </div>
