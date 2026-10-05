@@ -5,7 +5,7 @@
 
 <div class="page checkout-page">
     <div class="page-title">
-        <h1>Confirm MTN Cash Payment</h1>
+        <h1>@T("Plugins.Payments.MtnCash.Ui.ConfirmTitle")</h1>
     </div>
 
     <div class="page-body checkout-data">
@@ -23,7 +23,7 @@
         {
             <div class="section payment-info">
                 <div class="title">
-                    <strong>Please check your phone number and try again</strong>
+                    <strong>@T("Plugins.Payments.MtnCash.Ui.CheckPhone")</strong>
                 </div>
 
                 <form action="/MtnCash/RetryInit" method="post">
@@ -31,7 +31,7 @@
 
                     <div class="form-fields">
                         <div class="inputs">
-                            <label asp-for="Phone">Phone:</label>
+                            <label asp-for="Phone">@T("Plugins.Payments.MtnCash.Ui.Phone")</label>
                             <input asp-for="Phone"
                                    autocomplete="tel"
                                    placeholder="09xxxxxxxx" />
@@ -42,7 +42,7 @@
 
                     <div class="buttons">
                         <button type="submit" class="button-1 checkout-button">
-                            Retry
+                            @T("Plugins.Payments.MtnCash.Ui.Retry")
                         </button>
                     </div>
                 </form>
@@ -52,7 +52,7 @@
         {
             <div class="section payment-info">
                 <div class="title">
-                    <strong>Enter the code sent to your phone</strong>
+                    <strong>@T("Plugins.Payments.MtnCash.Ui.EnterCode")</strong>
                 </div>
 
                 <form action="/MtnCash/Confirm" method="post">
@@ -60,7 +60,7 @@
 
                     <div class="form-fields">
                         <div class="inputs">
-                            <label asp-for="Code">Code:</label>
+                            <label asp-for="Code">@T("Plugins.Payments.MtnCash.Ui.Code")</label>
                             <input asp-for="Code"
                                    autocomplete="off"
                                    maxlength="6"
@@ -74,7 +74,7 @@
 
                     <div class="buttons">
                         <button type="submit" class="button-1 checkout-button">
-                            Confirm Payment
+                            @T("Plugins.Payments.MtnCash.Ui.Confirm")
                         </button>
                     </div>
                 </form>
@@ -88,7 +88,7 @@
                         <div class="buttons" style="margin-top: 10px;">
                             <button type="submit" class="button-1 checkout-button"
                                     style="background-color: #e74c3c;">
-                                Change Phone Number
+                                @T("Plugins.Payments.MtnCash.Ui.ChangePhone")
                             </button>
                         </div>
                     </form>

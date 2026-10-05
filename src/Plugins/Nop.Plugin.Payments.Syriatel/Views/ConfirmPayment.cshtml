@@ -5,7 +5,7 @@
 
 <div class="page checkout-page">
     <div class="page-title">
-        <h1>Confirm Syriatel Payment</h1>
+        <h1>@T("Plugins.Payments.Syriatel.Ui.ConfirmTitle")</h1>
     </div>
 
     <div class="page-body checkout-data">
@@ -23,7 +23,7 @@
         {
             <div class="section payment-info">
                 <div class="title">
-                    <strong>Please check your phone number and try again</strong>
+                    <strong>@T("Plugins.Payments.Syriatel.Ui.CheckPhone")</strong>
                 </div>
 
                 <form action="/Syriatel/RetryInit" method="post">
@@ -31,7 +31,7 @@
 
                     <div class="form-fields">
                         <div class="inputs">
-                            <label asp-for="CustomerMsisdn">Phone:</label>
+                            <label asp-for="CustomerMsisdn">@T("Plugins.Payments.Syriatel.Ui.Phone")</label>
                             <input asp-for="CustomerMsisdn"
                                    autocomplete="tel"
                                    placeholder="09xxxxxxxx" />
@@ -42,7 +42,7 @@
 
                     <div class="buttons">
                         <button type="submit" class="button-1 checkout-button">
-                            Retry
+                            @T("Plugins.Payments.Syriatel.Ui.Retry")
                         </button>
                     </div>
                 </form>
@@ -52,7 +52,7 @@
         {
             <div class="section payment-info">
                 <div class="title">
-                    <strong>Enter the OTP sent to your phone</strong>
+                    <strong>@T("Plugins.Payments.Syriatel.Ui.EnterCode")</strong>
                 </div>
 
                 <form asp-route="SyriatelConfirmPayment" method="post">
@@ -60,7 +60,7 @@
 
                     <div class="form-fields">
                         <div class="inputs">
-                            <label asp-for="Otp">OTP:</label>
+                            <label asp-for="Otp">@T("Plugins.Payments.Syriatel.Ui.Code")</label>
                             <input asp-for="Otp"
                                    autocomplete="off"
                                    maxlength="6"
@@ -74,7 +74,7 @@
 
                     <div class="buttons">
                         <button type="submit" class="button-1 checkout-button">
-                            Confirm Payment
+                            @T("Plugins.Payments.Syriatel.Ui.Confirm")
                         </button>
                     </div>
                 </form>
@@ -86,7 +86,7 @@
                     <div class="buttons" style="margin-top: 10px;">
                         <button type="submit" class="button-1 checkout-button"
                                 style="background-color: #666;">
-                            Resend OTP
+                            @T("Plugins.Payments.Syriatel.Ui.ResendCode")
                         </button>
                     </div>
                 </form>
@@ -100,7 +100,7 @@
                         <div class="buttons" style="margin-top: 10px;">
                             <button type="submit" class="button-1 checkout-button"
                                     style="background-color: #e74c3c;">
-                                Change Phone Number
+                                @T("Plugins.Payments.Syriatel.Ui.ChangePhone")
                             </button>
                         </div>
                     </form>

@@ -32,6 +32,7 @@ public class MtnCashPaymentProcessor : BasePlugin, IPaymentMethod
     private readonly IMtnCashService _mtnCashService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IWorkContext _workContext;
+    private readonly ILanguageService _languageService;
 
 
 
@@ -46,7 +47,8 @@ public class MtnCashPaymentProcessor : BasePlugin, IPaymentMethod
         MtnCashPaymentSettings MtnCashPaymentSettings,
         IMtnCashService mtnCashService,
         IHttpContextAccessor httpContextAccessor,
-        IWorkContext workContext)
+        IWorkContext workContext,
+        ILanguageService languageService)
     {
         _localizationService = localizationService;
         _orderTotalCalculationService = orderTotalCalculationService;
@@ -56,6 +58,7 @@ public class MtnCashPaymentProcessor : BasePlugin, IPaymentMethod
         _mtnCashService = mtnCashService;
         _httpContextAccessor = httpContextAccessor;
         _workContext = workContext;
+        _languageService = languageService;
     }
 
     #endregion
@@ -287,8 +290,44 @@ public class MtnCashPaymentProcessor : BasePlugin, IPaymentMethod
             ["Plugins.Payments.MtnCash.Fields.AdditionalFee.Hint"] = "Enter additional fee to charge your customers.",
             ["Plugins.Payments.MtnCash.Fields.AdditionalFeePercentage"] = "Additional fee. Use percentage",
             ["Plugins.Payments.MtnCash.Fields.AdditionalFeePercentage.Hint"] = "Determines whether to apply a percentage additional fee to the order total. If not enabled, a fixed value is used.",
-            ["Plugins.Payments.MtnCash.PaymentMethodDescription"] = "Pay with MtnCash",
+            ["Plugins.Payments.MtnCash.PaymentMethodDescription"] = "Pay with MTN Cash",
+            ["Plugins.Payments.MtnCash.Ui.ConfirmTitle"] = "Confirm MTN Cash payment",
+            ["Plugins.Payments.MtnCash.Ui.CheckPhone"] = "Please check your phone number and try again",
+            ["Plugins.Payments.MtnCash.Ui.Phone"] = "Phone:",
+            ["Plugins.Payments.MtnCash.Ui.Retry"] = "Retry",
+            ["Plugins.Payments.MtnCash.Ui.EnterCode"] = "Enter the code sent to your phone",
+            ["Plugins.Payments.MtnCash.Ui.Code"] = "Code:",
+            ["Plugins.Payments.MtnCash.Ui.Confirm"] = "Confirm payment",
+            ["Plugins.Payments.MtnCash.Ui.ChangePhone"] = "Change phone number",
+            ["Plugins.Payments.MtnCash.Ui.ResendCode"] = "Resend code",
+            ["Plugins.Payments.MtnCash.Ui.EnterAccount"] = "Enter your MTN Cash number",
+            ["Plugins.Payments.MtnCash.Ui.Failed"] = "Payment failed",
+            ["Plugins.Payments.MtnCash.Ui.FailedText"] = "We couldn't complete your MTN Cash payment.<br />No charges were made. You can retry payment from your order details.",
+            ["Plugins.Payments.MtnCash.Ui.RetryPayment"] = "Retry payment",
+            ["Plugins.Payments.MtnCash.Ui.MyOrders"] = "My orders",
         });
+
+        //the store is Arabic-first: the customer-facing texts in every Arabic language
+        foreach (var language in (await _languageService.GetAllLanguagesAsync(showHidden: true))
+            .Where(l => l.LanguageCulture.StartsWith("ar", StringComparison.OrdinalIgnoreCase)))
+            await _localizationService.AddOrUpdateLocaleResourceAsync(new Dictionary<string, string>
+            {
+                ["Plugins.Payments.MtnCash.PaymentMethodDescription"] = "الدفع عبر MTN Cash",
+                ["Plugins.Payments.MtnCash.Ui.ConfirmTitle"] = "تأكيد الدفع عبر MTN Cash",
+                ["Plugins.Payments.MtnCash.Ui.CheckPhone"] = "يرجى التحقق من رقم الهاتف والمحاولة مرة أخرى",
+                ["Plugins.Payments.MtnCash.Ui.Phone"] = "رقم الهاتف:",
+                ["Plugins.Payments.MtnCash.Ui.Retry"] = "إعادة المحاولة",
+                ["Plugins.Payments.MtnCash.Ui.EnterCode"] = "أدخل رمز التحقق المرسل إلى هاتفك",
+                ["Plugins.Payments.MtnCash.Ui.Code"] = "الرمز:",
+                ["Plugins.Payments.MtnCash.Ui.Confirm"] = "تأكيد الدفع",
+                ["Plugins.Payments.MtnCash.Ui.ChangePhone"] = "تغيير رقم الهاتف",
+                ["Plugins.Payments.MtnCash.Ui.ResendCode"] = "إعادة إرسال الرمز",
+                ["Plugins.Payments.MtnCash.Ui.EnterAccount"] = "أدخل رقم حساب MTN Cash",
+                ["Plugins.Payments.MtnCash.Ui.Failed"] = "تعذّر الدفع",
+                ["Plugins.Payments.MtnCash.Ui.FailedText"] = "تعذّر إتمام الدفع عبر MTN Cash.<br />لم يُخصم أي مبلغ، ويمكنك إعادة محاولة الدفع من صفحة تفاصيل الطلب.",
+                ["Plugins.Payments.MtnCash.Ui.RetryPayment"] = "إعادة محاولة الدفع",
+                ["Plugins.Payments.MtnCash.Ui.MyOrders"] = "طلباتي",
+            }, language.Id);
 
         await base.InstallAsync();
     }

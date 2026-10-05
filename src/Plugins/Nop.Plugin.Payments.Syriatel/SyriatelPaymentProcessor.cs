@@ -32,6 +32,7 @@ public class SyriatelPaymentProcessor : BasePlugin, IPaymentMethod
     private readonly ISyriatelService _syriatelService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IWorkContext _workContext;
+    private readonly ILanguageService _languageService;
 
 
 
@@ -46,7 +47,8 @@ public class SyriatelPaymentProcessor : BasePlugin, IPaymentMethod
         SyriatelPaymentSettings syriatelPaymentSettings,
         ISyriatelService syriatelService,
         IHttpContextAccessor httpContextAccessor,
-        IWorkContext workContext)
+        IWorkContext workContext,
+        ILanguageService languageService)
     {
         _localizationService = localizationService;
         _orderTotalCalculationService = orderTotalCalculationService;
@@ -56,6 +58,7 @@ public class SyriatelPaymentProcessor : BasePlugin, IPaymentMethod
         _syriatelService = syriatelService;
         _httpContextAccessor = httpContextAccessor;
         _workContext = workContext;
+        _languageService = languageService;
     }
 
     #endregion
@@ -295,8 +298,44 @@ public class SyriatelPaymentProcessor : BasePlugin, IPaymentMethod
             ["Plugins.Payments.Syriatel.Fields.MerchantMsisdn"] = "Merchant MSISDN",
             ["Plugins.Payments.Syriatel.Fields.MerchantMsisdn.Hint"] = "Merchant MSISDN registered with Syriatel.",
             ["Plugins.Payments.Syriatel.Instructions"] = "Configure the Syriatel credentials and base URL provided by Syriatel before enabling this payment method.",
-            ["Plugins.Payments.Syriatel.PaymentMethodDescription"] = "Pay with Syriatel",
+            ["Plugins.Payments.Syriatel.PaymentMethodDescription"] = "Pay with Syriatel Cash",
+            ["Plugins.Payments.Syriatel.Ui.ConfirmTitle"] = "Confirm Syriatel Cash payment",
+            ["Plugins.Payments.Syriatel.Ui.CheckPhone"] = "Please check your phone number and try again",
+            ["Plugins.Payments.Syriatel.Ui.Phone"] = "Phone:",
+            ["Plugins.Payments.Syriatel.Ui.Retry"] = "Retry",
+            ["Plugins.Payments.Syriatel.Ui.EnterCode"] = "Enter the code sent to your phone",
+            ["Plugins.Payments.Syriatel.Ui.Code"] = "OTP:",
+            ["Plugins.Payments.Syriatel.Ui.Confirm"] = "Confirm payment",
+            ["Plugins.Payments.Syriatel.Ui.ChangePhone"] = "Change phone number",
+            ["Plugins.Payments.Syriatel.Ui.ResendCode"] = "Resend code",
+            ["Plugins.Payments.Syriatel.Ui.EnterAccount"] = "Enter your Syriatel Cash number",
+            ["Plugins.Payments.Syriatel.Ui.Failed"] = "Payment failed",
+            ["Plugins.Payments.Syriatel.Ui.FailedText"] = "We couldn't complete your Syriatel Cash payment.<br />No charges were made. You can retry payment from your order details.",
+            ["Plugins.Payments.Syriatel.Ui.RetryPayment"] = "Retry payment",
+            ["Plugins.Payments.Syriatel.Ui.MyOrders"] = "My orders",
         });
+
+        //the store is Arabic-first: the customer-facing texts in every Arabic language
+        foreach (var language in (await _languageService.GetAllLanguagesAsync(showHidden: true))
+            .Where(l => l.LanguageCulture.StartsWith("ar", StringComparison.OrdinalIgnoreCase)))
+            await _localizationService.AddOrUpdateLocaleResourceAsync(new Dictionary<string, string>
+            {
+                ["Plugins.Payments.Syriatel.PaymentMethodDescription"] = "الدفع عبر Syriatel Cash",
+                ["Plugins.Payments.Syriatel.Ui.ConfirmTitle"] = "تأكيد الدفع عبر Syriatel Cash",
+                ["Plugins.Payments.Syriatel.Ui.CheckPhone"] = "يرجى التحقق من رقم الهاتف والمحاولة مرة أخرى",
+                ["Plugins.Payments.Syriatel.Ui.Phone"] = "رقم الهاتف:",
+                ["Plugins.Payments.Syriatel.Ui.Retry"] = "إعادة المحاولة",
+                ["Plugins.Payments.Syriatel.Ui.EnterCode"] = "أدخل رمز التحقق المرسل إلى هاتفك",
+                ["Plugins.Payments.Syriatel.Ui.Code"] = "رمز التحقق:",
+                ["Plugins.Payments.Syriatel.Ui.Confirm"] = "تأكيد الدفع",
+                ["Plugins.Payments.Syriatel.Ui.ChangePhone"] = "تغيير رقم الهاتف",
+                ["Plugins.Payments.Syriatel.Ui.ResendCode"] = "إعادة إرسال الرمز",
+                ["Plugins.Payments.Syriatel.Ui.EnterAccount"] = "أدخل رقم حساب Syriatel Cash",
+                ["Plugins.Payments.Syriatel.Ui.Failed"] = "تعذّر الدفع",
+                ["Plugins.Payments.Syriatel.Ui.FailedText"] = "تعذّر إتمام الدفع عبر Syriatel Cash.<br />لم يُخصم أي مبلغ، ويمكنك إعادة محاولة الدفع من صفحة تفاصيل الطلب.",
+                ["Plugins.Payments.Syriatel.Ui.RetryPayment"] = "إعادة محاولة الدفع",
+                ["Plugins.Payments.Syriatel.Ui.MyOrders"] = "طلباتي",
+            }, language.Id);
 
         await base.InstallAsync();
     }
