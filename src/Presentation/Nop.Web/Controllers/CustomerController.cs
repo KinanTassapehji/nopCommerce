@@ -1780,14 +1780,6 @@ public partial class CustomerController : BasePublicController
         return View();
     }
 
-    public virtual async Task<IActionResult> ContactUs()
-    {
-        if (!await _customerService.IsRegisteredAsync(await _workContext.GetCurrentCustomerAsync()))
-            return Challenge();
-
-        return View();
-    }
-
     public virtual async Task<IActionResult> DeleteAccount()
     {
         if (!await _customerService.IsRegisteredAsync(await _workContext.GetCurrentCustomerAsync()))

@@ -48,7 +48,10 @@
     var homeActive = inSection("Home");
     var browseActive = inSection("Catalog", "Product");
     var cartActive = inSection("ShoppingCart", "Checkout");
-    var accountActive = inSection("Customer", "Order", "ReturnRequest");
+    //Notifications (a plugin page) and, for a signed-in customer, Contact us are account pages too
+    var accountActive = inSection("Customer", "Order", "ReturnRequest", "CustomerNotifications")
+        || (inSection("Common") && string.Equals(Context.Request.RouteValues["action"]?.ToString(), "ContactUs", StringComparison.OrdinalIgnoreCase)
+            && User.Identity?.IsAuthenticated == true);
 }
 
 <div id="ar-menu-sheet" class="ar-sheet" popover>

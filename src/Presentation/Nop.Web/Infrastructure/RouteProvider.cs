@@ -440,10 +440,6 @@ public partial class RouteProvider : BaseRouteProvider, IRouteProvider
             pattern: $"{lang}/customer/deleteaccount",
             defaults: new { controller = "Customer", action = "DeleteAccount" });
 
-        endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.Standard.CUSTOMER_CONTACT_US,
-            pattern: $"{lang}/customer/contactus",
-            defaults: new { controller = "Customer", action = "ContactUs" });
-
         //poll vote (AJAX)
         endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.Ajax.POLL_VOTE,
             pattern: $"poll/vote",

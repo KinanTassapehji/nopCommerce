@@ -1,0 +1,17 @@
+﻿@model ContactUsModel
+@{
+    Layout = "_ColumnsTwo";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.ContactUs").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-account-page");
+    NopHtml.AppendPageCssClassParts("html-contact-page");
+}
+@*Contact us for a signed-in customer, however they got here (the account menu, a link in the
+    conditions of use, the footer): the account menu stays on screen with Contact us selected*@
+@section left
+{
+    @await Component.InvokeAsync(typeof(CustomerNavigationViewComponent), new { selectedTabId = CustomerNavigationEnum.ContactUs })
+}
+@await Html.PartialAsync("_ContactUsBody", Model, new ViewDataDictionary(ViewData) { ["AccountPage"] = true })
