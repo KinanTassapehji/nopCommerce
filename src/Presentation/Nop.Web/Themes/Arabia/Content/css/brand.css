@@ -5620,6 +5620,7 @@ so the field stays visible beside the icon. */
   margin-block-start: var(--ar-stack-md);
 }
 
+.customer-info-page .buttons .delete-account-button,
 .address-list-page .buttons .button-2,
 .order-list-page .buttons .button-2,
 .return-request-list-page .buttons .button-2,
@@ -5649,6 +5650,7 @@ so the field stays visible beside the icon. */
   text-align: center;
 }
 
+.customer-info-page .buttons .delete-account-button:hover,
 .address-list-page .buttons .button-2:hover,
 .order-list-page .buttons .button-2:hover,
 .return-request-list-page .buttons .button-2:hover,
@@ -5681,12 +5683,14 @@ so the field stays visible beside the icon. */
    delete on every card is not a wall of red, filled on hover. #d51f28 is
    5.16:1 on white, and white on #d51f28 is the same, so the label holds AA
    either way round. */
+.customer-info-page .buttons .delete-account-button,
 .address-list-page .buttons .delete-address-button,
 .order-details-page .page-title a.button-2.cancel-order-button{
   border-color: var(--ar-error);
   color: var(--ar-error);
 }
 
+.customer-info-page .buttons .delete-account-button:hover,
 .address-list-page .buttons .delete-address-button:hover,
 .order-details-page .page-title a.button-2.cancel-order-button:hover{
   background: var(--ar-error);

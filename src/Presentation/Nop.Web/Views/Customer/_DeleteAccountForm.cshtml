@@ -1,0 +1,21 @@
+﻿@model DeleteAccountModel
+
+@*closing the account, at the foot of the customer info page; a wrong password comes back there
+    as a notification, as the change-password form above it does*@
+<form asp-route="@NopRouteNames.Standard.CUSTOMER_DELETE_ACCOUNT" method="post" autocomplete="off">
+    <section class="fieldset">
+        <div class="form-fields">
+            <div class="warnings">
+                <p>@T("Account.DeleteAccount.Warning")</p>
+            </div>
+            <div class="inputs">
+                <label asp-for="Password" asp-postfix=":"></label>
+                <input asp-for="Password" autocomplete="current-password" required />
+                <nop-required />
+            </div>
+        </div>
+    </section>
+    <section class="buttons">
+        <button type="submit" class="button-2 delete-account-button">@T("Account.DeleteAccount.Button")</button>
+    </section>
+</form>
