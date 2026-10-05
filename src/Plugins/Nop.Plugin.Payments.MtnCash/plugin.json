@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Payment methods",
+  "FriendlyName": "Mtn Cash",
+  "SystemName": "Payments.MtnCash",
+  "Version": "4.90.1",
+  "SupportedVersions": [ "4.90" ],
+  "Author": "Loli Store",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Payments.MtnCash.dll",
+  "Description": "This plugin enables mtn cash payment"
+}

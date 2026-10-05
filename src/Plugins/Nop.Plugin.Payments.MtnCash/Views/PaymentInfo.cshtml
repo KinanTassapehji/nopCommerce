@@ -1,0 +1,28 @@
+﻿@model Nop.Plugin.Payments.MtnCash.Models.PaymentInfoModel
+@{
+    Layout = "";
+}
+
+<div class="payment-info">
+    <div class="title">
+        <strong>Enter your MTNCash account</strong>
+    </div>
+
+    <table width="100%" cellspacing="2" cellpadding="1" border="0">
+        <tr>
+            <td>
+                <label asp-for="Phone">@T("Account.Fields.Phone"):</label>
+            </td>
+            <td>
+                <input type="text"
+                       asp-for="Phone"
+                       style="width:165px;"
+                       autocomplete="off"
+                       maxlength="10"
+                       placeholder="09xxxxxxxx" />
+
+                <span asp-validation-for="Phone"></span>
+            </td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Payment methods",
+  "FriendlyName": "Syriatel",
+  "SystemName": "Payments.Syriatel",
+  "Version": "4.90.1",
+  "SupportedVersions": [ "4.90" ],
+  "Author": "Loli Store",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Payments.Syriatel.dll",
+  "Description": "This plugin enables Syriatel payment"
+}

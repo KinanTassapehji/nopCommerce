@@ -1,0 +1,111 @@
+@model Nop.Plugin.Payments.Syriatel.Models.ConfirmPaymentModel
+@{
+    Layout = "_ColumnsOne";
+}
+
+<div class="page checkout-page">
+    <div class="page-title">
+        <h1>Confirm Syriatel Payment</h1>
+    </div>
+
+    <div class="page-body checkout-data">
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="message-error">
+                <ul>
+                    <li>@Model.ErrorMessage</li>
+                </ul>
+            </div>
+        }
+
+        @if (Model.InitFailed)
+        {
+            <div class="section payment-info">
+                <div class="title">
+                    <strong>Please check your phone number and try again</strong>
+                </div>
+
+                <form action="/Syriatel/RetryInit" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-fields">
+                        <div class="inputs">
+                            <label asp-for="CustomerMsisdn">Phone:</label>
+                            <input asp-for="CustomerMsisdn"
+                                   autocomplete="tel"
+                                   placeholder="09xxxxxxxx" />
+                        </div>
+                    </div>
+
+                    <input type="hidden" asp-for="OrderId" />
+
+                    <div class="buttons">
+                        <button type="submit" class="button-1 checkout-button">
+                            Retry
+                        </button>
+                    </div>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="section payment-info">
+                <div class="title">
+                    <strong>Enter the OTP sent to your phone</strong>
+                </div>
+
+                <form asp-route="SyriatelConfirmPayment" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-fields">
+                        <div class="inputs">
+                            <label asp-for="Otp">OTP:</label>
+                            <input asp-for="Otp"
+                                   autocomplete="off"
+                                   maxlength="6"
+                                   placeholder="xxxxxx" />
+                            <span asp-validation-for="Otp"></span>
+                        </div>
+                    </div>
+
+                    <input type="hidden" asp-for="OrderId" />
+                    <input type="hidden" asp-for="CustomerMsisdn" />
+
+                    <div class="buttons">
+                        <button type="submit" class="button-1 checkout-button">
+                            Confirm Payment
+                        </button>
+                    </div>
+                </form>
+
+                <form asp-route="SyriatelResendOtp" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="OrderId" />
+                    <input type="hidden" asp-for="CustomerMsisdn" />
+                    <div class="buttons" style="margin-top: 10px;">
+                        <button type="submit" class="button-1 checkout-button"
+                                style="background-color: #666;">
+                            Resend OTP
+                        </button>
+                    </div>
+                </form>
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <form action="/Syriatel/ChangePhone" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="OrderId" />
+                        <input type="hidden" asp-for="CustomerMsisdn" />
+                        <div class="buttons" style="margin-top: 10px;">
+                            <button type="submit" class="button-1 checkout-button"
+                                    style="background-color: #e74c3c;">
+                                Change Phone Number
+                            </button>
+                        </div>
+                    </form>
+                }
+            </div>
+        }
+    </div>
+</div>
