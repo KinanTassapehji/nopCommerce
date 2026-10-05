@@ -165,5 +165,8 @@ public class SchemaMigration : ForwardOnlyMigration
         Create.TableFor<VendorNote>();
         Create.TableFor<Menu>();
         Create.TableFor<MenuItem>();
+        //a fresh install stamps the 5.00 upgrade migrations without running them, so the
+        //table the upgrade path adds in HomepageFeatureMigration has to be created here too
+        Create.TableFor<HomepageFeature>();
     }
 }
