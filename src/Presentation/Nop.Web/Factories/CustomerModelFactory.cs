@@ -669,7 +669,8 @@ public partial class CustomerModelFactory : ICustomerModelFactory
 
         model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
         {
-            RouteName = NopRouteNames.General.CONTACT_US,
+            //the account's own page, so the account menu stays on screen; it links on to the form
+            RouteName = NopRouteNames.Standard.CUSTOMER_CONTACT_US,
             Title = await _localizationService.GetResourceAsync("PageTitle.ContactUs"),
             Tab = (int)CustomerNavigationEnum.ContactUs,
             ItemClass = "customer-contact-us"

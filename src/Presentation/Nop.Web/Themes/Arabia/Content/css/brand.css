@@ -8420,3 +8420,20 @@ so the field stays visible beside the icon. */
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
+/* --- Footer on short pages -------------------------------------------------
+   A page shorter than the window (contact us, about us on a tall screen) ended
+   the footer mid-screen with bare white body below it. The wrapper now fills
+   the window and <main> takes up the slack, so the footer always sits on the
+   bottom edge; on a long page nothing changes. dvh where supported, so mobile
+   browser bars do not leave the gap back. */
+.master-wrapper-page{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.master-wrapper-content{
+  flex: 1 0 auto;
+}
