@@ -53,11 +53,15 @@ public class FirebasePushNotificationController : BasePluginController
 
 	//the store events feed (orders, customers, reviews, stock) - anyone who may see orders
 	[CheckPermission(StandardPermission.Orders.ORDERS_VIEW)]
-	public async Task<IActionResult> Inbox(int page = 1)
+	public async Task<IActionResult> Inbox(int page = 1, string? type = null)
 	{
-		//loaded before marking, so what was new on arrival still shows as new
-		var model = await _inboxNotificationService.GetPageAsync(InboxNotificationService.AdminInbox, Math.Max(page, 1) - 1, 30);
-		await _inboxNotificationService.MarkAllReadAsync(InboxNotificationService.AdminInbox);
+		//a filter tab shows - and so marks read - only its own kinds; an unknown type is "all"
+		var keys = type != null && InboxNotificationService.AdminMessageGroups.TryGetValue(type, out var groupKeys) ? groupKeys : null;
+		ViewData["InboxType"] = keys == null ? null : type;
+		//both loaded before marking, so what was new on arrival still shows as new and counted
+		ViewData["InboxUnread"] = await _inboxNotificationService.CountUnreadAdminByKeyAsync();
+		var model = await _inboxNotificationService.GetPageAsync(InboxNotificationService.AdminInbox, Math.Max(page, 1) - 1, 30, keys);
+		await _inboxNotificationService.MarkAllReadAsync(InboxNotificationService.AdminInbox, keys);
 		return View("~/Plugins/Widgets.FirebasePushNotification/Views/AdminInbox.cshtml", model);
 	}
 
