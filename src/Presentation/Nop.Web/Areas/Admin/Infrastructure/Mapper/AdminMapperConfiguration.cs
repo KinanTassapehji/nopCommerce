@@ -725,7 +725,9 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.PurchasedWithProductName, options => options.Ignore())
             .ForMember(model => model.SelectedPermissionIds, options => options.Ignore())
             .ForMember(model => model.TaxDisplayTypeValues, options => options.Ignore());
-        CreateMap<CustomerRoleModel, CustomerRole>();
+        CreateMap<CustomerRoleModel, CustomerRole>()
+            //system roles come from code; a posted form must not mark a role as one
+            .ForMember(entity => entity.IsSystemRole, options => options.Ignore());
 
         CreateMap<CustomerSettings, CustomerSettingsModel>()
             .ForMember(model => model.AvailableCountries, options => options.Ignore());
