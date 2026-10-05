@@ -3,13 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Customers;
-using Nop.Core.Domain.Localization;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Events;
 using Nop.Services.Catalog;
 using Nop.Services.Customers;
 using Nop.Services.Events;
-using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Widgets.FirebasePushNotification.Services;
 
@@ -22,12 +20,6 @@ public class AdminInboxEventConsumer : IConsumer<OrderPlacedEvent>, IConsumer<Or
 {
 	private readonly InboxNotificationService _inboxNotificationService;
 
-	private readonly ILocalizationService _localizationService;
-
-	private readonly ILanguageService _languageService;
-
-	private readonly LocalizationSettings _localizationSettings;
-
 	private readonly ICustomerService _customerService;
 
 	private readonly IProductService _productService;
@@ -38,12 +30,9 @@ public class AdminInboxEventConsumer : IConsumer<OrderPlacedEvent>, IConsumer<Or
 
 	private readonly ILogger _logger;
 
-	public AdminInboxEventConsumer(InboxNotificationService inboxNotificationService, ILocalizationService localizationService, ILanguageService languageService, LocalizationSettings localizationSettings, ICustomerService customerService, IProductService productService, IProductAttributeService productAttributeService, IPriceFormatter priceFormatter, ILogger logger)
+	public AdminInboxEventConsumer(InboxNotificationService inboxNotificationService, ICustomerService customerService, IProductService productService, IProductAttributeService productAttributeService, IPriceFormatter priceFormatter, ILogger logger)
 	{
 		_inboxNotificationService = inboxNotificationService;
-		_localizationService = localizationService;
-		_languageService = languageService;
-		_localizationSettings = localizationSettings;
 		_customerService = customerService;
 		_productService = productService;
 		_productAttributeService = productAttributeService;
@@ -123,19 +112,13 @@ public class AdminInboxEventConsumer : IConsumer<OrderPlacedEvent>, IConsumer<Or
 		});
 	}
 
-	//written in the admin language, since the admins read it, not the shopper who triggered it
+	//kept as the message key and its arguments: the admin page writes it in the language of
+	//whichever admin reads it, not the shopper's who triggered it
 	private async Task AddAsync(string key, string link, Func<Task<object[]>> getArgs)
 	{
 		try
 		{
-			var languageId = _localizationSettings.DefaultAdminLanguageId;
-			if (languageId == 0)
-				languageId = (await _languageService.GetAllLanguagesAsync()).FirstOrDefault()?.Id ?? 0;
-
-			var prefix = "Plugins.Widgets.FirebasePushNotification.Admin." + key;
-			var title = await _localizationService.GetResourceAsync(prefix + ".Title", languageId);
-			var body = string.Format(await _localizationService.GetResourceAsync(prefix + ".Body", languageId), await getArgs());
-			await _inboxNotificationService.AddAsync(new[] { InboxNotificationService.AdminInbox }, title, body, link);
+			await _inboxNotificationService.AddAdminMessageAsync(key, link, await getArgs());
 		}
 		catch (Exception exception)
 		{
