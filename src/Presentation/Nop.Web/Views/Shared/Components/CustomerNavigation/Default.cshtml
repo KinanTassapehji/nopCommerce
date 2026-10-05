@@ -44,3 +44,11 @@
         </ul>
     </div>
 </section>
+@*On phones the menu is a row of pills that scrolls sideways; the page's own pill can sit past the
+    edge (Contact us, Delete account), so bring it into view - the link, since the theme lays the li out as display:contents. "nearest" leaves the page itself where it is.*@
+<script>
+    (function () {
+        var active = document.querySelector('.block-account-navigation li.active > a');
+        if (active) active.scrollIntoView({ block: 'nearest', inline: 'center' });
+    })();
+</script>
