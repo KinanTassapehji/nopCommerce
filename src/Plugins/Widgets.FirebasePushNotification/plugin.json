@@ -2,7 +2,7 @@
   "Group": "Widgets",
   "FriendlyName": "Firebase Push Notification",
   "SystemName": "Widgets.FirebasePushNotification",
-  "Version": "4.80.6",
+  "Version": "4.80.7",
   "SupportedVersions": [
     "4.90"
   ],
