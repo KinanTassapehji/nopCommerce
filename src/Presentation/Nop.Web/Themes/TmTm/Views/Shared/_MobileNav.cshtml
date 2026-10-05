@@ -49,7 +49,18 @@
     var homeActive = inSection("Home");
     var browseActive = inSection("Catalog", "Product");
     var cartActive = inSection("ShoppingCart", "Checkout");
-    var accountActive = inSection("Customer", "Order", "ReturnRequest");
+    var action = Context.Request.RouteValues["action"]?.ToString() ?? string.Empty;
+    bool onPage(string controllerName, params string[] actions) =>
+        inSection(controllerName) && actions.Any(name => string.Equals(action, name, StringComparison.OrdinalIgnoreCase));
+    var contactPage = onPage("Common", "ContactUs");
+    //Notifications (a plugin page) and, for a signed-in customer, Contact us are account pages too
+    var accountActive = inSection("Customer", "Order", "ReturnRequest", "CustomerNotifications")
+        || (contactPage && User.Identity?.IsAuthenticated == true);
+    //the store's other forms - the card sat on their submit buttons the same way
+    var formPage = contactPage
+        || onPage("Common", "ContactVendor")
+        || onPage("Product", "ProductEmailAFriend", "ProductReviews")
+        || onPage("Vendor", "ApplyVendor");
 }
 
 <div id="tm-menu-sheet" class="tm-sheet" popover>
@@ -118,9 +129,11 @@
     HeaderLinks keeps live after every AJAX add - so it appears with no reload). Not on the cart or
     checkout, which already are the goal. ✕ puts it away until the next visit or the next item
     added. Straight to checkout, unless the terms of service must be accepted on the cart page.*@
-@*Nor in the account section (login, register, password recovery, my account, orders): the
-    shopper is filling in a form there, and the card sat on its submit button.*@
-@if (!cartActive && !accountActive)
+@*Nor in the account section (login, register, password recovery, my account, orders) or on
+    any other form (contact us, email a friend): the shopper is filling it in, and the card sat on
+    its submit button. It shows where the shopper browses: home, catalogue, product, search, info
+    pages.*@
+@if (!cartActive && !accountActive && !formPage)
 {
     <div class="tm-cart-float">
         <a class="tm-cart-float-link" href="@(orderSettings.TermsOfServiceOnShoppingCartPage ? Url.RouteUrl(NopRouteNames.General.CART) : Url.RouteUrl(NopRouteNames.Standard.CHECKOUT))">

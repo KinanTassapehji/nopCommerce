@@ -387,11 +387,6 @@ public static partial class NopRouteNames
         public const string CUSTOMER_DELETE_ACCOUNT = "CustomerDeleteAccount";
 
         /// <summary>
-        /// Gets the contact channels, shown inside the account section, route name
-        /// </summary>
-        public const string CUSTOMER_CONTACT_US = "CustomerContactUs";
-
-        /// <summary>
         /// Gets the remove product from compare list route name
         /// </summary>
         public const string REMOVE_PRODUCT_FROM_COMPARE_LIST = "RemoveProductFromCompareList";
