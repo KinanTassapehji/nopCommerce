@@ -108,10 +108,9 @@ used as the header's baseline. */
 }
 
 /* --- Primary navigation ---------------------------------------------------
-   The standalone category band this section used to skin is gone: below 1001px
-   the tree moved into the mobile sheet (see the mobile app shell further down),
-   and above it the header never carried one. .header-menu now exists only
-   inside .tm-sheet, which brings its own skin.
+   The standalone category band this section used to skin is gone: the header
+   never carried one above 1001px, and below it the tab bar's "Products" goes
+   to the all-categories page (it once opened the tree in a bottom sheet).
    -------------------------------------------------------------------------- */
 
 /* --- Search --------------------------------------------------------------- */
@@ -1315,9 +1314,24 @@ which would
   color: var(--tm-teal-hover);
 }
 
+/* Phones have their own back - Android's key or gesture (the installed app
+   included), the browser's - so the link would only repeat it. Except an
+   iPhone home-screen app: standalone on iOS has no back control at all, and
+   -webkit-touch-callout is what only iOS Safari supports. Checkout's "back to
+   the cart" goes the same way on a phone; desktop keeps it. */
 @media (max-width: 1000px){
-  .tm-back{
-    display: inline-flex;
+  .tm-back,
+  .tm-back.tm-back-always{
+    display: none;
+  }
+}
+
+@media (max-width: 1000px) and (display-mode: standalone){
+  @supports (-webkit-touch-callout: none){
+    .tm-back,
+    .tm-back.tm-back-always{
+      display: inline-flex;
+    }
   }
 }
 
@@ -1918,12 +1932,6 @@ under the 4.5:1 floor for 14px text. */
 }
 
 /* --- Pager ---------------------------------------------------------------- */
-/* The home page feed grid has no trailing gap of its own, so its pager lands
-   against the last row of products. */
-.home-page-all-products .pager{
-  margin-block-start: var(--tm-stack-lg);
-}
-
 .pager li a,
 .pager li span{
   border-radius: var(--tm-radius-sm);
@@ -3172,285 +3180,6 @@ so the field stays visible beside the icon. */
 }
 
 
-/* --- Bottom sheet ---------------------------------------------------------
-   A native popover, so the browser supplies light dismiss, Esc, top-layer
-   stacking, the invoker wiring and the backdrop. Nothing here needs script.
-
-   ponytail: no scroll lock behind the sheet — overscroll-behavior stops the
-   scroll chaining, which is the part that actually reads as broken. Swap in
-   dialog.showModal() if the page underneath ever has to be truly inert.
-   -------------------------------------------------------------------------- */
-.tm-sheet{
-  position: fixed;
-  inset: auto 0 0 0;
-  z-index: 1100;
-  display: flex;
-  flex-direction: column;
-  inline-size: 100%;
-  max-inline-size: 100%;
-  max-block-size: min(78dvh, 640px);
-  margin: 0;
-  border: 0;
-  padding: 0;
-  border-start-start-radius: var(--tm-radius-lg);
-  border-start-end-radius: var(--tm-radius-lg);
-  background: var(--tm-surface);
-  color: var(--tm-ink);
-  box-shadow: var(--tm-shadow-lg);
-  overflow: hidden;
-  transform: translateY(100%);
-  transition:
-    transform var(--tm-transition),
-    overlay var(--tm-transition) allow-discrete,
-    display var(--tm-transition) allow-discrete;
-}
-
-.tm-sheet:popover-open{
-  transform: translateY(0);
-}
-
-@starting-style{
-
-  .tm-sheet:popover-open{
-    transform: translateY(100%);
-  }
-}
-
-.tm-sheet::backdrop{
-  background: rgba(16, 32, 31, 0.45);
-  opacity: 0;
-  transition:
-    opacity var(--tm-transition),
-    overlay var(--tm-transition) allow-discrete,
-    display var(--tm-transition) allow-discrete;
-}
-
-.tm-sheet:popover-open::backdrop{
-  opacity: 1;
-}
-
-@starting-style{
-
-  .tm-sheet:popover-open::backdrop{
-    opacity: 0;
-  }
-}
-
-.tm-sheet-grip{
-  flex: 0 0 auto;
-  inline-size: 40px;
-  block-size: 4px;
-  margin: 10px auto 0;
-  border-radius: 999px;
-  background: var(--tm-line);
-}
-
-.tm-sheet-head{
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px var(--tm-margin-mobile) 12px;
-  border-block-end: 1px solid var(--tm-line);
-}
-
-.tm-sheet-title{
-  flex: 1 1 auto;
-  min-inline-size: 0;
-  margin: 0;
-  font-size: var(--tm-fs-title);
-  line-height: var(--tm-lh-title);
-  font-weight: 700;
-  color: var(--tm-ink);
-}
-
-.tm-sheet-close{
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 40px;
-  block-size: 40px;
-  min-height: 40px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: var(--tm-surface-alt);
-  color: var(--tm-ink-muted);
-  cursor: pointer;
-  transition: background-color var(--tm-transition), color var(--tm-transition);
-}
-
-.tm-sheet-close:hover,
-.tm-sheet-close:focus-visible{
-  background: var(--tm-teal-tint);
-  color: var(--tm-teal-deep);
-}
-
-.tm-sheet-close svg{
-  inline-size: 20px;
-  block-size: 20px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-}
-
-.tm-sheet-body{
-  flex: 1 1 auto;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  padding-block-end: max(env(safe-area-inset-bottom, 0px), 16px);
-}
-
-
-/* --- The category tree inside the sheet -----------------------------------
-   Still the stock MainMenu markup and its accordion script; only the skin
-   changes. The base sheet styles .header-menu as a centred 600px band with a
-   coloured toggle bar, all of which the sheet supplies instead.
-   -------------------------------------------------------------------------- */
-.tm-sheet .header-menu{
-  width: auto;
-  max-width: none;
-  margin: 0;
-  border: 0;
-  background: none;
-}
-
-.tm-sheet .header-menu:after{
-  content: none;
-}
-
-.tm-sheet .menu-container{
-  width: auto;
-  padding: 0;
-}
-
-/* The sheet's own heading is the menu's name. */
-.tm-sheet .menu__toggle{
-  display: none;
-}
-
-.tm-sheet .menu{
-  font-size: var(--tm-fs-body);
-}
-
-/* Only the box model is touched here. `display` is deliberately left alone:
-   .menu-dropdown is a grid whose second row animates from 0fr to 1fr, and that
-   is the whole collapse mechanism. */
-.tm-sheet .menu__item,
-.tm-sheet .menu > .menu__item{
-  width: auto;
-  margin: 0;
-  background: none;
-  color: var(--tm-ink);
-}
-
-/* The base sheet pads the leaf item; here the link inside it carries the
-   padding, so the whole row is the touch target. */
-.tm-sheet .menu__item:not(.menu-dropdown){
-  display: block;
-  padding: 0;
-}
-
-.tm-sheet .menu > .menu__item:not(:last-child){
-  border-block-end: 1px solid var(--tm-line);
-}
-
-.tm-sheet .menu__item-toggle{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  min-height: 52px;
-  padding: 0 0 0 0;
-  padding-inline-start: var(--tm-margin-mobile);
-  border: 0;
-  background: none;
-  color: inherit;
-  cursor: pointer;
-}
-
-/* Two targets in one row: the chevron opens and closes the children; the
-   label opens them on a first tap and navigates on the next (_MobileNav.cshtml).
-   Stock nopCommerce nests the link inside the toggle, so without that script a
-   tap on the name both navigated and expanded. */
-.tm-sheet .menu__link{
-  flex: 1 1 auto;
-  min-inline-size: 0;
-  min-height: 52px;
-  padding-block: 12px;
-  padding-inline: var(--tm-margin-mobile);
-  color: inherit;
-  font-size: var(--tm-fs-body);
-  line-height: var(--tm-lh-body);
-  text-decoration: none;
-}
-
-.tm-sheet .menu__item-toggle .menu__link{
-  padding-inline-start: 0;
-  padding-inline-end: 0;
-}
-
-.tm-sheet .menu__link:hover,
-.tm-sheet .menu__link:focus-visible{
-  color: var(--tm-teal-deep);
-}
-
-.tm-sheet .menu__item-toggle::after{
-  content: "";
-  flex: 0 0 auto;
-  inline-size: 48px;
-  block-size: 48px;
-  margin: 0;
-  padding: 0;
-  background: none;
-  background-color: currentColor;
-  color: var(--tm-ink-muted);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 15.6 4.7 8.3l1.6-1.6L12 12.4l5.7-5.7 1.6 1.6z'/%3E%3C/svg%3E") center / 16px no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 15.6 4.7 8.3l1.6-1.6L12 12.4l5.7-5.7 1.6 1.6z'/%3E%3C/svg%3E") center / 16px no-repeat;
-  transition: transform var(--tm-transition);
-}
-
-.tm-sheet .menu-dropdown--active > .menu__item-toggle::after{
-  transform: rotate(180deg);
-}
-
-/* Children sit on the tinted surface and one indent in, so depth reads
-   without a second border system. */
-.tm-sheet .menu__list-view,
-.tm-sheet .menu__grid-view{
-  position: static;
-  padding: 0;
-  background: var(--tm-surface-alt);
-  box-shadow: none;
-}
-
-.tm-sheet .menu__list-view .menu__link,
-.tm-sheet .menu__group .menu__link{
-  min-height: 48px;
-  padding-inline-start: calc(var(--tm-margin-mobile) + 16px);
-  color: var(--tm-ink-muted);
-  font-size: var(--tm-fs-label);
-}
-
-.tm-sheet .menu__list-view .menu__link::before,
-.tm-sheet .menu__group .menu__link::before{
-  content: none;
-}
-
-.tm-sheet .menu__group{
-  padding: 0;
-}
-
-.tm-sheet .menu__group-title{
-  padding-inline: calc(var(--tm-margin-mobile) + 16px);
-  padding-block: 12px;
-  font-size: var(--tm-fs-label);
-  font-weight: 700;
-}
-
 /* --- Bottom tab bar -------------------------------------------------------
    Home / Categories / Cart / Account. Search is deliberately absent: it is in
    the sticky top bar on every page, and a tab bar earns its keep by being the
@@ -3599,15 +3328,9 @@ so the field stays visible beside the icon. */
   }
 }
 
-/* Tablets: a full-bleed sheet and four tabs stretched across 1000px both read
-   as a phone layout that was left to grow. Cap the measure, keep the chrome. */
+/* Tablets: four tabs stretched across 1000px read as a phone layout that was
+   left to grow. Cap the measure, keep the chrome. */
 @media (min-width: 600px) and (max-width: 1000px){
-
-  .tm-sheet{
-    max-inline-size: 560px;
-    margin-inline: auto;
-    border-radius: var(--tm-radius-lg) var(--tm-radius-lg) 0 0;
-  }
 
   .mobile-tab-bar{
     justify-content: center;
@@ -3636,10 +3359,7 @@ so the field stays visible beside the icon. */
 
   .header,
   .mobile-tab,
-  .mobile-tab-icon-wrap,
-  .tm-sheet,
-  .tm-sheet::backdrop,
-  .tm-sheet .menu__item-toggle::after{
+  .mobile-tab-icon-wrap{
     transition: none;
   }
 
@@ -3647,26 +3367,6 @@ so the field stays visible beside the icon. */
     transform: none;
   }
 }
-
-/* Pre-2024 browsers have no popover: the sheet then lays out inline at the
-   foot of the page rather than in the top layer, so it is dressed as a plain
-   block and the tab scrolls to it (see _MobileNav.cshtml). */
-@supports not selector(:popover-open){
-
-  .tm-sheet{
-    position: static;
-    max-block-size: none;
-    border-radius: 0;
-    box-shadow: none;
-    transform: none;
-  }
-
-  .tm-sheet-grip,
-  .tm-sheet-close{
-    display: none;
-  }
-}
-
 
 /* --- Catalogue and product page details -----------------------------------
    Small mobile-only corrections to pages the app shell now opens straight onto.
@@ -4211,7 +3911,7 @@ so the field stays visible beside the icon. */
    rather than a blanket rule.
 
    ponytail: order swap, not a filter sheet. Promote it to a sheet of its own
-   (the .tm-sheet popover above is the pattern) when the catalogue grows enough
+   (a native popover bottom sheet - the categories sheet this theme once had is in git history) when the catalogue grows enough
    filters that scrolling past the grid to reach them starts to hurt.
    -------------------------------------------------------------------------- */
 @media (max-width: 1000px){
@@ -4273,7 +3973,7 @@ so the field stays visible beside the icon. */
 
      ponytail: display:none, not an @if in _CatalogFilters. The filter still
      earns its place in the desktop sidebar, so hiding it is the whole change.
-     Move it into a .tm-sheet popover if brand filtering is ever wanted on
+     Move it into a popover bottom sheet if brand filtering is ever wanted on
      mobile. */
   .product-manufacturer-filter{
     display: none;
@@ -6912,6 +6612,231 @@ so the field stays visible beside the icon. */
   }
 }
 
+/* --- Welcome after registering ----------------------------------------------
+   The not-found page's card (Customer/RegisterResult): brand rule, a mark that
+   draws itself once - a teal disc, a white check, a burst of brand dots - the
+   shopper's name, what the account is for, and two ways on. Pending results
+   (e-mail validation, admin approval) swap in a calm envelope or clock.
+   -------------------------------------------------------------------------- */
+.registration-result-page .page-body{
+  max-width: none;
+}
+
+.tm-welcome{
+  position: relative;
+  max-inline-size: 480px;
+  margin: var(--tm-stack-lg) auto;
+  padding: 36px var(--tm-margin-mobile) 28px;
+  overflow: hidden;
+  border: 1px solid var(--tm-line);
+  border-radius: 22px;
+  background:
+    radial-gradient(420px 220px at 50% -40px, var(--tm-teal-tint) 0%, transparent 70%),
+    var(--tm-surface);
+  box-shadow: var(--tm-shadow-lg);
+  text-align: center;
+}
+
+.tm-welcome::before{
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 4px;
+  background: var(--tm-gradient);
+}
+
+.tm-welcome-mark{
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 104px;
+  block-size: 104px;
+  margin: 0 auto var(--tm-stack-md);
+}
+
+.tm-welcome-mark svg{
+  position: relative;
+  inline-size: 88px;
+  block-size: 88px;
+  overflow: visible;
+}
+
+.tm-welcome-mark circle{
+  fill: var(--tm-teal-deep);
+  filter: drop-shadow(0 10px 18px rgba(2, 120, 126, 0.28));
+}
+
+.tm-welcome-mark path{
+  fill: none;
+  stroke: var(--tm-white);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* pending: a quiet outline, not a celebration */
+.tm-welcome.is-pending .tm-welcome-mark circle,
+.tm-welcome:not(.is-done) .tm-welcome-mark circle{
+  fill: var(--tm-teal-tint);
+  filter: none;
+}
+
+.tm-welcome:not(.is-done) .tm-welcome-mark path{
+  stroke: var(--tm-teal-deep);
+  stroke-width: 3.5;
+}
+
+/* done: the disc pops in, the check draws itself, the dots burst out */
+.tm-welcome.is-done .tm-welcome-mark circle{
+  transform-origin: 32px 32px;
+  animation: tm-welcome-pop 0.5s cubic-bezier(.2, .9, .3, 1.3) both;
+}
+
+.tm-welcome.is-done .tm-welcome-mark path{
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: tm-welcome-draw 0.45s ease-out 0.35s forwards;
+}
+
+.tm-welcome-burst{
+  position: absolute;
+  inset: 0;
+}
+
+.tm-welcome-burst i{
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: 8px;
+  block-size: 8px;
+  margin: -4px;
+  border-radius: 50%;
+  background: var(--tm-teal-bright);
+  opacity: 0;
+  animation: tm-welcome-burst 0.8s ease-out 0.3s forwards;
+}
+
+.tm-welcome-burst i:nth-child(2n){
+  background: var(--tm-teal);
+  inline-size: 6px;
+  block-size: 6px;
+}
+
+.tm-welcome-burst i:nth-child(1){ --x: 0px;   --y: -58px; }
+.tm-welcome-burst i:nth-child(2){ --x: 50px;  --y: -30px; }
+.tm-welcome-burst i:nth-child(3){ --x: 52px;  --y: 26px; }
+.tm-welcome-burst i:nth-child(4){ --x: 0px;   --y: 58px; }
+.tm-welcome-burst i:nth-child(5){ --x: -52px; --y: 26px; }
+.tm-welcome-burst i:nth-child(6){ --x: -50px; --y: -30px; }
+
+@keyframes tm-welcome-pop{
+  from{ transform: scale(0.4); opacity: 0; }
+  to{ transform: scale(1); opacity: 1; }
+}
+
+@keyframes tm-welcome-draw{
+  to{ stroke-dashoffset: 0; }
+}
+
+@keyframes tm-welcome-burst{
+  0%{ transform: translate(0, 0) scale(0.4); opacity: 0; }
+  30%{ opacity: 1; }
+  100%{ transform: translate(var(--x), var(--y)) scale(1); opacity: 0; }
+}
+
+.tm-welcome-title{
+  margin: 0;
+  color: var(--tm-ink);
+  font-size: var(--tm-fs-headline-sm);
+  line-height: var(--tm-lh-headline-sm);
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.tm-welcome-lead{
+  margin: var(--tm-stack-sm) 0 0;
+  color: var(--tm-ink-muted);
+  font-size: var(--tm-fs-body);
+  line-height: var(--tm-lh-body);
+}
+
+.tm-welcome-perks{
+  display: grid;
+  gap: 10px;
+  margin: var(--tm-stack-lg) 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: start;
+}
+
+.tm-welcome-perks li{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius);
+  background: var(--tm-surface);
+  color: var(--tm-ink);
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  font-weight: 600;
+}
+
+.tm-welcome-perks svg{
+  flex: none;
+  inline-size: 36px;
+  block-size: 36px;
+  padding: 8px;
+  border-radius: 50%;
+  background: var(--tm-teal-tint);
+  fill: none;
+  stroke: var(--tm-teal-deep);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tm-welcome-actions{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tm-stack-sm);
+  margin-block-start: var(--tm-stack-lg);
+}
+
+.tm-welcome-actions a{
+  display: inline-flex;
+  flex: 1 1 160px;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 50px;
+  margin: 0;
+  padding-inline: 18px;
+  border-radius: var(--tm-radius);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (min-width: 1001px){
+  .tm-welcome{
+    margin-block: 48px;
+    padding: 44px 40px 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .tm-welcome.is-done .tm-welcome-mark circle,
+  .tm-welcome.is-done .tm-welcome-mark path,
+  .tm-welcome-burst i{
+    animation: none;
+  }
+
+  .tm-welcome.is-done .tm-welcome-mark path{
+    stroke-dashoffset: 0;
+  }
+}
+
 /* --- Checkout: no checkout attributes --------------------------------------
    TmTm sells nothing that needs gift wrapping or any other checkout attribute,
    so the store has none. The base sheet reserves a 60px band for them on the
@@ -8193,6 +8118,15 @@ html:has(.tm-terms-dialog[open]){
     display: block;
   }
 
+  /* ...except where the page body is itself a set of category tiles - the
+     all-categories page and a parent category: the chips there repeated the
+     tiles right under them (all of them on the first, the children on the
+     second). The tiles are the navigation; the chips stay on product
+     listings, where they are the only way across to a sibling. */
+  .master-column-wrapper:has(.sub-category-grid) .side-2 > .block-category-navigation{
+    display: none;
+  }
+
   .center-2{
     order: 2;
   }
@@ -8205,9 +8139,9 @@ html:has(.tm-terms-dialog[open]){
     margin: 0;
   }
 
-  /* The "الأقسام" bar goes: the bottom tab bar already has an الأقسام tab that
-     opens the whole tree, so the heading is a second label for something the
-     row below says for itself - and it cost a line of vertical space above the
+  /* The "الأقسام" bar goes: the bottom tab bar's المنتجات tab already leads to
+     every category, so the heading is a second label for something the row
+     below says for itself - and it cost a line of vertical space above the
      product grid.
 
      Hiding it also settles the accordion. The footer binds a slideToggle to
@@ -9137,7 +9071,7 @@ html:has(.tm-terms-dialog[open]){
    Homepage — marketing bands and the phone rails
    The bands the view prints in order: hero, trust strip (.home-usp), category
    heading + tiles, deals (.home-page-deals), the plugin carousels, featured,
-   the call to action (.home-cta), brands, bestsellers, the all-products feed.
+   the call to action (.home-cta), brands, bestsellers.
    Everything here is layout and skin; the copy is locale resources.
    ========================================================================== */
 
@@ -9481,6 +9415,27 @@ html:has(.tm-terms-dialog[open]){
   pointer-events: none;
 }
 
+/* With a cover picture (set in the admin) the watermark layer becomes a dark
+   scrim over the photo, so the white text keeps its contrast on any image. */
+.home-cta.has-cover{
+  background-color: var(--tm-teal-deep);
+  background-position: center;
+  background-size: cover;
+}
+
+.home-cta.has-cover:before{
+  inset: 0;
+  width: auto;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.3));
+  opacity: 1;
+  -webkit-mask: none;
+  mask: none;
+}
+
+[dir="rtl"] .home-cta.has-cover:before{
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.3));
+}
+
 .home-cta h2{
   margin: 0;
   color: inherit;
@@ -9498,7 +9453,8 @@ html:has(.tm-terms-dialog[open]){
 }
 
 .home-cta .button-1{
-  align-self: flex-start;
+  /* centred under the copy on a phone; beside it, vertically centred, from 1001px */
+  align-self: center;
   margin-block-start: var(--tm-stack-sm);
   padding: 12px 24px;
   border: 0;
@@ -9513,44 +9469,6 @@ html:has(.tm-terms-dialog[open]){
   background: var(--tm-teal-tint);
   color: var(--tm-teal-hover);
   text-decoration: none;
-}
-
-/* --- All-products feed: loading state ------------------------------------- */
-.home-products-loader{
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  padding: var(--tm-stack-md) 0;
-}
-
-.home-products-loader[hidden]{
-  display: none;
-}
-
-.home-products-loader span{
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--tm-teal);
-  animation: home-feed-dot 0.9s infinite ease-in-out;
-}
-
-.home-products-loader span:nth-child(2){
-  animation-delay: 0.15s;
-}
-
-.home-products-loader span:nth-child(3){
-  animation-delay: 0.3s;
-}
-
-@keyframes home-feed-dot{
-  0%, 80%, 100%{ transform: scale(0.6); opacity: 0.4; }
-  40%{ transform: scale(1); opacity: 1; }
-}
-
-/* The pager scrolls the band back to its own heading; clear the sticky bar. */
-.home-page-all-products{
-  scroll-margin-block-start: calc(var(--tm-header-h) + var(--tm-stack-md));
 }
 
 /* --- On a phone and a tablet ---------------------------------------------- */
@@ -9650,11 +9568,6 @@ html:has(.tm-terms-dialog[open]){
 }
 
 @media (prefers-reduced-motion: reduce){
-
-  .home-products-loader span{
-    animation: none;
-    opacity: 0.7;
-  }
 
   .home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .item-grid{
     scroll-behavior: auto;
