@@ -6,7 +6,11 @@ using Nop.Services.Localization;
 
 namespace Nop.Web.Framework.Migrations.UpgradeTo500;
 
-[NopUpdateMigration("2026-09-01 00:00:02", "5.00", UpdateMigrationType.Localization)]
+//2026-09-01 00:00:02 was already taken by BestsellerLocalizationMigration in this same
+//assembly. FluentMigrator turns the timestamp into the version number, so two of them
+//is a DuplicateMigrationException the moment IVersionLoader is resolved - the app will
+//not boot at all, and on a store that somehow got past it only one of the two ever ran.
+[NopUpdateMigration("2026-09-01 00:00:06", "5.00", UpdateMigrationType.Localization)]
 public class OrderListLocalizationMigration : MigrationBase
 {
     /// <summary>Collect the UP migration expressions</summary>
