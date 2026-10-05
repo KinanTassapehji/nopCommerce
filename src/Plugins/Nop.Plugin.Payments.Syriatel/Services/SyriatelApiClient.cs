@@ -28,12 +28,7 @@ internal class SyriatelApiClient : ISyriatelApiClient
         var settings = await _settingsService.LoadSettingAsync<SyriatelPaymentSettings>();
         var json = JsonConvert.SerializeObject(body);
 
-        var handler = new HttpClientHandler
-        {
-            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
-        };
-
-        using var client = new HttpClient(handler);
+        using var client = new HttpClient();
         client.Timeout = TimeSpan.FromSeconds(30);
         client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0");
 

@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Nop.Core;
+using Nop.Core.Domain.Payments;
 using Nop.Plugin.Payments.Syriatel.Interfaces;
 using Nop.Plugin.Payments.Syriatel.Models;
 using Nop.Services.Logging;
@@ -13,15 +16,43 @@ public class ConfirmPaymentController : BasePluginController
     private readonly ISyriatelService _syriatelService;
     private readonly IOrderService _orderService;
     private readonly ILogger _logger;
+    private readonly IWorkContext _workContext;
 
     public ConfirmPaymentController(
         ISyriatelService syriatelService,
         IOrderService orderService,
-        ILogger logger)
+        ILogger logger,
+        IWorkContext workContext)
     {
         _syriatelService = syriatelService;
         _orderService = orderService;
         _logger = logger;
+        _workContext = workContext;
+    }
+
+    /// <summary>
+    /// Every action here acts on one order taken from the request; only its owner may touch it,
+    /// and only while it still awaits this payment method
+    /// </summary>
+    public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    {
+        var orderId = context.ActionArguments.Values.Select(arg => arg switch
+        {
+            int id => id,
+            ConfirmPaymentModel model => model.OrderId,
+            _ => 0
+        }).FirstOrDefault(id => id > 0);
+
+        var order = await _orderService.GetOrderByIdAsync(orderId);
+        var customer = await _workContext.GetCurrentCustomerAsync();
+        if (order is null || order.Deleted || order.CustomerId != customer.Id
+            || order.PaymentStatus != PaymentStatus.Pending || order.PaymentMethodSystemName != "Payments.Syriatel")
+        {
+            context.Result = RedirectToRoute("Homepage");
+            return;
+        }
+
+        await next();
     }
 
     [HttpGet("ConfirmPayment", Name = "SyriatelConfirmPaymentForm")]

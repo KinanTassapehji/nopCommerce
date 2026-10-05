@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Nop.Core;
+using Nop.Core.Domain.Payments;
 using Nop.Plugin.Payments.MtnCash.Interfaces;
 using Nop.Plugin.Payments.MtnCash.Models;
 using Nop.Services.Logging;
+using Nop.Services.Orders;
 using Nop.Web.Framework.Controllers;
 
 namespace Nop.Plugin.Payments.MtnCash.Controllers;
@@ -11,11 +15,40 @@ public class ConfirmPaymentController : BasePluginController
 {
     private readonly IMtnCashService _mtnCashService;
     private readonly ILogger _logger;
+    private readonly IOrderService _orderService;
+    private readonly IWorkContext _workContext;
 
-    public ConfirmPaymentController(IMtnCashService mtnCashService, ILogger logger)
+    public ConfirmPaymentController(IMtnCashService mtnCashService, ILogger logger, IOrderService orderService, IWorkContext workContext)
     {
         _mtnCashService = mtnCashService;
         _logger = logger;
+        _orderService = orderService;
+        _workContext = workContext;
+    }
+
+    /// <summary>
+    /// Every action here acts on one order taken from the request; only its owner may touch it,
+    /// and only while it still awaits this payment method
+    /// </summary>
+    public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    {
+        var orderId = context.ActionArguments.Values.Select(arg => arg switch
+        {
+            int id => id,
+            ConfirmPaymentModel model => model.OrderId,
+            _ => 0
+        }).FirstOrDefault(id => id > 0);
+
+        var order = await _orderService.GetOrderByIdAsync(orderId);
+        var customer = await _workContext.GetCurrentCustomerAsync();
+        if (order is null || order.Deleted || order.CustomerId != customer.Id
+            || order.PaymentStatus != PaymentStatus.Pending || order.PaymentMethodSystemName != "Payments.MtnCash")
+        {
+            context.Result = RedirectToRoute("Homepage");
+            return;
+        }
+
+        await next();
     }
 
     [HttpGet("ConfirmPayment")]
