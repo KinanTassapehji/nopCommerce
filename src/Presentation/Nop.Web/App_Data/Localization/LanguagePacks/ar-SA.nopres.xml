@@ -10594,6 +10594,45 @@
   <LocaleResource Name="Admin.ContentManagement.HomePageSlider">
     <Value>سلايدر الصفحة الرئيسية</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner">
+    <Value>بانر الصفحة الرئيسية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Enabled">
+    <Value>عرض في الصفحة الرئيسية</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Enabled.Hint">
+    <Value>ألغِ التحديد لإخفاء البانر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Picture">
+    <Value>صورة الغلاف</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Picture.Hint">
+    <Value>صورة عريضة خلف النص (حوالي 1600×500). اتركها فارغة لاستخدام لون العلامة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Title">
+    <Value>العنوان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Title.Hint">
+    <Value>عنوان البانر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Text">
+    <Value>النص</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Text.Hint">
+    <Value>السطر تحت العنوان.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonText">
+    <Value>نص الزر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonText.Hint">
+    <Value>اتركه فارغاً لإخفاء الزر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonUrl">
+    <Value>رابط الزر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonUrl.Hint">
+    <Value>وجهة الزر، مثل /new-arrivals. اتركه فارغاً لصفحة جميع الفئات.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Topics">
     <Value>الصفحات</Value>
   </LocaleResource>

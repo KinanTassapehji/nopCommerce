@@ -10592,6 +10592,45 @@
   <LocaleResource Name="Admin.ContentManagement.HomePageSlider">
     <Value>Home page slider</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner">
+    <Value>Home page banner</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Enabled">
+    <Value>Show on home page</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Enabled.Hint">
+    <Value>Untick to hide the banner.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Picture">
+    <Value>Cover picture</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Picture.Hint">
+    <Value>Wide image behind the text (about 1600x500). Leave empty for the plain brand colour.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Title">
+    <Value>Title</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Title.Hint">
+    <Value>The heading of the banner.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Text">
+    <Value>Text</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.Text.Hint">
+    <Value>The line under the heading.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonText">
+    <Value>Button text</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonText.Hint">
+    <Value>Leave empty to hide the button.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonUrl">
+    <Value>Button link</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.HomepageBanner.Fields.ButtonUrl.Hint">
+    <Value>Where the button goes, e.g. /new-arrivals. Leave empty for the all-categories page.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Topics">
     <Value>Pages</Value>
   </LocaleResource>

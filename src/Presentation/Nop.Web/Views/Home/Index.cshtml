@@ -2,6 +2,9 @@
 @using Nop.Core
 @inject ILocalizationService localizationService
 @inject IStoreContext storeContext
+@inject IWorkContext workContext
+@inject Nop.Services.Media.IPictureService pictureService
+@inject Nop.Core.Domain.Common.HomepageBannerSettings homepageBannerSettings
 
 @{
     Layout = "_ColumnsOne";
@@ -56,13 +59,33 @@
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeProducts })
         @await Component.InvokeAsync(typeof(HomepageProductsViewComponent))
         @*one call to action between the curated bands and the long tail below*@
-        <section class="home-cta">
-            <div>
-                <h2>@T("Homepage.Cta.Title")</h2>
-                <p>@T("Homepage.Cta.Text")</p>
-            </div>
-            <a class="button-1" href="@Url.RouteUrl(NopRouteNames.General.CATEGORIES)">@T("Homepage.Cta.Button")</a>
-        </section>
+        @*the admin edits it under Content management > Home page banner*@
+        @if (homepageBannerSettings.Enabled)
+        {
+            var languageId = (await workContext.GetWorkingLanguageAsync()).Id;
+            var ctaTitle = await localizationService.GetLocalizedSettingAsync(homepageBannerSettings, s => s.Title, languageId, 0);
+            var ctaText = await localizationService.GetLocalizedSettingAsync(homepageBannerSettings, s => s.Text, languageId, 0);
+            var ctaButton = await localizationService.GetLocalizedSettingAsync(homepageBannerSettings, s => s.ButtonText, languageId, 0);
+            var ctaCover = homepageBannerSettings.PictureId > 0
+                ? await pictureService.GetPictureUrlAsync(homepageBannerSettings.PictureId, showDefaultPicture: false)
+                : null;
+            <section class="home-cta@(string.IsNullOrEmpty(ctaCover) ? "" : " has-cover")" style="@(string.IsNullOrEmpty(ctaCover) ? null : $"background-image:url('{ctaCover}')")">
+                <div>
+                    @if (!string.IsNullOrEmpty(ctaTitle))
+                    {
+                        <h2>@ctaTitle</h2>
+                    }
+                    @if (!string.IsNullOrEmpty(ctaText))
+                    {
+                        <p>@ctaText</p>
+                    }
+                </div>
+                @if (!string.IsNullOrEmpty(ctaButton))
+                {
+                    <a class="button-1" href="@(string.IsNullOrEmpty(homepageBannerSettings.ButtonUrl) ? Url.RouteUrl(NopRouteNames.General.CATEGORIES) : homepageBannerSettings.ButtonUrl)">@ctaButton</a>
+                }
+            </section>
+        }
         @await Component.InvokeAsync(typeof(ManufacturerNavigationViewComponent), new { currentManufacturerId = 0 })
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeBestSellers })
         @await Component.InvokeAsync(typeof(HomepageBestSellersViewComponent))

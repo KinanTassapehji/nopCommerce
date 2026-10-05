@@ -7994,6 +7994,27 @@ so the field stays visible beside the icon. */
   pointer-events: none;
 }
 
+/* With a cover picture (set in the admin) the watermark layer becomes a dark
+   scrim over the photo, so the white text keeps its contrast on any image. */
+.home-cta.has-cover{
+  background-color: var(--ar-navy);
+  background-position: center;
+  background-size: cover;
+}
+
+.home-cta.has-cover:before{
+  inset: 0;
+  width: auto;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.3));
+  opacity: 1;
+  -webkit-mask: none;
+  mask: none;
+}
+
+[dir="rtl"] .home-cta.has-cover:before{
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.3));
+}
+
 .home-cta h2{
   margin: 0;
   color: inherit;
