@@ -36,6 +36,5 @@ public enum CustomerNavigationEnum
     GdprTools = 120,
     ConditionsOfUse = 130,
     ContactUs = 140,
-    DeleteAccount = 150,
 
 }

@@ -1785,12 +1785,10 @@ public partial class CustomerController : BasePublicController
         return View();
     }
 
-    public virtual async Task<IActionResult> DeleteAccount()
+    //the form lives at the foot of the customer info page; this address only forwards there
+    public virtual IActionResult DeleteAccount()
     {
-        if (!await _customerService.IsRegisteredAsync(await _workContext.GetCurrentCustomerAsync()))
-            return Challenge();
-
-        return View(new DeleteAccountModel());
+        return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
     }
 
     //Closing an account deactivates it rather than deleting it: the orders, addresses and
@@ -1810,10 +1808,10 @@ public partial class CustomerController : BasePublicController
             : await _customerRegistrationService.ValidateCustomerAsync(login, model.Password);
         if (result != CustomerLoginResults.Successful)
         {
-            ModelState.AddModelError(nameof(model.Password), await _localizationService.GetResourceAsync(result == CustomerLoginResults.LockedOut
+            _notificationService.ErrorNotification(await _localizationService.GetResourceAsync(result == CustomerLoginResults.LockedOut
                 ? "Account.Login.WrongCredentials.LockedOut"
                 : "Account.DeleteAccount.WrongPassword"));
-            return View(new DeleteAccountModel());
+            return RedirectToRoute(NopRouteNames.General.CUSTOMER_INFO);
         }
 
         var note = string.Format(await _localizationService.GetResourceAsync("Account.DeleteAccount.AdminComment", _localizationSettings.DefaultAdminLanguageId),
