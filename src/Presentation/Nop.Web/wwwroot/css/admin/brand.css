@@ -192,7 +192,7 @@ a:focus {
 
 .btn-primary:focus,
 .btn-primary:not(:disabled):not(.disabled):active:focus {
-  box-shadow: 0 0 0 .2rem rgba(2, 120, 126, .35);
+  box-shadow: 0 0 0 .2rem rgba(207, 12, 94, .35);
 }
 
 /* --- Cards -------------------------------------------------------------- */
@@ -232,7 +232,7 @@ ul.nav-tabs li.nav-item a.nav-link.active {
 .custom-select:focus,
 .form-group input[type=checkbox]:focus {
   border-color: var(--tm-teal);
-  box-shadow: 0 0 0 .2rem rgba(2, 120, 126, .25);
+  box-shadow: 0 0 0 .2rem rgba(207, 12, 94, .25);
 }
 
 .custom-control-input:checked ~ .custom-control-label::before {
@@ -383,7 +383,7 @@ table.dataTable tbody tr:hover > td {
    across with `git -C TmTm diff | git -C Arabia apply`.
 
    The two *-rgb values are triplets, not colours: rgba() needs the channels
-   separately and a var() holding "#02787e" cannot be used inside one. */
+   separately and a var() holding "#cf0c5e" cannot be used inside one. */
 
 :root {
   --adm-accent: var(--tm-teal-deep);

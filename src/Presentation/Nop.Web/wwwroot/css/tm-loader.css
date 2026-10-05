@@ -56,7 +56,7 @@
 /* --- The ring ------------------------------------------------------------
    A conic gradient masked into a ring: the brand gradient, spun. Solid
    --tm-teal-deep leads, so the visible head of the ring is the accessible
-   teal and #00d9cc only ever appears as the decorative tail. */
+   teal and #ff8fb5 only ever appears as the decorative tail. */
 .ajax-loading-block-window::before,
 .products-container .ajax-products-busy::before,
 .throbber .curtain-content p::before {
@@ -70,7 +70,7 @@
   margin-inline-start: calc(var(--tm-loader-ring) / -2);
   border-radius: 50%;
   background: conic-gradient(from 90deg,
-      rgba(0, 217, 204, 0) 0deg,
+      rgba(255, 143, 181, 0) 0deg,
       var(--tm-teal-bright) 70deg,
       var(--tm-teal) 170deg,
       var(--tm-teal-deep) 280deg,
@@ -91,7 +91,7 @@
   margin-block-start: calc((var(--tm-loader-ring) + 34px) / -2);
   margin-inline-start: calc((var(--tm-loader-ring) + 34px) / -2);
   border-radius: 50%;
-  background: radial-gradient(circle, var(--tm-teal-bright) 0%, rgba(0, 217, 204, 0) 70%);
+  background: radial-gradient(circle, var(--tm-teal-bright) 0%, rgba(255, 143, 181, 0) 70%);
   animation: tm-loader-halo 1.7s ease-in-out infinite;
   pointer-events: none;
 }
@@ -105,7 +105,7 @@
   height: auto;
   margin: 0;
   background: rgba(255, 255, 255, .72)
-             url('/Themes/TmTm/Content/images/brand-mark.svg') center / var(--tm-loader-mark) no-repeat;
+             url('/Themes/Loli/Content/images/brand-mark.svg') center / var(--tm-loader-mark) no-repeat;
   -webkit-backdrop-filter: blur(3px) saturate(1.05);
   backdrop-filter: blur(3px) saturate(1.05);
   animation: tm-loader-fade .18s ease both;
@@ -119,7 +119,7 @@
   padding-inline-start: 26px;
   background: none;
   font-size: var(--tm-fs-label, 14px);
-  color: var(--tm-ink-muted, #5c6b6a);
+  color: var(--tm-ink-muted, #6b5a61);
 }
 
 .please-wait::before {
@@ -131,7 +131,7 @@
   height: 16px;
   margin-block-start: -8px;
   border-radius: 50%;
-  background: conic-gradient(from 90deg, rgba(0, 217, 204, 0) 0deg, var(--tm-teal) 180deg, var(--tm-teal-deep) 360deg);
+  background: conic-gradient(from 90deg, rgba(255, 143, 181, 0) 0deg, var(--tm-teal) 180deg, var(--tm-teal-deep) 360deg);
   -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 2px), #000 calc(100% - 2px));
   mask: radial-gradient(farthest-side, #0000 calc(100% - 2px), #000 calc(100% - 2px));
   animation: tm-loader-spin .85s linear infinite;
@@ -170,7 +170,7 @@
    riding the top edge instead of the corner gif. */
 #ajaxBusy {
   height: 3px;
-  background: var(--tm-teal-tint, #e6f4f4);
+  background: var(--tm-teal-tint, #fdebf2);
   pointer-events: none;
   overflow: hidden;
 }
@@ -208,7 +208,7 @@ body.tm-loading::after {
 }
 
 body.tm-loading::before {
-  background: var(--tm-teal-tint, #e6f4f4);
+  background: var(--tm-teal-tint, #fdebf2);
 }
 
 body.tm-loading::after {
@@ -257,8 +257,8 @@ body.tm-loading::after {
   margin-block-start: calc(var(--tm-loader-mark) / -2);
   margin-inline-start: calc(var(--tm-loader-mark) / -2);
   background: var(--tm-white, #fff);
-  -webkit-mask: url('/Themes/TmTm/Content/images/brand-mark.svg') center / contain no-repeat;
-  mask: url('/Themes/TmTm/Content/images/brand-mark.svg') center / contain no-repeat;
+  -webkit-mask: url('/Themes/Loli/Content/images/brand-mark.svg') center / contain no-repeat;
+  mask: url('/Themes/Loli/Content/images/brand-mark.svg') center / contain no-repeat;
 }
 
 /* The gif the ring replaces. */
@@ -335,8 +335,8 @@ html.tm-navigating::before {
   inset: 0;
   z-index: 10002;
   background:
-    url('/Themes/TmTm/Content/images/brand-mark.svg') 50% 50% / 132px auto no-repeat,
-    radial-gradient(circle, rgba(0, 217, 204, .20) 0%, rgba(0, 217, 204, 0) 62%) 50% 50% / 460px 460px no-repeat,
+    url('/Themes/Loli/Content/images/brand-mark.svg') 50% 50% / 132px auto no-repeat,
+    radial-gradient(circle, rgba(255, 143, 181, .20) 0%, rgba(255, 143, 181, 0) 62%) 50% 50% / 460px 460px no-repeat,
     rgba(255, 255, 255, .94);
   -webkit-backdrop-filter: blur(4px) saturate(1.05);
   backdrop-filter: blur(4px) saturate(1.05);

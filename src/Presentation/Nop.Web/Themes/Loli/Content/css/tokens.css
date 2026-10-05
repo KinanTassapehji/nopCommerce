@@ -1,6 +1,8 @@
 ﻿/* ==========================================================================
-   TmTm — brand tokens
-   Source of truth: "mini guidline outline.pdf" (Tia Production House, 2026)
+   Loli Store — brand tokens
+   Source of truth: the Loli Store logo (hot pink tile, deep magenta star,
+   white wordmark). Token NAMES are inherited from the parent TmTm theme on
+   purpose ("teal" now holds pink) so TmTm patches keep applying here.
 
    Brand colors are the three primary teals plus black/white. Nothing else is
    a brand color. Values below marked "derived" are UI interaction states
@@ -8,36 +10,62 @@
    define them, and they must never be used to reproduce the logo.
    ========================================================================== */
 
+/* Brand typeface, carried over from the original Loli Store site. */
+@font-face {
+  font-family: "El Messiri";
+  src: url("../fonts/ElMessiri-Regular.woff") format("woff");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "El Messiri";
+  src: url("../fonts/ElMessiri-Medium.woff") format("woff");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "El Messiri";
+  src: url("../fonts/ElMessiri-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "El Messiri";
+  src: url("../fonts/ElMessiri-Bold.woff") format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root {
   /* --- Primary palette (guideline, exact) ------------------------------- */
-  --tm-teal-deep: #02787e;      /* contrast 5.26:1 on white — AA body text  */
-  --tm-teal: #009a95;           /* contrast 3.47:1 on white — AA large only */
-  --tm-teal-bright: #00d9cc;    /* contrast 1.78:1 — NEVER standalone       */
+  --tm-teal-deep: #cf0c5e;      /* deep magenta (the star), 5.43:1 — AA body */
+  --tm-teal: #eb3274;           /* logo pink, 4.01:1 — AA large only        */
+  --tm-teal-bright: #ff8fb5;    /* blush, 2.13:1 — NEVER standalone         */
 
   /* --- Secondary palette (guideline: these two only) -------------------- */
   --tm-black: #000000;
   --tm-white: #ffffff;
 
   /* --- Primary gradient (guideline: these three colors only) ------------
-     DECORATIVE USE ONLY. The gradient runs into #00d9cc, which carries white
-     text at just 1.78:1 — anything with a label on it must use
+     DECORATIVE USE ONLY. The gradient runs into #ff8fb5, which carries white
+     text at just 2.13:1 — anything with a label on it must use
      --tm-teal-deep (5.26:1) instead. Rules, strips and accents only. */
   --tm-gradient: linear-gradient(90deg, var(--tm-teal-deep) 0%, var(--tm-teal) 55%, var(--tm-teal-bright) 100%);
   --tm-gradient-diagonal: linear-gradient(135deg, var(--tm-teal-bright) 0%, var(--tm-teal) 45%, var(--tm-teal-deep) 100%);
 
   /* --- Derived interaction states (not brand colors) -------------------- */
-  --tm-teal-hover: #01585c;     /* 8.23:1 with white — button/link hover    */
-  --tm-teal-active: #014a4e;    /* 10.04:1 with white — pressed state       */
-  --tm-teal-tint: #e6f4f4;      /* surfaces, table stripes, hover rows      */
-  --tm-teal-tint-strong: #cbe8e7;
-  --tm-teal-border: #b3dedc;
+  --tm-teal-hover: #a8094b;     /* 7.48:1 with white — button/link hover    */
+  --tm-teal-active: #8c073e;    /* 9.48:1 with white  — pressed state       */
+  --tm-teal-tint: #fdebf2;      /* surfaces, table stripes, hover rows      */
+  --tm-teal-tint-strong: #f9d0e0;
+  --tm-teal-border: #f4b6cd;
 
   /* --- Neutrals --------------------------------------------------------- */
-  --tm-ink: #10201f;            /* body text — near-black, warmed to teal   */
-  --tm-ink-muted: #5c6b6a;
-  --tm-line: #dfe5e5;
+  --tm-ink: #24121a;            /* body text — near-black, warmed to pink   */
+  --tm-ink-muted: #6b5a61;
+  --tm-line: #efe1e7;
   --tm-surface: #ffffff;
-  --tm-surface-alt: #f6f9f9;
+  --tm-surface-alt: #fcf6f8;
 
   /* --- Status ----------------------------------------------------------- */
   --tm-error: #d51f28;
@@ -48,8 +76,8 @@
   --tm-radius-sm: 6px;
   --tm-radius: 12px;
   --tm-radius-lg: 20px;         /* echoes the logo's rounded-square icon    */
-  --tm-shadow: 0 6px 20px rgba(2, 120, 126, 0.10);
-  --tm-shadow-lg: 0 14px 38px rgba(2, 120, 126, 0.16);
+  --tm-shadow: 0 6px 20px rgba(207, 12, 94, 0.10);
+  --tm-shadow-lg: 0 14px 38px rgba(207, 12, 94, 0.16);
   --tm-transition: 0.18s ease;
 
   /* --- Icon marks -------------------------------------------------------
@@ -62,7 +90,7 @@
   --tm-logo-clear-space: 14px;
 
   /* --- Layout & type scale ----------------------------------------------
-     Ported from the TMTM Stitch comps (project "Elegant nopCommerce PWA").
+     Ported from the parent TmTm Stitch comps (project "Elegant nopCommerce PWA").
      Non-colour only: the palette above stays the single source of truth for
      colour, and the Stitch Material-3 ramp is deliberately not adopted. */
   --tm-stack-sm: 8px;

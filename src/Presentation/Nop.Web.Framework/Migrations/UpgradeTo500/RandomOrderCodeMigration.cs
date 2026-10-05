@@ -11,13 +11,13 @@ namespace Nop.Web.Framework.Migrations.UpgradeTo500;
 /// <summary>
 /// Order numbers were the sequential Id ("{ID}"), which tells a customer how many orders the
 /// store has had. The number customers see (CustomOrderNumber) becomes a random code,
-/// "TM-{CODE}"; the Id stays sequential for admins. Orders still numbered by their Id get a
+/// "LS-{CODE}"; the Id stays sequential for admins. Orders still numbered by their Id get a
 /// code too. A mask an admin already changed, and numbers not equal to the Id, are left alone.
 /// </summary>
 [NopUpdateMigration("2026-09-29 20:00:00", "5.00", UpdateMigrationType.Data)]
 public class RandomOrderCodeMigration : MigrationBase
 {
-    protected const string MASK = "TM-{CODE}";
+    protected const string MASK = "LS-{CODE}";
 
     /// <summary>Collect the UP migration expressions</summary>
     public override void Up()

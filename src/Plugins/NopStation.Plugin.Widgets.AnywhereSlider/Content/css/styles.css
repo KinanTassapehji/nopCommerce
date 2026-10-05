@@ -55,14 +55,14 @@
   height: 44px;
   padding: 0 !important;
   margin: 0;
-  border: 1px solid var(--tm-teal-border, #b3dedc);
+  border: 1px solid var(--tm-teal-border, #f4b6cd);
   border-radius: 50%;
   background: var(--tm-surface, #fff);
-  color: var(--tm-teal-deep, #02787e);
+  color: var(--tm-teal-deep, #cf0c5e);
   font-size: 0;
   line-height: 0;
   opacity: 1;
-  box-shadow: var(--tm-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
+  box-shadow: var(--tm-shadow, 0 6px 20px rgba(207, 12, 94, 0.10));
   transition: background var(--tm-transition, 0.18s ease), border-color var(--tm-transition, 0.18s ease), color var(--tm-transition, 0.18s ease), transform var(--tm-transition, 0.18s ease);
 }
 
@@ -94,16 +94,16 @@
 .slider-container .slider .owl-nav button.owl-next:hover,
 .slider-container .slider .owl-nav button.owl-prev:focus,
 .slider-container .slider .owl-nav button.owl-next:focus {
-  border-color: var(--tm-teal-deep, #02787e);
-  background: var(--tm-teal-deep, #02787e);
+  border-color: var(--tm-teal-deep, #cf0c5e);
+  background: var(--tm-teal-deep, #cf0c5e);
   color: var(--tm-white, #fff);
   opacity: 1;
 }
 
 .slider-container .slider .owl-nav button.owl-prev:active,
 .slider-container .slider .owl-nav button.owl-next:active {
-  background: var(--tm-teal-hover, #01585c);
-  border-color: var(--tm-teal-hover, #01585c);
+  background: var(--tm-teal-hover, #a8094b);
+  border-color: var(--tm-teal-hover, #a8094b);
   transform: scale(0.94);
 }
 
@@ -181,17 +181,17 @@
   height: 8px;
   margin: 0;
   border-radius: 999px;
-  background: var(--tm-teal-border, #b3dedc);
+  background: var(--tm-teal-border, #f4b6cd);
   transition: width var(--tm-transition, 0.18s ease), background var(--tm-transition, 0.18s ease);
 }
 
 .slider-container .owl-dots button.owl-dot:hover span {
-  background: var(--tm-teal, #009a95);
+  background: var(--tm-teal, #eb3274);
 }
 
 .slider-container .owl-dots button.owl-dot.active span {
   width: 24px;
-  background: var(--tm-teal-deep, #02787e);
+  background: var(--tm-teal-deep, #cf0c5e);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -209,7 +209,7 @@
   position: relative;
   border-radius: var(--tm-radius-lg, 20px);
   overflow: hidden;
-  box-shadow: var(--tm-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
+  box-shadow: var(--tm-shadow, 0 6px 20px rgba(207, 12, 94, 0.10));
 }
 
 a.slider-btn {

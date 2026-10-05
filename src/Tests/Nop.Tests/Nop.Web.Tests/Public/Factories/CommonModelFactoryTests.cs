@@ -67,10 +67,10 @@ public class CommonModelFactoryTests : BaseNopTest
     {
         var model = await _commonModelFactory.PrepareLogoModelAsync();
         model.StoreName.Should().NotBeNullOrEmpty();
-        model.StoreName.Should().Be("تمتم");
+        model.StoreName.Should().Be("لولي ستور");
         model.LogoPath.Should().NotBeNullOrEmpty();
         model.LogoPath.Should()
-            .Be($"http://{NopTestsDefaults.HostIpAddress}/Themes/TmTm/Content/images/logo.png");
+            .Be($"http://{NopTestsDefaults.HostIpAddress}/Themes/Loli/Content/images/logo.png");
     }
 
     [Test]
@@ -148,7 +148,7 @@ public class CommonModelFactoryTests : BaseNopTest
     {
         var model = await _commonModelFactory.PrepareFooterModelAsync();
 
-        model.StoreName.Should().Be("تمتم");
+        model.StoreName.Should().Be("لولي ستور");
         model.HidePoweredByNopCommerce.Should().Be(_storeInformationSettings.HidePoweredByNopCommerce);
     }
 
@@ -225,8 +225,8 @@ public class CommonModelFactoryTests : BaseNopTest
     {
         var model = await _commonModelFactory.PrepareStoreThemeSelectorModelAsync();
         model.CurrentStoreTheme.Should().NotBeNull();
-        model.CurrentStoreTheme.Name.Should().Be("TmTm");
-        model.CurrentStoreTheme.Title.Should().Be("TmTm");
+        model.CurrentStoreTheme.Name.Should().Be("Loli");
+        model.CurrentStoreTheme.Title.Should().Be("Loli Store");
         model.AvailableStoreThemes.Should().NotBeNull();
         model.AvailableStoreThemes.Count.Should().BeGreaterThan(0);
     }

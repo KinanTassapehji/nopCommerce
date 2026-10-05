@@ -68,14 +68,14 @@
   height: 44px;
   padding: 0 !important;
   margin: 0;
-  border: 1px solid var(--tm-teal-border, #b3dedc);
+  border: 1px solid var(--tm-teal-border, #f4b6cd);
   border-radius: 50%;
   background: var(--tm-surface, #fff);
-  color: var(--tm-teal-deep, #02787e);
+  color: var(--tm-teal-deep, #cf0c5e);
   font-size: 0;
   line-height: 0;
   opacity: 1;
-  box-shadow: var(--tm-shadow, 0 6px 20px rgba(2, 120, 126, 0.10));
+  box-shadow: var(--tm-shadow, 0 6px 20px rgba(207, 12, 94, 0.10));
   transition: background var(--tm-transition, 0.18s ease), border-color var(--tm-transition, 0.18s ease), color var(--tm-transition, 0.18s ease), transform var(--tm-transition, 0.18s ease);
 }
 
@@ -107,16 +107,16 @@
 .ocarousel-grid .ocarousel .owl-nav button.owl-next:hover,
 .ocarousel-grid .ocarousel .owl-nav button.owl-prev:focus,
 .ocarousel-grid .ocarousel .owl-nav button.owl-next:focus {
-  border-color: var(--tm-teal-deep, #02787e);
-  background: var(--tm-teal-deep, #02787e);
+  border-color: var(--tm-teal-deep, #cf0c5e);
+  background: var(--tm-teal-deep, #cf0c5e);
   color: var(--tm-white, #fff);
   opacity: 1;
 }
 
 .ocarousel-grid .ocarousel .owl-nav button.owl-prev:active,
 .ocarousel-grid .ocarousel .owl-nav button.owl-next:active {
-  background: var(--tm-teal-hover, #01585c);
-  border-color: var(--tm-teal-hover, #01585c);
+  background: var(--tm-teal-hover, #a8094b);
+  border-color: var(--tm-teal-hover, #a8094b);
   transform: scale(0.94);
 }
 
@@ -186,17 +186,17 @@
   height: 8px;
   margin: 0;
   border-radius: 999px;
-  background: var(--tm-teal-border, #b3dedc);
+  background: var(--tm-teal-border, #f4b6cd);
   transition: width var(--tm-transition, 0.18s ease), background var(--tm-transition, 0.18s ease);
 }
 
 .ocarousel-grid .ocarousel .owl-dots button.owl-dot:hover span {
-  background: var(--tm-teal, #009a95);
+  background: var(--tm-teal, #eb3274);
 }
 
 .ocarousel-grid .ocarousel .owl-dots button.owl-dot.active span {
   width: 24px;
-  background: var(--tm-teal-deep, #02787e);
+  background: var(--tm-teal-deep, #cf0c5e);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -212,11 +212,11 @@
 
   .ocarousel-grid .title {
     margin: 0 0 24px;
-    border-bottom: 1px solid var(--tm-line, #dfe5e5);
+    border-bottom: 1px solid var(--tm-line, #efe1e7);
     padding: 0 0 12px;
     font-size: var(--tm-fs-headline-sm, 24px);
     font-weight: 700;
-    color: var(--tm-ink, #10201f);
+    color: var(--tm-ink, #24121a);
   }
 
     .ocarousel-grid .title strong {
@@ -257,7 +257,7 @@
   padding: 8px;
   overflow: hidden; /* clips the zoomed logo below to the tile */
   background: var(--tm-surface, #fff);
-  border: 1px solid var(--tm-line, #dfe5e5);
+  border: 1px solid var(--tm-line, #efe1e7);
   border-radius: var(--tm-radius, 12px);
   transition: border-color var(--tm-transition, .18s ease),
               box-shadow var(--tm-transition, .18s ease),
@@ -278,8 +278,8 @@
 
 .carousel-manufacturer .ocarousel-item > a:hover,
 .carousel-manufacturer .ocarousel-item > a:focus-visible {
-  border-color: var(--tm-teal, #009a95);
-  box-shadow: var(--tm-shadow, 0 6px 20px rgba(2, 120, 126, .1));
+  border-color: var(--tm-teal, #eb3274);
+  box-shadow: var(--tm-shadow, 0 6px 20px rgba(207, 12, 94, .1));
   transform: translateY(-2px);
 }
 
@@ -290,12 +290,12 @@
 }
 
 .carousel-manufacturer .manufacturer-name a {
-  color: var(--tm-ink, #10201f);
+  color: var(--tm-ink, #24121a);
   transition: color var(--tm-transition, .18s ease);
 }
 
 .carousel-manufacturer .manufacturer-name a:hover {
-  color: var(--tm-teal-deep, #02787e);
+  color: var(--tm-teal-deep, #cf0c5e);
 }
 
 @media (prefers-reduced-motion: reduce) {

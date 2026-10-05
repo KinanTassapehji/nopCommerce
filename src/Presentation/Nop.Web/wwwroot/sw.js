@@ -1,5 +1,5 @@
 ﻿/* =============================================================================
-   tmtm — service worker
+   Loli Store — service worker
 
    Caching policy is deliberately conservative, because this is a storefront:
 
@@ -17,7 +17,7 @@
    ============================================================================= */
 
 const CACHE_VERSION = 'v8';
-const STATIC_CACHE = `tmtm-static-${CACHE_VERSION}`;
+const STATIC_CACHE = `loli-static-${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline.html';
 
 /* Cached up-front so the offline page works on the very first disconnection. */
@@ -59,14 +59,10 @@ const CACHEABLE_PREFIXES = ['/css/', '/js/', '/lib/', '/lib_npm/', '/icons/', '/
 /* Offline, a thumbnail that was never cached draws as a broken-image icon and
    makes the whole page look failed. Serve the store's own mark on a brand tint
    instead: the layout keeps its shape and still reads as this store. */
-const OFFLINE_IMAGE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250" role="img" aria-label="tmtm">
-  <rect width="250" height="250" rx="24" fill="#e6f4f4"/>
-  <g fill="#02787e" opacity=".22">
-    <path fill-rule="evenodd" d="M247.57 189.36C246.52 182.21 235.86 176.04 224.0 176.04L96.67 176.09C84.31 176.09 74.62 182.32 73.87 189.35L247.57 189.36Z"/>
-    <path d="M127.77 209.3C127.77 218.01 120.71 225.07 112.0 225.07C103.29 225.07 96.22 218.01 96.22 209.3C96.22 200.59 103.29 193.52 112.0 193.52C120.71 193.52 127.77 200.59 127.77 209.3Z"/>
-    <path d="M223.14 209.28C223.14 217.99 216.08 225.05 207.38 225.05C198.67 225.05 191.61 217.99 191.61 209.28C191.61 200.58 198.67 193.52 207.38 193.52C216.08 193.52 223.14 200.58 223.14 209.28Z"/>
-    <path fill-rule="evenodd" d="M191.7 104.23L191.33 133.76L191.05 167.52L167.92 167.47L168.26 134.4L168.21 103.96C168.2 98.3 164.12 93.75 158.76 92.55C153.97 91.48 149.25 91.57 144.43 92.26C136.93 93.33 133.53 98.69 133.35 106.33L137.44 167.48L114.31 167.49L111.84 130.11L110.45 108.59C109.35 91.57 115.69 75.3 132.86 70.62C138.81 68.99 144.73 68.56 150.95 68.72C162.19 68.42 173.64 70.96 180.02 81.05C186.72 70.68 198.39 68.43 210.36 68.71C223.87 68.45 237.27 71.5 244.39 83.54C247.66 89.05 249.57 95.18 249.63 101.59L249.71 109.44L240.5 167.51L217.38 167.48L226.42 109.05C227.36 101.0 224.28 93.82 216.32 92.4C211.56 91.54 206.78 91.5 201.97 92.38C196.26 93.43 191.78 98.1 191.7 104.23Z"/>
-    <path fill-rule="evenodd" d="M87.35 143.33L103.4 143.49L104.74 167.54L86.13 167.38C78.38 167.32 71.26 163.97 66.05 158.34C61.39 153.06 59.01 146.85 57.87 139.85L43.74 52.97C43.17 49.47 39.31 47.7 36.48 47.69L11.79 47.58C4.65 47.54 0.0 40.48 1.46 33.69C2.5 28.9 6.2 24.66 11.48 24.65L39.92 24.64C49.52 24.64 57.8 30.19 62.6 38.22C65.11 42.46 66.26 46.92 67.04 51.77L69.79 68.68L100.04 68.69L100.98 91.79L73.48 91.91L80.92 137.53C81.42 140.59 84.34 143.3 87.35 143.33Z"/>
+const OFFLINE_IMAGE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250" role="img" aria-label="Loli Store">
+  <rect width="250" height="250" rx="24" fill="#fdebf2"/>
+  <g fill="#cf0c5e" opacity=".22">
+    <path d="M125.0 3.0 L134.9 101.0 L180.2 69.8 L149.0 115.1 L247.0 125.0 L149.0 134.9 L180.2 180.2 L134.9 149.0 L125.0 247.0 L115.1 149.0 L69.8 180.2 L101.0 134.9 L3.0 125.0 L101.0 115.1 L69.8 69.8 L115.1 101.0Z"/>
   </g>
 </svg>`;
 
@@ -89,7 +85,7 @@ self.addEventListener('activate', event => {
       await self.registration.navigationPreload.enable();
     }
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k.startsWith('tmtm-') && k !== STATIC_CACHE)
+    await Promise.all(keys.filter(k => k.startsWith('loli-') && k !== STATIC_CACHE)
                           .map(k => caches.delete(k)));
     await self.clients.claim();
   })());

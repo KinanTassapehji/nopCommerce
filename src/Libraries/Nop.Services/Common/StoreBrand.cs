@@ -3,7 +3,7 @@
 namespace Nop.Services.Common;
 
 /// <summary>
-/// The TmTm brand palette, mirrored from Themes/TmTm/Content/css/tokens.css.
+/// The Loli Store brand palette, mirrored from Themes/Loli/Content/css/tokens.css.
 /// The invoice PDF and the outgoing e-mails read their colours from here, so a
 /// printed order, a notification and the storefront all carry one identity.
 ///
@@ -15,46 +15,46 @@ public static partial class StoreBrand
     #region Constants
 
     /// <summary>
-    /// Primary brand colour. Holds white text at 5.26:1, so it is the only one
+    /// Primary brand colour. Holds white text at 5.43:1, so it is the only one
     /// allowed under a label
     /// </summary>
-    public const string PRIMARY = "#02787e";
+    public const string PRIMARY = "#cf0c5e";
 
     /// <summary>
     /// Middle stop of the brand gradient
     /// </summary>
-    public const string PRIMARY_MID = "#009a95";
+    public const string PRIMARY_MID = "#eb3274";
 
     /// <summary>
-    /// End stop of the brand gradient. Decorative only - 1.78:1 on white, it
+    /// End stop of the brand gradient. Decorative only - 2.13:1 on white, it
     /// never carries text
     /// </summary>
-    public const string PRIMARY_BRIGHT = "#00d9cc";
+    public const string PRIMARY_BRIGHT = "#ff8fb5";
 
     /// <summary>
     /// Body text
     /// </summary>
-    public const string INK = "#10201f";
+    public const string INK = "#24121a";
 
     /// <summary>
     /// Secondary text - field labels, footnotes, the mail footer
     /// </summary>
-    public const string INK_MUTED = "#5c6b6a";
+    public const string INK_MUTED = "#6b5a61";
 
     /// <summary>
     /// Hairlines: table rules, panel edges
     /// </summary>
-    public const string LINE = "#dfe5e5";
+    public const string LINE = "#efe1e7";
 
     /// <summary>
     /// Panel fill behind the address block and the totals box
     /// </summary>
-    public const string TINT = "#e6f4f4";
+    public const string TINT = "#fdebf2";
 
     /// <summary>
     /// Quieter alternate surface - zebra rows, the mail page background
     /// </summary>
-    public const string SURFACE_ALT = "#f6f9f9";
+    public const string SURFACE_ALT = "#fcf6f8";
 
     /// <summary>
     /// Paper

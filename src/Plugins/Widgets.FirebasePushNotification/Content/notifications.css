@@ -3,18 +3,18 @@
    theme is loaded - --tm-* in TmTm, --ar-* in Arabia - with plain fallbacks.
    Logical properties throughout, so one sheet serves LTR and RTL. */
 .notifications-page {
-  --inbox-accent: var(--tm-teal-deep, var(--ar-blue, #02787e));
-  --inbox-accent-hover: var(--tm-teal-hover, var(--ar-blue-hover, #01585c));
-  --inbox-tint: var(--tm-teal-tint, var(--ar-blue-tint, #e6f4f4));
-  --inbox-border: var(--tm-teal-border, var(--ar-blue-border, #b3dedc));
-  --inbox-ink: var(--tm-ink, var(--ar-ink, #10201f));
-  --inbox-muted: var(--tm-ink-muted, var(--ar-ink-muted, #5c6b6a));
-  --inbox-line: var(--tm-line, var(--ar-line, #dfe5e5));
+  --inbox-accent: var(--tm-teal-deep, var(--ar-blue, #cf0c5e));
+  --inbox-accent-hover: var(--tm-teal-hover, var(--ar-blue-hover, #a8094b));
+  --inbox-tint: var(--tm-teal-tint, var(--ar-blue-tint, #fdebf2));
+  --inbox-border: var(--tm-teal-border, var(--ar-blue-border, #f4b6cd));
+  --inbox-ink: var(--tm-ink, var(--ar-ink, #24121a));
+  --inbox-muted: var(--tm-ink-muted, var(--ar-ink-muted, #6b5a61));
+  --inbox-line: var(--tm-line, var(--ar-line, #efe1e7));
   --inbox-surface: var(--tm-surface, var(--ar-surface, #fff));
   --inbox-radius: var(--tm-radius, var(--ar-radius, 12px));
   --inbox-shadow: var(--tm-shadow, var(--ar-shadow, 0 6px 20px rgba(0, 0, 0, .08)));
   /* the cart badge's colour, so the two counts beside each other read as one family */
-  --inbox-badge: var(--tm-teal-deep, var(--ar-blue, #02787e));
+  --inbox-badge: var(--tm-teal-deep, var(--ar-blue, #cf0c5e));
 }
 
 /* --- Unread dot on the header's account glyph ---------------------------
@@ -41,7 +41,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--tm-teal-deep, var(--ar-blue, #02787e));
+  background: var(--tm-teal-deep, var(--ar-blue, #cf0c5e));
   box-shadow: 0 0 0 2px var(--tm-surface, var(--ar-surface, #fff));
 }
 
@@ -63,7 +63,7 @@
   height: 18px;
   padding-inline: 5px;
   border-radius: 999px;
-  background: var(--inbox-badge, var(--tm-teal-deep, var(--ar-blue, #02787e)));
+  background: var(--inbox-badge, var(--tm-teal-deep, var(--ar-blue, #cf0c5e)));
   color: #fff;
   font-size: 11px;
   font-weight: 700;

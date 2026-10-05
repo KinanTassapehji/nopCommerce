@@ -6,19 +6,18 @@
    Written with CSS logical properties (inline-start/end) so this one file
    serves both the LTR and RTL stylesheets.
 
-   Palette rule from the guideline: #00d9cc is never used on its own, so it
+   Palette rule from the guideline: #ff8fb5 is never used on its own, so it
    appears only inside var(--tm-gradient*). Because the gradient runs into
-   #00d9cc (1.78:1 against white), the gradient is reserved for decoration —
+   #ff8fb5 (1.78:1 against white), the gradient is reserved for decoration —
    rules, strips, accents. Any surface carrying a label uses the solid
    --tm-teal-deep, which holds white text at 5.26:1.
    ========================================================================== */
 
 /* --- Base ----------------------------------------------------------------
-   The mini guideline defines no typeface,
-so this is a system stack with
-   Arabic coverage rather than an invented webfont dependency. */
+   El Messiri is the Loli Store typeface (declared in tokens.css); the system
+   stack behind it covers anything it lacks. */
 body{
-  font-family: "Segoe UI", "Noto Sans Arabic", "Dubai", Tahoma, Arial, sans-serif;
+  font-family: "El Messiri", "Segoe UI", "Noto Sans Arabic", Tahoma, Arial, sans-serif;
   color: var(--tm-ink);
   background: var(--tm-surface);
   /* The base sheet sets `font: normal 14px Arial`, and the shorthand resets
@@ -123,7 +122,7 @@ used as the header's baseline. */
 
 .search-box input.search-box-text:focus{
   border-color: var(--tm-teal);
-  box-shadow: 0 0 0 3px rgba(0, 154, 149, 0.18);
+  box-shadow: 0 0 0 3px rgba(235, 50, 116, 0.18);
 }
 
 .search-box .search-box-button{
@@ -210,7 +209,7 @@ input[type="number"]:focus,
 input[type="search"]:focus,
 textarea:focus{
   border-color: var(--tm-teal);
-  box-shadow: 0 0 0 3px rgba(0, 154, 149, 0.18);
+  box-shadow: 0 0 0 3px rgba(235, 50, 116, 0.18);
   color: var(--tm-ink);
 }
 
@@ -1253,7 +1252,7 @@ which would
     border-start-start-radius: var(--tm-radius);
     border-start-end-radius: var(--tm-radius);
     background: var(--tm-surface);
-    box-shadow: 0 -4px 20px rgba(2, 120, 126, 0.10);
+    box-shadow: 0 -4px 20px rgba(207, 12, 94, 0.10);
   }
 
   .checkout-page .opc-place-order[hidden]{
@@ -2135,7 +2134,7 @@ above the WCAG 2.2 SC 2.5.8 floor. */
 
   /* Replace the grey flash with a brand-tinted one. */
   a, button, .button-1, .button-2 {
-    -webkit-tap-highlight-color: rgba(0, 154, 149, 0.18);
+    -webkit-tap-highlight-color: rgba(235, 50, 116, 0.18);
   }
 }
 
@@ -3211,7 +3210,7 @@ so the field stays visible beside the icon. */
     border-block-start: 1px solid var(--tm-line);
     border-start-start-radius: var(--tm-radius-lg);
     border-start-end-radius: var(--tm-radius-lg);
-    box-shadow: 0 -4px 20px rgba(2, 120, 126, 0.06);
+    box-shadow: 0 -4px 20px rgba(207, 12, 94, 0.06);
   }
 
   /* Nothing on the page may end up underneath the bar. */
@@ -4361,7 +4360,7 @@ so the field stays visible beside the icon. */
 /* ==========================================================================
    Product page
    --------------------------------------------------------------------------
-   Paired with Themes/TmTm/Views/Product/ProductTemplate.Simple.cshtml and
+   Paired with Themes/Loli/Views/Product/ProductTemplate.Simple.cshtml and
    Views/Shared/_TmProductGallery.cshtml. The base sheet floats a 46%/52% pair
    under a hairline rule and gives every one of the twenty partials in the
    reading column the same weight; this section replaces the float with a grid,
@@ -5374,7 +5373,7 @@ so the field stays visible beside the icon. */
     background: rgba(255, 255, 255, 0.94);
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
-    box-shadow: 0 -4px 20px rgba(2, 120, 126, 0.10);
+    box-shadow: 0 -4px 20px rgba(207, 12, 94, 0.10);
     animation: tm-buybar-in 0.18s ease;
   }
 
@@ -6664,7 +6663,7 @@ so the field stays visible beside the icon. */
 
 .tm-welcome-mark circle{
   fill: var(--tm-teal-deep);
-  filter: drop-shadow(0 10px 18px rgba(2, 120, 126, 0.28));
+  filter: drop-shadow(0 10px 18px rgba(207, 12, 94, 0.28));
 }
 
 .tm-welcome-mark path{

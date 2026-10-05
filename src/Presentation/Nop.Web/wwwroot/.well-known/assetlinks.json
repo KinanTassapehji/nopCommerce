@@ -3,9 +3,9 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.tmtmsy.app",
+      "package_name": "net.lolistore.twa",
       "sha256_cert_fingerprints": [
-        "64:B4:AC:57:AE:1B:A3:0E:3F:80:A0:17:1E:50:29:DB:AA:2A:8B:F4:C7:56:32:F4:B5:98:FA:73:1C:06:79:59"
+        "FC:9E:2F:44:61:A0:5E:26:14:DB:E0:45:2C:80:16:B9:71:1E:02:16:A2:51:6D:46:47:AD:C0:35:83:6D:65:47"
       ]
     }
   }

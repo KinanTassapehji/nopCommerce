@@ -63,18 +63,18 @@ public partial class InstallationService
         var stores = new List<Store>
         {
             new() {
-                Name = "تمتم",
-                DefaultTitle = "تمتم",
+                Name = "لولي ستور",
+                DefaultTitle = "لولي ستور",
                 DefaultMetaKeywords = string.Empty,
                 DefaultMetaDescription = string.Empty,
-                HomepageTitle = "منزلك وحياتك اليومية",
-                HomepageDescription = "متجر تمتم: أدوات منزلية وتقنية وملابس وعناية، بتوصيل خلال يوم إلى يومين.",
+                HomepageTitle = "عنايتك بجمالك",
+                HomepageDescription = "لولي ستور: منتجات العناية بالبشرة والشفاه والجسم والشعر والمكياج، مع توصيل داخل سوريا.",
                 Url = storeUrl,
                 SslEnabled = _webHelper.IsCurrentConnectionSecured(),
                 Hosts = "yourstore.com,www.yourstore.com",
                 DisplayOrder = 1,
                 //should we set some default company info?
-                CompanyName = "تمتم",
+                CompanyName = "لولي ستور",
                 CompanyAddress = "دمشق، سوريا",
                 CompanyPhoneNumber = "(123) 456-78901",
                 CompanyVat = null
@@ -1653,7 +1653,7 @@ public partial class InstallationService
             StoreClosed = false,
             //the store ships with its own theme; a fresh install that came up in
             //DefaultClean lost the branding every time until this was seeded
-            DefaultStoreTheme = "TmTm",
+            DefaultStoreTheme = "Loli",
             AllowCustomerToSelectTheme = false,
             DisplayEuCookieLawWarning = isEurope,
             FacebookLink = "https://www.facebook.com/nopCommerce",
@@ -2342,9 +2342,9 @@ public partial class InstallationService
                     //slider and the categories saying nothing. Body kept so it can
                     //be published from the admin if the store ever wants it.
                     Published = false,
-                    Title = "أهلاً بك في تمتم",
+                    Title = "أهلاً بك في لولي ستور",
                     Body =
-                        "<p>أدوات منزلية وتقنية وملابس وعناية، مختارة قطعة قطعة لتدوم. التوصيل خلال يوم إلى يومي عمل، والإرجاع مجاني خلال 30 يوماً.</p>",
+                        "<p>منتجات عناية وتجميل مختارة بعناية، مع توصيل داخل سوريا.</p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
