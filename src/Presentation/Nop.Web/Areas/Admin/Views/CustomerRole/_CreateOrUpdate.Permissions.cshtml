@@ -14,7 +14,7 @@
         ["System"] = "fa-server",
         ["PublicStore"] = "fa-store"
     };
-    string[] columns = ["View", "Edit", "Import"];
+    var columns = new[] { "View", "Edit", "Import" };
 
     //in a plain list, "Countries" reads better than "Countries · Manage" when nearly everything in the area is "Manage"
     string ItemLabel(CustomerRolePermissionModel permission, string dominantAction)
