@@ -6463,7 +6463,7 @@ so the field stays visible beside the icon. */
   margin-block-start: var(--tm-stack-md);
 }
 
-.customer-info-page .buttons .delete-account-button,
+.customer-info-page .customer-delete-account .delete-account-button,
 .address-list-page .buttons .button-2,
 .order-list-page .buttons .button-2,
 .return-request-list-page .buttons .button-2,
@@ -6493,7 +6493,7 @@ so the field stays visible beside the icon. */
   text-align: center;
 }
 
-.customer-info-page .buttons .delete-account-button:hover,
+.customer-info-page .customer-delete-account .delete-account-button:hover,
 .address-list-page .buttons .button-2:hover,
 .order-list-page .buttons .button-2:hover,
 .return-request-list-page .buttons .button-2:hover,
@@ -6526,14 +6526,14 @@ so the field stays visible beside the icon. */
    delete on every card is not a wall of red, filled on hover. #d51f28 is
    5.16:1 on white, and white on #d51f28 is the same, so the label holds AA
    either way round. */
-.customer-info-page .buttons .delete-account-button,
+.customer-info-page .customer-delete-account .delete-account-button,
 .address-list-page .buttons .delete-address-button,
 .order-details-page .page-title a.button-2.cancel-order-button{
   border-color: var(--tm-error);
   color: var(--tm-error);
 }
 
-.customer-info-page .buttons .delete-account-button:hover,
+.customer-info-page .customer-delete-account .delete-account-button:hover,
 .address-list-page .buttons .delete-address-button:hover,
 .order-details-page .page-title a.button-2.cancel-order-button:hover{
   background: var(--tm-error);
@@ -7406,6 +7406,52 @@ so the field stays visible beside the icon. */
   grid-column: 1 / -1;
   margin: 0 0 8px;
   text-align: start;
+}
+
+/* The button shares the password field's cell, so it lines up with the input
+   whatever the field margins are. The cell spans the card; the theme already
+   lays a field out as a wrapping flex row (label, asterisk, then the input on a
+   line of its own), so: a forced break after the asterisk, the input one grid
+   column wide (the grid's 24px gap), the button beside it. Phones: the input
+   takes the line and the button goes under it, centred like the other cards'. */
+.customer-info-page .customer-delete-account .form-fields > .inputs{
+  grid-column: 1 / -1;
+}
+
+.customer-info-page .customer-delete-account .inputs::before{
+  content: "";
+  order: 1;
+  flex-basis: 100%;
+}
+
+.customer-info-page .customer-delete-account .inputs > .required{
+  order: 0;
+}
+
+.customer-info-page .customer-delete-account .inputs > input{
+  order: 2;
+  flex: 0 0 calc((100% - 24px) / 2);
+}
+
+/* the theme stretches a field's children across the cell; the button keeps its
+   own width. 20px plus the field's 4px gap is the grid's 24px. */
+.customer-info-page .customer-delete-account .inputs > .delete-account-button{
+  order: 3;
+  flex: 0 0 auto;
+  width: auto;
+  align-self: center;
+  margin-inline-start: 20px;
+}
+
+@media (max-width: 1000px){
+  .customer-info-page .customer-delete-account .inputs > input{
+    flex-basis: 100%;
+  }
+
+  .customer-info-page .customer-delete-account .inputs > .delete-account-button{
+    margin-block-start: 16px;
+    margin-inline: auto;
+  }
 }
 
 .registration-page .fieldset > .title,

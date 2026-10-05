@@ -12,10 +12,9 @@
                 <label asp-for="Password" asp-postfix=":"></label>
                 <input asp-for="Password" autocomplete="current-password" required />
                 <nop-required />
+                @*in the field's own cell, so it lines up with the input (brand.css)*@
+                <button type="submit" class="button-2 delete-account-button">@T("Account.DeleteAccount.Button")</button>
             </div>
         </div>
-    </section>
-    <section class="buttons">
-        <button type="submit" class="button-2 delete-account-button">@T("Account.DeleteAccount.Button")</button>
     </section>
 </form>
