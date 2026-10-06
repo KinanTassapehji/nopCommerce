@@ -296,6 +296,23 @@ public partial class AddressModelFactory : IAddressModelFactory
             }
         }
 
+        //Loli: a single-country store asks for the governorate (labelled "City") without
+        //showing the country - the country is the default one, carried in a hidden field
+        if (!addressSettings.CountryEnabled && addressSettings.StateProvinceEnabled && addressSettings.DefaultCountryId is int defaultCountryId)
+        {
+            model.CountryId = defaultCountryId;
+            model.AvailableStates.Add(new SelectListItem { Text = await _localizationService.GetResourceAsync("Address.SelectState"), Value = "0" });
+            foreach (var s in await _stateProvinceService.GetStateProvincesByCountryIdAsync(defaultCountryId, languageId))
+            {
+                model.AvailableStates.Add(new SelectListItem
+                {
+                    Text = await _localizationService.GetLocalizedAsync(s, x => x.Name),
+                    Value = s.Id.ToString(),
+                    Selected = s.Id == model.StateProvinceId
+                });
+            }
+        }
+
         //form fields
         model.CompanyEnabled = addressSettings.CompanyEnabled;
         model.CompanyRequired = addressSettings.CompanyRequired;

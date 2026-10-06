@@ -36,12 +36,12 @@ public partial class AddressValidator : BaseNopValidator<AddressModel>
                 .NotEqual(0)
                 .WithMessageAwait(localizationService.GetResourceAsync("Address.Fields.Country.Required"));
         }
-        if (addressSettings.CountryEnabled && addressSettings.StateProvinceEnabled)
+        if (addressSettings.StateProvinceEnabled)
         {
             RuleFor(x => x.StateProvinceId).MustAwait(async (x, context) =>
             {
-                //does selected country has states?
-                var countryId = x.CountryId ?? 0;
+                //does selected country has states? (with the country hidden it is the default one)
+                var countryId = x.CountryId ?? addressSettings.DefaultCountryId ?? 0;
                 var hasStates = (await stateProvinceService.GetStateProvincesByCountryIdAsync(countryId)).Any();
 
                 if (hasStates)

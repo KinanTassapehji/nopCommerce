@@ -61,8 +61,12 @@
         </div>
     }
 
-    @if (Model.CountryEnabled && Model.StateProvinceEnabled)
+    @if (Model.StateProvinceEnabled)
     {
+        @if (!Model.CountryEnabled)
+        {
+            <input type="hidden" asp-for="CountryId" />
+        }
         <div class="inputs">
             <label asp-for="StateProvinceId" asp-postfix=":"></label>
             <select asp-for="StateProvinceId" asp-items="Model.AvailableStates"
