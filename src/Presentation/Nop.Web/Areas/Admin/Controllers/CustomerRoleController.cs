@@ -88,6 +88,9 @@ public partial class CustomerRoleController : BaseAdminController
 
         foreach (var permission in await _permissionService.GetAllPermissionRecordsAsync())
         {
+            if (!CustomerRoleModelFactory.IsListedPermission(permission.SystemName))
+                continue;
+
             if (!isSuperAdmin && !await _permissionService.AuthorizeAsync(permission.SystemName, currentCustomer))
                 continue;
 
