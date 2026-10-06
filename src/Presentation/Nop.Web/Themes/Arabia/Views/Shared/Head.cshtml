@@ -105,4 +105,19 @@
             });
         });
     }
+
+    // The installed app (TWA / iOS wrapper) keeps a page alive in memory for days,
+    // so a shopper returning to it never fetches a new deploy. Reload when the app
+    // comes back after an hour away; HTML is no-store and assets are content-hashed,
+    // so a reload is all it takes. Pages holding a half-filled form are left alone.
+    // ponytail: reloads even when nothing was deployed; a version check would avoid that
+    // but needs a stamp bumped on every deploy.
+    var hiddenAt = 0;
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) { hiddenAt = Date.now(); return; }
+        if (hiddenAt && Date.now() - hiddenAt > 60 * 60 * 1000 &&
+            !/^\/(cart|checkout|onepagecheckout|customer|login|register|passwordrecovery)/i.test(location.pathname)) {
+            location.reload();
+        }
+    });
 </script>
