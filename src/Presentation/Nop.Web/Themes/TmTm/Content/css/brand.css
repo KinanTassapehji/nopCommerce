@@ -1492,12 +1492,15 @@ which would
     inline-size: auto;
   }
 
-  /* The product page's buy bar carries its own "complete order" button
-     (.tm-buybar-checkout), so the card steps aside rather than stacking a
-     second bar on top of it. Phones only: the buy bar never shows above
-     1000px, and the card stays put there. */
-  body.tm-buybar-on .tm-cart-float:has(.cart-qty){
-    display: none;
+  /* The product page's buy bar takes the tab bar's place: the card rides
+     just above it, so "complete order" stays on screen there too. Phones
+     only: the buy bar never shows above 1000px. */
+  .tm-cart-float:has(.cart-qty:not([data-qty="0"])){
+    transition: inset-block-end var(--tm-transition);
+  }
+
+  body.tm-buybar-on .tm-cart-float:has(.cart-qty:not([data-qty="0"])){
+    inset-block-end: calc(68px + 10px + max(env(safe-area-inset-bottom, 0px), 10px));
   }
 }
 
@@ -1564,11 +1567,80 @@ which would
   40%{ transform: scale(1.35); }
 }
 
+/* Ambient call to action while the pill shows: a light sheen sweeps across it
+   in the reading direction, a soft ring breathes out of it, and the arrow
+   nudges forward - a pause between each so it draws the eye without nagging.
+   The background gets a gentle gradient of the brand colour for depth. */
+.tm-cart-float:has(.cart-qty:not([data-qty="0"])){
+  --tm-cta-dir: 1;
+  background: linear-gradient(120deg, var(--tm-teal-deep), var(--tm-teal) 55%, var(--tm-teal-deep));
+}
+
+[dir="rtl"] .tm-cart-float:has(.cart-qty:not([data-qty="0"])){
+  --tm-cta-dir: -1;
+}
+
+.tm-cart-float::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: tm-cta-ring 2.8s ease-out 1.2s infinite;
+}
+
+.tm-cart-float-link{
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 999px;
+}
+
+.tm-cart-float-link::before{
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: -60%;
+  z-index: -1;
+  inline-size: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.38), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+  animation: tm-cta-sheen 3.6s cubic-bezier(0.4, 0, 0.2, 1) 0.8s infinite;
+}
+
+.tm-cart-float-arrow{
+  animation: tm-cta-nudge 1.8s ease-in-out infinite;
+}
+
+.tm-cart-float-link:hover .tm-cart-float-arrow,
+.tm-cart-float-link:focus-visible .tm-cart-float-arrow{
+  animation-duration: 0.7s;
+}
+
+@keyframes tm-cta-sheen{
+  0%{ translate: 0 0; }
+  40%, 100%{ translate: calc(var(--tm-cta-dir) * 380%) 0; }
+}
+
+@keyframes tm-cta-ring{
+  0%{ box-shadow: 0 0 0 0 color-mix(in srgb, var(--tm-teal) 55%, transparent); }
+  70%, 100%{ box-shadow: 0 0 0 14px color-mix(in srgb, var(--tm-teal) 0%, transparent); }
+}
+
+@keyframes tm-cta-nudge{
+  0%, 60%, 100%{ translate: 0 0; }
+  30%{ translate: calc(var(--tm-cta-dir) * 4px) 0; }
+}
+
 @media (prefers-reduced-motion: reduce){
   .tm-cart-float:has(.cart-qty:not([data-qty="0"])),
   .tm-cart-pill-bounce .tm-cart-float:has(.cart-qty:not([data-qty="0"])),
   .tm-cart-float.tm-cart-float-bump:has(.cart-qty:not([data-qty="0"])),
-  .tm-cart-float.tm-cart-float-bump .cart-qty{
+  .tm-cart-float.tm-cart-float-bump .cart-qty,
+  .tm-cart-float::after,
+  .tm-cart-float-link::before,
+  .tm-cart-float-arrow{
     animation: none;
   }
 }
@@ -5445,68 +5517,6 @@ so the field stays visible beside the icon. */
     padding-inline: 16px;
     font-size: var(--tm-fs-body);
     text-transform: none;
-  }
-
-  /* "Complete order", once the cart holds items: the two actions split the
-     bar evenly, and the price gives up its place - it is a scroll away in the
-     buy box, and three items do not fit a 360px phone. Outlined, so the bar
-     still has one filled button. */
-  .tm-buybar-checkout{
-    display: none;
-  }
-
-  .tm-buybar-checkout:has(.cart-qty:not([data-qty="0"])){
-    display: flex;
-    flex: 1 1 0;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-inline-size: 0;
-    min-height: 48px;
-    padding-inline: 12px;
-    border: 2px solid var(--tm-teal-deep);
-    border-radius: var(--tm-radius);
-    background: var(--tm-white);
-    color: var(--tm-teal-deep);
-    font-size: var(--tm-fs-body);
-    font-weight: 700;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  .tm-buybar:has(.tm-buybar-checkout .cart-qty:not([data-qty="0"])) .tm-buybar-price{
-    display: none;
-  }
-
-  .tm-buybar:has(.tm-buybar-checkout .cart-qty:not([data-qty="0"])) .tm-buybar-cta{
-    flex: 1 1 0;
-  }
-
-  .tm-buybar-checkout-label{
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* the count as a filled badge, like the floating card's */
-  .tm-buybar-checkout .cart-qty{
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex: none;
-    min-inline-size: 22px;
-    block-size: 22px;
-    padding-inline: 5px;
-    border-radius: 999px;
-    background: var(--tm-teal-deep);
-    color: var(--tm-white);
-    font-size: 0;
-    line-height: 1;
-  }
-
-  .tm-buybar-checkout .cart-qty::after{
-    content: attr(data-qty);
-    font-size: 12px;
-    font-weight: 700;
   }
 
   .mobile-tab-bar{
