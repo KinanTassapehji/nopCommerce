@@ -17606,7 +17606,7 @@
     <Value>السلة</Value>
   </LocaleResource>
   <LocaleResource Name="Mobile.Nav.CompleteOrder">
-    <Value>أكمل الطلب</Value>
+    <Value>أكمل الشراء</Value>
   </LocaleResource>
   <LocaleResource Name="Mobile.Nav.Home">
     <Value>الرئيسية</Value>
