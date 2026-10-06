@@ -1,0 +1,101 @@
+﻿/* ==========================================================================
+   Loli Store - store-only overrides
+   Loaded after brand.css. brand.css stays identical to TmTm's so TmTm patches
+   keep applying; everything that is Loli's own look lives here instead.
+   ========================================================================== */
+
+/* --- Home page categories: the original site's "Instagram" grid ------------
+   Edge-to-edge square photos with hairline gaps, four to a row on a desktop
+   and two on a phone, an odd last row centred. The name stays out of the way:
+   a white veil over the photo on hover, as on the original BeautyShop site.
+   Home page only - subcategory tiles keep TmTm's treatment. */
+.home-page-category-grid .item-grid{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+.home-page-category-grid .item-box{
+  position: relative;
+  display: block;
+  flex: 0 0 calc((100% - 3 * 2px) / 4);
+  margin: 0;
+}
+
+.home-page-category-grid .picture{
+  inline-size: 100%;
+  max-inline-size: none;
+  aspect-ratio: 1;
+  border-radius: 0;
+  background: var(--tm-teal-tint);
+  box-shadow: none;
+}
+
+.home-page-category-grid .item-box:hover .picture{
+  box-shadow: none;
+  transform: none;
+}
+
+.home-page-category-grid .title{
+  position: absolute;
+  inset: 10px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: auto;
+  background: var(--tm-white);
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+  font-size: var(--tm-fs-title);
+  line-height: var(--tm-lh-title);
+}
+
+.home-page-category-grid .item-box:hover .title{
+  opacity: 0.8;
+}
+
+/* the whole veil is the link, so a click anywhere on it still lands */
+.home-page-category-grid .title a{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+@media (max-width: 1000px){
+
+  .home-page-category-grid .item-grid{
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .home-page-category-grid .item-box{
+    flex: 0 0 calc((100% - 2px) / 2);
+  }
+
+  .home-page-category-grid .picture{
+    max-inline-size: none;
+  }
+}
+
+/* --- Product badges: top-right ---------------------------------------------
+   Every Loli product photo carries the logo in its top-left corner, which is
+   where TmTm pins the ribbons. Same pills, other corner. */
+.product-item .offer-content,
+.product-details-page .offer-content{
+  left: auto;
+  right: 12px;
+  align-items: flex-end;
+}
+
+[dir="rtl"] .product-item .offer-content,
+[dir="rtl"] .product-details-page .offer-content{
+  align-items: flex-start;
+}

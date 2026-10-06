@@ -34,6 +34,9 @@
     //Written with logical properties, so it serves LTR and RTL alike
     NopHtml.AddCssFileParts($"~/Themes/{themeName}/Content/css/brand.css");
 
+    //Loli's own look on top of the shared brand layer (kept apart so brand.css matches TmTm's)
+    NopHtml.AddCssFileParts($"~/Themes/{themeName}/Content/css/loli.css");
+
     //the shared loader - the same file the admin links, so both sides wait the
     //same way. Last, so it wins over the forked stylesheet's gif loader.
     NopHtml.AddCssFileParts("~/css/tm-loader.css");
