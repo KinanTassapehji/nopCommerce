@@ -5,7 +5,8 @@
       "namespace": "android_app",
       "package_name": "net.lolistore.twa",
       "sha256_cert_fingerprints": [
-        "FC:9E:2F:44:61:A0:5E:26:14:DB:E0:45:2C:80:16:B9:71:1E:02:16:A2:51:6D:46:47:AD:C0:35:83:6D:65:47"
+        "FC:9E:2F:44:61:A0:5E:26:14:DB:E0:45:2C:80:16:B9:71:1E:02:16:A2:51:6D:46:47:AD:C0:35:83:6D:65:47",
+        "E0:22:FE:E4:D5:2A:38:32:68:17:58:6B:E2:CD:04:EC:68:E8:28:90:F2:D0:A0:59:A5:28:CC:BF:C3:04:8F:F7"
       ]
     }
   }
