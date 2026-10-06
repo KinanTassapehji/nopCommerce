@@ -1,6 +1,7 @@
 @*
     Arabia: the navigation row beside the logo — browse first (products,
-    brands), then the company pages (about, FAQ, service, contact).
+    brands), then the company pages (about, FAQ, service). Contact us lives
+    in the footer and the account menu, not here.
     These are the "centre links" the design comp draws beside the logo, which
     the header shipped without because nothing in nopCommerce was rendering
     them.
@@ -57,7 +58,6 @@
     }
 
     pageLinks.Add((Url.RouteUrl(NopRouteNames.General.MAINTENANCE_REQUEST), T("PageTitle.MaintenanceRequest").Text));
-    pageLinks.Add((Url.RouteUrl(NopRouteNames.General.CONTACT_US), T("ContactUs").Text));
 }
 
 <nav class="header-pages" aria-label="@T("Nav.Information")">
