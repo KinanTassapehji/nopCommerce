@@ -15887,7 +15887,7 @@
     <Value>ادفع لهذا العنوان</Value>
   </LocaleResource>
   <LocaleResource Name="Checkout.Button">
-    <Value>الدفع</Value>
+    <Value>أكمل الشراء</Value>
   </LocaleResource>
   <LocaleResource Name="Checkout.ConfirmButton">
     <Value>تأكيد</Value>

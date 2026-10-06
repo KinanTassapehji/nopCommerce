@@ -528,6 +528,74 @@ so their labels keep the 4.78:1 contrast of solid --ar-blue. */
   box-shadow: var(--ar-shadow-lg);
 }
 
+/* "Complete purchase" (cart page and flyout cart): an ambient call to
+   action - a light sheen sweeps across it in the reading direction, a soft
+   ring breathes out of it and the arrow nudges forward, with a pause between
+   each so it draws the eye without nagging. */
+.button-1.checkout-button{
+  --ar-cta-dir: 1;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  animation: ar-cta-ring 2.8s ease-out 1.2s infinite;
+}
+
+[dir="rtl"] .button-1.checkout-button{
+  --ar-cta-dir: -1;
+}
+
+.button-1.checkout-button::before{
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: -60%;
+  z-index: -1;
+  inline-size: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.38), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+  animation: ar-cta-sheen 3.6s cubic-bezier(0.4, 0, 0.2, 1) 0.8s infinite;
+}
+
+.button-1.checkout-button::after{
+  content: "→";
+  display: inline-block;
+  margin-inline-start: 8px;
+  animation: ar-cta-nudge 1.8s ease-in-out infinite;
+}
+
+[dir="rtl"] .button-1.checkout-button::after{
+  content: "←";
+}
+
+.button-1.checkout-button:hover::after,
+.button-1.checkout-button:focus-visible::after{
+  animation-duration: 0.7s;
+}
+
+@keyframes ar-cta-sheen{
+  0%{ translate: 0 0; }
+  40%, 100%{ translate: calc(var(--ar-cta-dir) * 380%) 0; }
+}
+
+@keyframes ar-cta-ring{
+  0%{ box-shadow: 0 6px 20px rgba(12, 37, 54, 0.10), 0 0 0 0 color-mix(in srgb, var(--ar-blue-mid) 55%, transparent); }
+  70%, 100%{ box-shadow: 0 6px 20px rgba(12, 37, 54, 0.10), 0 0 0 12px color-mix(in srgb, var(--ar-blue-mid) 0%, transparent); }
+}
+
+@keyframes ar-cta-nudge{
+  0%, 60%, 100%{ translate: 0 0; }
+  30%{ translate: calc(var(--ar-cta-dir) * 4px) 0; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .button-1.checkout-button,
+  .button-1.checkout-button::before,
+  .button-1.checkout-button::after{
+    animation: none;
+  }
+}
+
 /* --- Page titles — the guideline's gradient rule with terminal dot -------- */
 .page-title,
 .topic-block-title,
