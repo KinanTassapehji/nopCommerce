@@ -2245,9 +2245,50 @@ so the header sits directly
   }
 }
 
-/* Stop the whole page rubber-banding behind the app shell. */
+/* Stop the whole page rubber-banding behind the app shell. This also turns off
+   the browser's pull-to-refresh - _Root.cshtml draws its own (.tm-ptr below). */
 html{
   overscroll-behavior-y: none;
+}
+
+/* Pull-to-refresh indicator: parked above the top edge, pulled down by the finger. */
+.tm-ptr{
+  position: fixed;
+  inset-block-start: -44px;
+  left: 50%; /* centred, so the same in Arabic */
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: 50%;
+  background: var(--tm-surface);
+  color: var(--tm-ink-muted);
+  box-shadow: var(--tm-shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 0);
+}
+
+.tm-ptr-ready{
+  color: var(--tm-teal);
+}
+
+.tm-ptr-back{
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.tm-ptr-loading{
+  color: var(--tm-teal);
+  transition: transform 0.15s ease;
+}
+
+.tm-ptr-loading svg{
+  animation: tm-ptr-spin 0.8s linear infinite;
+}
+
+@keyframes tm-ptr-spin{
+  to{ transform: rotate(360deg); }
 }
 
 /* Images must never force a sideways scroll on a phone. */
