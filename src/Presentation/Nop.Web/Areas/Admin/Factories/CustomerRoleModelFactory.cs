@@ -54,6 +54,22 @@ public partial class CustomerRoleModelFactory : ICustomerRoleModelFactory
     #region Utilities
 
     /// <summary>
+    /// Permissions a role page never lists: the super administrators' own (they come with that role
+    /// alone, so DefaultPermissionConfigManager is the record of them, whatever a role has been given
+    /// since) and two no admin page shows - entering a closed store, and the HTML editor's pictures
+    /// </summary>
+    protected static readonly HashSet<string> HiddenPermissions = new DefaultPermissionConfigManager().AllConfigs
+        .Where(config => config.DefaultCustomerRoles.Contains(NopCustomerDefaults.SuperAdministratorsRoleName))
+        .Select(config => config.SystemName)
+        .Concat([StandardPermission.PublicStore.ACCESS_CLOSED_STORE, StandardPermission.System.HTML_EDITOR_MANAGE_PICTURES])
+        .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Whether a role page lists the permission; the save leaves the unlisted ones as they are
+    /// </summary>
+    public static bool IsListedPermission(string systemName) => !HiddenPermissions.Contains(systemName);
+
+    /// <summary>
     /// The column a core permission goes in, from its system name ("Orders.OrdersView" is View);
     /// plugin permissions ("ManageNopStationQuickView") have no dot and never get a column
     /// </summary>
@@ -165,6 +181,7 @@ public partial class CustomerRoleModelFactory : ICustomerRoleModelFactory
 
         //only what the current user holds, so nobody can grant themselves more through a role
         var permissions = await (await _permissionService.GetAllPermissionRecordsAsync())
+            .Where(permission => IsListedPermission(permission.SystemName))
             .WhereAwait(async permission => isSuperAdmin || await _permissionService.AuthorizeAsync(permission.SystemName, currentCustomer))
             .ToListAsync();
 

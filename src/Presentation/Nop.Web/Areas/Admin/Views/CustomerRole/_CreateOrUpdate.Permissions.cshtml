@@ -179,9 +179,11 @@
         $('.permission-group-all-label').on('click', function (e) {
             e.preventDefault();
             var all = $(this).find('.permission-group-all');
-            all.prop('checked', !all.prop('checked'));
-            $(this).closest('.permission-group').find(toggles).prop('checked', all.prop('checked'));
-            refresh();
+            //a click on the box itself (or Space on it) has already flipped it, and the cancelled click
+            //flips it back afterwards; a click on the text has not touched it
+            var checked = e.target === all[0] ? all.prop('checked') : !all.prop('checked');
+            $(this).closest('.permission-group').find(toggles).prop('checked', checked);
+            setTimeout(refresh);
         });
         $(toggles).on('change', refresh);
 
