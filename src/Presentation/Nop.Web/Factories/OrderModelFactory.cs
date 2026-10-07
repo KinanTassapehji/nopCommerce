@@ -240,6 +240,7 @@ public partial class OrderModelFactory : IOrderModelFactory
                 OrderStatus = await _localizationService.GetLocalizedEnumAsync(order.OrderStatus),
                 PaymentStatus = await _localizationService.GetLocalizedEnumAsync(order.PaymentStatus),
                 ShippingStatus = await _localizationService.GetLocalizedEnumAsync(order.ShippingStatus),
+                ShippingStatusEnum = order.ShippingStatus,
                 IsReturnRequestAllowed = await _orderProcessingService.IsReturnRequestAllowedAsync(order),
                 CustomOrderNumber = order.CustomOrderNumber
             };
