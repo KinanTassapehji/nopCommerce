@@ -337,8 +337,12 @@ table.dataTable tbody tr:hover > td {
   min-width: 0;
 }
 
+/* flex: none + overflow: visible - styles.css gives the unit overflow: hidden,
+   which lets a flex item shrink below its text, so "USD" lost its last letter */
 .input-postfix::after {
   position: static;
+  flex: none;
+  overflow: visible;
   padding: 0;
   background: none;
   white-space: nowrap;
