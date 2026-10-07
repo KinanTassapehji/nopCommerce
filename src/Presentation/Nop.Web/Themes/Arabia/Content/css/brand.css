@@ -7485,6 +7485,206 @@ so the field stays visible beside the icon. */
   color: var(--ar-blue);
 }
 
+/* --- Order progress -------------------------------------------------------
+   Pending → Approved → In delivery → Delivered, drawn by
+   Views/Order/_OrderProgress for the order details page and, compact, for
+   each card on the order list. A row of numbered dots joined by
+   a rail on wide screens, a vertical timeline on phones. Done steps fill in
+   brand blue, the current one rings, a cancelled order ends on a red cross. */
+.order-progress{
+  display: flex;
+  margin: 0 0 var(--ar-stack-lg);
+  border: 1px solid var(--ar-line);
+  border-radius: var(--ar-radius);
+  background: var(--ar-surface);
+  box-shadow: var(--ar-shadow);
+  padding: var(--ar-stack-lg) var(--ar-gutter) var(--ar-stack-md);
+  list-style: none;
+  text-align: center;
+}
+
+/* two classes: list cards carry `… li` rules that would out-rank one */
+.order-progress .order-progress__step{
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-inline-size: 0;
+  padding: 0 4px;
+}
+
+/* the rail into each step from the one before it */
+.order-progress__step + .order-progress__step:before{
+  content: "";
+  position: absolute;
+  inset-block-start: 17px;
+  inset-inline-end: calc(50% + 22px);
+  inline-size: calc(100% - 44px);
+  block-size: 3px;
+  border-radius: 3px;
+  background: var(--ar-line);
+}
+
+.order-progress__step.is-done:before,
+.order-progress__step.is-current:before{
+  background: var(--ar-blue);
+}
+
+.order-progress__step.is-cancelled:before{
+  background: var(--ar-error);
+}
+
+.order-progress__dot{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 36px;
+  block-size: 36px;
+  margin-block-end: 6px;
+  border: 2px solid var(--ar-line);
+  border-radius: 50%;
+  background: var(--ar-surface);
+  font-size: var(--ar-fs-label);
+  font-weight: 700;
+  color: var(--ar-ink-muted);
+  transition: box-shadow var(--ar-transition);
+}
+
+.order-progress .is-done .order-progress__dot{
+  border-color: var(--ar-blue);
+  background: var(--ar-blue);
+  color: var(--ar-white);
+}
+
+.order-progress .is-current .order-progress__dot{
+  border-color: var(--ar-blue);
+  color: var(--ar-blue);
+  box-shadow: 0 0 0 5px var(--ar-blue-tint-strong);
+}
+
+.order-progress .is-cancelled .order-progress__dot{
+  border-color: var(--ar-error);
+  background: var(--ar-error);
+  color: var(--ar-white);
+}
+
+.order-progress__icon{
+  inline-size: 18px;
+  block-size: 18px;
+}
+
+/* the truck drives the way the steps run: leftwards in Arabic */
+[dir="rtl"] .order-progress__icon--truck{
+  transform: scaleX(-1);
+}
+
+.order-progress__label{
+  font-size: var(--ar-fs-label);
+  line-height: var(--ar-lh-label);
+  font-weight: 600;
+  color: var(--ar-ink-muted);
+}
+
+.order-progress .is-done .order-progress__label,
+.order-progress .is-current .order-progress__label{
+  color: var(--ar-ink);
+}
+
+.order-progress .is-current .order-progress__label{
+  color: var(--ar-blue);
+}
+
+.order-progress .is-cancelled .order-progress__label{
+  color: var(--ar-error);
+}
+
+.order-progress__date{
+  font-size: var(--ar-fs-label-sm);
+  line-height: var(--ar-lh-label-sm);
+  color: var(--ar-ink-muted);
+}
+
+/* The order list card: no box of its own, smaller dots, no dates, and it
+   stays a row on phones - the card is already narrow and four short labels fit. */
+.order-progress--compact{
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--ar-stack-sm) 0 var(--ar-stack-md);
+}
+
+.order-progress--compact .order-progress__step{
+  padding: 0 2px;
+}
+
+.order-progress--compact .order-progress__step + .order-progress__step:before{
+  inset-block-start: 13px;
+  inset-inline-end: calc(50% + 17px);
+  inline-size: calc(100% - 34px);
+  block-size: 2px;
+}
+
+.order-progress--compact .order-progress__dot{
+  inline-size: 28px;
+  block-size: 28px;
+  margin-block-end: 2px;
+  font-size: var(--ar-fs-label-sm);
+}
+
+.order-progress--compact .is-current .order-progress__dot{
+  box-shadow: 0 0 0 3px var(--ar-blue-tint-strong);
+}
+
+.order-progress--compact .order-progress__icon{
+  inline-size: 15px;
+  block-size: 15px;
+}
+
+.order-progress--compact .order-progress__label{
+  font-size: var(--ar-fs-label-sm);
+  line-height: var(--ar-lh-label-sm);
+}
+
+@media (max-width: 600px){
+  .order-details-page .order-progress{
+    flex-direction: column;
+    padding: var(--ar-stack-md);
+    text-align: start;
+  }
+
+  .order-details-page .order-progress__step{
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    /* the label takes the height a missing date leaves, so it stays level with the dot */
+    grid-template-rows: 1fr auto;
+    column-gap: var(--ar-stack-md);
+    align-items: center;
+    padding: 0 0 var(--ar-stack-md);
+  }
+
+  .order-details-page .order-progress__step:last-child{
+    padding-block-end: 0;
+  }
+
+  .order-details-page .order-progress__dot{
+    grid-row: span 2;
+    margin: 0;
+  }
+
+  .order-details-page .order-progress__step + .order-progress__step:before{
+    inset-block-start: auto;
+    inset-block-end: calc(100% - 2px);
+    inset-inline-start: 16.5px;
+    inset-inline-end: auto;
+    inline-size: 3px;
+    block-size: calc(var(--ar-stack-md) + 4px);
+  }
+}
+
 /* --- Address, payment and shipping ---------------------------------------
    Four blocks of the same kind, so they get one card each in a grid that
    fits as many columns as the width allows, instead of two 350px boxes
