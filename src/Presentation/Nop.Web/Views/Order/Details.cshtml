@@ -77,6 +77,12 @@
             </ul>
             @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.OrderDetailsPageOverview, additionalData = Model })
         </div>
+        @if (!Model.PrintMode)
+        {
+            var shippedOn = Model.Shipments.Select(s => s.ShippedDate ?? s.ReadyForPickupDate).Where(d => d.HasValue).Min();
+            var deliveredOn = Model.Shipments.Select(s => s.DeliveryDate).Where(d => d.HasValue).Max();
+            @await Html.PartialAsync("_OrderProgress", (Model.OrderStatus, shippedOn.HasValue, deliveredOn.HasValue, (DateTime?)Model.CreatedOn, shippedOn, deliveredOn))
+        }
         <div class="order-details-area">
             <div class="billing-info-wrap">
                 <div class="billing-info">

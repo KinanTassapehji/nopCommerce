@@ -17753,6 +17753,21 @@
   <LocaleResource Name="Order.OrderStatus">
     <Value>Order Status</Value>
   </LocaleResource>
+  <LocaleResource Name="Order.Progress.Pending">
+    <Value>Order placed</Value>
+  </LocaleResource>
+  <LocaleResource Name="Order.Progress.Approved">
+    <Value>Approved</Value>
+  </LocaleResource>
+  <LocaleResource Name="Order.Progress.InDelivery">
+    <Value>In delivery</Value>
+  </LocaleResource>
+  <LocaleResource Name="Order.Progress.Delivered">
+    <Value>Delivered</Value>
+  </LocaleResource>
+  <LocaleResource Name="Order.Progress.Cancelled">
+    <Value>Cancelled</Value>
+  </LocaleResource>
   <LocaleResource Name="Order.OrderTotal">
     <Value>Order Total</Value>
   </LocaleResource>

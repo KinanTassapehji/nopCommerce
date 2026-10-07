@@ -17740,6 +17740,21 @@
   <LocaleResource Name="Order.OrderStatus">
     <Value>حالة الطلب</Value>
   </LocaleResource>
+  <LocaleResource Name="Order.Progress.Pending">
+    <Value>تم استلام الطلب</Value>
+  </LocaleResource>
+  <LocaleResource Name="Order.Progress.Approved">
+    <Value>تمت الموافقة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Order.Progress.InDelivery">
+    <Value>قيد التوصيل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Order.Progress.Delivered">
+    <Value>تم التوصيل</Value>
+  </LocaleResource>
+  <LocaleResource Name="Order.Progress.Cancelled">
+    <Value>ملغى</Value>
+  </LocaleResource>
   <LocaleResource Name="Order.OrderTotal">
     <Value>إجمالي الطلب</Value>
   </LocaleResource>

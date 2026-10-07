@@ -8691,6 +8691,206 @@ html:has(.tm-terms-dialog[open]){
   color: var(--tm-teal-deep);
 }
 
+/* --- Order progress -------------------------------------------------------
+   Pending → Approved → In delivery → Delivered, drawn by
+   Views/Order/_OrderProgress for the order details page and, compact, for
+   each card on the order list. A row of numbered dots joined by
+   a rail on wide screens, a vertical timeline on phones. Done steps fill in
+   brand teal, the current one rings, a cancelled order ends on a red cross. */
+.order-progress{
+  display: flex;
+  margin: 0 0 var(--tm-stack-lg);
+  border: 1px solid var(--tm-line);
+  border-radius: var(--tm-radius);
+  background: var(--tm-surface);
+  box-shadow: var(--tm-shadow);
+  padding: var(--tm-stack-lg) var(--tm-gutter) var(--tm-stack-md);
+  list-style: none;
+  text-align: center;
+}
+
+/* two classes: list cards carry `… li` rules that would out-rank one */
+.order-progress .order-progress__step{
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-inline-size: 0;
+  padding: 0 4px;
+}
+
+/* the rail into each step from the one before it */
+.order-progress__step + .order-progress__step:before{
+  content: "";
+  position: absolute;
+  inset-block-start: 17px;
+  inset-inline-end: calc(50% + 22px);
+  inline-size: calc(100% - 44px);
+  block-size: 3px;
+  border-radius: 3px;
+  background: var(--tm-line);
+}
+
+.order-progress__step.is-done:before,
+.order-progress__step.is-current:before{
+  background: var(--tm-teal-deep);
+}
+
+.order-progress__step.is-cancelled:before{
+  background: var(--tm-error);
+}
+
+.order-progress__dot{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 36px;
+  block-size: 36px;
+  margin-block-end: 6px;
+  border: 2px solid var(--tm-line);
+  border-radius: 50%;
+  background: var(--tm-surface);
+  font-size: var(--tm-fs-label);
+  font-weight: 700;
+  color: var(--tm-ink-muted);
+  transition: box-shadow var(--tm-transition);
+}
+
+.order-progress .is-done .order-progress__dot{
+  border-color: var(--tm-teal-deep);
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
+}
+
+.order-progress .is-current .order-progress__dot{
+  border-color: var(--tm-teal-deep);
+  color: var(--tm-teal-deep);
+  box-shadow: 0 0 0 5px var(--tm-teal-tint-strong);
+}
+
+.order-progress .is-cancelled .order-progress__dot{
+  border-color: var(--tm-error);
+  background: var(--tm-error);
+  color: var(--tm-white);
+}
+
+.order-progress__icon{
+  inline-size: 18px;
+  block-size: 18px;
+}
+
+/* the truck drives the way the steps run: leftwards in Arabic */
+[dir="rtl"] .order-progress__icon--truck{
+  transform: scaleX(-1);
+}
+
+.order-progress__label{
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  font-weight: 600;
+  color: var(--tm-ink-muted);
+}
+
+.order-progress .is-done .order-progress__label,
+.order-progress .is-current .order-progress__label{
+  color: var(--tm-ink);
+}
+
+.order-progress .is-current .order-progress__label{
+  color: var(--tm-teal-deep);
+}
+
+.order-progress .is-cancelled .order-progress__label{
+  color: var(--tm-error);
+}
+
+.order-progress__date{
+  font-size: var(--tm-fs-label-sm);
+  line-height: var(--tm-lh-label-sm);
+  color: var(--tm-ink-muted);
+}
+
+/* The order list card: no box of its own, smaller dots, no dates, and it
+   stays a row on phones - the card is already narrow and four short labels fit. */
+.order-progress--compact{
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--tm-stack-sm) 0 var(--tm-stack-md);
+}
+
+.order-progress--compact .order-progress__step{
+  padding: 0 2px;
+}
+
+.order-progress--compact .order-progress__step + .order-progress__step:before{
+  inset-block-start: 13px;
+  inset-inline-end: calc(50% + 17px);
+  inline-size: calc(100% - 34px);
+  block-size: 2px;
+}
+
+.order-progress--compact .order-progress__dot{
+  inline-size: 28px;
+  block-size: 28px;
+  margin-block-end: 2px;
+  font-size: var(--tm-fs-label-sm);
+}
+
+.order-progress--compact .is-current .order-progress__dot{
+  box-shadow: 0 0 0 3px var(--tm-teal-tint-strong);
+}
+
+.order-progress--compact .order-progress__icon{
+  inline-size: 15px;
+  block-size: 15px;
+}
+
+.order-progress--compact .order-progress__label{
+  font-size: var(--tm-fs-label-sm);
+  line-height: var(--tm-lh-label-sm);
+}
+
+@media (max-width: 600px){
+  .order-details-page .order-progress{
+    flex-direction: column;
+    padding: var(--tm-stack-md);
+    text-align: start;
+  }
+
+  .order-details-page .order-progress__step{
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    /* the label takes the height a missing date leaves, so it stays level with the dot */
+    grid-template-rows: 1fr auto;
+    column-gap: var(--tm-stack-md);
+    align-items: center;
+    padding: 0 0 var(--tm-stack-md);
+  }
+
+  .order-details-page .order-progress__step:last-child{
+    padding-block-end: 0;
+  }
+
+  .order-details-page .order-progress__dot{
+    grid-row: span 2;
+    margin: 0;
+  }
+
+  .order-details-page .order-progress__step + .order-progress__step:before{
+    inset-block-start: auto;
+    inset-block-end: calc(100% - 2px);
+    inset-inline-start: 16.5px;
+    inset-inline-end: auto;
+    inline-size: 3px;
+    block-size: calc(var(--tm-stack-md) + 4px);
+  }
+}
+
 /* --- Address, payment and shipping ---------------------------------------
    Four blocks of the same kind, so they get one card each in a grid that
    fits as many columns as the width allows, instead of two 350px boxes
@@ -9816,9 +10016,10 @@ html:has(.tm-terms-dialog[open]){
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas:
-    "title status"
-    "date  date"
-    "total buttons";
+    "title    status"
+    "date     date"
+    "progress progress"
+    "total    buttons";
   align-items: center;
 }
 
@@ -9831,6 +10032,10 @@ html:has(.tm-terms-dialog[open]){
 
 .order-list-page .info{
   display: contents;
+}
+
+.order-list-page .order-progress{
+  grid-area: progress;
 }
 
 .order-list-page .info li.status,

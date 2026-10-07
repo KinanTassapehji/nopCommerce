@@ -1,4 +1,5 @@
-﻿@using Nop.Services
+﻿@using Nop.Core.Domain.Shipping
+@using Nop.Services
 @model CustomerOrderListModel
 @{
     Layout = "_ColumnsTwo";
@@ -51,6 +52,11 @@
                                 <span class="value order-total">@order.OrderTotal</span>
                             </li>
                         </ul>
+                        @*no dates: the list is a glance, the details page carries them*@
+                        @await Html.PartialAsync("_OrderProgress", (order.OrderStatusEnum,
+                            order.ShippingStatusEnum is ShippingStatus.PartiallyShipped or ShippingStatus.Shipped or ShippingStatus.Delivered,
+                            order.ShippingStatusEnum == ShippingStatus.Delivered,
+                            (DateTime?)null, (DateTime?)null, (DateTime?)null))
                         <div class="buttons">
                             @if (order.IsReturnRequestAllowed)
                             {

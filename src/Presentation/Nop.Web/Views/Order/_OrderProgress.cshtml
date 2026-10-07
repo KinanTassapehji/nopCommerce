@@ -1,0 +1,49 @@
+﻿@using Nop.Core.Domain.Orders
+@model (OrderStatus Status, bool Shipped, bool Delivered, DateTime? PlacedOn, DateTime? ShippedOn, DateTime? DeliveredOn)
+@{
+    //ponytail: milestones are read off the statuses the admin already sets - Processing
+    //is "approved", a shipped (or ready-for-pickup) shipment is "in delivery", a
+    //delivered shipment or a Complete order is "delivered". No approval date is stored,
+    //so that step shows none. The order list passes no dates and gets the compact row.
+    var compact = !Model.PlacedOn.HasValue;
+    var cancelled = Model.Status == OrderStatus.Cancelled;
+    var reached = Model.Delivered || Model.Status == OrderStatus.Complete ? 3
+        : Model.Shipped ? 2
+        : Model.Status != OrderStatus.Pending && !cancelled ? 1
+        : 0;
+    if (cancelled)
+        reached = Math.Min(reached, 2);
+    //24px line icons, stroked in currentColor so each state colours them from CSS
+    var milestones = new (string Key, DateTime? Date, string Icon)[]
+    {
+        ("Order.Progress.Pending", Model.PlacedOn,
+            "<path d=\"M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z\"/><path d=\"M3 6h18\"/><path d=\"M16 10a4 4 0 0 1-8 0\"/>"),
+        ("Order.Progress.Approved", null,
+            "<path d=\"M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z\"/><path d=\"m9 12 2 2 4-4\"/>"),
+        ("Order.Progress.InDelivery", Model.ShippedOn,
+            "<path d=\"M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2\"/><path d=\"M15 18H9\"/><path d=\"M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14\"/><circle cx=\"17\" cy=\"18\" r=\"2\"/><circle cx=\"7\" cy=\"18\" r=\"2\"/>"),
+        ("Order.Progress.Delivered", Model.DeliveredOn,
+            "<path d=\"m16 16 2 2 4-4\"/><path d=\"M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14\"/><path d=\"m7.5 4.27 9 5.15\"/><path d=\"M3.29 7 12 12l8.71-5\"/><path d=\"M12 22V12\"/>")
+    };
+    const string cancelIcon = "<path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/>";
+}
+<ol class="order-progress@(compact ? " order-progress--compact" : "")@(cancelled ? " is-cancelled" : "")" aria-label="@T("Order.OrderStatus")">
+    @for (var i = 0; i < milestones.Length; i++)
+    {
+        //a cancelled order keeps the steps it got through, and the next one becomes the cancellation
+        var isCancelStep = cancelled && i == reached + 1;
+        if (cancelled && i > reached + 1)
+            break;
+        var state = isCancelStep ? "cancelled" : i < reached ? "done" : i == reached ? (cancelled || i == 3 ? "done" : "current") : "todo";
+        <li class="order-progress__step is-@state" aria-current="@(i == reached && !cancelled ? "step" : null)">
+            <span class="order-progress__dot" aria-hidden="true">
+                <svg class="order-progress__icon@(i == 2 && !isCancelStep ? " order-progress__icon--truck" : "")" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">@Html.Raw(isCancelStep ? cancelIcon : milestones[i].Icon)</svg>
+            </span>
+            <span class="order-progress__label">@T(isCancelStep ? "Order.Progress.Cancelled" : milestones[i].Key)</span>
+            @if (!isCancelStep && i <= reached && milestones[i].Date is DateTime date)
+            {
+                <span class="order-progress__date">@date.ToString("d MMM yyyy")</span>
+            }
+        </li>
+    }
+</ol>
