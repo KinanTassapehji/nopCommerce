@@ -6279,17 +6279,24 @@ so the field stays visible beside the icon. */
    either way round. */
 .customer-info-page .customer-delete-account .delete-account-button,
 .address-list-page .buttons .delete-address-button,
-.order-details-page .page-title a.button-2.cancel-order-button{
+.order-details-page .actions button.button-2.cancel-order-button{
   border-color: var(--tm-error);
   color: var(--tm-error);
 }
 
 .customer-info-page .customer-delete-account .delete-account-button:hover,
 .address-list-page .buttons .delete-address-button:hover,
-.order-details-page .page-title a.button-2.cancel-order-button:hover{
+.order-details-page .actions button.button-2.cancel-order-button:hover{
   background: var(--tm-error);
   border-color: var(--tm-error);
   color: var(--tm-white);
+}
+
+/* The NopStation CancelOrder widget draws its own cancel button in the bottom
+   zone; with the built-in one beside reorder it is a second copy of the same
+   action, so it steps aside whenever the built-in one is there. */
+.order-details-page:has(#cancel_order) .actions:has(#cancelOrderButton){
+  display: none;
 }
 
 /* --- Empty results --------------------------------------------------------
