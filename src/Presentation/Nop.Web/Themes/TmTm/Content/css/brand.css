@@ -6869,6 +6869,29 @@ so the field stays visible beside the icon. */
   text-decoration: none;
 }
 
+/* order placed (Checkout/Completed): the order number as a chip under the lead */
+.tm-order-number{
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 10px;
+  margin: var(--tm-stack-lg) 0 0;
+  padding: 10px 18px;
+  border: 1px dashed var(--tm-teal-border);
+  border-radius: var(--tm-radius);
+  background: var(--tm-teal-tint);
+  color: var(--tm-ink-muted);
+  font-size: var(--tm-fs-label);
+}
+
+.tm-order-number strong{
+  color: var(--tm-teal-deep);
+  font-size: 1.35em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
 @media (min-width: 1001px){
   .tm-welcome{
     margin-block: 48px;
@@ -6966,7 +6989,8 @@ so the field stays visible beside the icon. */
 .html-login-page body,
 .html-registration-page body,
 .html-password-recovery-page body,
-.html-registration-result-page body{
+.html-registration-result-page body,
+.html-order-completed-page body{
   background:
     radial-gradient(900px 320px at 50% 0, var(--tm-teal-tint) 0%, transparent 72%)
     no-repeat,

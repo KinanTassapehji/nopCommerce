@@ -1,0 +1,39 @@
+﻿@model CheckoutCompletedModel
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Checkout").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-checkout-page");
+    NopHtml.AppendPageCssClassParts("html-order-completed-page");
+}
+@*TmTm order placed - the registration welcome card (Customer/RegisterResult): the check draws
+    itself, the order number sits in a chip, and the two ways on are the order and the store.*@
+<div class="page checkout-page order-completed-page">
+    @if (!Model.OnePageCheckoutEnabled)
+    {
+        @await Component.InvokeAsync(typeof(CheckoutProgressViewComponent), new { step = CheckoutProgressStep.Complete })
+    }
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CheckoutCompletedTop, additionalData = Model })
+    <section class="tm-welcome is-done order-completed">
+        <div class="tm-welcome-mark" aria-hidden="true">
+            <span class="tm-welcome-burst"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <svg viewBox="0 0 64 64" focusable="false"><circle cx="32" cy="32" r="30" /><path d="M19 33.5 28 42l17-19" /></svg>
+        </div>
+
+        <h1 class="tm-welcome-title">@T("Checkout.ThankYou")</h1>
+        <p class="tm-welcome-lead">@T("Checkout.YourOrderHasBeenSuccessfullyProcessed")</p>
+
+        <p class="tm-order-number">
+            <span>@T("Checkout.OrderNumber")</span>
+            <strong dir="ltr">@Model.CustomOrderNumber</strong>
+        </p>
+
+        <div class="tm-welcome-actions">
+            <a href="@Url.RouteUrl(NopRouteNames.Standard.ORDER_DETAILS, new { orderID = Model.OrderId })" class="button-1">@T("Order.OrderInformation")</a>
+            <a href="@Url.RouteUrl(NopRouteNames.General.HOMEPAGE)" class="button-2 order-completed-continue-button">@T("Checkout.ThankYou.Continue")</a>
+        </div>
+    </section>
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CheckoutCompletedBottom, additionalData = Model })
+</div>
