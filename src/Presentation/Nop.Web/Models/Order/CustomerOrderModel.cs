@@ -12,5 +12,6 @@ public partial record CustomerOrderModel : BaseNopEntityModel
     public string OrderStatus { get; set; }
     public string PaymentStatus { get; set; }
     public string ShippingStatus { get; set; }
+    public Nop.Core.Domain.Shipping.ShippingStatus ShippingStatusEnum { get; set; }
     public DateTime CreatedOn { get; set; }
 }

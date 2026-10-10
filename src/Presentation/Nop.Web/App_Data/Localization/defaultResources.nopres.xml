@@ -11886,16 +11886,16 @@
     <Value>Browse the store while it is closed for maintenance.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationCoreConfiguration">
-    <Value>Change the NopStation core plugin's settings.</Value>
+    <Value>Change the settings shared by the store's add-ons.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationCoreLicense">
-    <Value>See and change NopStation plugin licenses.</Value>
+    <Value>See and change the add-on licenses.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationFeatures">
-    <Value>Turn NopStation features on or off.</Value>
+    <Value>Turn add-on features on or off.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ShowNopStationDocumentations">
-    <Value>See the NopStation help and documentation links.</Value>
+    <Value>See the add-ons' help and documentation links.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Description.ManageNopStationSmsConfiguration">
     <Value>Configure SMS sending.</Value>
@@ -17753,6 +17753,21 @@
   <LocaleResource Name="Order.OrderStatus">
     <Value>Order Status</Value>
   </LocaleResource>
+  <LocaleResource Name="Order.Progress.Pending">
+    <Value>Order placed</Value>
+  </LocaleResource>
+  <LocaleResource Name="Order.Progress.Approved">
+    <Value>Approved</Value>
+  </LocaleResource>
+  <LocaleResource Name="Order.Progress.InDelivery">
+    <Value>In delivery</Value>
+  </LocaleResource>
+  <LocaleResource Name="Order.Progress.Delivered">
+    <Value>Delivered</Value>
+  </LocaleResource>
+  <LocaleResource Name="Order.Progress.Cancelled">
+    <Value>Cancelled</Value>
+  </LocaleResource>
   <LocaleResource Name="Order.OrderTotal">
     <Value>Order Total</Value>
   </LocaleResource>
@@ -19819,5 +19834,71 @@
   </LocaleResource>
   <LocaleResource Name="Mobile.Nav.Products">
     <Value>Products</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.CustomerRoles.Permissions.Category.NopStation">
+    <Value>Extra features</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageAdminReportExporter">
+    <Value>Report export. Manage</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageAdminReportExporterConfiguration">
+    <Value>Report export. Settings</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageCustomerReminders">
+    <Value>Customer reminders. Manage</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationCancelOrder">
+    <Value>Order cancellation. Manage</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationCoreConfiguration">
+    <Value>Add-ons. Settings</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationCoreLicense">
+    <Value>Add-ons. Licenses</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationFeatures">
+    <Value>Add-ons. Features</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ShowNopStationDocumentations">
+    <Value>Add-ons. Help and documentation</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationSmsConfiguration">
+    <Value>SMS. Settings</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationSmsProviders">
+    <Value>SMS. Providers</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationSmsQueue">
+    <Value>SMS. Queue</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationSmsTemplates">
+    <Value>SMS. Templates</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationOCarousels">
+    <Value>Product carousels. Manage</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationPictureZoom">
+    <Value>Picture zoom. Manage</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationProduct360View">
+    <Value>360° product view. Manage</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationProductRibbon">
+    <Value>Product ribbons. Manage</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationProductTab">
+    <Value>Product tabs. Manage</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationSliders">
+    <Value>Sliders. Manage</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationMegaMenu">
+    <Value>Mega menu. Manage</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationPrevNextProduct">
+    <Value>Previous/next product. Manage</Value>
+  </LocaleResource>
+  <LocaleResource Name="Security.Permission.ManageNopStationQuickView">
+    <Value>Quick view. Manage</Value>
   </LocaleResource>
 </Language>
