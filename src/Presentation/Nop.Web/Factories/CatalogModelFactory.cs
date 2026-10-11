@@ -20,6 +20,7 @@ using Nop.Services.Localization;
 using Nop.Services.Media;
 using Nop.Services.Orders;
 using Nop.Services.Seo;
+using Nop.Services.Stores;
 using Nop.Services.Vendors;
 using Nop.Web.Framework.Events;
 using Nop.Web.Framework.Mvc.Routing;
@@ -49,6 +50,7 @@ public partial class CatalogModelFactory : ICatalogModelFactory
     protected readonly IManufacturerService _manufacturerService;
     protected readonly IManufacturerTemplateService _manufacturerTemplateService;
     protected readonly INopUrlHelper _nopUrlHelper;
+    protected readonly IStoreMappingService _storeMappingService;
     protected readonly IOrderReportService _orderReportService;
     protected readonly IPictureService _pictureService;
     protected readonly IProductModelFactory _productModelFactory;
@@ -87,6 +89,7 @@ public partial class CatalogModelFactory : ICatalogModelFactory
         IManufacturerService manufacturerService,
         IManufacturerTemplateService manufacturerTemplateService,
         INopUrlHelper nopUrlHelper,
+        IStoreMappingService storeMappingService,
         IOrderReportService orderReportService,
         IPictureService pictureService,
         IProductModelFactory productModelFactory,
@@ -120,6 +123,7 @@ public partial class CatalogModelFactory : ICatalogModelFactory
         _manufacturerService = manufacturerService;
         _manufacturerTemplateService = manufacturerTemplateService;
         _nopUrlHelper = nopUrlHelper;
+        _storeMappingService = storeMappingService;
         _orderReportService = orderReportService;
         _pictureService = pictureService;
         _productModelFactory = productModelFactory;
@@ -1512,19 +1516,29 @@ public partial class CatalogModelFactory : ICatalogModelFactory
 
         var store = await _storeContext.GetCurrentStoreAsync();
         var pageIndex = command.PageNumber - 1;
+
+        //the same gate the home bands apply: this store and on sale today - the service
+        //queries only check published (products carry no ACL of their own in this version)
+        async Task<List<Product>> visible(IEnumerable<Product> source) => await source.ToAsyncEnumerable()
+            .WhereAwait(async p => await _storeMappingService.AuthorizeAsync(p))
+            .Where(p => p.VisibleIndividually && _productService.ProductIsAvailable(p))
+            .ToListAsync();
+
         IPagedList<Product> products;
         switch (collection?.ToLowerInvariant())
         {
             case "deals":
                 //the same list the home band draws its ten from, paged
-                products = new PagedList<Product>(await _productService.GetDiscountedProductsAsync(), pageIndex, command.PageSize);
+                products = new PagedList<Product>(await visible(await _productService.GetDiscountedProductsAsync()), pageIndex, command.PageSize);
                 break;
             case "featured":
-                products = new PagedList<Product>(await _productService.GetAllProductsDisplayedOnHomepageAsync(), pageIndex, command.PageSize);
+                products = new PagedList<Product>(await visible(await _productService.GetAllProductsDisplayedOnHomepageAsync()), pageIndex, command.PageSize);
                 break;
             case "bestsellers":
+                //ponytail: the report is paged first and filtered after, so a page can come up short
+                //when a bestseller is hidden from this store; it is the home band's own approach
                 var report = await _orderReportService.BestSellersReportAsync(storeId: store.Id, pageIndex: pageIndex, pageSize: command.PageSize);
-                var ordered = await _productService.GetProductsByIdsAsync(report.Select(line => line.ProductId).ToArray());
+                var ordered = await visible(await _productService.GetProductsByIdsAsync(report.Select(line => line.ProductId).ToArray()));
                 products = new PagedList<Product>(ordered, pageIndex, command.PageSize, report.TotalCount);
                 break;
             default:
