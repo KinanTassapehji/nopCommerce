@@ -99,12 +99,8 @@
   --tm-fs-card-title: 15px;
   --tm-lh-card-title: 22px;
 
-  /* --- Canvas -----------------------------------------------------------
-     The page behind the cards: the brand teal at 4% over white, with the
-     logo's rounded square tiled faintly across it. White surfaces (cards,
-     sheets, the tab bar) sit on it and read as raised without borders. */
+  /* --- Canvas: the page behind the cards, the brand teal at 4% over white --- */
   --tm-canvas: #f3f8f8;
-  --tm-canvas-pattern: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20width='72'%20height='72'%20viewBox='0%200%2072%2072'%20fill='none'%20stroke='%2302787e'%20stroke-opacity='0.07'%20stroke-width='1.2'><rect%20x='18'%20y='18'%20width='36'%20height='36'%20rx='9'/></svg>");
 }
 
 /* --------------------------------------------------------------------------

@@ -11605,15 +11605,11 @@ html.tm-tour-open body{
    One canvas for every page, so the store feels like one app from the home
    page to the checkout. The variation a page needs comes from its surfaces -
    the home band, the product sheet, the cards - not from a different colour
-   behind each one. A soft teal wash at the top ties the canvas to the bars;
-   the pattern is the logo's rounded square at 7% stroke, felt more than seen. */
+   behind each one. A soft teal wash at the top ties the canvas to the bars. */
 body{
   background-color: var(--tm-canvas);
-  background-image:
-    radial-gradient(900px 420px at 50% -120px, rgba(0, 154, 149, 0.14), transparent 70%),
-    var(--tm-canvas-pattern);
-  background-repeat: no-repeat, repeat;
-  background-attachment: scroll, scroll;
+  background-image: radial-gradient(900px 420px at 50% -120px, rgba(0, 154, 149, 0.14), transparent 70%);
+  background-repeat: no-repeat;
 }
 
 .master-wrapper-content{
