@@ -19745,6 +19745,15 @@
   <LocaleResource Name="Account.Profile.SignIn">
     <Value>Sign in or create an account</Value>
   </LocaleResource>
+  <LocaleResource Name="Footer.Shop">
+    <Value>Shop</Value>
+  </LocaleResource>
+  <LocaleResource Name="Footer.Help">
+    <Value>Help</Value>
+  </LocaleResource>
+  <LocaleResource Name="Footer.Tagline">
+    <Value>Everything your home needs, in one place. Fast delivery and cash on delivery.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.HomepageFeatures">
     <Value>Home page features</Value>
   </LocaleResource>

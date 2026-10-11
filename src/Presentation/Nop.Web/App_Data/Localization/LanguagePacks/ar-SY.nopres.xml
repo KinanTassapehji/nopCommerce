@@ -23888,6 +23888,15 @@
   <LocaleResource Name="Account.Profile.SignIn">
     <Value>سجّل دخولك أو أنشئ حساباً</Value>
   </LocaleResource>
+  <LocaleResource Name="Footer.Shop">
+    <Value>تسوق</Value>
+  </LocaleResource>
+  <LocaleResource Name="Footer.Help">
+    <Value>المساعدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Footer.Tagline">
+    <Value>كل ما يحتاجه بيتك في مكان واحد. توصيل سريع والدفع عند الاستلام.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.HomepageFeatures">
     <Value>مميزات الصفحة الرئيسية</Value>
   </LocaleResource>

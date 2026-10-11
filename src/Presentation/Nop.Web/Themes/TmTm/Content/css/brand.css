@@ -11660,3 +11660,180 @@ body{
     background: rgba(255, 255, 255, 0.94);
   }
 }
+
+/* ==========================================================================
+   Desktop shell (2026-10-11) - the row of categories under the bar and the
+   footer with columns, the two things every large store (noon, Amazon) keeps
+   on a wide screen and this one lacked. Phones keep the tab bar and the
+   one-line footer.
+   ========================================================================== */
+
+/* --- Category row ------------------------------------------------------------ */
+.tm-catnav{
+  display: none;
+}
+
+@media (min-width: 1001px){
+
+  /* The bar grows a second row; everything that offsets against it follows. */
+  :root{
+    --tm-header-h: 124px;
+  }
+
+  .header{
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  .tm-catnav{
+    order: 9;
+    flex: 1 1 100%;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-block-start: 4px;
+    min-height: 44px;
+    border-block-start: 1px solid rgba(2, 120, 126, 0.08);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tm-catnav::-webkit-scrollbar{
+    display: none;
+  }
+
+  .tm-catnav a{
+    flex: 0 0 auto;
+    position: relative;
+    padding: 10px 14px;
+    border-radius: var(--tm-radius);
+    color: var(--tm-ink);
+    font-size: var(--tm-fs-label);
+    line-height: var(--tm-lh-label);
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background var(--tm-transition), color var(--tm-transition);
+  }
+
+  .tm-catnav a:hover,
+  .tm-catnav a:focus-visible{
+    background: var(--tm-teal-tint);
+    color: var(--tm-teal-deep);
+    text-decoration: none;
+  }
+
+  /* The brand rule under the current one, the way the band titles carry it. */
+  .tm-catnav a.active{
+    color: var(--tm-teal-deep);
+  }
+
+  .tm-catnav a.active::after{
+    content: "";
+    position: absolute;
+    inset-inline: 14px;
+    inset-block-end: 4px;
+    block-size: 3px;
+    border-radius: 999px;
+    background: var(--tm-gradient);
+  }
+
+  .tm-catnav-gap{
+    flex: 1 1 auto;
+  }
+
+  .tm-catnav-deal{
+    color: var(--tm-teal-deep);
+  }
+
+  /* --- Category tiles: a little larger where there is room ------------------- */
+  :is(.home-page-category-grid, .sub-category-grid) .picture{
+    max-inline-size: 150px;
+  }
+}
+
+/* --- Footer with columns ------------------------------------------------------
+   One row of four: the store in a line, what to shop, where to get help, the
+   account. Stacked two to a row on a phone, where the tab bar already carries
+   the first and the last. */
+.footer-upper{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tm-stack-lg) var(--tm-gutter);
+  inline-size: min(100%, 1200px);
+  margin-inline: auto;
+  padding: 36px var(--tm-margin-mobile) 28px;
+  text-align: start;
+}
+
+.footer-brand{
+  grid-column: 1 / -1;
+}
+
+.footer-brand img{
+  display: block;
+  inline-size: auto;
+  block-size: 40px;
+  margin-block-end: 12px;
+}
+
+.footer-brand p{
+  max-inline-size: 36ch;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: var(--tm-fs-label);
+  line-height: 22px;
+}
+
+.footer-block .title{
+  margin: 0 0 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: var(--tm-fs-body);
+  line-height: var(--tm-lh-body);
+  font-weight: 700;
+  color: var(--tm-white);
+  text-align: start;
+}
+
+.footer-block .list{
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-block .list a{
+  display: inline-block;
+  padding: 2px 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  text-decoration: none;
+}
+
+.footer-block .list a:hover{
+  color: var(--tm-white);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (min-width: 1001px){
+
+  .footer-upper{
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    padding-inline: 0;
+    padding-block: 44px 36px;
+  }
+
+  .footer-brand{
+    grid-column: auto;
+  }
+
+  .footer-lower{
+    inline-size: min(100%, 1200px);
+    margin-inline: auto;
+  }
+}

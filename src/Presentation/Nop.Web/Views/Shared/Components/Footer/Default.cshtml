@@ -5,8 +5,59 @@
 @using Nop.Core.Domain.Topics
 
 @inject IWorkContext workContext
+@inject IStoreContext storeContext
+@inject Nop.Services.Catalog.ICategoryService categoryService
+@inject Nop.Services.Seo.IUrlRecordService urlRecordService
+@inject Nop.Services.Localization.ILocalizationService localizationService
+@inject Nop.Services.Topics.ITopicService topicService
+
+@{
+    //the footer's columns: the store in a line, the top categories, the help topics
+    //the admin publishes (Content management > Topics), and the account pages
+    var footerStore = await storeContext.GetCurrentStoreAsync();
+    var footerCategories = await categoryService.GetAllCategoriesByParentCategoryIdAsync(0);
+    var helpTopics = (await topicService.GetAllTopicsAsync(footerStore.Id))
+        .Where(t => t.SystemName is "AboutUs" or "ShippingInfo" or "PrivacyInfo" or "ConditionsOfUse")
+        .OrderBy(t => t.DisplayOrder).ToList();
+}
 
 <footer class="footer">
+    <section class="footer-upper">
+        <div class="footer-brand">
+            <img src="~/Themes/TmTm/Content/images/logo-white.png" alt="@Model.StoreName" loading="lazy">
+            <p>@T("Footer.Tagline")</p>
+        </div>
+        <div class="footer-block">
+            <h2 class="title">@T("Footer.Shop")</h2>
+            <ul class="list">
+                @foreach (var category in footerCategories)
+                {
+                    <li><a href="@(await NopUrl.RouteGenericUrlAsync<Nop.Core.Domain.Catalog.Category>(new { SeName = await urlRecordService.GetSeNameAsync(category) }))">@(await localizationService.GetLocalizedAsync(category, c => c.Name))</a></li>
+                }
+                <li><a href="@Url.RouteUrl(NopRouteNames.General.COLLECTION, new { collection = "deals" })">@T("Homepage.Deals")</a></li>
+                <li><a href="@Url.RouteUrl(NopRouteNames.General.NEW_PRODUCTS)">@T("Products.NewProducts")</a></li>
+            </ul>
+        </div>
+        <div class="footer-block">
+            <h2 class="title">@T("Footer.Help")</h2>
+            <ul class="list">
+                <li><a href="@Url.RouteUrl(NopRouteNames.General.CONTACT_US)">@T("ContactUs")</a></li>
+                @foreach (var topic in helpTopics)
+                {
+                    <li><a href="@(await NopUrl.RouteTopicUrlAsync(topic.SystemName))">@(await localizationService.GetLocalizedAsync(topic, t => t.Title))</a></li>
+                }
+            </ul>
+        </div>
+        <div class="footer-block">
+            <h2 class="title">@T("Account.MyAccount")</h2>
+            <ul class="list">
+                <li><a href="@Url.RouteUrl(NopRouteNames.General.CUSTOMER_INFO)">@T("Account.CustomerInfo")</a></li>
+                <li><a href="@Url.RouteUrl(NopRouteNames.General.CUSTOMER_ORDERS)">@T("Account.CustomerOrders")</a></li>
+                <li><a href="@Url.RouteUrl(NopRouteNames.General.CUSTOMER_ADDRESSES)">@T("Account.CustomerAddresses")</a></li>
+                <li><a href="@Url.RouteUrl(NopRouteNames.General.CART)">@T("ShoppingCart")</a></li>
+            </ul>
+        </div>
+    </section>
     <section class="footer-lower">
         <div class="footer-info">
             <span class="footer-disclaimer">@T("Content.CopyrightNotice", DateTime.Now.Year, Model.StoreName)</span>
