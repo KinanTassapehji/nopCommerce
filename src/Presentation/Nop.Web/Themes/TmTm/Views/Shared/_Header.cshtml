@@ -157,6 +157,20 @@
         //The home band does not leave: it folds to the search pill once the page
         //is scrolled (brand.css, .tm-header-compact) and opens again at the top.
         var home = header.classList.contains('tm-home-header');
+        //how far the band slides up to leave only the search pill: the pill's offset
+        //inside the band, less the band's top padding
+        var searchBox = header.querySelector('.search-box');
+        function measureFold() {
+            if (!home || !searchBox)
+                return;
+            var pad = parseFloat(getComputedStyle(header).paddingTop) || 0;
+            //both rectangles carry the band's transform, so the difference holds whether it is folded or not
+            var fold = searchBox.getBoundingClientRect().top - header.getBoundingClientRect().top - pad;
+            if (fold > 0)
+                header.style.setProperty('--tm-fold', fold + 'px');
+        }
+        measureFold();
+        window.addEventListener('resize', measureFold);
 
         window.addEventListener('scroll', function () {
             if (ticking)
