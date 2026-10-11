@@ -10873,43 +10873,42 @@ button{
     background: linear-gradient(180deg, var(--tm-teal-tint) 0%, var(--tm-surface) 100%);
   }
 
-  /* Band titles: app size, and a glyph in place of the gradient bar - the
-     bar is a desktop flourish; at phone width a mark says what the band is
-     before the words do. Literal characters, not escapes (the bundler hangs
-     on some CSS escapes). */
+  /* Band titles: app size, and a mark in place of the gradient bar. The mark
+     is the brand's own rounded square on the brand gradient (decorative use,
+     as the guideline allows), with a white stroke glyph drawn in the same
+     hand as the tab bar icons - one per band, nothing borrowed. */
   .home-page .page-body > * > .title{
     font-size: 21px;
     line-height: 28px;
   }
 
   .home-page .page-body > * > .title:before{
-    content: "✨";
-    inline-size: auto;
-    block-size: auto;
-    border-radius: 0;
-    background: none;
-    font-size: 22px;
-    line-height: 1;
+    content: "";
+    inline-size: 30px;
+    block-size: 30px;
+    border-radius: 9px;
+    background: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23fff'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'><path%20d='M12%203l1.8%205.2L19%2010l-5.2%201.8L12%2017l-1.8-5.2L5%2010l5.2-1.8z'/><path%20d='M19%2016l.6%201.7%201.7.6-1.7.6-.6%201.7-.6-1.7-1.7-.6%201.7-.6z'/></svg>") center / 18px 18px no-repeat, var(--tm-gradient-diagonal);
+    box-shadow: 0 4px 10px rgba(2, 120, 126, 0.25);
   }
 
   .home-page .page-body > .home-page-category-grid > .title:before{
-    content: "🛍️";
+    background-image: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23fff'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'><rect%20x='3.5'%20y='3.5'%20width='7'%20height='7'%20rx='2'/><rect%20x='13.5'%20y='3.5'%20width='7'%20height='7'%20rx='2'/><rect%20x='3.5'%20y='13.5'%20width='7'%20height='7'%20rx='2'/><rect%20x='13.5'%20y='13.5'%20width='7'%20height='7'%20rx='2'/></svg>"), var(--tm-gradient-diagonal);
   }
 
   .home-page .page-body > .home-page-deals > .title:before{
-    content: "🔥";
+    background-image: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23fff'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'><path%20d='M3%2012V4a1%201%200%20011-1h8l9%209-9%209z'/><circle%20cx='7.5'%20cy='7.5'%20r='1.4'/></svg>"), var(--tm-gradient-diagonal);
   }
 
   .home-page .page-body > .home-page-product-grid > .title:before{
-    content: "⭐";
+    background-image: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23fff'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'><path%20d='M12%203l2.7%205.6%206.1.8-4.5%204.3%201.2%206.1L12%2016.9l-5.5%202.9%201.2-6.1L3.2%209.4l6.1-.8z'/></svg>"), var(--tm-gradient-diagonal);
   }
 
   .home-page .page-body > .bestsellers > .title:before{
-    content: "🏆";
+    background-image: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23fff'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'><path%20d='M4%2020h16'/><path%20d='M7%2020v-7M12%2020V5M17%2020v-10'/></svg>"), var(--tm-gradient-diagonal);
   }
 
   .home-page .page-body > .block-manufacturer-navigation > .title:before{
-    content: "🏷️";
+    background-image: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23fff'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'><circle%20cx='12'%20cy='9'%20r='5'/><path%20d='M8.6%2013.2%207.5%2021l4.5-2.4%204.5%202.4-1.1-7.8'/></svg>"), var(--tm-gradient-diagonal);
   }
 
   /* --- Trust strip: one scrolling row of pills --------------------------------
