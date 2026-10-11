@@ -11621,9 +11621,32 @@ body{
   background: linear-gradient(180deg, var(--tm-teal-tint) 0%, rgba(255, 255, 255, 0) 100%);
 }
 
-.product-essential > .overview,
 .tm-tour{
   background-color: var(--tm-surface);
+}
+
+/* The product page on a desktop: the reading column sits on the canvas and the
+   buy box is the one raised surface - a soft white card, no hairline. On phones
+   the column is the white sheet under the hero (the 600px block further up). */
+@media (min-width: 601px){
+
+  .tm-buybox{
+    border-color: transparent;
+    background: var(--tm-surface);
+    box-shadow: 0 2px 14px rgba(2, 120, 126, 0.08);
+  }
+}
+
+@media (max-width: 600px){
+
+  .product-essential > .overview{
+    background-color: var(--tm-surface);
+  }
+}
+
+/* The base sheet's grey breadcrumb strip reads as a smudge on the tint. */
+.breadcrumb{
+  background: transparent;
 }
 
 /* The glass bars let the canvas through; a touch more white keeps them crisp. */
