@@ -10843,6 +10843,37 @@ button{
     flex: 1 1 100%;
   }
 
+  /* Scrolled, the band folds to the search pill (_Header.cshtml toggles the
+     class past 24px): greeting and logo lose their row, the padding closes up
+     and the corners flatten, so what stays stuck is one 60px bar - the way
+     the reference apps keep search in reach without a band in the way. */
+  .header.tm-home-header{
+    transition: padding var(--tm-transition), border-radius var(--tm-transition), box-shadow var(--tm-transition);
+  }
+
+  .header.tm-home-header .tm-hello,
+  .header.tm-home-header .header-logo{
+    transition: opacity var(--tm-transition);
+  }
+
+  .header.tm-home-header.tm-header-compact{
+    row-gap: 0;
+    padding-block: 8px 10px;
+    border-end-start-radius: 18px;
+    border-end-end-radius: 18px;
+    box-shadow: var(--tm-shadow);
+  }
+
+  .header.tm-home-header.tm-header-compact .tm-hello,
+  .header.tm-home-header.tm-header-compact .header-logo{
+    display: none;
+  }
+
+  .header.tm-home-header.tm-header-compact .search-box input.search-box-text{
+    block-size: 44px;
+    min-height: 44px;
+  }
+
   .header.tm-home-header .search-box form{
     background: var(--tm-surface);
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14);

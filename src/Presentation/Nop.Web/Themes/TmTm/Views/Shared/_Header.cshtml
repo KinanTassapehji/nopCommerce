@@ -154,6 +154,9 @@
         var minDelta = 8;
         var last = window.scrollY;
         var ticking = false;
+        //The home band does not leave: it folds to the search pill once the page
+        //is scrolled (brand.css, .tm-header-compact) and opens again at the top.
+        var home = header.classList.contains('tm-home-header');
 
         window.addEventListener('scroll', function () {
             if (ticking)
@@ -161,13 +164,17 @@
             ticking = true;
             requestAnimationFrame(function () {
                 var y = Math.max(window.scrollY, 0);
-                if (Math.abs(y - last) > minDelta) {
+                if (home)
+                    header.classList.toggle('tm-header-compact', y > 24);
+                else if (Math.abs(y - last) > minDelta) {
                     header.classList.toggle('tm-header-hidden', y > last && y > revealFrom);
                     last = y;
                 }
                 ticking = false;
             });
         }, { passive: true });
+        if (home && window.scrollY > 24)
+            header.classList.add('tm-header-compact');
 
         //An open search field must never scroll away with the bar.
         header.addEventListener('focusin', function () {
