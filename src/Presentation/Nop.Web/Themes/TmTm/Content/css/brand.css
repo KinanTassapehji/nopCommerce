@@ -11093,6 +11093,12 @@ html.tm-tour-open body{
   animation: tm-fade-in 0.3s ease both;
 }
 
+/* Rendered hidden; the script shows it or leaves it. A class rule outranks
+   the UA's [hidden], so without this the seen tour painted under the bars. */
+.tm-tour[hidden]{
+  display: none;
+}
+
 .tm-tour.tm-tour-closing{
   animation: tm-fade-out 0.3s ease both;
   pointer-events: none;
@@ -11286,5 +11292,205 @@ html.tm-tour-open body{
 
   .tm-tour-track{
     scroll-behavior: auto;
+  }
+}
+
+
+/* --- Product page on a phone: hero and sheet ---------------------------------
+   The way BeeOrder and Movo open a product: the picture edge to edge under
+   the bar, the category as a floating chip over it, and the words on a white
+   sheet whose rounded top overlaps the picture. The grey well, the 20px
+   gutters round the picture, the thumbnail strip and the frame round the buy
+   box were four kinds of air between the shopper and the price. */
+@media (max-width: 600px){
+
+  .html-product-details-page .master-wrapper-content{
+    padding-block-start: 0;
+  }
+
+  .product-details-page{
+    padding-block-start: 0;
+  }
+
+  .product-details-page .page-body{
+    position: relative;
+  }
+
+  .product-essential{
+    gap: 0;
+    margin-block-end: 0;
+  }
+
+  .product-essential > .gallery{
+    margin-inline: calc(-1 * var(--tm-margin-mobile));
+  }
+
+  .tm-gallery-stage{
+    border-radius: 0 0 28px 28px;
+  }
+
+  .tm-slide{
+    padding: 0;
+  }
+
+  .tm-slide img{
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  /* the counter chip says there is more; a swipe is the way through */
+  .tm-gallery-thumbs{
+    display: none;
+  }
+
+  .tm-gallery-counter{
+    inset-block-end: 40px;
+  }
+
+  .tm-gallery-open{
+    inset-block-end: 36px;
+  }
+
+  /* The category trail floats over the top of the picture as a chip, where
+     the reference apps put their back and share buttons. */
+  .html-product-details-page .breadcrumb{
+    position: absolute;
+    inset-block-start: 12px;
+    inset-inline: var(--tm-margin-mobile);
+    z-index: 3;
+    inline-size: auto;
+    max-inline-size: calc(100% - 2 * var(--tm-margin-mobile));
+  }
+
+  .html-product-details-page .breadcrumb ul{
+    inline-size: max-content;
+    max-inline-size: 100%;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: var(--tm-shadow);
+  }
+
+  /* The sheet: pulled up over the picture's rounded bottom. */
+  .product-essential > .overview{
+    position: relative;
+    z-index: 2;
+    margin-block-start: -28px;
+    margin-inline: calc(-1 * var(--tm-margin-mobile));
+    padding: 22px var(--tm-margin-mobile) 0;
+    border-radius: 28px 28px 0 0;
+    background: var(--tm-surface);
+  }
+
+  .overview .product-name h1{
+    font-size: 22px;
+    line-height: 30px;
+  }
+
+  .tm-identity{
+    margin-block-end: 12px;
+    font-size: var(--tm-fs-label-sm);
+    line-height: var(--tm-lh-label-sm);
+  }
+}
+
+/* --- Product page on phones and tablets: tighter reading column ---------- */
+@media (max-width: 1000px){
+
+  /* The buy box loses its frame: the sheet is the frame now. */
+  .tm-buybox{
+    margin-block-end: 8px;
+    border: 0;
+    padding: 0;
+  }
+
+  .tm-buybox .short-description{
+    margin-block-start: 10px;
+    font-size: var(--tm-fs-label);
+    line-height: 22px;
+    color: var(--tm-ink-muted);
+  }
+
+  /* Options: label and choices as one compact group each, not 80px apiece. */
+  .attributes{
+    margin-block-start: 12px;
+  }
+
+  .attributes dt{
+    margin-block-end: 2px;
+    font-size: var(--tm-fs-label-sm);
+    line-height: var(--tm-lh-label-sm);
+    color: var(--tm-ink-muted);
+  }
+
+  .attributes dd{
+    margin-block-end: 6px;
+  }
+
+  .attributes li{
+    margin-block: 2px 4px;
+  }
+
+  .add-to-cart{
+    margin-block: 14px 12px;
+  }
+}
+
+/* --- Product page: option choices as chips, one buy control at a time -------
+   A checkbox row with a 44px target under a bold label spent 80px per option
+   on a phone; as a chip (label, choices on one wrapping row) each option is a
+   line. :has(input:checked) paints the chosen one - the input itself stays,
+   so the form posts exactly what it did. And while the sticky buy bar is up,
+   the floating "complete order" card steps aside: two bars over the tab bar
+   was the clutter the reference apps never show. */
+@media (max-width: 1000px){
+
+  .attributes dd .option-list:not(.attribute-squares){
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .attributes dd .option-list:not(.attribute-squares) li{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    min-height: 36px;
+    padding: 4px 12px;
+    border: 1px solid var(--tm-line);
+    border-radius: 999px;
+    background: var(--tm-surface-alt);
+  }
+
+  .attributes dd .option-list:not(.attribute-squares) li label{
+    margin: 0;
+    min-height: 0;
+    padding: 0;
+    font-size: var(--tm-fs-label);
+    line-height: var(--tm-lh-label);
+  }
+
+  .attributes dd .option-list:not(.attribute-squares) li input[type="checkbox"],
+  .attributes dd .option-list:not(.attribute-squares) li input[type="radio"]{
+    inline-size: 18px;
+    block-size: 18px;
+    min-height: 0;
+    margin: 0;
+  }
+
+  .attributes dd .option-list:not(.attribute-squares) li:has(input:checked){
+    border-color: var(--tm-teal-border);
+    background: var(--tm-teal-tint);
+    color: var(--tm-teal-deep);
+    font-weight: 600;
+  }
+
+  body.tm-buybar-on .tm-cart-float{
+    display: none;
   }
 }

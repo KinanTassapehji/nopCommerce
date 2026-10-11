@@ -45,8 +45,10 @@
     bool onPage(string controllerName, params string[] actions) =>
         inSection(controllerName) && actions.Any(name => string.Equals(action, name, StringComparison.OrdinalIgnoreCase));
     var contactPage = onPage("Common", "ContactUs");
+    //orders have a tab of their own: the order list, an order, a return request
+    var ordersActive = inSection("Order", "ReturnRequest");
     //Notifications (a plugin page) and, for a signed-in customer, Contact us are account pages too
-    var accountActive = inSection("Customer", "Order", "ReturnRequest", "CustomerNotifications")
+    var accountActive = inSection("Customer", "CustomerNotifications")
         || (contactPage && User.Identity?.IsAuthenticated == true);
     //the store's other forms - the card sat on their submit buttons the same way
     var formPage = contactPage
@@ -87,6 +89,15 @@
         </span>
         <span class="mobile-tab-label">@T("Mobile.Nav.Cart")</span>
     </a>
+    <a class="mobile-tab @(ordersActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CUSTOMER_ORDERS)" aria-current="@(ordersActive ? "page" : null)">
+        <span class="mobile-tab-icon-wrap">
+            <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5z" />
+                <path d="M4 7.5 12 12l8-4.5M12 12v9" />
+            </svg>
+        </span>
+        <span class="mobile-tab-label">@T("Account.CustomerOrders")</span>
+    </a>
     <a class="mobile-tab @(accountActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CUSTOMER_INFO)" aria-current="@(accountActive ? "page" : null)">
         <span class="mobile-tab-icon-wrap">
             <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -106,7 +117,7 @@
     any other form (contact us, email a friend): the shopper is filling it in, and the card sat on
     its submit button. It shows where the shopper browses: home, catalogue, product, search, info
     pages.*@
-@if (!cartActive && !accountActive && !formPage)
+@if (!cartActive && !ordersActive && !accountActive && !formPage)
 {
     <div class="tm-cart-float">
         <a class="tm-cart-float-link" href="@(orderSettings.TermsOfServiceOnShoppingCartPage ? Url.RouteUrl(NopRouteNames.General.CART) : Url.RouteUrl(NopRouteNames.Standard.CHECKOUT))">
