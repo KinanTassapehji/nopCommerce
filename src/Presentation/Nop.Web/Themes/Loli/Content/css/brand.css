@@ -9504,13 +9504,29 @@ html:has(.tm-terms-dialog[open]){
 .tm-brand-grid .picture{
   max-inline-size: none;
   aspect-ratio: 3 / 2;
-  background: var(--tm-surface);
+  border: 0;
+  border-radius: var(--tm-radius-lg);
+  background: var(--tm-plate); /* a white card, like the product cards around it (tokens.css) */
+  box-shadow: var(--tm-shadow);
+  overflow: hidden;
+}
+
+/* The logo files arrive as they come - most on a white ground, some as JPEGs
+   with hard edges. Multiply drops that white into the plate's tint, so every
+   mark sits on the same soft card whatever file the brand supplied
+   (Kinan, 2026-10-12: the white-on-white plates read as hard boxes). */
+.tm-brand-grid .item-box:hover .picture,
+.tm-brand-grid .item-box:focus-within .picture{
+  background: var(--tm-plate-hover);
+  box-shadow: var(--tm-shadow-lg);
+  transform: translateY(-2px);
 }
 
 .tm-brand-grid .picture a img{
-  padding: 6% 8%;
+  padding: 14% 16%;
   box-sizing: border-box;
   object-fit: contain;
+  mix-blend-mode: multiply;
 }
 
 .tm-brand-grid .item-box > .title{
