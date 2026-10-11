@@ -39,18 +39,6 @@
             {
                 <a href="@Url.RouteUrl(NopRouteNames.Standard.GET_ORDER_PDF_INVOICE, new { orderId = Model.Id })" class="button-2 pdf-invoice-button">@T("Order.GetPDFInvoice")</a>
             }
-            @if (Model.CanCancelOrder)
-            {
-                <a id="cancel_order" href="@Url.RouteUrl("CancelOrder", new { orderId = Model.Id })" class="button-2 cancel-order-button">@T("Order.Cancel")</a>
-
-                <script asp-location="Footer">
-                    $(function() {
-                        $('#cancel_order').on('click', function() {
-                            return confirm('@T("Common.AreYouSure")');
-                        });
-                    });
-                </script>
-            }
         </div>
     }
     <div class="page-body">
@@ -625,6 +613,11 @@
                         @if (Model.IsReturnRequestAllowed)
                         {
                             <button type="button" class="button-2 return-items-button" onclick="setLocation('@Url.RouteUrl(NopRouteNames.Standard.RETURN_REQUEST, new { orderId = Model.Id })')">@T("Order.ReturnItems")</button>
+                        }
+                        @*cancel sits with the other things you can do to the order, after them, not in the title*@
+                        @if (Model.CanCancelOrder)
+                        {
+                            <button type="button" id="cancel_order" class="button-2 cancel-order-button" onclick="if (confirm('@T("Common.AreYouSure")')) setLocation('@Url.RouteUrl("CancelOrder", new { orderId = Model.Id })')">@T("Order.Cancel")</button>
                         }
                     </div>
                 }
