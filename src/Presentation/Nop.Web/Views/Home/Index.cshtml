@@ -34,17 +34,16 @@
 <div class="page home-page">
     <div class="page-body">
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageTop })
-        @*The products first, straight under the hero - what the shopper came for; the
-            signposts (categories, reasons to buy, the call to action, brands) follow.*@
+        @*Order, for selling: the hero, then offers (the hook), the categories (where to go),
+            new arrivals, the curated picks, the reasons to buy, what others buy, the call to
+            action, brands, news.*@
         @await Component.InvokeAsync(typeof(HomepageDealsViewComponent))
-        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeProducts })
-        @await Component.InvokeAsync(typeof(HomepageProductsViewComponent))
-        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeBestSellers })
-        @await Component.InvokeAsync(typeof(HomepageBestSellersViewComponent))
         @await Component.InvokeAsync(typeof(TopicBlockViewComponent), new { systemName = "HomepageText" })
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeCategories })
         @await Component.InvokeAsync(typeof(HomepageCategoriesViewComponent))
         @await Component.InvokeAsync(typeof(FilterLevelValueSearchViewComponent))
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeProducts })
+        @await Component.InvokeAsync(typeof(HomepageProductsViewComponent))
         @*the reasons to buy here, straight under the hero. The admin manages the list (Content
             management > Home page features): text per language, icon, order, published*@
         @{
@@ -69,6 +68,8 @@
                 }
             </ul>
         }
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeBestSellers })
+        @await Component.InvokeAsync(typeof(HomepageBestSellersViewComponent))
         @*one call to action between the curated bands and the brands below. No all-products feed: the home
             page shows the products marked "show on home page" (the band above) - the catalogue is a tap away*@
         @*the admin edits it under Content management > Home page banner*@
