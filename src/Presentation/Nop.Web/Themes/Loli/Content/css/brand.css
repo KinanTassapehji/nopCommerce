@@ -10647,27 +10647,6 @@ button{
 }
 
 /* --- Greeting wave and the rotating search hint ---------------------------- */
-@keyframes tm-wave{
-  0%, 100%{
-    transform: rotate(0);
-  }
-  25%{
-    transform: rotate(16deg);
-  }
-  50%{
-    transform: rotate(-8deg);
-  }
-  75%{
-    transform: rotate(12deg);
-  }
-}
-
-.tm-hello-wave{
-  display: inline-block;
-  transform-origin: 70% 70%;
-  animation: tm-wave 1.6s ease-in-out 0.6s 2;
-}
-
 .search-box input.search-box-text::placeholder{
   transition: opacity 0.22s ease;
 }
@@ -11277,11 +11256,7 @@ html.tm-tour-open body{
   .tm-tour-art img,
   .tm-tour-art-icon svg,
   .mobile-tab.active .mobile-tab-icon-wrap,
-  .tm-hello-wave{
-    animation: none;
-  }
-
-  .tm-tour-track{
+    .tm-tour-track{
     scroll-behavior: auto;
   }
 }

@@ -31,7 +31,7 @@
     @if (isHome)
     {
         <div class="tm-hello">
-            <strong>@(string.IsNullOrEmpty(firstName) ? T("Mobile.Home.Hello") : T("Mobile.Home.HelloName", firstName)) <span class="tm-hello-wave" aria-hidden="true">👋</span></strong>
+            <strong>@(string.IsNullOrEmpty(firstName) ? T("Mobile.Home.Hello") : T("Mobile.Home.HelloName", firstName))</strong>
             <span>@T("Mobile.Home.Tagline")</span>
         </div>
     }
