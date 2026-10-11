@@ -660,6 +660,12 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateMap<HomepageFeatureModel, HomepageFeature>()
             .ForMember(entity => entity.Icon, options => options.Ignore());
 
+        CreateMap<WelcomeSlide, WelcomeSlideModel>()
+            .ForMember(model => model.AvailableIcons, options => options.Ignore())
+            .ForMember(model => model.IconName, options => options.Ignore());
+        CreateMap<WelcomeSlideModel, WelcomeSlide>()
+            .ForMember(entity => entity.Icon, options => options.Ignore());
+
         CreateMap<Address, AddressModel>()
             .ForMember(model => model.AddressHtml, options => options.Ignore())
             .ForMember(model => model.AvailableCountries, options => options.Ignore())

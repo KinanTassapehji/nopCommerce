@@ -23795,6 +23795,108 @@
   <LocaleResource Name="Admin.ActivityLogType.UploadNewTheme">
     <Value>رفع قالب تصميم</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides">
+    <Value>شرائح الترحيب</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Hint">
+    <Value>الجولة القصيرة التي يراها الزائر مرة واحدة عند أول زيارة للصفحة الرئيسية: صورة وعنوان وسطر لكل شريحة، مع زرّي تخطي والتالي. ألغِ نشر شريحة لإخفائها دون حذفها؛ وبلا شرائح منشورة تتوقف الجولة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.AddNew">
+    <Value>إضافة شريحة ترحيب جديدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.EditDetails">
+    <Value>تعديل شريحة الترحيب</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.BackToList">
+    <Value>العودة إلى شرائح الترحيب</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Added">
+    <Value>تمت إضافة الشريحة بنجاح.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Updated">
+    <Value>تم تحديث الشريحة بنجاح.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Deleted">
+    <Value>تم حذف الشريحة بنجاح.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Preview">
+    <Value>معاينة الجولة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Title">
+    <Value>العنوان</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Title.Hint">
+    <Value>السطر الكبير، مثل "أهلاً بك في تمتم". يُفضّل أن يكون قصيراً.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Title.Required">
+    <Value>يرجى إدخال العنوان.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Text">
+    <Value>النص</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Text.Hint">
+    <Value>جملة أو جملتان تحت العنوان. اختياري.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Picture">
+    <Value>الصورة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Picture.Hint">
+    <Value>صورة الشريحة. الأفضل مربعة أو طولية؛ صورة PNG بخلفية شفافة تظهر على لون العلامة. بدون صورة تُرسم الأيقونة أدناه.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Icon">
+    <Value>الأيقونة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Icon.Hint">
+    <Value>تُرسم عندما لا تحتوي الشريحة على صورة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Published">
+    <Value>منشورة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Published.Hint">
+    <Value>إظهار هذه الشريحة في الجولة.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.DisplayOrder">
+    <Value>ترتيب العرض</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.DisplayOrder.Hint">
+    <Value>تُعرض الشرائح من الرقم الأصغر إلى الأكبر.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Welcome.Skip">
+    <Value>تخطي</Value>
+  </LocaleResource>
+  <LocaleResource Name="Welcome.Next">
+    <Value>التالي</Value>
+  </LocaleResource>
+  <LocaleResource Name="Welcome.Start">
+    <Value>ابدأ التسوق</Value>
+  </LocaleResource>
+  <LocaleResource Name="Mobile.Home.Hello">
+    <Value>أهلاً بك</Value>
+  </LocaleResource>
+  <LocaleResource Name="Mobile.Home.HelloName">
+    <Value>أهلاً، {0}</Value>
+  </LocaleResource>
+  <LocaleResource Name="Mobile.Home.Tagline">
+    <Value>ماذا تبحث عنه اليوم؟</Value>
+  </LocaleResource>
+  <LocaleResource Name="Search.SearchBox.Example">
+    <Value>ابحث عن {0}</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Profile.Guest">
+    <Value>أهلاً بك</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Profile.SignIn">
+    <Value>سجّل دخولك أو أنشئ حساباً</Value>
+  </LocaleResource>
+  <LocaleResource Name="Footer.Shop">
+    <Value>تسوق</Value>
+  </LocaleResource>
+  <LocaleResource Name="Footer.Help">
+    <Value>المساعدة</Value>
+  </LocaleResource>
+  <LocaleResource Name="Footer.Tagline">
+    <Value>كل ما يحتاجه بيتك في مكان واحد. توصيل سريع والدفع عند الاستلام.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.HomepageFeatures">
     <Value>مميزات الصفحة الرئيسية</Value>
   </LocaleResource>
@@ -23926,6 +24028,9 @@
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Store">
     <Value>متجر</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Brand">
+    <Value>شعار المتجر</Value>
   </LocaleResource>
   <LocaleResource Name="PageNotFound.Search.Placeholder">
     <Value>ابحث عن منتج...</Value>

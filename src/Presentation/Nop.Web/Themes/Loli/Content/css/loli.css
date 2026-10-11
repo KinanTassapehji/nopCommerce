@@ -70,13 +70,21 @@
 
 @media (max-width: 1000px){
 
-  .home-page-category-grid .item-grid{
+  /* The :has() pair carries the weight of TmTm's "six or more categories wrap
+     into a grid of three" rule, which would otherwise outrank this sheet and
+     turn the photo grid into three chips a row. */
+  .home-page-category-grid .item-grid,
+  .home-page-category-grid .item-grid:has(> :nth-child(6)){
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
     margin: 0;
     padding: 0;
     overflow: visible;
   }
 
-  .home-page-category-grid .item-box{
+  .home-page-category-grid .item-box,
+  .home-page-category-grid .item-grid:has(> :nth-child(6)) .item-box{
     flex: 0 0 calc((100% - 2px) / 2);
   }
 

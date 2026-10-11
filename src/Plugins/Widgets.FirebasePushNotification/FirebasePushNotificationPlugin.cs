@@ -84,6 +84,7 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 		//4.80.5: admin notifications are written in the reading admin's language; rows stored as
 		//        English text until now become key + arguments
 		//4.80.6: the admin inbox's filter tabs
+		//4.80.7: an empty filter tab says so in its own words
 		await AddResourcesAsync();
 		await ConvertAdminTextRowsAsync();
 		await base.UpdateAsync(currentVersion, targetVersion);
@@ -144,6 +145,7 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Title"] = "Notifications",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Empty"] = "You have no notifications yet.",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Open"] = "View details",
+			["Plugins.Widgets.FirebasePushNotification.Inbox.EmptyFiltered"] = "No notifications of this kind yet.",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.All"] = "All",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.orders"] = "Orders",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.customers"] = "Customers",
@@ -206,6 +208,7 @@ public class FirebasePushNotificationPlugin : BasePlugin, IWidgetPlugin, IPlugin
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Title"] = "الإشعارات",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Empty"] = "لا توجد لديك إشعارات بعد.",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Open"] = "عرض التفاصيل",
+			["Plugins.Widgets.FirebasePushNotification.Inbox.EmptyFiltered"] = "لا توجد إشعارات من هذا النوع بعد.",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.All"] = "الكل",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.orders"] = "الطلبات",
 			["Plugins.Widgets.FirebasePushNotification.Inbox.Filter.customers"] = "العملاء",

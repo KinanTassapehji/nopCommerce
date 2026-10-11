@@ -7,9 +7,34 @@
     it takes the bar over, the logo steps aside and the field takes focus. The
     core view is otherwise untouched, so every widget zone still fires.
 *@
-<header class="header">
+@inject Nop.Core.IWorkContext workContext
+@inject Nop.Services.Catalog.ICategoryService categoryService
+@inject Nop.Services.Localization.ILocalizationService localizationService
+@using System.Text.Json
+
+@{
+    //Every page wears the teal top band on phones (brand.css). Home keeps the search pill open
+    //under a greeting row that folds away on scroll (.tm-home-header); other pages collapse it to a glyph.
+    var isHome = string.Equals(Context.Request.RouteValues["controller"]?.ToString(), "Home", StringComparison.OrdinalIgnoreCase)
+        && string.Equals(Context.Request.RouteValues["action"]?.ToString(), "Index", StringComparison.OrdinalIgnoreCase);
+    var customer = isHome ? await workContext.GetCurrentCustomerAsync() : null;
+    var firstName = customer != null && User.Identity?.IsAuthenticated == true ? customer.FirstName?.Trim() : null;
+    //the search placeholder's rotating examples: the home page categories, by name, on every page
+    //(the service call is cached, so this costs the header nothing)
+    var placeholderNames = new List<string>();
+    foreach (var category in await categoryService.GetAllCategoriesDisplayedOnHomepageAsync())
+        placeholderNames.Add(await localizationService.GetLocalizedAsync(category, c => c.Name));
+}
+<header class="header@(isHome ? " tm-home-header" : "")">
     <a class="skip" href="#main">@T("Header.SkipNavigation.Text")</a>
     @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HeaderBefore })
+    @if (isHome)
+    {
+        <div class="tm-hello">
+            <strong>@(string.IsNullOrEmpty(firstName) ? T("Mobile.Home.Hello") : T("Mobile.Home.HelloName", firstName)) <span class="tm-hello-wave" aria-hidden="true">👋</span></strong>
+            <span>@T("Mobile.Home.Tagline")</span>
+        </div>
+    }
     <div class="header-upper">
         <div class="header-selectors-wrapper">
             @await Component.InvokeAsync(typeof(CurrencySelectorViewComponent))
@@ -91,6 +116,28 @@
                         setOpen(false);
                 }, 150);
         });
+
+        //The placeholder names a category to look for, and changes every few seconds - a field that
+        //says "search for lamps" invites a search where "search store" does not. The names are the home
+        //page categories, printed by the server so every page rotates, not only the one with the tiles.
+        {
+            var names = @Html.Raw(JsonSerializer.Serialize(placeholderNames));
+            var example = '@Html.Raw(JavaScriptEncoder.Default.Encode(T("Search.SearchBox.Example").Text))';
+            if (names.length && example.indexOf('{0}') !== -1) {
+                var at = Math.floor(Math.random() * names.length);
+                var rotate = function () {
+                    if (document.activeElement === field || field.value)
+                        return;
+                    field.classList.add('tm-placeholder-swap');
+                    setTimeout(function () {
+                        field.placeholder = example.replace('{0}', names[at++ % names.length]);
+                        field.classList.remove('tm-placeholder-swap');
+                    }, 220);
+                };
+                field.placeholder = example.replace('{0}', names[at++ % names.length]);
+                setInterval(rotate, 3500);
+            }
+        }
     })();
 </script>
 
@@ -115,6 +162,23 @@
         var minDelta = 8;
         var last = window.scrollY;
         var ticking = false;
+        //The home band does not leave: it folds to the search pill once the page
+        //is scrolled (brand.css, .tm-header-compact) and opens again at the top.
+        var home = header.classList.contains('tm-home-header');
+        //how far the band slides up to leave only the search pill: the pill's offset
+        //inside the band, less the band's top padding
+        var searchBox = header.querySelector('.search-box');
+        function measureFold() {
+            if (!home || !searchBox)
+                return;
+            var pad = parseFloat(getComputedStyle(header).paddingTop) || 0;
+            //both rectangles carry the band's transform, so the difference holds whether it is folded or not
+            var fold = searchBox.getBoundingClientRect().top - header.getBoundingClientRect().top - pad;
+            if (fold > 0)
+                header.style.setProperty('--tm-fold', fold + 'px');
+        }
+        measureFold();
+        window.addEventListener('resize', measureFold);
 
         window.addEventListener('scroll', function () {
             if (ticking)
@@ -122,13 +186,17 @@
             ticking = true;
             requestAnimationFrame(function () {
                 var y = Math.max(window.scrollY, 0);
-                if (Math.abs(y - last) > minDelta) {
+                if (home)
+                    header.classList.toggle('tm-header-compact', y > 24);
+                else if (Math.abs(y - last) > minDelta) {
                     header.classList.toggle('tm-header-hidden', y > last && y > revealFrom);
                     last = y;
                 }
                 ticking = false;
             });
         }, { passive: true });
+        if (home && window.scrollY > 24)
+            header.classList.add('tm-header-compact');
 
         //An open search field must never scroll away with the bar.
         header.addEventListener('focusin', function () {

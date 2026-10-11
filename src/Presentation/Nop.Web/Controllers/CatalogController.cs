@@ -322,6 +322,39 @@ public partial class CatalogController : BasePublicController
         return PartialView("_ProductsInGridOrLines", model);
     }
 
+    #endregion
+
+    #region The home page bands as pages
+
+    public virtual async Task<IActionResult> Collection(string collection, CatalogProductsCommand command)
+    {
+        var products = await _catalogModelFactory.PrepareCollectionModelAsync(collection, command);
+        if (products == null)
+            return InvokeHttp404();
+
+        var model = new CollectionModel
+        {
+            Collection = collection.ToLowerInvariant(),
+            CatalogProductsModel = products
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public virtual async Task<IActionResult> GetCollection(string collection, CatalogProductsCommand command)
+    {
+        var model = await _catalogModelFactory.PrepareCollectionModelAsync(collection, command);
+        if (model == null)
+            return NotFound();
+
+        return PartialView("_ProductsInGridOrLines", model);
+    }
+
+    #endregion
+
+    #region New products RSS
+
     [CheckLanguageSeoCode(ignore: true)]
     public virtual async Task<IActionResult> NewProductsRss()
     {

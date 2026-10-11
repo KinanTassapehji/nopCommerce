@@ -18,7 +18,9 @@ using Nop.Services.Directory;
 using Nop.Services.FilterLevels;
 using Nop.Services.Localization;
 using Nop.Services.Media;
+using Nop.Services.Orders;
 using Nop.Services.Seo;
+using Nop.Services.Stores;
 using Nop.Services.Vendors;
 using Nop.Web.Framework.Events;
 using Nop.Web.Framework.Mvc.Routing;
@@ -48,6 +50,8 @@ public partial class CatalogModelFactory : ICatalogModelFactory
     protected readonly IManufacturerService _manufacturerService;
     protected readonly IManufacturerTemplateService _manufacturerTemplateService;
     protected readonly INopUrlHelper _nopUrlHelper;
+    protected readonly IStoreMappingService _storeMappingService;
+    protected readonly IOrderReportService _orderReportService;
     protected readonly IPictureService _pictureService;
     protected readonly IProductModelFactory _productModelFactory;
     protected readonly IProductReviewService _productReviewService;
@@ -85,6 +89,8 @@ public partial class CatalogModelFactory : ICatalogModelFactory
         IManufacturerService manufacturerService,
         IManufacturerTemplateService manufacturerTemplateService,
         INopUrlHelper nopUrlHelper,
+        IStoreMappingService storeMappingService,
+        IOrderReportService orderReportService,
         IPictureService pictureService,
         IProductModelFactory productModelFactory,
         IProductReviewService productReviewService,
@@ -117,6 +123,8 @@ public partial class CatalogModelFactory : ICatalogModelFactory
         _manufacturerService = manufacturerService;
         _manufacturerTemplateService = manufacturerTemplateService;
         _nopUrlHelper = nopUrlHelper;
+        _storeMappingService = storeMappingService;
+        _orderReportService = orderReportService;
         _pictureService = pictureService;
         _productModelFactory = productModelFactory;
         _productReviewService = productReviewService;
@@ -1480,6 +1488,62 @@ public partial class CatalogModelFactory : ICatalogModelFactory
         var products = await _productService.GetProductsMarkedAsNewAsync(storeId: currentStore.Id,
             pageIndex: command.PageNumber - 1,
             pageSize: command.PageSize);
+
+        await PrepareCatalogProductsAsync(model, products);
+
+        return model;
+    }
+
+
+    /// <summary>
+    /// Prepare one of the home page bands as a catalogue page: "deals", "bestsellers" or "featured"
+    /// </summary>
+    /// <param name="collection">Which band</param>
+    /// <param name="command">Model to get the catalog products</param>
+    /// <returns>A task that represents the asynchronous operation; the task result contains the model, or null for an unknown band</returns>
+    public virtual async Task<CatalogProductsModel> PrepareCollectionModelAsync(string collection, CatalogProductsCommand command)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+
+        var model = new CatalogProductsModel
+        {
+            UseAjaxLoading = _catalogSettings.UseAjaxCatalogProductsLoading
+        };
+
+        //page size: the "new products" page's settings, so the four pages page the same way
+        await PreparePageSizeOptionsAsync(model, command, _catalogSettings.NewProductsAllowCustomersToSelectPageSize,
+            _catalogSettings.NewProductsPageSizeOptions, _catalogSettings.NewProductsPageSize);
+
+        var store = await _storeContext.GetCurrentStoreAsync();
+        var pageIndex = command.PageNumber - 1;
+
+        //the same gate the home bands apply: this store and on sale today - the service
+        //queries only check published (products carry no ACL of their own in this version)
+        async Task<List<Product>> visible(IEnumerable<Product> source) => await source.ToAsyncEnumerable()
+            .WhereAwait(async p => await _storeMappingService.AuthorizeAsync(p))
+            .Where(p => p.VisibleIndividually && _productService.ProductIsAvailable(p))
+            .ToListAsync();
+
+        IPagedList<Product> products;
+        switch (collection?.ToLowerInvariant())
+        {
+            case "deals":
+                //the same list the home band draws its ten from, paged
+                products = new PagedList<Product>(await visible(await _productService.GetDiscountedProductsAsync()), pageIndex, command.PageSize);
+                break;
+            case "featured":
+                products = new PagedList<Product>(await visible(await _productService.GetAllProductsDisplayedOnHomepageAsync()), pageIndex, command.PageSize);
+                break;
+            case "bestsellers":
+                //ponytail: the report is paged first and filtered after, so a page can come up short
+                //when a bestseller is hidden from this store; it is the home band's own approach
+                var report = await _orderReportService.BestSellersReportAsync(storeId: store.Id, pageIndex: pageIndex, pageSize: command.PageSize);
+                var ordered = await visible(await _productService.GetProductsByIdsAsync(report.Select(line => line.ProductId).ToArray()));
+                products = new PagedList<Product>(ordered, pageIndex, command.PageSize, report.TotalCount);
+                break;
+            default:
+                return null;
+        }
 
         await PrepareCatalogProductsAsync(model, products);
 

@@ -1,17 +1,12 @@
 @model Nop.Core.IPagedList<Widgets.FirebasePushNotification.Domain.InboxNotification>
 @inject Nop.Services.Helpers.IDateTimeHelper dateTimeHelper
+@inject Nop.Services.Security.IPermissionService permissionService
 @using Widgets.FirebasePushNotification.Services
 @{
     Layout = "_AdminLayout";
     ViewBag.PageTitle = T("Plugins.Widgets.FirebasePushNotification.Inbox.Title").Text;
     NopHtml.SetActiveMenuItemSystemName("Widgets.FirebasePushNotification.Menu.Inbox");
-}
 
-<div class="content-header clearfix">
-    <h1 class="float-left">@T("Plugins.Widgets.FirebasePushNotification.Inbox.Title")</h1>
-</div>
-
-@{
     var type = ViewData["InboxType"] as string;
     var unread = ViewData["InboxUnread"] as Dictionary<string, int> ?? new();
     var tabs = new List<(string Type, string Label, int Unread)>
@@ -21,29 +16,59 @@
     foreach (var (group, keys) in InboxNotificationService.AdminMessageGroups)
         tabs.Add((group, T("Plugins.Widgets.FirebasePushNotification.Inbox.Filter." + group).Text, keys.Sum(key => unread.GetValueOrDefault(key))));
     string pageUrl(int page) => "?page=" + page + (type == null ? null : "&type=" + type);
+
+    //the broadcast page asks for this permission, so the way there does too
+    var canSend = await permissionService.AuthorizeAsync("Configuration.ManageWidgets");
 }
+
+@*the store's own brand colour, from the theme tokens the admin skin already loads (TmTm teal,
+    Arabia blue) - the stock .list-group-item-info / .text-primary were Bootstrap blue*@
+<style>
+    .inbox-row.unread {
+        background: var(--tm-teal-tint, var(--ar-blue-tint, #e6f4f4));
+    }
+
+    .inbox-row .inbox-dot {
+        font-size: .5rem;
+        vertical-align: middle;
+        color: var(--tm-teal-deep, var(--ar-blue, #02787e));
+    }
+</style>
+
+<div class="content-header clearfix">
+    <h1 class="float-left">@T("Plugins.Widgets.FirebasePushNotification.Inbox.Title")</h1>
+    @if (canSend)
+    {
+        <div class="float-right">
+            <a class="btn btn-primary" href="@Url.Content("~/Admin/FirebasePushNotification/SendBroadcast")">
+                <i class="far fa-paper-plane"></i>
+                @T("Plugins.Widgets.FirebasePushNotification.Broadcast.Custom")
+            </a>
+        </div>
+    }
+</div>
 
 <section class="content">
     <div class="container-fluid">
-        @*filter by kind; each tab carries its unread count, counted before this visit marked anything*@
-        <ul class="nav nav-pills flex-wrap mb-3">
+        @*filter by kind, drawn as the admin's own buttons so the selected one wears the brand colour;
+            each carries its unread count, counted before this visit marked anything*@
+        <div class="d-flex flex-wrap mb-3" style="gap:.5rem">
             @foreach (var tab in tabs)
             {
-                <li class="nav-item">
-                    <a class="nav-link @(tab.Type == type ? "active" : null)" href="@(tab.Type == null ? "?" : "?type=" + tab.Type)">
-                        @tab.Label
-                        @if (tab.Unread > 0)
-                        {
-                            <span class="badge @(tab.Type == type ? "badge-light" : "badge-danger") ml-1">@tab.Unread</span>
-                        }
-                    </a>
-                </li>
+                var active = tab.Type == type;
+                <a class="btn @(active ? "btn-primary" : "btn-default")" href="@(tab.Type == null ? "?" : "?type=" + tab.Type)" aria-current="@(active ? "page" : null)">
+                    @tab.Label
+                    @if (tab.Unread > 0)
+                    {
+                        <span class="badge @(active ? "badge-light" : "badge-danger") ml-1">@tab.Unread</span>
+                    }
+                </a>
             }
-        </ul>
+        </div>
         <div class="card card-default">
             @if (Model.TotalCount == 0)
             {
-                <div class="card-body text-muted">@T("Plugins.Widgets.FirebasePushNotification.Inbox.Empty")</div>
+                <div class="card-body text-muted">@T(type == null ? "Plugins.Widgets.FirebasePushNotification.Inbox.Empty" : "Plugins.Widgets.FirebasePushNotification.Inbox.EmptyFiltered")</div>
             }
             else
             {
@@ -56,12 +81,12 @@
                         var title = message is { } m ? T(InboxNotificationService.AdminMessagePrefix + m.Key + ".Title").Text : item.Title;
                         var body = message is { } n ? T(InboxNotificationService.AdminMessagePrefix + n.Key + ".Body", n.Args).Text : item.Body;
                         //admin links are written by the event consumers, always a path on this store
-                        <a class="list-group-item list-group-item-action @(item.IsRead ? null : "list-group-item-info")" href="@(item.Link ?? "#")">
+                        <a class="list-group-item list-group-item-action inbox-row @(item.IsRead ? null : "unread")" href="@(item.Link ?? "#")">
                             <div class="d-flex flex-wrap justify-content-between">
                                 <strong class="mr-2">
                                     @if (!item.IsRead)
                                     {
-                                        <i class="fas fa-circle text-primary mr-1" style="font-size:.5rem;vertical-align:middle"></i>
+                                        <i class="fas fa-circle inbox-dot mr-1"></i>
                                     }
                                     @title
                                 </strong>

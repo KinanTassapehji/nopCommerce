@@ -1,0 +1,83 @@
+﻿@model WelcomeSlideSearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.ContentManagement.WelcomeSlides").Text;
+
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Welcome slides");
+}
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.ContentManagement.WelcomeSlides")
+    </h1>
+    <div class="float-right">
+        @*the store with ?welcome=1 replays the tour whether or not this browser has seen it*@
+        <a href="@Url.Content("~/?welcome=1")" target="_blank" class="btn btn-secondary">
+            <i class="far fa-eye"></i>
+            @T("Admin.ContentManagement.WelcomeSlides.Preview")
+        </a>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="cards-group">
+            <div class="card card-default">
+                <div class="card-body">
+                    <p>
+                        <em>@T("Admin.ContentManagement.WelcomeSlides.Hint")</em>
+                    </p>
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "welcomeslides-grid",
+                        UrlRead = new DataUrl("List", "WelcomeSlide", null),
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(WelcomeSlideModel.Title))
+                            {
+                                Title = T("Admin.ContentManagement.WelcomeSlides.Fields.Title").Text
+                            },
+                            new ColumnProperty(nameof(WelcomeSlideModel.Text))
+                            {
+                                Title = T("Admin.ContentManagement.WelcomeSlides.Fields.Text").Text
+                            },
+                            new ColumnProperty(nameof(WelcomeSlideModel.IconName))
+                            {
+                                Title = T("Admin.ContentManagement.WelcomeSlides.Fields.Icon").Text,
+                                Width = "150"
+                            },
+                            new ColumnProperty(nameof(WelcomeSlideModel.Published))
+                            {
+                                Title = T("Admin.ContentManagement.WelcomeSlides.Fields.Published").Text,
+                                Width = "100",
+                                ClassName = NopColumnClassDefaults.CenterAll,
+                                Render = new RenderBoolean()
+                            },
+                            new ColumnProperty(nameof(WelcomeSlideModel.DisplayOrder))
+                            {
+                                Title = T("Admin.ContentManagement.WelcomeSlides.Fields.DisplayOrder").Text,
+                                Width = "100",
+                                ClassName = NopColumnClassDefaults.CenterAll
+                            },
+                            new ColumnProperty(nameof(WelcomeSlideModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "100",
+                                ClassName = NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("Edit"))
+                            }
+                        }
+                    })
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

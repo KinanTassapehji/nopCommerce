@@ -1,4 +1,9 @@
 ﻿@model OCarouselListModel
+@inject NopStation.Plugin.Widgets.OCarousels.Services.IOCarouselService carouselService
+@inject Nop.Services.Localization.ILocalizationService localizationService
+@*ponytail: the band's "view all" is the carousel's Custom url (admin > OCarousels), read
+    from the entity here because the overview model does not carry it. Same link and glyph
+    as the theme's own home bands, so a category rail reads like the rest of the page.*@
 
 @foreach (var carousel in Model.OCarousels)
 {
@@ -9,7 +14,14 @@
         @if (carousel.DisplayTitle)
         {
             <h2 class="title">
-                @carousel.Title
+                <span>@carousel.Title</span>
+                @{
+                    var customUrl = (await carouselService.GetCarouselByIdAsync(carousel.Id))?.CustomUrl;
+                }
+                @if (!string.IsNullOrWhiteSpace(customUrl))
+                {
+                    <a class="view-all" href="@customUrl">@(await localizationService.GetResourceAsync("Homepage.ViewAll"))<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+                }
             </h2>
         }
 
