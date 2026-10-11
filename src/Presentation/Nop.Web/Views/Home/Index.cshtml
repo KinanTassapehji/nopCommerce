@@ -5,7 +5,6 @@
 @inject IWorkContext workContext
 @inject Nop.Services.Media.IPictureService pictureService
 @inject Nop.Core.Domain.Common.HomepageBannerSettings homepageBannerSettings
-@inject Nop.Services.Common.IHomepageFeatureService homepageFeatureService
 
 @{
     Layout = "_ColumnsOne";
@@ -44,30 +43,8 @@
         @await Component.InvokeAsync(typeof(FilterLevelValueSearchViewComponent))
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeProducts })
         @await Component.InvokeAsync(typeof(HomepageProductsViewComponent))
-        @*the reasons to buy here, straight under the hero. The admin manages the list (Content
-            management > Home page features): text per language, icon, order, published*@
-        @{
-            var homepageFeatures = await homepageFeatureService.GetAllHomepageFeaturesAsync();
-        }
-        @if (homepageFeatures.Any())
-        {
-            <ul class="home-usp">
-                @foreach (var feature in homepageFeatures)
-                {
-                    var hint = await localizationService.GetLocalizedAsync(feature, f => f.Hint);
-                    <li>
-                        @await Html.PartialAsync("_HomepageFeatureIcon", feature.Icon)
-                        <div>
-                            <strong>@(await localizationService.GetLocalizedAsync(feature, f => f.Title))</strong>
-                            @if (!string.IsNullOrEmpty(hint))
-                            {
-                                <span>@hint</span>
-                            }
-                        </div>
-                    </li>
-                }
-            </ul>
-        }
+        @*The trust strip (Content management > Home page features) is not shown: taken off the
+            page on 2026-10-11. Its rows and admin page remain; the markup lives in git history.*@
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeBestSellers })
         @await Component.InvokeAsync(typeof(HomepageBestSellersViewComponent))
         @*one call to action between the curated bands and the brands below. No all-products feed: the home
