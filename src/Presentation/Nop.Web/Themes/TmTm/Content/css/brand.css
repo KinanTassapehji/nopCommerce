@@ -14,11 +14,11 @@
    ========================================================================== */
 
 /* --- Base ----------------------------------------------------------------
-   The mini guideline defines no typeface,
-so this is a system stack with
-   Arabic coverage rather than an invented webfont dependency. */
+   The mini guideline defines no typeface. IBM Plex Sans Arabic (self-hosted,
+   declared in tokens.css) is the app's voice for both scripts; the system
+   stack behind it is what paints until the file lands. */
 body{
-  font-family: "Segoe UI", "Noto Sans Arabic", "Dubai", Tahoma, Arial, sans-serif;
+  font-family: "IBM Plex Sans Arabic", "Segoe UI", "Noto Sans Arabic", "Dubai", Tahoma, Arial, sans-serif;
   color: var(--tm-ink);
   background: var(--tm-surface);
   /* The base sheet sets `font: normal 14px Arial`, and the shorthand resets
@@ -10601,4 +10601,690 @@ html:has(.tm-terms-dialog[open]){
 
 .master-wrapper-content{
   flex: 1 0 auto;
+}
+
+
+/* ==========================================================================
+   App feel - the pass that followed a side-by-side with BeeOrder and Movo
+   on a phone (2026-10-11). Everything the shopper noticed there and missed
+   here: a typeface with some warmth (tokens.css), a coloured home band with
+   a greeting and an always-open search, section bands with a glyph, cards
+   without hard borders, feedback on every tap, a fade between pages, and a
+   welcome tour on the first visit. Layout and skin only; nothing here
+   changes what a page does.
+   ========================================================================== */
+
+/* --- Type ------------------------------------------------------------------ */
+/* Every control inherits the page face: the base sheet leaves inputs and
+   selects on the OS default, which on Android is a second Arabic face. */
+input,
+select,
+textarea,
+button{
+  font-family: inherit;
+}
+
+/* --- Cards: soft, not boxed -------------------------------------------------
+   A hairline border reads as a form, a soft shadow as a card. */
+.item-box .product-item{
+  border-color: transparent;
+  box-shadow: 0 2px 14px rgba(2, 120, 126, 0.08);
+}
+
+.item-box .product-item:hover{
+  border-color: transparent;
+}
+
+.home-usp li{
+  border-color: transparent;
+  box-shadow: 0 2px 14px rgba(2, 120, 126, 0.08);
+}
+
+/* --- Feedback on a tap ------------------------------------------------------
+   Touch screens only: a card, tile or button gives slightly under the finger.
+   Hover lifts are a mouse affordance and stick after a tap, so on a touch
+   screen they are turned off and the press takes their place. */
+@media (hover: none){
+
+  .item-box .product-item:hover{
+    transform: none;
+    box-shadow: 0 2px 14px rgba(2, 120, 126, 0.08);
+  }
+
+  :is(.home-page-category-grid, .sub-category-grid) .item-box:hover .picture{
+    transform: none;
+    box-shadow: var(--tm-shadow);
+  }
+
+  .item-box .product-item:active,
+  :is(.home-page-category-grid, .sub-category-grid) .item-box:active .picture,
+  .home-usp li:active,
+  .tm-profile:active,
+  .block-account-navigation .list a:active,
+  .block-category-navigation .list a:active,
+  .button-1:active,
+  .button-2:active{
+    transform: scale(0.96);
+    transition-duration: 0.08s;
+  }
+}
+
+/* --- Between pages ----------------------------------------------------------
+   A cross-document fade (Chrome 126+, Safari 18.2+; older browsers get the
+   plain navigation). The two bars keep their names so they hold still while
+   the page under them fades - the app shell stays, the content changes. */
+@view-transition{
+  navigation: auto;
+}
+
+.header{
+  view-transition-name: tm-header;
+}
+
+.mobile-tab-bar{
+  view-transition-name: tm-tab-bar;
+}
+
+::view-transition-old(root){
+  animation-duration: 0.12s;
+}
+
+::view-transition-new(root){
+  animation-duration: 0.2s;
+}
+
+/* --- Sections rise in as they arrive (scroll-driven, no script) ----------- */
+@keyframes tm-rise{
+  from{
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to{
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()){
+
+  @media (prefers-reduced-motion: no-preference){
+
+    .home-page .page-body > *:not(.nop-slider, .home-usp){
+      animation: tm-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+
+/* --- Tab bar: the active tab lands with a small pop --------------------------- */
+@keyframes tm-pop{
+  0%{
+    transform: scale(0.7);
+  }
+  60%{
+    transform: scale(1.12);
+  }
+  100%{
+    transform: scale(1);
+  }
+}
+
+.mobile-tab.active .mobile-tab-icon-wrap{
+  animation: tm-pop 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+}
+
+/* --- Greeting wave and the rotating search hint ---------------------------- */
+@keyframes tm-wave{
+  0%, 100%{
+    transform: rotate(0);
+  }
+  25%{
+    transform: rotate(16deg);
+  }
+  50%{
+    transform: rotate(-8deg);
+  }
+  75%{
+    transform: rotate(12deg);
+  }
+}
+
+.tm-hello-wave{
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: tm-wave 1.6s ease-in-out 0.6s 2;
+}
+
+.search-box input.search-box-text::placeholder{
+  transition: opacity 0.22s ease;
+}
+
+.search-box input.search-box-text.tm-placeholder-swap::placeholder{
+  opacity: 0;
+}
+
+/* --- The home band (phones and tablets) -----------------------------------
+   _Header.cshtml puts .tm-home-header on the bar on the home page only, with
+   the greeting block inside it. The bar becomes the coloured band every app
+   opens with: greeting at the start, the logo reversed to white at the end,
+   and the search field open on a row of its own - no glyph to tap first on
+   the one page where search is the point. Other pages keep the plain bar.
+   -------------------------------------------------------------------------- */
+.tm-hello{
+  display: none;
+}
+
+@media (max-width: 1000px){
+
+  .header.tm-home-header{
+    flex-wrap: wrap;
+    row-gap: 14px;
+    padding-block: 14px 18px;
+    background: var(--tm-teal-deep);
+    background-image:
+      radial-gradient(circle at 88% -30%, rgba(255, 255, 255, 0.22), transparent 55%),
+      radial-gradient(circle at 0% 120%, rgba(0, 217, 204, 0.35), transparent 50%),
+      linear-gradient(135deg, var(--tm-teal-deep) 0%, var(--tm-teal) 100%);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-end-start-radius: 26px;
+    border-end-end-radius: 26px;
+    box-shadow: var(--tm-shadow-lg);
+  }
+
+  /* the gradient rule is the band now */
+  .header.tm-home-header:after{
+    display: none;
+  }
+
+  .tm-hello{
+    order: 0;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-inline-size: 0;
+    color: var(--tm-white);
+  }
+
+  .tm-hello strong{
+    overflow: hidden;
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .tm-hello span{
+    font-size: 13px;
+    line-height: 18px;
+    opacity: 0.88;
+  }
+
+  .header.tm-home-header .header-logo{
+    order: 1;
+  }
+
+  /* the reversed lockup from the brand kit, swapped in for the store logo */
+  .header.tm-home-header .header-logo a img{
+    content: url("/Themes/TmTm/Content/images/logo-white.png");
+    max-block-size: 36px;
+  }
+
+  .header.tm-home-header .mobile-search-toggle{
+    display: none;
+  }
+
+  .header.tm-home-header .search-box{
+    display: block;
+    order: 5;
+    flex: 1 1 100%;
+  }
+
+  .header.tm-home-header .search-box form{
+    background: var(--tm-surface);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14);
+  }
+
+  .header.tm-home-header .search-box form:focus-within{
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14), inset 0 0 0 2px var(--tm-teal-bright);
+  }
+
+  .header.tm-home-header .search-box input.search-box-text{
+    block-size: 50px;
+    min-height: 50px;
+  }
+
+  /* the band already separates itself from the page; the page's own top gap halves */
+  .html-home-page .master-wrapper-content{
+    padding-block-start: var(--tm-stack-md);
+  }
+
+  /* --- Section bands --------------------------------------------------------
+     Each curated rail sits on a tinted band that bleeds to the screen edge,
+     the way the "ما يطلبه الناس" / "طلبك خلال 30 دقيقة" blocks do: the page
+     reads as a stack of cards rather than one long white column. */
+  .home-page .page-body > :is(.home-page-deals, .home-page-product-grid, .bestsellers){
+    margin-inline: calc(-1 * var(--tm-margin-mobile));
+    padding: 18px var(--tm-margin-mobile) 2px;
+    border-radius: var(--tm-radius-lg);
+    background: linear-gradient(180deg, var(--tm-teal-tint) 0%, var(--tm-surface) 100%);
+  }
+
+  /* Band titles: app size, and a glyph in place of the gradient bar - the
+     bar is a desktop flourish; at phone width a mark says what the band is
+     before the words do. Literal characters, not escapes (the bundler hangs
+     on some CSS escapes). */
+  .home-page .page-body > * > .title{
+    font-size: 21px;
+    line-height: 28px;
+  }
+
+  .home-page .page-body > * > .title:before{
+    content: "✨";
+    inline-size: auto;
+    block-size: auto;
+    border-radius: 0;
+    background: none;
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .home-page .page-body > .home-page-category-grid > .title:before{
+    content: "🛍️";
+  }
+
+  .home-page .page-body > .home-page-deals > .title:before{
+    content: "🔥";
+  }
+
+  .home-page .page-body > .home-page-product-grid > .title:before{
+    content: "⭐";
+  }
+
+  .home-page .page-body > .bestsellers > .title:before{
+    content: "🏆";
+  }
+
+  .home-page .page-body > .block-manufacturer-navigation > .title:before{
+    content: "🏷️";
+  }
+
+  /* --- Trust strip: one scrolling row of pills --------------------------------
+     Four boxed cards cost 300px of the first screen before a single product.
+     As pills in a row they say the same four things in 48px. */
+  .home-usp{
+    display: flex;
+    gap: var(--tm-stack-sm);
+    margin-inline: calc(-1 * var(--tm-margin-mobile));
+    padding-inline: var(--tm-margin-mobile);
+    padding-block: 2px 6px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .home-usp::-webkit-scrollbar{
+    display: none;
+  }
+
+  .home-usp li{
+    flex: 0 0 auto;
+    gap: 8px;
+    min-height: 44px;
+    padding: 6px 14px 6px 6px;
+    border-radius: 999px;
+    box-shadow: 0 2px 10px rgba(2, 120, 126, 0.08);
+  }
+
+  .home-usp li:last-child:nth-child(odd){
+    grid-column: auto;
+  }
+
+  .home-usp svg{
+    width: 32px;
+    height: 32px;
+    padding: 7px;
+  }
+
+  .home-usp span{
+    display: none;
+  }
+
+  /* --- Category tiles: white chips with the picture inside ------------------- */
+  .home-page-category-grid .picture{
+    max-inline-size: 76px;
+    border: 1px solid rgba(2, 120, 126, 0.08);
+    background: var(--tm-surface);
+    box-shadow: 0 2px 10px rgba(2, 120, 126, 0.1);
+  }
+
+  .home-page-category-grid .item-box{
+    flex-basis: 88px;
+  }
+}
+
+/* --- Account: the profile card ----------------------------------------------
+   CustomerNavigation prints it above the sections on every account page: the
+   initial as an avatar, the name, then email or phone. Signed out it reads
+   "sign in" and goes to the login page. */
+.tm-profile{
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-block-end: var(--tm-stack-md);
+  padding: 14px 16px;
+  border-radius: var(--tm-radius-lg);
+  overflow: hidden;
+  background: var(--tm-teal-deep);
+  background-image:
+    radial-gradient(circle at 90% -20%, rgba(255, 255, 255, 0.22), transparent 55%),
+    linear-gradient(135deg, var(--tm-teal-deep) 0%, var(--tm-teal) 100%);
+  box-shadow: var(--tm-shadow);
+  color: var(--tm-white);
+  text-decoration: none;
+  transition: transform var(--tm-transition), box-shadow var(--tm-transition);
+}
+
+.tm-profile:hover,
+.tm-profile:focus-visible{
+  color: var(--tm-white);
+  box-shadow: var(--tm-shadow-lg);
+  text-decoration: none;
+}
+
+.tm-profile-avatar{
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 52px;
+  block-size: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.tm-profile-text{
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-inline-size: 0;
+}
+
+.tm-profile-text strong{
+  overflow: hidden;
+  font-size: var(--tm-fs-body-lg);
+  line-height: 24px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tm-profile-text span{
+  overflow: hidden;
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  opacity: 0.88;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tm-profile-chevron{
+  flex: none;
+  inline-size: 22px;
+  block-size: 22px;
+  opacity: 0.85;
+}
+
+[dir="rtl"] .tm-profile-chevron{
+  transform: scaleX(-1);
+}
+
+/* --- The welcome tour (_WelcomeSlides.cshtml) --------------------------------
+   Full screen on a phone: the picture on the brand colour up top, the words
+   on white below, dots and one button at the thumb. On a wide screen the
+   same card floats on a dimmed page. The track is a scroll-snap row. */
+@keyframes tm-fade-in{
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
+  }
+}
+
+@keyframes tm-fade-out{
+  from{
+    opacity: 1;
+  }
+  to{
+    opacity: 0;
+  }
+}
+
+@keyframes tm-float{
+  0%, 100%{
+    transform: translateY(0);
+  }
+  50%{
+    transform: translateY(-10px);
+  }
+}
+
+html.tm-tour-open,
+html.tm-tour-open body{
+  overflow: hidden;
+}
+
+.tm-tour{
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: grid;
+  place-items: center;
+  background: var(--tm-surface);
+  animation: tm-fade-in 0.3s ease both;
+}
+
+.tm-tour.tm-tour-closing{
+  animation: tm-fade-out 0.3s ease both;
+  pointer-events: none;
+}
+
+.tm-tour-card{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: hidden;
+  background: var(--tm-surface);
+}
+
+.tm-tour-skip{
+  position: absolute;
+  inset-block-start: max(env(safe-area-inset-top, 0px), 14px);
+  inset-inline-end: 16px;
+  z-index: 1;
+  min-height: 40px;
+  margin: 0;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  color: var(--tm-white);
+  font: inherit;
+  font-size: var(--tm-fs-label);
+  line-height: var(--tm-lh-label);
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.tm-tour-track{
+  flex: 1 1 auto;
+  display: flex;
+  min-block-size: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  outline: 0;
+}
+
+.tm-tour-track::-webkit-scrollbar{
+  display: none;
+}
+
+.tm-tour-slide{
+  flex: 0 0 100%;
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.tm-tour-art{
+  flex: 1 1 56%;
+  display: grid;
+  place-items: center;
+  min-block-size: 0;
+  padding: calc(max(env(safe-area-inset-top, 0px), 14px) + 56px) 32px 36px;
+  border-end-start-radius: 44px;
+  border-end-end-radius: 44px;
+  background: var(--tm-teal-deep);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.18), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(0, 217, 204, 0.5), transparent 45%),
+    linear-gradient(160deg, var(--tm-teal-deep) 0%, var(--tm-teal) 70%);
+}
+
+.tm-tour-art img{
+  max-inline-size: min(72vw, 340px);
+  max-block-size: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.25));
+  animation: tm-float 4s ease-in-out infinite;
+}
+
+.tm-tour-art-icon svg{
+  inline-size: min(40vw, 170px);
+  block-size: auto;
+  aspect-ratio: 1;
+  padding: 10%;
+  border-radius: 28%;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.35), 0 18px 40px rgba(0, 0, 0, 0.18);
+  color: var(--tm-white);
+  stroke-width: 1.3;
+  animation: tm-float 4s ease-in-out infinite;
+}
+
+.tm-tour-copy{
+  flex: 0 0 auto;
+  /* room for a title and three lines, so the art does not change height from slide to slide */
+  min-block-size: 168px;
+  padding: 28px 28px 8px;
+  text-align: center;
+}
+
+.tm-tour-copy h2{
+  margin: 0 0 10px;
+  color: var(--tm-ink);
+  font-size: 26px;
+  line-height: 34px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.tm-tour-copy p{
+  margin: 0;
+  color: var(--tm-ink-muted);
+  font-size: var(--tm-fs-body);
+  line-height: 26px;
+}
+
+.tm-tour-foot{
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 24px max(env(safe-area-inset-bottom, 0px), 24px);
+}
+
+.tm-tour-dots{
+  display: flex;
+  gap: 6px;
+}
+
+.tm-tour-dots span{
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 999px;
+  background: var(--tm-teal-tint-strong);
+  transition: inline-size 0.25s ease, background-color 0.25s ease;
+}
+
+.tm-tour-dots span.active{
+  inline-size: 26px;
+  background: var(--tm-teal-deep);
+}
+
+.tm-tour-next{
+  inline-size: 100%;
+  max-inline-size: 420px;
+  min-height: 52px;
+  margin: 0;
+  padding-inline: 24px;
+  border-radius: 999px;
+  box-shadow: var(--tm-shadow);
+  font-size: var(--tm-fs-body);
+  font-weight: 700;
+}
+
+@media (min-width: 700px){
+
+  .tm-tour{
+    background: rgba(16, 32, 31, 0.55);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  .tm-tour-card{
+    inline-size: min(440px, calc(100% - 48px));
+    block-size: min(720px, calc(100% - 48px));
+    border-radius: 32px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  }
+
+  .tm-tour-art{
+    padding-block-start: 70px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+
+  .tm-tour,
+  .tm-tour.tm-tour-closing,
+  .tm-tour-art img,
+  .tm-tour-art-icon svg,
+  .mobile-tab.active .mobile-tab-icon-wrap,
+  .tm-hello-wave{
+    animation: none;
+  }
+
+  .tm-tour-track{
+    scroll-behavior: auto;
+  }
 }

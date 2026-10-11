@@ -7,9 +7,26 @@
     it takes the bar over, the logo steps aside and the field takes focus. The
     core view is otherwise untouched, so every widget zone still fires.
 *@
-<header class="header">
+@inject Nop.Core.IWorkContext workContext
+
+@{
+    //The home page wears the app's coloured top band on phones: a greeting, the logo and the search
+    //field always open (brand.css, .tm-home-header). Every other page keeps the plain bar.
+    var isHome = string.Equals(Context.Request.RouteValues["controller"]?.ToString(), "Home", StringComparison.OrdinalIgnoreCase)
+        && string.Equals(Context.Request.RouteValues["action"]?.ToString(), "Index", StringComparison.OrdinalIgnoreCase);
+    var customer = isHome ? await workContext.GetCurrentCustomerAsync() : null;
+    var firstName = customer != null && User.Identity?.IsAuthenticated == true ? customer.FirstName?.Trim() : null;
+}
+<header class="header@(isHome ? " tm-home-header" : "")">
     <a class="skip" href="#main">@T("Header.SkipNavigation.Text")</a>
     @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HeaderBefore })
+    @if (isHome)
+    {
+        <div class="tm-hello">
+            <strong>@(string.IsNullOrEmpty(firstName) ? T("Mobile.Home.Hello") : T("Mobile.Home.HelloName", firstName)) <span class="tm-hello-wave" aria-hidden="true">👋</span></strong>
+            <span>@T("Mobile.Home.Tagline")</span>
+        </div>
+    }
     <div class="header-upper">
         <div class="header-selectors-wrapper">
             @await Component.InvokeAsync(typeof(CurrencySelectorViewComponent))
@@ -91,6 +108,28 @@
                         setOpen(false);
                 }, 150);
         });
+
+        //Home page: the placeholder names a category to look for, and changes every few seconds -
+        //a field that says "search for lamps" invites a search where "search store" does not. The
+        //names come from the category tiles already on the page, so there is nothing to configure.
+        if (header.classList.contains('tm-home-header')) {
+            var names = Array.prototype.map.call(document.querySelectorAll('.home-page-category-grid .item-box .title a'), function (a) { return a.textContent.trim(); }).filter(Boolean);
+            var example = '@Html.Raw(JavaScriptEncoder.Default.Encode(T("Search.SearchBox.Example").Text))';
+            if (names.length && example.indexOf('{0}') !== -1) {
+                var at = Math.floor(Math.random() * names.length);
+                var rotate = function () {
+                    if (document.activeElement === field || field.value)
+                        return;
+                    field.classList.add('tm-placeholder-swap');
+                    setTimeout(function () {
+                        field.placeholder = example.replace('{0}', names[at++ % names.length]);
+                        field.classList.remove('tm-placeholder-swap');
+                    }, 220);
+                };
+                field.placeholder = example.replace('{0}', names[at++ % names.length]);
+                setInterval(rotate, 3500);
+            }
+        }
     })();
 </script>
 

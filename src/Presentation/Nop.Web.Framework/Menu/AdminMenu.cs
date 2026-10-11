@@ -290,6 +290,14 @@ public partial class AdminMenu : IAdminMenu
                         },
                         new()
                         {
+                            SystemName = "Welcome slides",
+                            Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.WelcomeSlides"),
+                            PermissionNames = new List<string> { StandardPermission.ContentManagement.TOPICS_VIEW },
+                            Url = GetMenuItemUrl("WelcomeSlide", "List"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
                             SystemName = "Home page banner",
                             Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.HomepageBanner"),
                             PermissionNames = new List<string> { StandardPermission.ContentManagement.TOPICS_VIEW },

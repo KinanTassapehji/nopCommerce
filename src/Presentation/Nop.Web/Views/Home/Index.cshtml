@@ -29,6 +29,8 @@
     //page class
     NopHtml.AppendPageCssClassParts("html-home-page");
 }
+@*the welcome tour, once per browser (Content management > Welcome slides)*@
+@{ await Html.RenderPartialAsync("_WelcomeSlides"); }
 <div class="page home-page">
     <div class="page-body">
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageTop })

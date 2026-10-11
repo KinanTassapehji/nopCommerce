@@ -1,0 +1,113 @@
+﻿@using Nop.Services.Localization
+@using Nop.Services.Media
+
+@inject Nop.Services.Common.IWelcomeSlideService welcomeSlideService
+@inject ILocalizationService localizationService
+@inject IPictureService pictureService
+
+@*
+    The welcome tour: a full-screen set of slides a visitor sees once, on the first visit to the
+    home page (Content management > Welcome slides). Rendered hidden; the script at the end shows
+    it unless this browser has seen it, or always with ?welcome=1 (the admin's preview link).
+    The track is a native scroll-snap row, so a thumb swipes it and RTL comes for free; the dots
+    and the button follow the scroll position.
+*@
+@{
+    var slides = await welcomeSlideService.GetAllWelcomeSlidesAsync();
+}
+@if (slides.Any())
+{
+    <div class="tm-tour" id="tm-tour" role="dialog" aria-modal="true" aria-labelledby="tm-tour-title-0" hidden>
+      <div class="tm-tour-card">
+        <button type="button" class="tm-tour-skip">@T("Welcome.Skip")</button>
+        <div class="tm-tour-track" tabindex="0">
+            @for (var i = 0; i < slides.Count; i++)
+            {
+                var slide = slides[i];
+                var picture = slide.PictureId > 0 ? await pictureService.GetPictureUrlAsync(slide.PictureId, 800, showDefaultPicture: false) : null;
+                var text = await localizationService.GetLocalizedAsync(slide, s => s.Text);
+                <section class="tm-tour-slide" aria-roledescription="slide" aria-label="@(i + 1) / @slides.Count">
+                    <div class="tm-tour-art@(string.IsNullOrEmpty(picture) ? " tm-tour-art-icon" : "")">
+                        @if (!string.IsNullOrEmpty(picture))
+                        {
+                            <img src="@picture" alt="" loading="@(i == 0 ? "eager" : "lazy")" />
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("_HomepageFeatureIcon", slide.Icon)
+                        }
+                    </div>
+                    <div class="tm-tour-copy">
+                        <h2 id="tm-tour-title-@i">@(await localizationService.GetLocalizedAsync(slide, s => s.Title))</h2>
+                        @if (!string.IsNullOrEmpty(text))
+                        {
+                            <p>@text</p>
+                        }
+                    </div>
+                </section>
+            }
+        </div>
+        <div class="tm-tour-foot">
+            <div class="tm-tour-dots" aria-hidden="true">
+                @for (var i = 0; i < slides.Count; i++)
+                {
+                    <span class="@(i == 0 ? "active" : null)"></span>
+                }
+            </div>
+            <button type="button" class="tm-tour-next button-1" data-next="@T("Welcome.Next")" data-start="@T("Welcome.Start")">@T(slides.Count > 1 ? "Welcome.Next" : "Welcome.Start")</button>
+        </div>
+      </div>
+    </div>
+    <script>
+        (function () {
+            var tour = document.getElementById('tm-tour');
+            var key = 'tm-tour-seen';
+            var seen = false;
+            try { seen = !!localStorage.getItem(key); } catch (e) { }
+            if (seen && location.search.indexOf('welcome') === -1)
+                return;
+
+            var track = tour.querySelector('.tm-tour-track');
+            var dots = tour.querySelectorAll('.tm-tour-dots span');
+            var next = tour.querySelector('.tm-tour-next');
+            var count = dots.length;
+            var rtl = document.documentElement.dir === 'rtl';
+
+            //out of the page tree, so no ancestor's stacking context can put the bars over it
+            document.body.appendChild(tour);
+            tour.hidden = false;
+            document.documentElement.classList.add('tm-tour-open');
+            track.focus({ preventScroll: true });
+
+            function index() {
+                return Math.round(Math.abs(track.scrollLeft) / track.clientWidth);
+            }
+
+            function sync() {
+                var at = index();
+                for (var i = 0; i < count; i++)
+                    dots[i].classList.toggle('active', i === at);
+                next.textContent = at >= count - 1 ? next.getAttribute('data-start') : next.getAttribute('data-next');
+            }
+
+            function close() {
+                try { localStorage.setItem(key, '1'); } catch (e) { }
+                tour.classList.add('tm-tour-closing');
+                document.documentElement.classList.remove('tm-tour-open');
+                setTimeout(function () { tour.remove(); }, 350);
+            }
+
+            track.addEventListener('scroll', sync, { passive: true });
+            next.addEventListener('click', function () {
+                if (index() >= count - 1)
+                    return close();
+                track.scrollBy({ left: track.clientWidth * (rtl ? -1 : 1), behavior: 'smooth' });
+            });
+            tour.querySelector('.tm-tour-skip').addEventListener('click', close);
+            tour.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape')
+                    close();
+            });
+        })();
+    </script>
+}

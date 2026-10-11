@@ -54,7 +54,7 @@ const EXCLUDED = [
 ];
 
 /* Prefixes that are safe to cache: public, versioned, non-personalised. */
-const CACHEABLE_PREFIXES = ['/css/', '/js/', '/lib/', '/lib_npm/', '/icons/', '/themes/', '/images/'];
+const CACHEABLE_PREFIXES = ['/css/', '/js/', '/lib/', '/lib_npm/', '/icons/', '/themes/', '/images/', '/fonts/'];
 
 /* Offline, a thumbnail that was never cached draws as a broken-image icon and
    makes the whole page look failed. Serve the store's own mark on a brand tint

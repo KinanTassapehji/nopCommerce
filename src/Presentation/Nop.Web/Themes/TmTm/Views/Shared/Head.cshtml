@@ -4,11 +4,14 @@
 @inject CatalogSettings catalogSettings
 @inject IThemeContext themeContext
 @inject IUserAgentHelper userAgentHelper
+@inject Nop.Core.IWorkContext workContext
 
 @{
     Layout ="";
     var themeName = await themeContext.GetWorkingThemeNameAsync();
     var supportRtl = await Html.ShouldUseRtlThemeAsync();
+    //the two weights every page uses, for the script the page is in; the rest load on demand (tokens.css)
+    var fontSubset = (await workContext.GetWorkingLanguageAsync()).LanguageCulture.StartsWith("ar", StringComparison.OrdinalIgnoreCase) ? "arabic" : "latin";
 
     //NOTE: AppendCssFileParts PREPENDS (it does _cssParts.Insert(0, ...)), so the
     //vendor sheets below are appended first and end up ahead of the theme's own.
@@ -45,6 +48,8 @@
     generated per store id; only the pieces that setting does not cover are
     emitted here.
 *@
+<link rel="preload" href="/fonts/plex-arabic-@(fontSubset)-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/plex-arabic-@(fontSubset)-700.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">

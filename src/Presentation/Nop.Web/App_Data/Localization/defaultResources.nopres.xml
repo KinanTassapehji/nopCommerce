@@ -19652,6 +19652,99 @@
   <LocaleResource Name="Homepage.AllProducts.Loading">
     <Value>Loading more products</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides">
+    <Value>Welcome slides</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Hint">
+    <Value>The short tour a visitor sees once, on the first visit to the home page: a picture, a title and a line per slide, with Skip and Next. Unpublish a slide to hide it without deleting it; with no published slides the tour is off.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.AddNew">
+    <Value>Add a new welcome slide</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.EditDetails">
+    <Value>Edit welcome slide</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.BackToList">
+    <Value>back to welcome slides</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Added">
+    <Value>The welcome slide has been added successfully.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Updated">
+    <Value>The welcome slide has been updated successfully.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Deleted">
+    <Value>The welcome slide has been deleted successfully.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Preview">
+    <Value>Preview the tour</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Title">
+    <Value>Title</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Title.Hint">
+    <Value>The big line, e.g. "Welcome to tmtm". Keep it short.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Title.Required">
+    <Value>Please enter a title.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Text">
+    <Value>Text</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Text.Hint">
+    <Value>One or two sentences under the title. Optional.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Picture">
+    <Value>Picture</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Picture.Hint">
+    <Value>The picture on the slide. Square or portrait works best; a PNG with a transparent background sits on the brand colour. Without a picture the icon below is drawn instead.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Icon">
+    <Value>Icon</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Icon.Hint">
+    <Value>Drawn when the slide has no picture.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Published">
+    <Value>Published</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.Published.Hint">
+    <Value>Show this slide in the tour.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.DisplayOrder">
+    <Value>Display order</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.WelcomeSlides.Fields.DisplayOrder.Hint">
+    <Value>Slides are shown from the lowest number to the highest.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Welcome.Skip">
+    <Value>Skip</Value>
+  </LocaleResource>
+  <LocaleResource Name="Welcome.Next">
+    <Value>Next</Value>
+  </LocaleResource>
+  <LocaleResource Name="Welcome.Start">
+    <Value>Start shopping</Value>
+  </LocaleResource>
+  <LocaleResource Name="Mobile.Home.Hello">
+    <Value>Hello</Value>
+  </LocaleResource>
+  <LocaleResource Name="Mobile.Home.HelloName">
+    <Value>Hello, {0}</Value>
+  </LocaleResource>
+  <LocaleResource Name="Mobile.Home.Tagline">
+    <Value>What are you looking for today?</Value>
+  </LocaleResource>
+  <LocaleResource Name="Search.SearchBox.Example">
+    <Value>Search for {0}</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Profile.Guest">
+    <Value>Welcome</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Profile.SignIn">
+    <Value>Sign in or create an account</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.HomepageFeatures">
     <Value>Home page features</Value>
   </LocaleResource>
