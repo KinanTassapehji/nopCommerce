@@ -18,6 +18,7 @@ using Nop.Services.Directory;
 using Nop.Services.FilterLevels;
 using Nop.Services.Localization;
 using Nop.Services.Media;
+using Nop.Services.Orders;
 using Nop.Services.Seo;
 using Nop.Services.Vendors;
 using Nop.Web.Framework.Events;
@@ -48,6 +49,7 @@ public partial class CatalogModelFactory : ICatalogModelFactory
     protected readonly IManufacturerService _manufacturerService;
     protected readonly IManufacturerTemplateService _manufacturerTemplateService;
     protected readonly INopUrlHelper _nopUrlHelper;
+    protected readonly IOrderReportService _orderReportService;
     protected readonly IPictureService _pictureService;
     protected readonly IProductModelFactory _productModelFactory;
     protected readonly IProductReviewService _productReviewService;
@@ -85,6 +87,7 @@ public partial class CatalogModelFactory : ICatalogModelFactory
         IManufacturerService manufacturerService,
         IManufacturerTemplateService manufacturerTemplateService,
         INopUrlHelper nopUrlHelper,
+        IOrderReportService orderReportService,
         IPictureService pictureService,
         IProductModelFactory productModelFactory,
         IProductReviewService productReviewService,
@@ -117,6 +120,7 @@ public partial class CatalogModelFactory : ICatalogModelFactory
         _manufacturerService = manufacturerService;
         _manufacturerTemplateService = manufacturerTemplateService;
         _nopUrlHelper = nopUrlHelper;
+        _orderReportService = orderReportService;
         _pictureService = pictureService;
         _productModelFactory = productModelFactory;
         _productReviewService = productReviewService;
@@ -1480,6 +1484,52 @@ public partial class CatalogModelFactory : ICatalogModelFactory
         var products = await _productService.GetProductsMarkedAsNewAsync(storeId: currentStore.Id,
             pageIndex: command.PageNumber - 1,
             pageSize: command.PageSize);
+
+        await PrepareCatalogProductsAsync(model, products);
+
+        return model;
+    }
+
+
+    /// <summary>
+    /// Prepare one of the home page bands as a catalogue page: "deals", "bestsellers" or "featured"
+    /// </summary>
+    /// <param name="collection">Which band</param>
+    /// <param name="command">Model to get the catalog products</param>
+    /// <returns>A task that represents the asynchronous operation; the task result contains the model, or null for an unknown band</returns>
+    public virtual async Task<CatalogProductsModel> PrepareCollectionModelAsync(string collection, CatalogProductsCommand command)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+
+        var model = new CatalogProductsModel
+        {
+            UseAjaxLoading = _catalogSettings.UseAjaxCatalogProductsLoading
+        };
+
+        //page size: the "new products" page's settings, so the four pages page the same way
+        await PreparePageSizeOptionsAsync(model, command, _catalogSettings.NewProductsAllowCustomersToSelectPageSize,
+            _catalogSettings.NewProductsPageSizeOptions, _catalogSettings.NewProductsPageSize);
+
+        var store = await _storeContext.GetCurrentStoreAsync();
+        var pageIndex = command.PageNumber - 1;
+        IPagedList<Product> products;
+        switch (collection?.ToLowerInvariant())
+        {
+            case "deals":
+                //the same list the home band draws its ten from, paged
+                products = new PagedList<Product>(await _productService.GetDiscountedProductsAsync(), pageIndex, command.PageSize);
+                break;
+            case "featured":
+                products = new PagedList<Product>(await _productService.GetAllProductsDisplayedOnHomepageAsync(), pageIndex, command.PageSize);
+                break;
+            case "bestsellers":
+                var report = await _orderReportService.BestSellersReportAsync(storeId: store.Id, pageIndex: pageIndex, pageSize: command.PageSize);
+                var ordered = await _productService.GetProductsByIdsAsync(report.Select(line => line.ProductId).ToArray());
+                products = new PagedList<Product>(ordered, pageIndex, command.PageSize, report.TotalCount);
+                break;
+            default:
+                return null;
+        }
 
         await PrepareCatalogProductsAsync(model, products);
 

@@ -11530,3 +11530,114 @@ html.tm-tour-open body{
     display: none;
   }
 }
+
+/* --- Brands: the logo is the name ------------------------------------------
+   On the home strip and the brand list a logo tile carried the brand's name
+   above it as well; the logo says it. The name stays in the DOM (link text
+   and alt) for assistive tech and search. */
+.home-page .block-manufacturer-navigation .list a span,
+.manufacturer-grid .item-box > .title{
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- Account: the profile card is the way to the customer details ---------
+   The "customer info" chip said the same thing as the card above it; the
+   card takes a ring on that page instead, so it reads as the current section. */
+.block-account-navigation .list .customer-info{
+  display: none;
+}
+
+.html-customer-info-page .tm-profile{
+  box-shadow: var(--tm-shadow), 0 0 0 3px var(--tm-teal-tint-strong);
+}
+
+/* ==========================================================================
+   Type system and canvas (2026-10-11)
+   One family, IBM Plex Sans Arabic, for everything. Weight carries the
+   hierarchy: 700 for headings, prices and the greeting; 600 for product
+   names, buttons, chips and labels; 400 for body copy. Sizes come from the
+   tokens by role, and a role keeps its size wherever it appears - a product
+   name is --tm-fs-card-title in every card on the site.
+   ========================================================================== */
+
+/* --- Product names in cards -------------------------------------------------
+   The home rails ran names at 14px and the carousel plugin's cards fell
+   through to the base sheet's 17px/1.2/normal: two "fonts" one scroll apart.
+   One rule for every card, with the home-rail selector repeated so it ties
+   the older override on specificity and wins on order. */
+.item-box .product-title,
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .product-title,
+.ocarousel-grid .item-box .product-title{
+  min-height: 0;
+  min-block-size: 2lh;
+  margin: 0 0 6px;
+  font-size: var(--tm-fs-card-title);
+  line-height: var(--tm-lh-card-title);
+  font-weight: 600;
+  color: var(--tm-ink);
+}
+
+.item-box .product-title a,
+.home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .product-title a,
+.ocarousel-grid .item-box .product-title a{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  white-space: normal;
+  font: inherit;
+  color: inherit;
+}
+
+/* The plugin's own band title, to the same treatment as the theme's bands. */
+.ocarousel-grid .title{
+  border: 0;
+  padding: 0;
+}
+
+/* --- Canvas ------------------------------------------------------------------
+   One canvas for every page, so the store feels like one app from the home
+   page to the checkout. The variation a page needs comes from its surfaces -
+   the home band, the product sheet, the cards - not from a different colour
+   behind each one. A soft teal wash at the top ties the canvas to the bars;
+   the pattern is the logo's rounded square at 7% stroke, felt more than seen. */
+body{
+  background-color: var(--tm-canvas);
+  background-image:
+    radial-gradient(900px 420px at 50% -120px, rgba(0, 154, 149, 0.14), transparent 70%),
+    var(--tm-canvas-pattern);
+  background-repeat: no-repeat, repeat;
+  background-attachment: scroll, scroll;
+}
+
+.master-wrapper-content{
+  background: transparent;
+}
+
+/* Surfaces that sat on white by assumption and now need to say so. */
+.home-page .page-body > :is(.home-page-deals, .home-page-product-grid, .bestsellers){
+  background: linear-gradient(180deg, var(--tm-teal-tint) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.product-essential > .overview,
+.tm-tour{
+  background-color: var(--tm-surface);
+}
+
+/* The glass bars let the canvas through; a touch more white keeps them crisp. */
+.header:not(.tm-home-header){
+  background: rgba(255, 255, 255, 0.86);
+}
+
+@media (max-width: 1000px){
+
+  .mobile-tab-bar{
+    background: rgba(255, 255, 255, 0.94);
+  }
+}

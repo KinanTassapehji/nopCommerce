@@ -143,6 +143,11 @@ public partial class RouteProvider : BaseRouteProvider, IRouteProvider
             pattern: $"{lang}/newproducts/",
             defaults: new { controller = "Catalog", action = "NewProducts" });
 
+        //the home page bands as pages: /deals, /bestsellers, /featured
+        endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.General.COLLECTION,
+            pattern: $"{lang}/{{collection:regex(^(deals|bestsellers|featured)$)}}/",
+            defaults: new { controller = "Catalog", action = "Collection" });
+
         //blog
         endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.General.BLOG,
             pattern: $"{lang}/blog",
@@ -502,6 +507,10 @@ public partial class RouteProvider : BaseRouteProvider, IRouteProvider
         endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.Ajax.GET_NEW_PRODUCTS,
             pattern: $"newproducts/products/",
             defaults: new { controller = "Catalog", action = "GetNewProducts" });
+
+        endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.Ajax.GET_COLLECTION,
+            pattern: $"{{collection:regex(^(deals|bestsellers|featured)$)}}/products/",
+            defaults: new { controller = "Catalog", action = "GetCollection" });
 
         //product combinations (AJAX)
         endpointRouteBuilder.MapControllerRoute(name: NopRouteNames.Ajax.GET_PRODUCT_COMBINATIONS,

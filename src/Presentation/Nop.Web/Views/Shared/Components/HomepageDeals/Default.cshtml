@@ -3,7 +3,8 @@
 {
     <section class="product-grid home-page-deals">
         <h2 class="title">
-            @T("Homepage.Deals")
+            <span>@T("Homepage.Deals")</span>
+            <a class="view-all" href="@Url.RouteUrl(NopRouteNames.General.COLLECTION, new { collection = "deals" })">@T("Homepage.ViewAll")<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
         </h2>
         <div class="item-grid">
             @foreach (var item in Model)
