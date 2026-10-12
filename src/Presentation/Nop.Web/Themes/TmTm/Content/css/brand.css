@@ -8796,9 +8796,11 @@ html:has(.tm-terms-dialog[open]){
   color: var(--tm-white);
 }
 
+/* the step the order is at is reached too: filled like the done ones, the halo marks it as the latest */
 .order-progress .is-current .order-progress__dot{
   border-color: var(--tm-teal-deep);
-  color: var(--tm-teal-deep);
+  background: var(--tm-teal-deep);
+  color: var(--tm-white);
   box-shadow: 0 0 0 5px var(--tm-teal-tint-strong);
 }
 
