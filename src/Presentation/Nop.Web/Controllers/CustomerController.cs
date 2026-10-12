@@ -758,6 +758,11 @@ public partial class CustomerController : BasePublicController
             ValidateRequiredConsents(consents, form);
         }
 
+        //TmTm: the conditions of use checkbox (Register.cshtml) - the page stops an unticked form,
+        //this stops one posted without the page's script
+        if (!string.Equals(form["accept-terms"], "true", StringComparison.OrdinalIgnoreCase))
+            ModelState.AddModelError("", await _localizationService.GetResourceAsync("Account.Fields.AcceptTerms.Required"));
+
         if (ModelState.IsValid)
         {
             var customerUserName = model.Username;

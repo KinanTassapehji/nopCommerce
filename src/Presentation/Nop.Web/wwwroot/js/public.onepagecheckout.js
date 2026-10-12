@@ -3,15 +3,93 @@
 */
 
 
+/*
+** Single page flow: the steps are not an accordion. Each step stays open once reached,
+** a step whose choice is already made (saved address, preselected shipping/payment
+** method) saves itself and moves on, and changing a choice re-saves from that step down.
+** The sticky "place order" button appears once payment info or confirm is reached.
+*/
 var Checkout = {
     loadWaiting: false,
     failureUrl: false,
+    pending: null,
+    autoConfirm: false,
+    current: 'billing',
 
-    init: function (failureUrl) {
+    init: function (failureUrl, summaryUrl, couponUrl) {
         this.loadWaiting = false;
         this.failureUrl = failureUrl;
+        this.summaryUrl = summaryUrl;
+        this.couponUrl = couponUrl;
+    },
 
-        Accordion.disallowAccessToNextSections = true;
+    start: function () {
+        Checkout.renumber();
+        //the address cards drive the (hidden) address select
+        $(document).on('change', 'input[name=opc_address_card]', function () {
+            $('#billing-address-select').val(this.value).trigger('change');
+        });
+        $(document).on('change', '#billing-address-select', Checkout.addressChanged);
+        //the coupon box in the order details step (_OpcSummary): its buttons are the cart page's
+        //submit buttons, but there is no form here - post them instead
+        $(document).on('click', '#opc-summary-load .apply-discount-coupon-code-button', function (e) {
+            e.preventDefault();
+            Checkout.applyCoupon();
+        });
+        $(document).on('keydown', '#opc-summary-load #discountcouponcode', function (e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                Checkout.applyCoupon();
+            }
+        });
+        $(document).on('click', '#opc-summary-load .remove-discount-button', function (e) {
+            e.preventDefault();
+            Checkout.coupon('OpcRemoveDiscountCoupon', { discountId: this.name.replace('removediscount-', '') });
+        });
+        $(document).on('change', '#co-shipping-method-form :input', function () {
+            Checkout.queue(function () { ShippingMethod.save(); });
+        });
+        $(document).on('change', '#co-payment-method-form :input', function () {
+            Checkout.queue(function () { PaymentMethod.save(); });
+        });
+
+        if (Billing.disableBillingAddressCheckoutStep) {
+            $('#opc-billing').hide();
+            Billing.save();
+        } else {
+            Checkout.addressChanged();
+        }
+    },
+
+    //run now, or right after the request in flight finishes (only the latest call is kept)
+    queue: function (fn) {
+        if (Checkout.loadWaiting === false) {
+            fn();
+        } else {
+            Checkout.pending = fn;
+        }
+    },
+
+    addressChanged: function () {
+        $('input[name=opc_address_card][value="' + $('#billing-address-select').val() + '"]').prop('checked', true);
+        if ($('#billing-address-select').val() > 0) {
+            Checkout.queue(function () { Billing.save(); });
+        } else {
+            //a new address has to be typed in first
+            Checkout.gotoSection('billing');
+        }
+    },
+
+    placeOrder: function () {
+        if (Checkout.loadWaiting !== false) return;
+
+        if (Checkout.current === 'payment_info') {
+            //save the payment details, then confirm straight away (see gotoSection)
+            Checkout.autoConfirm = true;
+            PaymentInfo.save();
+        } else {
+            ConfirmOrder.save();
+        }
     },
 
     ajaxFailure: function () {
@@ -59,17 +137,91 @@ var Checkout = {
             }
         }
         this.loadWaiting = step;
+        $('.checkout-page').toggleClass('opc-busy', !!step);
+
+        if (!step) {
+            //a "place order" press only carries through its own request chain
+            this.autoConfirm = false;
+            var next = this.pending;
+            this.pending = null;
+            if (next) {
+                next();
+            } else {
+                //the chain has settled: totals may have changed
+                this.refreshSummary();
+            }
+        }
     },
 
-    gotoSection: function (section) {
-        section = $('#opc-' + section);
-        section.addClass('allow');
-        Accordion.openSection(section);
+    //steps skipped by the server (e.g. the only payment method) leave no gap in the numbering
+    renumber: function () {
+        $('#checkout-steps > li:visible .step-title .number').each(function (i) { $(this).text(i + 1); });
     },
 
-    back: function () {
-        if (this.loadWaiting) return;
-        Accordion.openPrevSection(true, true);
+    refreshSummary: function (done) {
+        $.ajax({
+            cache: false,
+            url: this.summaryUrl,
+            type: 'GET',
+            success: function (html) {
+                $('#opc-summary-load').html(html);
+                $('#opc-order-total').text($('#opc-summary-load .order-total .value-summary').first().text().trim());
+                if (done) done();
+            }
+        });
+    },
+
+    applyCoupon: function () {
+        Checkout.coupon('OpcApplyDiscountCoupon', { discountcouponcode: $('#opc-summary-load #discountcouponcode').val() });
+    },
+
+    //apply or remove a coupon, then reload the order details (the totals change) and say how it went
+    coupon: function (action, data) {
+        if (Checkout.loadWaiting !== false) return;
+        addAntiForgeryToken(data);
+        $.ajax({
+            cache: false,
+            url: Checkout.couponUrl + action,
+            type: 'POST',
+            data: data,
+            success: function (response) {
+                Checkout.refreshSummary(function () {
+                    $('#opc-summary-load .opc-coupon-messages').empty().append($.map(response.messages || [], function (message) {
+                        return $('<div>').addClass(response.applied ? 'message-success' : 'message-failure').text(message);
+                    }));
+                });
+            },
+            error: Checkout.ajaxFailure
+        });
+    },
+
+    gotoSection: function (name) {
+        var section = $('#opc-' + name);
+        section.addClass('allow').show();
+        //later steps are stale until the chain reaches them again
+        section.nextAll('.tab-section').removeClass('allow done').hide();
+        section.removeClass('done').prevAll('.tab-section').addClass('done');
+        //confirm order only carries errors, terms of service and captcha; nothing to show, no step
+        if (name === 'confirm_order' &&
+            !$('#checkout-confirm-order-load').find('.message-error, .min-order-warning, .terms-of-service, .captcha-box, input, iframe').length) {
+            section.hide();
+        }
+        Checkout.renumber();
+        Checkout.current = name;
+
+        var canPlaceOrder = name === 'payment_info' || name === 'confirm_order';
+        $('#confirm-order-buttons-container').prop('hidden', !canPlaceOrder);
+        $('body').toggleClass('ar-buybar-on', canPlaceOrder);
+
+        //continue by itself where the choice is already made
+        if (name === 'shipping_method' && $('#co-shipping-method-form input[name=shippingoption]:checked').length) {
+            Checkout.queue(function () { ShippingMethod.save(); });
+        } else if (name === 'payment_method' && $('#co-payment-method-form input[name=paymentmethod]:checked').length) {
+            Checkout.queue(function () { PaymentMethod.save(); });
+        } else if (name === 'confirm_order' && Checkout.autoConfirm) {
+            Checkout.autoConfirm = false;
+            Checkout.queue(function () { ConfirmOrder.save(); });
+        }
     },
 
     setStepResponse: function(response) {
@@ -124,15 +276,16 @@ var Billing = {
 
   newAddress: function (isNew) {
     $('#save-billing-address-button').hide();
+    //a saved address saves itself (Checkout.addressChanged); only a typed one needs "Continue"
+    $('.new-address-next-step-button').toggle(isNew);
+    //leaving edit mode (see editAddress): the cards come back, its buttons go
+    $('.opc-address-cards').show();
+    $('#cancel-billing-address-button, #delete-billing-address-button').hide();
 
     if (isNew) {
       $('#billing-new-address-form').show();
-      $('#edit-billing-address-button').hide();
-      $('#delete-billing-address-button').hide();
-    } else {      
+    } else {
       $('#billing-new-address-form').hide();
-      $('#edit-billing-address-button').show();
-      $('#delete-billing-address-button').show();
     }
     $(document).trigger({ type: "onepagecheckout_billing_address_new" });
     Billing.initializeCountrySelect();
@@ -181,11 +334,7 @@ var Billing = {
       response.wrong_billing_address = false;
     }
     if (Billing.disableBillingAddressCheckoutStep) {
-      if (response.wrong_billing_address) {
-        Accordion.showSection('#opc-billing');
-      } else {
-        Accordion.hideSection('#opc-billing');
-      }
+      $('#opc-billing').toggle(response.wrong_billing_address);
     }
 
 
@@ -197,6 +346,14 @@ var Billing = {
       }
 
       return false;
+    }
+
+    //ponytail: a newly typed address was saved; reload so it appears (preselected) in the
+    //address list instead of re-rendering the address step client-side. Costs one page load,
+    //once per new address.
+    if (!Billing.disableBillingAddressCheckoutStep && !($('#billing-address-select').val() > 0)) {
+      location.reload();
+      return;
     }
 
     Checkout.setStepResponse(response);
@@ -259,10 +416,13 @@ var Billing = {
       },
       complete: function (jqXHR, textStatus) {
         $("#billing-new-address-form").show();
-        $("#edit-billing-address-button").hide();
-        $("#delete-billing-address-button").hide();
         if (selectedItem != 0) {
-          $("#save-billing-address-button").show();
+          //edit mode: the form replaces the cards, and nothing below may be ordered until the
+          //edit is saved or cancelled
+          $('.opc-address-cards').hide();
+          $("#save-billing-address-button, #cancel-billing-address-button, #delete-billing-address-button").show();
+          $('.new-address-next-step-button').hide();
+          Checkout.gotoSection('billing');
         }
       },
       error: Checkout.ajaxFailure,
@@ -290,10 +450,20 @@ var Billing = {
         var selectElement = $('#billing-address-select');
         if (selectElement && selectedId) {
           selectElement.val(selectedId);
+          //the edit may change the delivery options, so re-save from the address down
+          Checkout.addressChanged();
         }
       },
       error: Checkout.ajaxFailure
     });
+  },
+
+  //leave edit mode without saving: back to the cards, and re-save the still selected address so
+  //the steps below (hidden while editing) come back
+  cancelEdit: function () {
+    Billing.resetBillingForm();
+    Billing.newAddress(false);
+    Checkout.addressChanged();
   },
 
   deleteAddress: function (url) {
@@ -308,6 +478,7 @@ var Billing = {
       },
       success: function (response) {
         Checkout.setStepResponse(response);
+        Checkout.addressChanged();
       },
       error: Checkout.ajaxFailure
     });

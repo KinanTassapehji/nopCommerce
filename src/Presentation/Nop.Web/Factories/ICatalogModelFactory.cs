@@ -230,6 +230,14 @@ public partial interface ICatalogModelFactory
     /// </returns>
     Task<CatalogProductsModel> PrepareNewProductsModelAsync(CatalogProductsCommand command);
 
+    /// <summary>
+    /// Prepare one of the home page bands as a catalogue page: "deals", "bestsellers" or "featured"
+    /// </summary>
+    /// <param name="collection">Which band</param>
+    /// <param name="command">Model to get the catalog products</param>
+    /// <returns>A task that represents the asynchronous operation; the task result contains the model, or null for an unknown band</returns>
+    Task<CatalogProductsModel> PrepareCollectionModelAsync(string collection, CatalogProductsCommand command);
+
     #endregion
 
     #region Searching

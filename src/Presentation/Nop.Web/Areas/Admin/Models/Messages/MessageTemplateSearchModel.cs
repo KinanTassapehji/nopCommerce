@@ -41,6 +41,9 @@ public partial record MessageTemplateSearchModel : BaseSearchModel
     public IList<SelectListItem> AvailableEmailAccounts { get; set; }
 
     public bool HideStoresList { get; set; }
+
+    //super administrators get a "visible to administrators" column
+    public bool CanManageAdminVisibility { get; set; }
     public bool HideEmailAccount { get; set; }
 
     #endregion

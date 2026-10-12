@@ -4,24 +4,17 @@
     ~400px tall and, sitting under the three-band header, pushed the first
     product more than three screens down.
 
-    In its place:
-      * a bottom tab bar with the four destinations a shopper actually uses —
-        home, categories, cart, account — thumb-reachable and always visible;
-      * the full category tree in a bottom sheet behind the "Categories" tab.
-
-    The sheet is a native popover. The browser supplies light dismiss, Esc,
-    top-layer stacking and the invoker wiring, so no script ships with it.
-    Browsers without popover lay the sheet out inline instead, which keeps the
-    tree reachable; brand.css hides the trigger there via @@supports so the tab
-    never dead-ends.
-
-    The tree itself is the stock MainMenu component, so the menu configured in
-    admin, its accordion script and every localisation still apply.
+    In its place, a bottom tab bar with the four destinations a shopper actually
+    uses - home, products, cart, account - thumb-reachable and always visible.
+    "Products" goes to the all-categories page (the catalogue's front door); it
+    used to open the category tree in a bottom sheet, one tap more to the same
+    place.
 *@
 @using Nop.Core.Domain.Orders
 @using Nop.Services.Orders
 
 @inject IShoppingCartService shoppingCartService
+@inject OrderSettings orderSettings
 @inject Nop.Core.IStoreContext storeContext
 @inject Nop.Core.IWorkContext workContext
 
@@ -48,31 +41,13 @@
     var homeActive = inSection("Home");
     var browseActive = inSection("Catalog", "Product");
     var cartActive = inSection("ShoppingCart", "Checkout");
+    //orders have a tab of their own: the order list, an order, a return request
+    var ordersActive = inSection("Order", "ReturnRequest");
     //Notifications (a plugin page) and, for a signed-in customer, Contact us are account pages too
-    var accountActive = inSection("Customer", "Order", "ReturnRequest", "CustomerNotifications")
+    var accountActive = inSection("Customer", "CustomerNotifications")
         || (inSection("Common") && string.Equals(Context.Request.RouteValues["action"]?.ToString(), "ContactUs", StringComparison.OrdinalIgnoreCase)
             && User.Identity?.IsAuthenticated == true);
 }
-
-<div id="ar-menu-sheet" class="ar-sheet" popover>
-    <div class="ar-sheet-grip" aria-hidden="true"></div>
-    <div class="ar-sheet-head">
-        <h2 class="ar-sheet-title">@T("Categories")</h2>
-        <button class="ar-sheet-close" type="button" popovertarget="ar-menu-sheet" popovertargetaction="hide" aria-label="@T("Common.Close")">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path d="m6 6 12 12M18 6 6 18" />
-            </svg>
-        </button>
-    </div>
-    <div class="ar-sheet-body">
-        <div class="header-menu">
-            @await Component.InvokeAsync(typeof(MainMenuViewComponent))
-        </div>
-        @*The footer carries these on desktop and is hidden here, so the sheet is
-            the only place a phone can reach about/FAQ/service.*@
-        @{ await Html.RenderPartialAsync("_PageLinks"); }
-    </div>
-</div>
 
 <nav class="mobile-tab-bar" aria-label="@T("Menu")">
     <a class="mobile-tab @(homeActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.HOMEPAGE)" aria-current="@(homeActive ? "page" : null)">
@@ -84,17 +59,15 @@
         </span>
         <span class="mobile-tab-label">@T("Mobile.Nav.Home")</span>
     </a>
-    <button class="mobile-tab @(browseActive ? "active" : null)" type="button" popovertarget="ar-menu-sheet">
+    <a class="mobile-tab @(browseActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CATEGORIES)" aria-current="@(browseActive ? "page" : null)">
         <span class="mobile-tab-icon-wrap">
             <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <rect x="3.2" y="3.2" width="7.6" height="7.6" rx="2.2" />
-                <rect x="13.2" y="3.2" width="7.6" height="7.6" rx="2.2" />
-                <rect x="3.2" y="13.2" width="7.6" height="7.6" rx="2.2" />
-                <rect x="13.2" y="13.2" width="7.6" height="7.6" rx="2.2" />
+                <path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3.4 13.4V3.4h10l7.2 7.2a2 2 0 0 1 0 2.8Z" />
+                <circle cx="8" cy="8" r="1.4" />
             </svg>
         </span>
-        <span class="mobile-tab-label">@T("Categories")</span>
-    </button>
+        <span class="mobile-tab-label">@T("Mobile.Nav.Products")</span>
+    </a>
     <a class="mobile-tab @(cartActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CART)" aria-current="@(cartActive ? "page" : null)">
         <span class="mobile-tab-icon-wrap">
             <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -108,6 +81,15 @@
         </span>
         <span class="mobile-tab-label">@T("Mobile.Nav.Cart")</span>
     </a>
+    <a class="mobile-tab @(ordersActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CUSTOMER_ORDERS)" aria-current="@(ordersActive ? "page" : null)">
+        <span class="mobile-tab-icon-wrap">
+            <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5z" />
+                <path d="M4 7.5 12 12l8-4.5M12 12v9" />
+            </svg>
+        </span>
+        <span class="mobile-tab-label">@T("Account.CustomerOrders")</span>
+    </a>
     <a class="mobile-tab @(accountActive ? "active" : null)" href="@Url.RouteUrl(NopRouteNames.General.CUSTOMER_INFO)" aria-current="@(accountActive ? "page" : null)">
         <span class="mobile-tab-icon-wrap">
             <svg class="mobile-tab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -118,3 +100,88 @@
         <span class="mobile-tab-label">@T("Account.MyAccount")</span>
     </a>
 </nav>
+@*"Complete order" card, floating at the bottom of every page while the cart holds items - above
+    the tab bar on phones, in the bottom corner on desktop (brand.css, off its own .cart-qty, which
+    HeaderLinks keeps live after every AJAX add - so it appears with no reload). Not on the cart or
+    checkout, which already are the goal. ✕ puts it away until the next visit or the next item
+    added. Straight to checkout, unless the terms of service must be accepted on the cart page.*@
+@*Nor in the account section (login, register, password recovery, my account, orders): the
+    shopper is filling in a form there, and the card sat on its submit button.*@
+@if (!cartActive && !ordersActive && !accountActive)
+{
+    <div class="ar-cart-float">
+        <a class="ar-cart-float-link" href="@(orderSettings.TermsOfServiceOnShoppingCartPage ? Url.RouteUrl(NopRouteNames.General.CART) : Url.RouteUrl(NopRouteNames.Standard.CHECKOUT))">
+            <span class="cart-qty" data-qty="@cartQuantity">@T("ShoppingCart.HeaderQuantity", cartQuantity)</span>
+            <span class="ar-cart-float-label">@T("Mobile.Nav.CompleteOrder")</span>
+            <span class="ar-cart-float-total" hidden></span>
+            <svg class="ar-cart-float-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M9 5l7 7-7 7" />
+            </svg>
+        </a>
+        <button type="button" class="ar-cart-float-close" aria-label="@T("Common.Close")"
+                onclick="document.documentElement.classList.add('ar-cart-float-closed'); try { sessionStorage.setItem('ar-cart-float-closed', '1'); } catch (e) { }">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+        </button>
+    </div>
+}
+@*First page of a visit: the card bounces once, so a cart left from last time gets noticed
+    (brand.css only animates it when it is showing). A card put away with ✕ stays away for the
+    visit - until an item is added, when the reminder is relevant again: the count going up (its
+    data-qty, kept live by HeaderLinks) brings it back. Storage can throw (blocked site data) -
+    then there is simply no bounce, and ✕ lasts for the page.*@
+<script>
+    try {
+        if (!sessionStorage.getItem('ar-cart-pill-seen')) {
+            sessionStorage.setItem('ar-cart-pill-seen', '1');
+            document.documentElement.classList.add('ar-cart-pill-bounce');
+        }
+        if (sessionStorage.getItem('ar-cart-float-closed'))
+            document.documentElement.classList.add('ar-cart-float-closed');
+    } catch (e) { }
+
+    (function () {
+        var card = document.querySelector('.ar-cart-float');
+        var qty = card && card.querySelector('.cart-qty');
+        if (!qty) return;
+        var total = card.querySelector('.ar-cart-float-total');
+
+        //the total is the mini cart's subtotal: the header renders it on every page and AjaxCart swaps
+        //in a fresh #flyout-cart after each add, so the card reads it rather than asking the server again
+        function syncTotal() {
+            var subtotal = document.querySelector('#flyout-cart .totals strong');
+            var text = subtotal ? subtotal.textContent.trim() : '';
+            total.textContent = text;
+            total.hidden = !text;
+        }
+
+        var last = parseInt(qty.getAttribute('data-qty'), 10) || 0;
+        new MutationObserver(function () {
+            var now = parseInt(qty.getAttribute('data-qty'), 10) || 0;
+            if (now > last) {
+                document.documentElement.classList.remove('ar-cart-float-closed');
+                try { sessionStorage.removeItem('ar-cart-float-closed'); } catch (e) { }
+                //an item went in: the card gives a small hop. The class stays on
+                //until the next add - taking it off when the hop ends hands the
+                //card back its slide-in (and first-visit bounce), which then replay
+                card.classList.remove('ar-cart-float-bump');
+                void card.offsetWidth;
+                card.classList.add('ar-cart-float-bump');
+            }
+            last = now;
+        }).observe(qty, { attributes: true, attributeFilter: ['data-qty'] });
+
+        function watchFlyout() {
+            syncTotal();
+            var flyout = document.querySelector('#flyout-cart');
+            //replaceWith swaps the node itself, so watch its parent
+            if (flyout && flyout.parentNode)
+                new MutationObserver(syncTotal).observe(flyout.parentNode, { childList: true, subtree: true });
+        }
+        if (document.readyState === 'loading')
+            document.addEventListener('DOMContentLoaded', watchFlyout);
+        else
+            watchFlyout();
+    })();
+</script>

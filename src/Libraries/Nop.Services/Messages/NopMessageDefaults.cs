@@ -13,6 +13,12 @@ public static partial class NopMessageDefaults
     public static string NotificationListKey => "NotificationList";
 
     /// <summary>
+    /// Gets the setting key holding the names (comma separated) of the message templates that
+    /// administrators who are not super administrators may see; super administrators see all
+    /// </summary>
+    public static string AdminVisibleMessageTemplatesSettingKey => "messagetemplatesettings.adminvisiblenames";
+
+    /// <summary>
     /// Gets the path to directory used to store the token response
     /// </summary>
     public static string GmailAuthStorePath => "~/App_Data/Gmail/AuthStore";

@@ -49,7 +49,9 @@ public partial class TopicController : BasePublicController
     {
         var topic = await _topicService.GetTopicByIdAsync(topicId);
 
-        if (topic == null)
+        //TmTm: PageNotFound is the text inside the 404 page, not a page of its own; at its own
+        //address (/pagenotfound, the admin's "preview") it shows that 404 page, status and all
+        if (topic == null || string.Equals(topic.SystemName, "PageNotFound", StringComparison.OrdinalIgnoreCase))
             return InvokeHttp404();
 
         var notAvailable = !topic.Published ||

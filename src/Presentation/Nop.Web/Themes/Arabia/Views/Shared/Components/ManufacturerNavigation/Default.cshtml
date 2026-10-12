@@ -1,0 +1,31 @@
+@model ManufacturerNavigationModel
+
+@using Nop.Core.Domain.Catalog
+
+@*The same markup as the category band (HomepageCategories/Default.cshtml), so the
+    brand tiles get that band's chrome for free; .ar-brand-grid only swaps the
+    square for a logo plate (brand.css). The sidebar never shows this block.*@
+@if (Model.Manufacturers.Count > 0)
+{
+    <section class="category-grid home-page-category-grid ar-brand-grid">
+        <h2 class="title">
+            <span>@T("Homepage.Brands")</span>
+            <a class="view-all" href="@Url.RouteUrl(NopRouteNames.General.MANUFACTURERS)">@T("Homepage.ViewAll")<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+        </h2>
+        <div class="item-grid">
+            @foreach (var manufacturer in Model.Manufacturers)
+            {
+                <article class="item-box">
+                    <h2 class="title">
+                        <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { SeName = manufacturer.SeName }))" title="@manufacturer.PictureModel.Title">@manufacturer.Name</a>
+                    </h2>
+                    <div class="picture">
+                        <a href="@(await NopUrl.RouteGenericUrlAsync<Manufacturer>(new { SeName = manufacturer.SeName }))" title="@manufacturer.PictureModel.Title">
+                            <img alt="@manufacturer.PictureModel.AlternateText" src="@manufacturer.PictureModel.ImageUrl" title="@manufacturer.PictureModel.Title" />
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
+}

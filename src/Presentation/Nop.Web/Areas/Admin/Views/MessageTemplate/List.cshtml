@@ -119,6 +119,14 @@
                                 ClassName =  NopColumnClassDefaults.CenterAll,
                                 Render = new RenderBoolean()
                             },
+                            new ColumnProperty(nameof(MessageTemplateModel.VisibleToAdministrators))
+                            {
+                                Title = T("Admin.ContentManagement.MessageTemplates.Fields.VisibleToAdministrators").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                                Render = new RenderBoolean(),
+                                Visible = Model.CanManageAdminVisibility
+                            },
                             new ColumnProperty(nameof(MessageTemplateModel.ListOfStores))
                             {
                                 Title = T("Admin.ContentManagement.MessageTemplates.Fields.LimitedToStores").Text,

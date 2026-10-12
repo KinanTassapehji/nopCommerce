@@ -54,16 +54,19 @@ public partial class PriceFormatter : IPriceFormatter
     /// <param name="amount">Amount</param>
     /// <param name="showCurrency">A value indicating whether to show a currency</param>
     /// <param name="targetCurrency">Target currency</param>
+    /// <param name="customFormatting">Custom formatting in the working language; null to use the currency's own</param>
     /// <returns>Currency string without exchange rate</returns>
     protected virtual string GetCurrencyString(decimal amount,
-        bool showCurrency, Currency targetCurrency)
+        bool showCurrency, Currency targetCurrency, string customFormatting = null)
     {
         ArgumentNullException.ThrowIfNull(targetCurrency);
 
+        customFormatting ??= targetCurrency.CustomFormatting;
+
         string result;
-        if (!string.IsNullOrEmpty(targetCurrency.CustomFormatting))
+        if (!string.IsNullOrEmpty(customFormatting))
             //custom formatting specified by a store owner
-            result = amount.ToString(targetCurrency.CustomFormatting);
+            result = amount.ToString(customFormatting);
         else
         {
             if (!string.IsNullOrEmpty(targetCurrency.DisplayLocale))
@@ -292,7 +295,10 @@ public partial class PriceFormatter : IPriceFormatter
         //we should round it no matter of "ShoppingCartSettings.RoundPricesDuringCalculation" setting
         price = await _priceCalculationService.RoundPriceAsync(price, targetCurrency);
 
-        var currencyString = GetCurrencyString(price, showCurrency, targetCurrency);
+        //the custom formatting carries the currency symbol, so it is translatable per language
+        //("ل.س" in Arabic, "SYP" in English); without a translation this is the currency's own
+        var customFormatting = await _localizationService.GetLocalizedAsync(targetCurrency, currency => currency.CustomFormatting, languageId);
+        var currencyString = GetCurrencyString(price, showCurrency, targetCurrency, customFormatting);
         if (!showTax)
             return currencyString;
 

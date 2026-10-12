@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Nop.Core;
 using Nop.Core.Domain.Messages;
+using Nop.Services.Customers;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Messages;
@@ -18,12 +20,14 @@ public partial class MessageTemplateController : BaseAdminController
     #region Fields
 
     protected readonly ICustomerActivityService _customerActivityService;
+    protected readonly ICustomerService _customerService;
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedEntityService _localizedEntityService;
     protected readonly IMessageTemplateModelFactory _messageTemplateModelFactory;
     protected readonly IMessageTemplateService _messageTemplateService;
     protected readonly INotificationService _notificationService;
     protected readonly IStoreMappingService _storeMappingService;
+    protected readonly IWorkContext _workContext;
     protected readonly IWorkflowMessageService _workflowMessageService;
 
     #endregion Fields
@@ -31,27 +35,46 @@ public partial class MessageTemplateController : BaseAdminController
     #region Ctor
 
     public MessageTemplateController(ICustomerActivityService customerActivityService,
+        ICustomerService customerService,
         ILocalizationService localizationService,
         ILocalizedEntityService localizedEntityService,
         IMessageTemplateModelFactory messageTemplateModelFactory,
         IMessageTemplateService messageTemplateService,
         INotificationService notificationService,
         IStoreMappingService storeMappingService,
+        IWorkContext workContext,
         IWorkflowMessageService workflowMessageService)
     {
         _customerActivityService = customerActivityService;
+        _customerService = customerService;
         _localizationService = localizationService;
         _localizedEntityService = localizedEntityService;
         _messageTemplateModelFactory = messageTemplateModelFactory;
         _messageTemplateService = messageTemplateService;
         _notificationService = notificationService;
         _storeMappingService = storeMappingService;
+        _workContext = workContext;
         _workflowMessageService = workflowMessageService;
     }
 
     #endregion
 
     #region Utilities
+
+    protected virtual async Task<bool> IsSuperAdminAsync()
+    {
+        return await _customerService.IsSuperAdminAsync(await _workContext.GetCurrentCustomerAsync());
+    }
+
+    /// <summary>
+    /// Administrators who are not super administrators may open only the templates picked for them;
+    /// the list hides the rest, this keeps a typed-in URL from reaching them
+    /// </summary>
+    protected virtual async Task<bool> CanSeeAsync(MessageTemplate messageTemplate)
+    {
+        return await IsSuperAdminAsync()
+            || (await _messageTemplateService.GetAdminVisibleMessageTemplateNamesAsync()).Contains(messageTemplate.Name);
+    }
 
     protected virtual async Task UpdateLocalesAsync(MessageTemplate mt, MessageTemplateModel model)
     {
@@ -115,6 +138,9 @@ public partial class MessageTemplateController : BaseAdminController
         if (messageTemplate == null)
             return RedirectToAction("List");
 
+        if (!await CanSeeAsync(messageTemplate))
+            return AccessDeniedView();
+
         //prepare model
         var model = await _messageTemplateModelFactory.PrepareMessageTemplateModelAsync(null, messageTemplate);
 
@@ -130,6 +156,9 @@ public partial class MessageTemplateController : BaseAdminController
         var messageTemplate = await _messageTemplateService.GetMessageTemplateByIdAsync(model.Id);
         if (messageTemplate == null)
             return RedirectToAction("List");
+
+        if (!await CanSeeAsync(messageTemplate))
+            return AccessDeniedView();
 
         if (ModelState.IsValid)
         {
@@ -151,6 +180,10 @@ public partial class MessageTemplateController : BaseAdminController
 
             //locales
             await UpdateLocalesAsync(messageTemplate, model);
+
+            //which templates the other administrators see is a super administrator's call
+            if (await IsSuperAdminAsync())
+                await _messageTemplateService.SetMessageTemplateAdminVisibleAsync(messageTemplate, model.VisibleToAdministrators);
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.ContentManagement.MessageTemplates.Updated"));
 
@@ -176,6 +209,9 @@ public partial class MessageTemplateController : BaseAdminController
         if (messageTemplate == null)
             return RedirectToAction("List");
 
+        if (!await CanSeeAsync(messageTemplate))
+            return AccessDeniedView();
+
         await _messageTemplateService.DeleteMessageTemplateAsync(messageTemplate);
 
         //activity log
@@ -196,6 +232,9 @@ public partial class MessageTemplateController : BaseAdminController
         var messageTemplate = await _messageTemplateService.GetMessageTemplateByIdAsync(model.Id);
         if (messageTemplate == null)
             return RedirectToAction("List");
+
+        if (!await CanSeeAsync(messageTemplate))
+            return AccessDeniedView();
 
         try
         {
@@ -220,6 +259,9 @@ public partial class MessageTemplateController : BaseAdminController
         if (messageTemplate == null)
             return RedirectToAction("List");
 
+        if (!await CanSeeAsync(messageTemplate))
+            return AccessDeniedView();
+
         //prepare model
         var model = await _messageTemplateModelFactory
             .PrepareTestMessageTemplateModelAsync(new TestMessageTemplateModel(), messageTemplate, languageId);
@@ -236,6 +278,9 @@ public partial class MessageTemplateController : BaseAdminController
         var messageTemplate = await _messageTemplateService.GetMessageTemplateByIdAsync(model.Id);
         if (messageTemplate == null)
             return RedirectToAction("List");
+
+        if (!await CanSeeAsync(messageTemplate))
+            return AccessDeniedView();
 
         var tokens = new List<Token>();
         foreach (var formKey in form.Keys)

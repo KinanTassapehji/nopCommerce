@@ -1223,6 +1223,22 @@ public partial class ShoppingCartController : BasePublicController
         await ParseAndSaveCheckoutAttributesAsync(cart, form);
 
         var model = new ShoppingCartModel();
+        await ApplyDiscountCouponCodeAsync(customer, discountcouponcode, model.DiscountBox);
+
+        model = await _shoppingCartModelFactory.PrepareShoppingCartModelAsync(model, cart);
+
+        return View(model);
+    }
+
+    /// <summary>
+    /// Validate a discount coupon code and apply it to the customer; the outcome goes to the box's messages
+    /// </summary>
+    /// <param name="customer">Customer</param>
+    /// <param name="discountcouponcode">Coupon code (trimmed)</param>
+    /// <param name="discountBox">Discount box model to report to</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    protected virtual async Task ApplyDiscountCouponCodeAsync(Customer customer, string discountcouponcode, ShoppingCartModel.DiscountBoxModel discountBox)
+    {
         if (!string.IsNullOrWhiteSpace(discountcouponcode))
         {
             //we find even hidden records here. this way we can display a user-friendly message if it's expired
@@ -1244,30 +1260,26 @@ public partial class ShoppingCartController : BasePublicController
                 {
                     //valid
                     await _customerService.ApplyDiscountCouponCodeAsync(customer, discountcouponcode);
-                    model.DiscountBox.Messages.Add(await _localizationService.GetResourceAsync("ShoppingCart.DiscountCouponCode.Applied"));
-                    model.DiscountBox.IsApplied = true;
+                    discountBox.Messages.Add(await _localizationService.GetResourceAsync("ShoppingCart.DiscountCouponCode.Applied"));
+                    discountBox.IsApplied = true;
                 }
                 else
                 {
                     if (userErrors.Any())
                         //some user errors
-                        model.DiscountBox.Messages = userErrors;
+                        discountBox.Messages = userErrors;
                     else
                         //general error text
-                        model.DiscountBox.Messages.Add(await _localizationService.GetResourceAsync("ShoppingCart.DiscountCouponCode.WrongDiscount"));
+                        discountBox.Messages.Add(await _localizationService.GetResourceAsync("ShoppingCart.DiscountCouponCode.WrongDiscount"));
                 }
             }
             else
                 //discount cannot be found
-                model.DiscountBox.Messages.Add(await _localizationService.GetResourceAsync("ShoppingCart.DiscountCouponCode.CannotBeFound"));
+                discountBox.Messages.Add(await _localizationService.GetResourceAsync("ShoppingCart.DiscountCouponCode.CannotBeFound"));
         }
         else
             //empty coupon code
-            model.DiscountBox.Messages.Add(await _localizationService.GetResourceAsync("ShoppingCart.DiscountCouponCode.Empty"));
-
-        model = await _shoppingCartModelFactory.PrepareShoppingCartModelAsync(model, cart);
-
-        return View(model);
+            discountBox.Messages.Add(await _localizationService.GetResourceAsync("ShoppingCart.DiscountCouponCode.Empty"));
     }
 
     [HttpPost]
@@ -1325,6 +1337,31 @@ public partial class ShoppingCartController : BasePublicController
 
         model = await _shoppingCartModelFactory.PrepareShoppingCartModelAsync(model, cart);
         return View(model);
+    }
+
+    /// <summary>
+    /// Apply a discount coupon from the one page checkout (the coupon box lives in its order details step)
+    /// </summary>
+    [HttpPost]
+    public virtual async Task<IActionResult> OpcApplyDiscountCoupon(string discountcouponcode)
+    {
+        var discountBox = new ShoppingCartModel.DiscountBoxModel();
+        await ApplyDiscountCouponCodeAsync(await _workContext.GetCurrentCustomerAsync(), discountcouponcode?.Trim(), discountBox);
+
+        return Json(new { applied = discountBox.IsApplied, messages = discountBox.Messages });
+    }
+
+    /// <summary>
+    /// Remove a discount coupon from the one page checkout
+    /// </summary>
+    [HttpPost]
+    public virtual async Task<IActionResult> OpcRemoveDiscountCoupon(int discountId)
+    {
+        var discount = await _discountService.GetDiscountByIdAsync(discountId);
+        if (discount != null)
+            await _customerService.RemoveDiscountCouponCodeAsync(await _workContext.GetCurrentCustomerAsync(), discount.CouponCode);
+
+        return Json(new { success = true });
     }
 
     #endregion

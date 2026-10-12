@@ -654,6 +654,18 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
     /// </summary>
     protected virtual void CreateCommonMaps()
     {
+        CreateMap<HomepageFeature, HomepageFeatureModel>()
+            .ForMember(model => model.AvailableIcons, options => options.Ignore())
+            .ForMember(model => model.IconName, options => options.Ignore());
+        CreateMap<HomepageFeatureModel, HomepageFeature>()
+            .ForMember(entity => entity.Icon, options => options.Ignore());
+
+        CreateMap<WelcomeSlide, WelcomeSlideModel>()
+            .ForMember(model => model.AvailableIcons, options => options.Ignore())
+            .ForMember(model => model.IconName, options => options.Ignore());
+        CreateMap<WelcomeSlideModel, WelcomeSlide>()
+            .ForMember(entity => entity.Icon, options => options.Ignore());
+
         CreateMap<Address, AddressModel>()
             .ForMember(model => model.AddressHtml, options => options.Ignore())
             .ForMember(model => model.AvailableCountries, options => options.Ignore())
@@ -719,9 +731,14 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateMap<CustomerAttributeValueModel, CustomerAttributeValue>();
 
         CreateMap<CustomerRole, CustomerRoleModel>()
+            .ForMember(model => model.AvailablePermissions, options => options.Ignore())
+            .ForMember(model => model.CanEditPermissions, options => options.Ignore())
             .ForMember(model => model.PurchasedWithProductName, options => options.Ignore())
+            .ForMember(model => model.SelectedPermissionIds, options => options.Ignore())
             .ForMember(model => model.TaxDisplayTypeValues, options => options.Ignore());
-        CreateMap<CustomerRoleModel, CustomerRole>();
+        CreateMap<CustomerRoleModel, CustomerRole>()
+            //system roles come from code; a posted form must not mark a role as one
+            .ForMember(entity => entity.IsSystemRole, options => options.Ignore());
 
         CreateMap<CustomerSettings, CustomerSettingsModel>()
             .ForMember(model => model.AvailableCountries, options => options.Ignore());
@@ -1128,7 +1145,9 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.AvailableEmailAccounts, options => options.Ignore())
             .ForMember(model => model.HasAttachedDownload, options => options.Ignore())
             .ForMember(model => model.ListOfStores, options => options.Ignore())
-            .ForMember(model => model.SendImmediately, options => options.Ignore());
+            .ForMember(model => model.SendImmediately, options => options.Ignore())
+            .ForMember(model => model.VisibleToAdministrators, options => options.Ignore())
+            .ForMember(model => model.CanManageAdminVisibility, options => options.Ignore());
         CreateMap<MessageTemplateModel, MessageTemplate>()
             .ForMember(entity => entity.DelayPeriod, options => options.Ignore());
 

@@ -1,4 +1,6 @@
-﻿using Nop.Core.Domain.Orders;
+﻿using System.Security.Cryptography;
+using Nop.Core.Domain.Orders;
+using Nop.Data;
 
 namespace Nop.Services.Orders;
 
@@ -9,15 +11,46 @@ public partial class CustomNumberFormatter : ICustomNumberFormatter
 {
     #region Fields
 
+    protected readonly IRepository<Order> _orderRepository;
     protected readonly OrderSettings _orderSettings;
 
     #endregion
 
     #region Ctor
 
-    public CustomNumberFormatter(OrderSettings orderSettings)
+    public CustomNumberFormatter(IRepository<Order> orderRepository,
+        OrderSettings orderSettings)
     {
+        _orderRepository = orderRepository;
         _orderSettings = orderSettings;
+    }
+
+    #endregion
+
+    #region Utilities
+
+    /// <summary>
+    /// Replace the {CODE} token of a mask with a random 6-digit code no other order has yet
+    /// </summary>
+    /// <param name="mask">Mask with the other tokens already replaced</param>
+    /// <returns>Custom number</returns>
+    /// <remarks>
+    /// A sequential number tells a customer how many orders the store has had (and, from two of
+    /// their own, how many a week), so the number they see can be random. The internal Id stays
+    /// sequential for admins.
+    /// </remarks>
+    protected virtual string ReplaceRandomCode(string mask)
+    {
+        //one in a million to collide per attempt; the fallback only guards against a store
+        //that has used up nearly every code
+        for (var attempt = 0; attempt < 20; attempt++)
+        {
+            var customNumber = mask.Replace("{CODE}", RandomNumberGenerator.GetInt32(0, 1_000_000).ToString("D6"));
+            if (!_orderRepository.Table.Any(order => order.CustomOrderNumber == customNumber))
+                return customNumber;
+        }
+
+        return mask.Replace("{CODE}", RandomNumberGenerator.GetInt32(0, 100_000_000).ToString("D8"));
     }
 
     #endregion
@@ -81,6 +114,9 @@ public partial class CustomNumberFormatter : ICustomNumberFormatter
             .Replace("{YY}", order.CreatedOnUtc.ToString("yy"))
             .Replace("{MM}", order.CreatedOnUtc.ToString("MM"))
             .Replace("{DD}", order.CreatedOnUtc.ToString("dd")).Trim();
+
+        if (customNumber.Contains("{CODE}"))
+            customNumber = ReplaceRandomCode(customNumber);
 
         ////if you need to use the format for the ID with leading zeros, use the following code instead of the previous one.
         ////mask for Id example {#:00000000}

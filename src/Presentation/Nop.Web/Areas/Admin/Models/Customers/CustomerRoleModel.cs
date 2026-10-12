@@ -14,6 +14,8 @@ public partial record CustomerRoleModel : BaseNopEntityModel
     public CustomerRoleModel()
     {
         TaxDisplayTypeValues = new List<SelectListItem>();
+        SelectedPermissionIds = new List<int>();
+        AvailablePermissions = new List<CustomerRolePermissionModel>();
     }
 
     #endregion
@@ -54,6 +56,15 @@ public partial record CustomerRoleModel : BaseNopEntityModel
 
     [NopResourceDisplayName("Admin.Customers.CustomerRoles.Fields.PurchasedWithProduct")]
     public string PurchasedWithProductName { get; set; }
+
+    public IList<int> SelectedPermissionIds { get; set; }
+
+    /// <summary>
+    /// Permissions the current user may grant, in display order
+    /// </summary>
+    public IList<CustomerRolePermissionModel> AvailablePermissions { get; set; }
+
+    public bool CanEditPermissions { get; set; }
 
     #endregion
 }

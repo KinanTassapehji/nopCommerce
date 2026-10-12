@@ -28,7 +28,7 @@
     <form asp-controller="Order" asp-action="Edit" method="post" id="order-form">
         <div class="content-header clearfix">
             <h1 class="float-left">
-                @T("Admin.Orders.EditOrderDetails") - @Model.CustomOrderNumber
+                @T("Admin.Orders.EditOrderDetails") - #@Model.Id · @Model.CustomOrderNumber
                 <small>
                     <i class="fas fa-arrow-circle-left"></i>
                     <a asp-action="List">@T("Admin.Orders.BackToList")</a>

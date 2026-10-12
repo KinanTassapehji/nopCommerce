@@ -302,6 +302,12 @@
                                             ClassName =  NopColumnClassDefaults.CenterAll,
                                             Width = "50"
                                         },
+                                        //TmTm: the internal sequential Id, beside the random code customers are given
+                                        new ColumnProperty(nameof(OrderModel.Id))
+                                        {
+                                            Title = "#",
+                                            Width = "50"
+                                        },
                                         new ColumnProperty(nameof(OrderModel.CustomOrderNumber))
                                         {
                                             Title = T("Admin.Orders.Fields.CustomOrderNumber").Text,

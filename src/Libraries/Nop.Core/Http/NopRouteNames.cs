@@ -64,6 +64,7 @@ public static partial class NopRouteNames
         /// Gets the new products route name
         /// </summary>
         public const string NEW_PRODUCTS = "NewProducts";
+        public const string COLLECTION = "Collection";
 
         /// <summary>
         /// Gets the blog route name
@@ -717,6 +718,7 @@ public static partial class NopRouteNames
         /// Gets the new products route name
         /// </summary>
         public const string GET_NEW_PRODUCTS = "GetNewProducts";
+        public const string GET_COLLECTION = "GetCollection";
 
         /// <summary>
         /// Gets the product combinations route name

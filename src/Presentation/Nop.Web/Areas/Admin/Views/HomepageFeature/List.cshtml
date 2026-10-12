@@ -1,0 +1,78 @@
+﻿@model HomepageFeatureSearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.ContentManagement.HomepageFeatures").Text;
+
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Homepage features");
+}
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.ContentManagement.HomepageFeatures")
+    </h1>
+    <div class="float-right">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="cards-group">
+            <div class="card card-default">
+                <div class="card-body">
+                    <p>
+                        <em>@T("Admin.ContentManagement.HomepageFeatures.Hint")</em>
+                    </p>
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "homepagefeatures-grid",
+                        UrlRead = new DataUrl("List", "HomepageFeature", null),
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(HomepageFeatureModel.Title))
+                            {
+                                Title = T("Admin.ContentManagement.HomepageFeatures.Fields.Title").Text
+                            },
+                            new ColumnProperty(nameof(HomepageFeatureModel.Hint))
+                            {
+                                Title = T("Admin.ContentManagement.HomepageFeatures.Fields.Hint").Text
+                            },
+                            new ColumnProperty(nameof(HomepageFeatureModel.IconName))
+                            {
+                                Title = T("Admin.ContentManagement.HomepageFeatures.Fields.Icon").Text,
+                                Width = "150"
+                            },
+                            new ColumnProperty(nameof(HomepageFeatureModel.Published))
+                            {
+                                Title = T("Admin.ContentManagement.HomepageFeatures.Fields.Published").Text,
+                                Width = "100",
+                                ClassName = NopColumnClassDefaults.CenterAll,
+                                Render = new RenderBoolean()
+                            },
+                            new ColumnProperty(nameof(HomepageFeatureModel.DisplayOrder))
+                            {
+                                Title = T("Admin.ContentManagement.HomepageFeatures.Fields.DisplayOrder").Text,
+                                Width = "100",
+                                ClassName = NopColumnClassDefaults.CenterAll
+                            },
+                            new ColumnProperty(nameof(HomepageFeatureModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "100",
+                                ClassName = NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("Edit"))
+                            }
+                        }
+                    })
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

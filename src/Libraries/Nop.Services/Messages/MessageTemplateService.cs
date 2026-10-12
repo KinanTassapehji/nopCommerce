@@ -1,6 +1,7 @@
 ﻿using Nop.Core.Caching;
 using Nop.Core.Domain.Messages;
 using Nop.Data;
+using Nop.Services.Configuration;
 using Nop.Services.Localization;
 using Nop.Services.Stores;
 
@@ -18,6 +19,7 @@ public partial class MessageTemplateService : IMessageTemplateService
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedEntityService _localizedEntityService;
     protected readonly IRepository<MessageTemplate> _messageTemplateRepository;
+    protected readonly ISettingService _settingService;
     protected readonly IStoreMappingService _storeMappingService;
 
     #endregion
@@ -30,6 +32,7 @@ public partial class MessageTemplateService : IMessageTemplateService
         ILocalizationService localizationService,
         ILocalizedEntityService localizedEntityService,
         IRepository<MessageTemplate> messageTemplateRepository,
+        ISettingService settingService,
         IStoreMappingService storeMappingService)
     {
         _staticCacheManager = staticCacheManager;
@@ -37,6 +40,7 @@ public partial class MessageTemplateService : IMessageTemplateService
         _localizationService = localizationService;
         _localizedEntityService = localizedEntityService;
         _messageTemplateRepository = messageTemplateRepository;
+        _settingService = settingService;
         _storeMappingService = storeMappingService;
     }
 
@@ -210,6 +214,43 @@ public partial class MessageTemplateService : IMessageTemplateService
             await _storeMappingService.InsertStoreMappingAsync(mtCopy, id);
 
         return mtCopy;
+    }
+
+    /// <summary>
+    /// Gets the names of the message templates that administrators who are not super administrators may see
+    /// </summary>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the template names
+    /// </returns>
+    public virtual async Task<IList<string>> GetAdminVisibleMessageTemplateNamesAsync()
+    {
+        var names = await _settingService.GetSettingByKeyAsync(NopMessageDefaults.AdminVisibleMessageTemplatesSettingKey, string.Empty);
+
+        return names.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+    }
+
+    /// <summary>
+    /// Sets whether administrators who are not super administrators may see a message template
+    /// </summary>
+    /// <param name="messageTemplate">Message template</param>
+    /// <param name="visible">Whether they may see it</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    public virtual async Task SetMessageTemplateAdminVisibleAsync(MessageTemplate messageTemplate, bool visible)
+    {
+        ArgumentNullException.ThrowIfNull(messageTemplate);
+
+        //by name: a template copied per store is the same message
+        var names = await GetAdminVisibleMessageTemplateNamesAsync();
+        if (visible == names.Contains(messageTemplate.Name))
+            return;
+
+        if (visible)
+            names.Add(messageTemplate.Name);
+        else
+            names.Remove(messageTemplate.Name);
+
+        await _settingService.SetSettingAsync(NopMessageDefaults.AdminVisibleMessageTemplatesSettingKey, string.Join(",", names));
     }
 
     #endregion

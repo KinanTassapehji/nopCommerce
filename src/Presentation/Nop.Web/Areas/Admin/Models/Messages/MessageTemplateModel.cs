@@ -43,6 +43,12 @@ public partial record MessageTemplateModel : BaseNopEntityModel, ILocalizedModel
     [NopResourceDisplayName("Admin.ContentManagement.MessageTemplates.Fields.IsActive")]
     public bool IsActive { get; set; }
 
+    [NopResourceDisplayName("Admin.ContentManagement.MessageTemplates.Fields.VisibleToAdministrators")]
+    public bool VisibleToAdministrators { get; set; }
+
+    //only a super administrator decides which templates the other administrators see
+    public bool CanManageAdminVisibility { get; set; }
+
     [NopResourceDisplayName("Admin.ContentManagement.MessageTemplates.Fields.SendImmediately")]
     public bool SendImmediately { get; set; }
 

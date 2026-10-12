@@ -1,0 +1,31 @@
+﻿@model CollectionModel
+@{
+    Layout = "_ColumnsTwo";
+
+    //the page wears the band's own name: deals, bestsellers or featured
+    var title = Model.Collection switch
+    {
+        "deals" => T("Homepage.Deals").Text,
+        "bestsellers" => T("Bestsellers").Text,
+        _ => T("Homepage.Products").Text
+    };
+
+    //title
+    NopHtml.AddTitleParts(title);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-collection-page");
+    NopHtml.AppendPageCssClassParts($"html-collection-{Model.Collection}-page");
+}
+<div class="page collection-page">
+    <div class="page-title">
+        <h1>@title</h1>
+    </div>
+    <div class="page-body">
+        @await Html.PartialAsync("_CatalogSelectors", Model.CatalogProductsModel)
+        @{
+            var collectionViewData = new ViewDataDictionary(ViewData);
+            collectionViewData["fetchUrl"] = Html.Raw(Url.RouteUrl(NopRouteNames.Ajax.GET_COLLECTION, new { collection = Model.Collection }));
+        }
+        @await Html.PartialAsync("_CatalogProducts", Model.CatalogProductsModel, collectionViewData)
+    </div>
+</div>
