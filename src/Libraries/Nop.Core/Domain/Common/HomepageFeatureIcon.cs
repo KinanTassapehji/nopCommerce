@@ -40,5 +40,8 @@ public enum HomepageFeatureIcon
     Phone = 11,
 
     /// <summary>Store front</summary>
-    Store = 12
+    Store = 12,
+
+    /// <summary>The store's own brand mark (Themes/{theme}/Content/images/brand-mark.svg), drawn in the surrounding colour</summary>
+    Brand = 13
 }

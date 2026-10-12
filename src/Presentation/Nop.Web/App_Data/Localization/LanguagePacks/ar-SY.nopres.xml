@@ -24029,6 +24029,9 @@
   <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Store">
     <Value>متجر</Value>
   </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Brand">
+    <Value>شعار المتجر</Value>
+  </LocaleResource>
   <LocaleResource Name="PageNotFound.Search.Placeholder">
     <Value>ابحث عن منتج...</Value>
   </LocaleResource>

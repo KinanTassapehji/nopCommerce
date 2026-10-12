@@ -30,6 +30,8 @@
   --tm-teal-active: #014a4e;    /* 10.04:1 with white — pressed state       */
   --tm-teal-tint: #e6f4f4;      /* surfaces, table stripes, hover rows      */
   --tm-teal-tint-strong: #cbe8e7;
+  --tm-plate: var(--tm-white);     /* brand/logo plates: a white card like the product cards */
+  --tm-plate-hover: #eaf6f5;   /* the strong tint at 40% over white, under the pointer   */
   --tm-teal-border: #b3dedc;
 
   /* --- Neutrals --------------------------------------------------------- */

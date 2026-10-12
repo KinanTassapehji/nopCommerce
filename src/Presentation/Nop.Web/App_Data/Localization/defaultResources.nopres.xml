@@ -19886,6 +19886,9 @@
   <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Store">
     <Value>Store</Value>
   </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Common.HomepageFeatureIcon.Brand">
+    <Value>Brand mark</Value>
+  </LocaleResource>
   <LocaleResource Name="PageNotFound.Search.Placeholder">
     <Value>Search for a product...</Value>
   </LocaleResource>

@@ -5,6 +5,7 @@
 @inject IWorkContext workContext
 @inject Nop.Services.Media.IPictureService pictureService
 @inject Nop.Core.Domain.Common.HomepageBannerSettings homepageBannerSettings
+@inject Nop.Services.Common.IHomepageFeatureService homepageFeatureService
 
 @{
     Layout = "_ColumnsOne";
@@ -33,23 +34,46 @@
 <div class="page home-page">
     <div class="page-body">
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageTop })
-        @*Order, for selling: the hero, then offers (the hook), the categories (where to go),
-            new arrivals, the curated picks, the reasons to buy, what others buy, the call to
-            action, brands, news.*@
+        @*Order, for selling - product bands never run back to back: the hero, then offers (the hook),
+            the categories (where to go), new arrivals, the reasons to buy, the curated picks, brands,
+            the two category rails, the call to action, what others buy, news, recently viewed.*@
         @await Component.InvokeAsync(typeof(HomepageDealsViewComponent))
         @await Component.InvokeAsync(typeof(TopicBlockViewComponent), new { systemName = "HomepageText" })
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeCategories })
         @await Component.InvokeAsync(typeof(HomepageCategoriesViewComponent))
         @await Component.InvokeAsync(typeof(FilterLevelValueSearchViewComponent))
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeProducts })
+        @*the reasons to buy, between the first two product bands (Kinan did not want them first after the slider). The admin manages the list (Content
+            management > Home page features): text per language, icon, order, published*@
+        @{
+            var homepageFeatures = await homepageFeatureService.GetAllHomepageFeaturesAsync();
+        }
+        @if (homepageFeatures.Any())
+        {
+            <ul class="home-usp">
+                @foreach (var feature in homepageFeatures)
+                {
+                    var hint = await localizationService.GetLocalizedAsync(feature, f => f.Hint);
+                    <li>
+                        @await Html.PartialAsync("_HomepageFeatureIcon", feature.Icon)
+                        <div>
+                            <strong>@(await localizationService.GetLocalizedAsync(feature, f => f.Title))</strong>
+                            @if (!string.IsNullOrEmpty(hint))
+                            {
+                                <span>@hint</span>
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
         @await Component.InvokeAsync(typeof(HomepageProductsViewComponent))
-        @*The trust strip (Content management > Home page features) is not shown: taken off the
-            page on 2026-10-11. Its rows and admin page remain; the markup lives in git history.*@
+        @*rendered with the page, not the OCarousel band that waited for a scroll and a POST*@
+        @await Component.InvokeAsync(typeof(ManufacturerNavigationViewComponent), new { currentManufacturerId = 0 })
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeBestSellers })
-        @await Component.InvokeAsync(typeof(HomepageBestSellersViewComponent))
-        @*one call to action between the curated bands and the brands below. No all-products feed: the home
-            page shows the products marked "show on home page" (the band above) - the catalogue is a tap away*@
-        @*the admin edits it under Content management > Home page banner*@
+        @*one call to action between the category rails and the bestsellers. No all-products feed: the home
+            page shows the products marked "show on home page" (the band above) - the catalogue is a tap away.
+            The admin edits it under Content management > Home page banner*@
         @if (homepageBannerSettings.Enabled)
         {
             var languageId = (await workContext.GetWorkingLanguageAsync()).Id;
@@ -76,49 +100,10 @@
                 }
             </section>
         }
-        @*rendered with the page, not the OCarousel band that waited for a scroll and a POST*@
-        @await Component.InvokeAsync(typeof(ManufacturerNavigationViewComponent), new { currentManufacturerId = 0 })
+        @await Component.InvokeAsync(typeof(HomepageBestSellersViewComponent))
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforeNews })
         @await Component.InvokeAsync(typeof(HomepageNewsViewComponent))
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforePoll })
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBottom })
     </div>
 </div>
-
-<script asp-location="Footer">
-    $(function () {
-        //the curated bands are rails: a thumb swipes them, but a wheel cannot
-        //scroll sideways, so a mouse gets a pair of arrows in the band heading
-        var chevron = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
-        var forward = $('html').attr('dir') === 'rtl' ? -1 : 1;
-
-        $('.home-page-product-grid, .home-page-deals, .bestsellers').each(function () {
-            var rail = $(this).find('.item-grid')[0], $title = $(this).children('.title');
-            if (!rail || !$title.length)
-                return;
-
-            var $prev = $('<button type="button" class="rail-prev" aria-label="@T("Pager.Previous")">' + chevron + '</button>');
-            var $next = $('<button type="button" class="rail-next" aria-label="@T("Pager.Next")">' + chevron + '</button>');
-            var $nav = $('<span class="rail-nav"></span>').append($prev, $next).appendTo($title);
-
-            function sync() {
-                //scrollLeft counts down from 0 in RTL
-                var at = Math.abs(rail.scrollLeft), max = rail.scrollWidth - rail.clientWidth;
-                //a band that fits needs no arrows; 4px absorbs sub-pixel widths
-                $nav.prop('hidden', max < 4);
-                $prev.prop('disabled', at < 4);
-                $next.prop('disabled', at > max - 4);
-            }
-
-            $nav.on('click', 'button', function () {
-                //just short of a full view, so the card at the edge stays in sight;
-                //scroll snapping lands it on a card boundary
-                var step = rail.clientWidth * 0.9 * forward;
-                rail.scrollBy({ left: $(this).hasClass('rail-prev') ? -step : step });
-            });
-            $(rail).on('scroll', sync);
-            $(window).on('resize', sync);
-            sync();
-        });
-    });
-</script>

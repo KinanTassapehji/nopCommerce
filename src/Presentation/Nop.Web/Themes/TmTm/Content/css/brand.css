@@ -438,6 +438,23 @@ so their labels keep the 5.26:1 contrast of solid deep teal. */
   z-index: 1;
 }
 
+/* The base sheet centres page titles (`.center-1 .page-title`, and `.page`
+   itself is text-align:center so two-column pages inherit it) while the rule
+   under the title sits at the start edge: on the cart the rule read as the
+   first card's top border rather than the title's underline (Kinan,
+   2026-10-11). Title and rule now share the start edge, as the category and
+   order pages do; the account pages below keep a centred title and rule. */
+.page-title{
+  text-align: start;
+}
+
+.html-login-page .page-title,
+.html-registration-page .page-title,
+.html-password-recovery-page .page-title,
+.html-registration-result-page .page-title{
+  text-align: center;
+}
+
 /* --- Content blocks / sidebar --------------------------------------------- */
 .block .title{
   color: var(--tm-teal-deep);
@@ -5924,39 +5941,34 @@ so the field stays visible beside the icon. */
 }
 
 
+/* --- Cart title -------------------------------------------------------------
+   The rule under the title and the first item card were 12px apart on a
+   phone, close enough to read as one piece; a clear step between them says
+   where the heading ends and the list begins (Kinan, 2026-10-11). */
+.shopping-cart-page .page-title{
+  margin-block-end: 24px;
+}
+
 /* --- Cart footer ----------------------------------------------------------
    Two 250px buttons centred in a grey band, a checkbox stranded on a line of
    its own above the terms it belongs to, and the checkout CTA the same width
    as "continue shopping". On a phone each of these is one decision per row.
    -------------------------------------------------------------------------- */
-/* One filled button on the page, and it is checkout. Estimating shipping is a
-   side question (outlined); continuing to shop is a way out (a text link) -
-   both were solid teal, as loud as the button the page is there for. */
-.shopping-cart-page .common-buttons .continue-shopping-button{
-  border: 0;
-  background: none;
-  box-shadow: none;
-  color: var(--tm-teal-deep);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-color: var(--tm-teal-border);
-}
-
-.shopping-cart-page .common-buttons .continue-shopping-button:hover,
-.shopping-cart-page .common-buttons .continue-shopping-button:focus-visible{
-  background: none;
-  color: var(--tm-teal-hover);
-  text-decoration-color: currentColor;
-}
-
+/* One filled button on the page, and it is checkout. Estimating shipping and
+   continuing to shop are the quiet pair: the same outlined pill, so neither
+   competes with checkout (both were solid teal) and neither is bare underlined
+   text either - Kinan read the text link as a broken button (2026-10-11). */
+.shopping-cart-page .common-buttons .continue-shopping-button,
 .shopping-cart-page .common-buttons .estimate-shipping-button{
   border: 1px solid var(--tm-teal-border);
   background: var(--tm-white);
   box-shadow: none;
   color: var(--tm-teal-deep);
+  font-weight: 600;
 }
 
+.shopping-cart-page .common-buttons .continue-shopping-button:hover,
+.shopping-cart-page .common-buttons .continue-shopping-button:focus-visible,
 .shopping-cart-page .common-buttons .estimate-shipping-button:hover,
 .shopping-cart-page .common-buttons .estimate-shipping-button:focus-visible{
   border-color: var(--tm-teal);
@@ -6148,31 +6160,36 @@ so the field stays visible beside the icon. */
     margin-block-start: var(--tm-stack-sm);
   }
 
-  /* Checkbox and its label on one line, the label carrying the wrap. */
+  /* Checkbox, sentence and "(read)" as one run of text: the box leads, the
+     sentence wraps where it must, and "(read)" follows its last word rather
+     than sitting at the far end of a flex row (Kinan, 2026-10-11). The label
+     is inline for that reason - inline-flex (the 44px-target rule above)
+     made it one unbreakable box that dropped under the checkbox on a narrow
+     phone; the tap area comes from inline padding instead. */
   .terms-of-service{
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 0 6px;
+    display: block;
     padding-inline: 0;
     text-align: start;
+    line-height: 24px;
   }
 
   .terms-of-service input[type="checkbox"]{
-    flex: 0 0 auto;
-    align-self: center;
+    vertical-align: -3px;
+    margin-inline-end: 8px;
   }
 
-  /* Shrink-to-fit, so "(read)" follows the sentence instead of being pushed
-     to the far edge by a label that had claimed the whole line. */
   .terms-of-service label{
-    flex: 0 1 auto;
-    min-inline-size: 0;
+    display: inline;
+    min-height: 0;
+    padding-block: 10px; /* inline padding widens the hit area without moving the line */
     text-align: start;
   }
 
   .terms-of-service a{
+    display: inline;
     margin: 0;
+    padding-block: 10px;
+    white-space: nowrap;
   }
 }
 
@@ -8376,6 +8393,7 @@ html:has(.tm-terms-dialog[open]){
     display: block;
     border: 0;
     padding: 0;
+    background: none; /* the chips sit on the page, not in the sidebar's white box */
   }
 
   .block-account-navigation .list{
@@ -8436,6 +8454,20 @@ html:has(.tm-terms-dialog[open]){
   .block-account-navigation .list .active > a:focus-visible{
     background: var(--tm-teal-hover);
     color: var(--tm-white);
+  }
+}
+
+
+/* --- Orders on a phone: a page of their own ----------------------------------
+   The tab bar gives orders a tab beside the cart, so the list opens like the
+   cart does - title, then the orders - rather than as one section inside the
+   profile, under the profile card and the account chip row (Kinan,
+   2026-10-11). Those stay on every other account page, and on the desktop
+   sidebar. The side column is only the account navigation on this page. */
+@media (max-width: 1000px){
+
+  .html-order-list-page .side-2{
+    display: none;
   }
 }
 
@@ -9465,128 +9497,83 @@ html:has(.tm-terms-dialog[open]){
   line-height: var(--tm-lh-label-sm);
 }
 
-/* --- Brand strip (.block-manufacturer-navigation) --------------------------
-   Rendered with the page (Arabia's strip) in place of the OCarousel band,
-   which printed an empty box and fetched its logos once scrolled to. The
-   component's markup is a sidebar block: the base sheet caps .block at 600px,
-   makes .title a grey accordion bar and hides .listbox below 1001px, so on
-   the home page it is flattened into one always-open band. */
-.home-page .block-manufacturer-navigation{
-  max-width: none;
-  text-align: start;
-}
-
-.home-page .block-manufacturer-navigation > .title{
-  background: none;
-  cursor: auto;
-}
-
-.home-page .block-manufacturer-navigation > .title a{
-  color: inherit;
-}
-
-.home-page .block-manufacturer-navigation .listbox{
-  display: block;
+/* --- Brands: the category tiles' chrome on the logo plates ----------------
+   ManufacturerNavigation/Default.cshtml emits the category band's markup, so
+   radius, shadow, lift, rhythm and the rail come from the rules above. Only
+   the tile changes: a white 3:2 card with the 415x145 plate centred in it -
+   the plate carries the name, so the title stays in the DOM for assistive
+   tech and search and nowhere else. */
+.tm-brand-grid .picture{
+  max-inline-size: none;
+  aspect-ratio: 3 / 2;
   border: 0;
-  background: none;
-  padding: 0;
-}
-
-/* One row that scrolls on a phone, bleeding into the page margin like the
-   category rail above it. */
-.home-page .block-manufacturer-navigation .list{
-  display: flex;
-  gap: var(--tm-stack-sm);
-  margin: 0 calc(-1 * var(--tm-margin-mobile));
-  padding: 0 var(--tm-margin-mobile) 4px;
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scroll-snap-type: x proximity;
-  scroll-padding-inline: var(--tm-margin-mobile);
-  scrollbar-width: none;
-}
-
-.home-page .block-manufacturer-navigation .list::-webkit-scrollbar{
-  display: none;
-}
-
-.home-page .block-manufacturer-navigation .list li{
-  flex: 1 0 140px;
-  margin: 0;
-  padding: 0;
-  scroll-snap-align: start;
-}
-
-.home-page .block-manufacturer-navigation .list a{
-  position: relative; /* anchors the visually-hidden name below */
-  display: block;
-  padding: 6px 12px;
-  border: 1px solid var(--tm-line);
-  border-radius: var(--tm-radius);
-  background: var(--tm-surface);
-  transition: border-color var(--tm-transition), box-shadow var(--tm-transition),
-              transform var(--tm-transition);
-}
-
-/* the base sheet marks every block list link with a square bullet */
-.home-page .block-manufacturer-navigation .list a:before{
-  display: none;
-}
-
-.home-page .block-manufacturer-navigation .list a:hover,
-.home-page .block-manufacturer-navigation .list a:focus-visible{
-  border-color: var(--tm-teal);
+  border-radius: var(--tm-radius-lg);
+  background: var(--tm-plate); /* a white card, like the product cards around it (tokens.css) */
   box-shadow: var(--tm-shadow);
+  overflow: hidden;
 }
 
-/* The logos carry the name already; it stays as the link's accessible name. */
-.home-page .block-manufacturer-navigation .list a > span{
+/* The logo files arrive as they come - most on a white ground, some as JPEGs
+   with hard edges. Multiply drops that white into the plate's tint, so every
+   mark sits on the same soft card whatever file the brand supplied
+   (Kinan, 2026-10-12: the white-on-white plates read as hard boxes). */
+.tm-brand-grid .item-box:hover .picture,
+.tm-brand-grid .item-box:focus-within .picture{
+  background: var(--tm-plate-hover);
+  box-shadow: var(--tm-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.tm-brand-grid .picture a img{
+  padding: 14% 16%;
+  box-sizing: border-box;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.tm-brand-grid .item-box > .title{
   position: absolute;
   inline-size: 1px;
   block-size: 1px;
-  margin: -1px;
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
 }
 
-/* The logos are drawn on a white 415x145 plate with its own margin, so the
-   plate fills the tile's content box and that margin is the air around the
-   mark - no zoom, which in a tile this short ran the mark into the border. */
-.home-page .block-manufacturer-navigation .list img{
-  display: block;
-  inline-size: 100%;
-  block-size: auto;
-}
+@media (max-width: 1000px){
 
-/* The sidebar keeps its plain name list; the logos are the home strip's. */
-.side-2 .block-manufacturer-navigation .list img{
-  display: none;
+  /* A rail of two to a view, like the product rails, whatever the count.
+     .home-page is in the selectors for weight: the category chip rules later
+     in this sheet (76px plates, a 3-up grid at six tiles) share the class and
+     would otherwise win and shrink the logos to thumbnails. */
+  .home-page .tm-brand-grid .item-grid,
+  .home-page .tm-brand-grid .item-grid:has(> :nth-child(6)){
+    display: flex;
+    margin-inline: calc(-1 * var(--tm-margin-mobile));
+    padding-inline: var(--tm-margin-mobile);
+    overflow-x: auto;
+  }
+
+  .home-page .tm-brand-grid .item-box,
+  .home-page .tm-brand-grid .item-grid:has(> :nth-child(6)) .item-box{
+    flex: 0 0 min(46%, 200px);
+  }
+
+  .home-page .tm-brand-grid .picture{
+    max-inline-size: none;
+    border: 0;
+  }
 }
 
 @media (min-width: 1001px){
-  /* Every brand on one line: six 140px tiles fit the 980px column. */
-  .home-page .block-manufacturer-navigation .list{
+
+  .tm-brand-grid .item-grid{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: var(--tm-stack-md);
-    margin: 0;
-    padding: 0;
-    overflow-x: visible;
-    scroll-snap-type: none;
-  }
-
-  .home-page .block-manufacturer-navigation .list a:hover,
-  .home-page .block-manufacturer-navigation .list a:focus-visible{
-    transform: translateY(-2px);
   }
 }
 
-@media (prefers-reduced-motion: reduce){
-  .home-page .block-manufacturer-navigation .list a{
-    transition: none;
-  }
-}
 
 /* --- Band headings: a "view all" at the far end of the title line --------- */
 .home-page .page-body > * > .title .view-all{
@@ -9614,59 +9601,6 @@ html:has(.tm-terms-dialog[open]){
 
 [dir="rtl"] .home-page .page-body > * > .title .view-all svg{
   transform: scaleX(-1);
-}
-
-/* --- Band headings: rail arrows, for a mouse ------------------------------
-   A thumb swipes the rail; a wheel cannot scroll it sideways, so the desktop
-   gets a pair of buttons. Built by the homepage script, hidden below 1001px
-   and whenever the band is short enough to fit. */
-.rail-nav{
-  display: none;
-  gap: var(--tm-stack-sm);
-  margin-inline-start: auto;
-}
-
-.rail-nav button{
-  display: grid;
-  place-items: center;
-  inline-size: 36px;
-  block-size: 36px;
-  padding: 0;
-  border: 1px solid var(--tm-line);
-  border-radius: 999px;
-  background: var(--tm-surface);
-  color: var(--tm-teal-deep);
-  cursor: pointer;
-  transition: background var(--tm-transition), color var(--tm-transition), border-color var(--tm-transition);
-}
-
-.rail-nav button:hover:not(:disabled){
-  border-color: var(--tm-teal-deep);
-  background: var(--tm-teal-deep);
-  color: var(--tm-white);
-}
-
-.rail-nav button:disabled{
-  opacity: 0.35;
-  cursor: default;
-}
-
-.rail-nav svg{
-  inline-size: 18px;
-  block-size: 18px;
-}
-
-/* One chevron glyph, mirrored per button and per reading direction. */
-.rail-nav .rail-prev svg{
-  transform: scaleX(-1);
-}
-
-[dir="rtl"] .rail-nav .rail-next svg{
-  transform: scaleX(-1);
-}
-
-[dir="rtl"] .rail-nav .rail-prev svg{
-  transform: none;
 }
 
 /* --- Call to action ------------------------------------------------------- */
@@ -9800,10 +9734,6 @@ html:has(.tm-terms-dialog[open]){
 
 /* --- On a desktop ---------------------------------------------------------- */
 @media (min-width: 1001px){
-
-  .rail-nav:not([hidden]){
-    display: flex;
-  }
 
   /* The admin sets how many items there are (Content management > Home page
      features): as many to a row as fit at 220px, so three or five spread
@@ -10735,27 +10665,6 @@ button{
 }
 
 /* --- Greeting wave and the rotating search hint ---------------------------- */
-@keyframes tm-wave{
-  0%, 100%{
-    transform: rotate(0);
-  }
-  25%{
-    transform: rotate(16deg);
-  }
-  50%{
-    transform: rotate(-8deg);
-  }
-  75%{
-    transform: rotate(12deg);
-  }
-}
-
-.tm-hello-wave{
-  display: inline-block;
-  transform-origin: 70% 70%;
-  animation: tm-wave 1.6s ease-in-out 0.6s 2;
-}
-
 .search-box input.search-box-text::placeholder{
   transition: opacity 0.22s ease;
 }
@@ -10764,12 +10673,14 @@ button{
   opacity: 0;
 }
 
-/* --- The home band (phones and tablets) -----------------------------------
-   _Header.cshtml puts .tm-home-header on the bar on the home page only, with
-   the greeting block inside it. The bar becomes the coloured band every app
-   opens with: greeting at the start, the logo reversed to white at the end,
-   and the search field open on a row of its own - no glyph to tap first on
-   the one page where search is the point. Other pages keep the plain bar.
+/* --- The phone bar: the teal band on every page ---------------------------
+   One header below the desktop breakpoint: the brand's gradient band with the
+   white wordmark at the start. The inner pages keep the search collapsed to a
+   glyph at the end (tap: the pill takes the bar - .mobile-search-toggle and
+   .header.search-open further up). The home page keeps the pill open under a
+   greeting row, and folds that row away on scroll so the scrolled home bar is
+   the pill alone. Settled with Kinan 2026-10-12: open on home, collapsed
+   elsewhere, no plate behind the logo.
    -------------------------------------------------------------------------- */
 .tm-hello{
   display: none;
@@ -10777,27 +10688,84 @@ button{
 
 @media (max-width: 1000px){
 
-  .header.tm-home-header{
+  .header{
     flex-wrap: wrap;
-    row-gap: 14px;
-    padding-block: 14px 18px;
+    gap: 12px 16px;
+    padding-block: 10px;
     background: var(--tm-teal-deep);
-    background-image:
-      radial-gradient(circle at 88% -30%, rgba(255, 255, 255, 0.22), transparent 55%),
-      radial-gradient(circle at 0% 120%, rgba(0, 217, 204, 0.35), transparent 50%),
-      linear-gradient(135deg, var(--tm-teal-deep) 0%, var(--tm-teal) 100%);
+    background-image: linear-gradient(135deg, var(--tm-teal-deep) 0%, var(--tm-teal) 100%);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    border-end-start-radius: 26px;
-    border-end-end-radius: 26px;
+    border-end-start-radius: 18px;
+    border-end-end-radius: 18px;
     box-shadow: var(--tm-shadow-lg);
   }
 
   /* the gradient rule is the band now */
-  .header.tm-home-header:after{
+  .header:after{
     display: none;
   }
 
+  /* The white wordmark alone (logo-wordmark-white.png, cut from the brand's
+     reversed lockup). The lockup's icon tile is the band's own teal gradient
+     and vanished on it, and a white plate behind the whole lockup looked stuck
+     on; the wordmark is the part of the mark built for a coloured ground. */
+  .header-logo a img{
+    content: url("/Themes/TmTm/Content/images/logo-wordmark-white.png");
+    inline-size: auto;
+    block-size: 34px;
+    max-inline-size: none;
+    max-block-size: none;
+  }
+
+  /* the search glyph, white on the band */
+  .mobile-search-toggle{
+    color: var(--tm-white);
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  .mobile-search-toggle:hover,
+  .mobile-search-toggle:focus-visible{
+    background: rgba(255, 255, 255, 0.26);
+  }
+
+  /* the field, open, is a white pill */
+  .search-box form{
+    background: var(--tm-surface);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14);
+  }
+
+  .search-box form:focus-within{
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14), inset 0 0 0 2px var(--tm-teal-bright);
+  }
+
+  .search-box input.search-box-text{
+    block-size: 44px;
+    min-height: 44px;
+  }
+
+  /* --- Home: greeting row, then the open pill --------------------------------- */
+  .header.tm-home-header{
+    padding-block-start: 14px;
+    background-image:
+      radial-gradient(circle at 88% -30%, rgba(255, 255, 255, 0.22), transparent 55%),
+      radial-gradient(circle at 0% 120%, rgba(0, 217, 204, 0.35), transparent 50%),
+      linear-gradient(135deg, var(--tm-teal-deep) 0%, var(--tm-teal) 100%);
+    border-end-start-radius: 26px;
+    border-end-end-radius: 26px;
+  }
+
+  /* no glyph here: the pill is always open and takes a row of its own */
+  .header.tm-home-header .mobile-search-toggle{
+    display: none;
+  }
+
+  .header.tm-home-header .search-box{
+    display: block;
+    flex: 1 1 100%;
+  }
+
+  /* the greeting leads the top row and the wordmark closes it */
   .tm-hello{
     order: 0;
     flex: 1 1 0;
@@ -10806,6 +10774,7 @@ button{
     gap: 2px;
     min-inline-size: 0;
     color: var(--tm-white);
+    transition: opacity var(--tm-transition);
   }
 
   .tm-hello strong{
@@ -10824,60 +10793,29 @@ button{
   }
 
   .header.tm-home-header .header-logo{
-    order: 1;
+    order: 0;
+    align-self: center;
   }
 
-  /* the reversed lockup from the brand kit, swapped in for the store logo */
-  .header.tm-home-header .header-logo a img{
-    content: url("/Themes/TmTm/Content/images/logo-white.png");
-    max-block-size: 36px;
-  }
-
-  .header.tm-home-header .mobile-search-toggle{
-    display: none;
-  }
-
-  .header.tm-home-header .search-box{
-    display: block;
-    order: 5;
-    flex: 1 1 100%;
-  }
-
-  /* Scrolled, the band folds to the search pill (_Header.cshtml toggles the
-     class past 24px and measures --tm-fold, the height of the greeting row).
-     It slides up by that much rather than shrinking: a sticky bar that
-     changes height moves everything under it, and near the threshold the
-     page can see-saw. The greeting and logo fade in place. */
+  /* Scrolled, the greeting row slides up out of view (_Header.cshtml toggles
+     the class past 24px and measures --tm-fold: the row's height plus the
+     gap). The band translates rather than shrinks, because a sticky bar that
+     changes height moves everything under it. The extra 4px bring the pill to
+     10px from the top edge - where every other page keeps its bar - and the
+     glows go with the greeting; a slice of one through a 64px strip read as
+     a stain. */
   .header.tm-home-header.tm-header-compact{
-    transform: translateY(calc(-1 * var(--tm-fold, 72px)));
+    transform: translateY(calc(-1 * (var(--tm-fold, 58px) + 4px)));
+    background-image: linear-gradient(135deg, var(--tm-teal-deep) 0%, var(--tm-teal) 100%);
     border-end-start-radius: 18px;
     border-end-end-radius: 18px;
   }
 
-  .header.tm-home-header .tm-hello,
-  .header.tm-home-header .header-logo{
-    transition: opacity var(--tm-transition);
-  }
-
-  .header.tm-home-header.tm-header-compact .tm-hello,
-  .header.tm-home-header.tm-header-compact .header-logo{
+  .header.tm-home-header.tm-header-compact .tm-hello{
     opacity: 0;
     pointer-events: none;
   }
 
-  .header.tm-home-header .search-box form{
-    background: var(--tm-surface);
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14);
-  }
-
-  .header.tm-home-header .search-box form:focus-within{
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14), inset 0 0 0 2px var(--tm-teal-bright);
-  }
-
-  .header.tm-home-header .search-box input.search-box-text{
-    block-size: 50px;
-    min-height: 50px;
-  }
 
   /* the band already separates itself from the page; the page's own top gap halves */
   .html-home-page .master-wrapper-content{
@@ -10929,7 +10867,7 @@ button{
     background-image: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23fff'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'><path%20d='M4%2020h16'/><path%20d='M7%2020v-7M12%2020V5M17%2020v-10'/></svg>"), var(--tm-gradient-diagonal);
   }
 
-  .home-page .page-body > .block-manufacturer-navigation > .title:before{
+  .home-page .page-body > .home-page-category-grid.tm-brand-grid > .title:before{
     background-image: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23fff'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'><circle%20cx='12'%20cy='9'%20r='5'/><path%20d='M8.6%2013.2%207.5%2021l4.5-2.4%204.5%202.4-1.1-7.8'/></svg>"), var(--tm-gradient-diagonal);
   }
 
@@ -11219,6 +11157,27 @@ html.tm-tour-open body{
   animation: tm-float 4s ease-in-out infinite;
 }
 
+/* The store's own logo on a slide (Brand icon, no picture): a lockup, so smaller than
+   an illustration would be - it should read as a logo, not fill the tile. */
+.tm-tour-art img.tm-tour-logo{
+  max-inline-size: min(56vw, 240px);
+  max-block-size: min(40vh, 250px);
+}
+
+/* The "Brand" icon (HomepageFeatureIcon.Brand) inlines the theme's brand-mark.svg,
+   which carries its own fills; here it takes the colour of whatever it sits
+   in - white on the tour tile, the brand colour on a trust-strip card. The
+   descendant selector outranks the mark's own <style> classes. */
+.tm-tour-art-icon .tm-brand-mark *,
+.home-usp .tm-brand-mark *{
+  fill: currentColor;
+  stroke: none;
+}
+
+.tm-tour-art-icon svg.tm-brand-mark{
+  padding: 18%;
+}
+
 .tm-tour-art-icon svg{
   inline-size: min(40vw, 170px);
   block-size: auto;
@@ -11322,49 +11281,23 @@ html.tm-tour-open body{
   .tm-tour-art img,
   .tm-tour-art-icon svg,
   .mobile-tab.active .mobile-tab-icon-wrap,
-  .tm-hello-wave{
-    animation: none;
-  }
-
-  .tm-tour-track{
+    .tm-tour-track{
     scroll-behavior: auto;
   }
 }
 
 
-/* --- Product page on a phone: hero and sheet ---------------------------------
-   The way BeeOrder and Movo open a product: the picture edge to edge under
-   the bar, the category as a floating chip over it, and the words on a white
-   sheet whose rounded top overlaps the picture. The grey well, the 20px
-   gutters round the picture, the thumbnail strip and the frame round the buy
-   box were four kinds of air between the shopper and the price. */
+/* --- Product page on a phone ---------------------------------------------
+   The picture is a rounded card inside the page gutters, under the bar and
+   the category line, and the details follow it as ordinary flow - the same
+   order the desktop column has. An earlier pass ran the picture edge to edge
+   under the bar with the trail floating over it as a chip and the details
+   on a sheet pulled up over its rounded bottom; three layers in the first
+   screen, and with a teal product plate under the teal bar they read as one
+   overlapping mass (Kinan, 2026-10-11). */
 @media (max-width: 600px){
 
-  .html-product-details-page .master-wrapper-content{
-    padding-block-start: 0;
-  }
-
-  .product-details-page{
-    padding-block-start: 0;
-  }
-
-  .product-details-page .page-body{
-    position: relative;
-  }
-
-  .product-essential{
-    gap: 0;
-    margin-block-end: 0;
-  }
-
-  .product-essential > .gallery{
-    margin-inline: calc(-1 * var(--tm-margin-mobile));
-  }
-
-  .tm-gallery-stage{
-    border-radius: 0 0 28px 28px;
-  }
-
+  /* the picture fills its card; the grey well round it was air */
   .tm-slide{
     padding: 0;
   }
@@ -11377,47 +11310,6 @@ html.tm-tour-open body{
   /* the counter chip says there is more; a swipe is the way through */
   .tm-gallery-thumbs{
     display: none;
-  }
-
-  .tm-gallery-counter{
-    inset-block-end: 40px;
-  }
-
-  .tm-gallery-open{
-    inset-block-end: 36px;
-  }
-
-  /* The category trail floats over the top of the picture as a chip, where
-     the reference apps put their back and share buttons. */
-  .html-product-details-page .breadcrumb{
-    position: absolute;
-    inset-block-start: 12px;
-    inset-inline: var(--tm-margin-mobile);
-    z-index: 3;
-    inline-size: auto;
-    max-inline-size: calc(100% - 2 * var(--tm-margin-mobile));
-  }
-
-  .html-product-details-page .breadcrumb ul{
-    inline-size: max-content;
-    max-inline-size: 100%;
-    padding: 6px 14px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.9);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    box-shadow: var(--tm-shadow);
-  }
-
-  /* The sheet: pulled up over the picture's rounded bottom. */
-  .product-essential > .overview{
-    position: relative;
-    z-index: 2;
-    margin-block-start: -28px;
-    margin-inline: calc(-1 * var(--tm-margin-mobile));
-    padding: 22px var(--tm-margin-mobile) 0;
-    border-radius: 28px 28px 0 0;
-    background: var(--tm-surface);
   }
 
   .overview .product-name h1{
@@ -11536,7 +11428,7 @@ html.tm-tour-open body{
    above it as well; the logo says it. The name stays in the DOM (link text
    and alt) for assistive tech and search. */
 .home-page .block-manufacturer-navigation .list a span,
-.manufacturer-grid .item-box > .title{
+.manufacturer-grid .manufacturer-item > .title{
   position: absolute;
   inline-size: 1px;
   block-size: 1px;
@@ -11649,9 +11541,13 @@ body{
   background: transparent;
 }
 
-/* The glass bars let the canvas through; a touch more white keeps them crisp. */
-.header:not(.tm-home-header){
-  background: rgba(255, 255, 255, 0.86);
+/* The desktop glass bar lets the canvas through; a touch more white keeps it crisp.
+   (Phones wear the teal search band on every page, below.) */
+@media (min-width: 1001px){
+
+  .header{
+    background: rgba(255, 255, 255, 0.86);
+  }
 }
 
 @media (max-width: 1000px){
@@ -11667,90 +11563,6 @@ body{
    on a wide screen and this one lacked. Phones keep the tab bar and the
    one-line footer.
    ========================================================================== */
-
-/* --- Category row ------------------------------------------------------------ */
-.tm-catnav{
-  display: none;
-}
-
-@media (min-width: 1001px){
-
-  /* The bar grows a second row; everything that offsets against it follows. */
-  :root{
-    --tm-header-h: 124px;
-  }
-
-  .header{
-    flex-wrap: wrap;
-    row-gap: 0;
-  }
-
-  .tm-catnav{
-    order: 9;
-    flex: 1 1 100%;
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    margin-block-start: 4px;
-    min-height: 44px;
-    border-block-start: 1px solid rgba(2, 120, 126, 0.08);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .tm-catnav::-webkit-scrollbar{
-    display: none;
-  }
-
-  .tm-catnav a{
-    flex: 0 0 auto;
-    position: relative;
-    padding: 10px 14px;
-    border-radius: var(--tm-radius);
-    color: var(--tm-ink);
-    font-size: var(--tm-fs-label);
-    line-height: var(--tm-lh-label);
-    font-weight: 600;
-    white-space: nowrap;
-    text-decoration: none;
-    transition: background var(--tm-transition), color var(--tm-transition);
-  }
-
-  .tm-catnav a:hover,
-  .tm-catnav a:focus-visible{
-    background: var(--tm-teal-tint);
-    color: var(--tm-teal-deep);
-    text-decoration: none;
-  }
-
-  /* The brand rule under the current one, the way the band titles carry it. */
-  .tm-catnav a.active{
-    color: var(--tm-teal-deep);
-  }
-
-  .tm-catnav a.active::after{
-    content: "";
-    position: absolute;
-    inset-inline: 14px;
-    inset-block-end: 4px;
-    block-size: 3px;
-    border-radius: 999px;
-    background: var(--tm-gradient);
-  }
-
-  .tm-catnav-gap{
-    flex: 1 1 auto;
-  }
-
-  .tm-catnav-deal{
-    color: var(--tm-teal-deep);
-  }
-
-  /* --- Category tiles: a little larger where there is room ------------------- */
-  :is(.home-page-category-grid, .sub-category-grid) .picture{
-    max-inline-size: 150px;
-  }
-}
 
 /* --- Footer with columns ------------------------------------------------------
    One row of four: the store in a line, what to shop, where to get help, the
@@ -11835,5 +11647,346 @@ body{
   .footer-lower{
     inline-size: min(100%, 1200px);
     margin-inline: auto;
+  }
+}
+
+/* ==========================================================================
+   Polish pass (2026-10-11, evening) - the chips on phones, the desktop mini
+   cart, the terms dialog, the desktop home measure.
+   ========================================================================== */
+
+/* --- Chips on phones: tinted pills, no hairline ------------------------------
+   The account sections and the category row were white pills with a teal
+   outline, which on the tinted canvas read as unfinished form controls. Now a
+   tint with no border, the current one solid. */
+@media (max-width: 1000px){
+
+  .block-account-navigation .list a,
+  .block-category-navigation .list a{
+    border-color: transparent;
+    background: var(--tm-teal-tint);
+    color: var(--tm-teal-deep);
+    font-weight: 600;
+  }
+
+  .block-account-navigation .list a:hover,
+  .block-account-navigation .list a:focus-visible,
+  .block-category-navigation .list a:hover,
+  .block-category-navigation .list a:focus-visible{
+    border-color: transparent;
+    background: var(--tm-teal-tint-strong);
+    color: var(--tm-teal-deep);
+  }
+
+  .block-account-navigation .list .active > a,
+  .block-category-navigation .list .active > a{
+    border-color: transparent;
+    background: var(--tm-teal-deep);
+    color: var(--tm-white);
+  }
+
+  .block-category-navigation .list li.active:has(.active) > a{
+    border-color: transparent;
+    background: var(--tm-teal-tint-strong);
+    color: var(--tm-teal-deep);
+  }
+
+  .block-account-navigation .list .customer-logout > a{
+    border-color: transparent;
+    background: rgba(213, 31, 40, 0.08);
+    color: var(--tm-error);
+  }
+}
+
+/* --- Desktop mini cart (hover on the bag) ---------------------------------------
+   The base sheet's 300px white box with a 2px grey shadow, square thumbnails
+   floated against label-sized text. Now a card: rounded, lifted, the picture
+   in a tinted well, name and price in the card type, two full-width buttons. */
+@media (min-width: 1001px){
+
+  .flyout-cart{
+    inset-block-start: calc(100% + 8px);
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+    width: 360px;
+    padding: 18px 18px 16px;
+    border-radius: var(--tm-radius-lg);
+    background: var(--tm-surface);
+    box-shadow: 0 18px 50px rgba(2, 120, 126, 0.18), 0 0 0 1px rgba(2, 120, 126, 0.06);
+  }
+
+  .mini-shopping-cart{
+    padding: 0;
+  }
+
+  .mini-shopping-cart .count{
+    margin: 0 0 8px;
+    padding: 0;
+    font-size: var(--tm-fs-label);
+    line-height: var(--tm-lh-label);
+    color: var(--tm-ink-muted);
+  }
+
+  .mini-shopping-cart .count a{
+    color: var(--tm-teal-deep);
+  }
+
+  .mini-shopping-cart .items{
+    max-height: 320px;
+    overflow-y: auto;
+    border: 0;
+    padding: 0;
+    scrollbar-width: thin;
+  }
+
+  .mini-shopping-cart .item{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-block-start: 1px solid var(--tm-line);
+    overflow: visible;
+  }
+
+  .mini-shopping-cart .item.first{
+    border-block-start: 0;
+  }
+
+  .mini-shopping-cart .picture{
+    flex: 0 0 64px;
+    float: none;
+    width: 64px;
+    border-radius: var(--tm-radius);
+    background: var(--tm-surface-alt);
+    overflow: hidden;
+  }
+
+  .mini-shopping-cart .picture + .product{
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .mini-shopping-cart .name{
+    margin: 0 0 2px;
+    font-size: var(--tm-fs-label);
+    line-height: var(--tm-lh-label);
+    font-weight: 600;
+  }
+
+  .mini-shopping-cart .name a{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    color: var(--tm-ink);
+  }
+
+  .mini-shopping-cart .attributes,
+  .mini-shopping-cart .quantity{
+    margin: 0;
+    font-size: var(--tm-fs-label-sm);
+    line-height: var(--tm-lh-label-sm);
+    color: var(--tm-ink-muted);
+  }
+
+  .mini-shopping-cart .price{
+    margin: 2px 0 0;
+    font-size: var(--tm-fs-label);
+    line-height: var(--tm-lh-label);
+    color: var(--tm-ink-muted);
+  }
+
+  .mini-shopping-cart .price span{
+    font-weight: 700;
+    color: var(--tm-teal-deep);
+  }
+
+  .mini-shopping-cart .totals{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 4px 0 12px;
+    padding-block-start: 12px;
+    border-block-start: 1px solid var(--tm-line);
+    font-size: var(--tm-fs-body);
+    color: var(--tm-ink);
+  }
+
+  .mini-shopping-cart .totals strong{
+    font-size: var(--tm-fs-title);
+    color: var(--tm-teal-deep);
+  }
+
+  .mini-shopping-cart .buttons{
+    display: grid;
+    gap: 8px;
+    margin: 0;
+  }
+
+  .mini-shopping-cart button[type="button"]{
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    border-radius: 999px;
+    font-size: var(--tm-fs-label);
+    font-weight: 700;
+  }
+
+  .mini-shopping-cart .cart-button{
+    background: var(--tm-teal-tint);
+    color: var(--tm-teal-deep);
+  }
+
+  .mini-shopping-cart .cart-button:hover{
+    background: var(--tm-teal-tint-strong);
+    color: var(--tm-teal-deep);
+  }
+}
+
+/* --- Dialogs (terms and conditions, confirmations) ----------------------------
+   jQuery UI's box: square, a grey title bar, a 550px inline width. Now the
+   store's card on a blurred scrim; on a phone it is a sheet from the bottom
+   edge, whatever width the script asked for. */
+.ui-widget-overlay{
+  background: rgba(16, 32, 31, 0.5) !important;
+  opacity: 1 !important;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.ui-dialog{
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: var(--tm-radius-lg) !important;
+  background: var(--tm-surface) !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3) !important;
+  overflow: hidden;
+  font-family: inherit !important;
+}
+
+.ui-dialog .ui-dialog-titlebar{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 22px 12px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: var(--tm-surface) !important;
+}
+
+.ui-dialog .ui-dialog-title{
+  flex: 1 1 auto;
+  float: none !important;
+  margin: 0 !important;
+  width: auto !important;
+  font-size: var(--tm-fs-title);
+  line-height: var(--tm-lh-title);
+  font-weight: 700;
+  color: var(--tm-ink);
+  white-space: normal !important;
+}
+
+.ui-dialog .ui-dialog-titlebar-close{
+  position: static !important;
+  flex: 0 0 auto;
+  order: 2;
+  width: 36px !important;
+  height: 36px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 50%;
+  background: var(--tm-teal-tint) !important;
+  color: var(--tm-teal-deep);
+  cursor: pointer;
+}
+
+.ui-dialog .ui-dialog-titlebar-close .ui-icon{
+  margin: 0;
+  position: absolute;
+  inset: 50% auto auto 50%;
+  translate: -50% -50%;
+}
+
+.ui-dialog .ui-dialog-content{
+  max-height: min(70vh, 640px) !important;
+  padding: 4px 22px 22px !important;
+  border: 0 !important;
+  background: var(--tm-surface) !important;
+  color: var(--tm-ink);
+  font-size: var(--tm-fs-body);
+  line-height: 26px;
+  overflow: auto;
+}
+
+.ui-dialog .ui-dialog-content :is(h1, h2, h3){
+  margin: 0 0 10px;
+  font-size: var(--tm-fs-title);
+  line-height: var(--tm-lh-title);
+}
+
+.ui-dialog .ui-dialog-content .page-title,
+.ui-dialog .ui-dialog-content .topic-block-title{
+  display: none;
+}
+
+@media (max-width: 700px){
+
+  .ui-dialog{
+    position: fixed !important;
+    inset: auto 0 0 0 !important;
+    width: 100% !important;
+    max-height: 88vh;
+    border-radius: 24px 24px 0 0 !important;
+  }
+
+  .ui-dialog .ui-dialog-content{
+    max-height: calc(88vh - 80px) !important;
+    padding-block-end: max(env(safe-area-inset-bottom, 0px), 22px) !important;
+  }
+}
+
+/* --- Desktop home: a calmer measure --------------------------------------------
+   Headline-size band titles and four 280px cards across a 1200px column read
+   as a landing page. Title-size headings and five cards to a row is the
+   density noon and Amazon keep. */
+@media (min-width: 1001px){
+
+  .home-page .page-body > * > .title{
+    margin-block-end: 12px;
+    font-size: var(--tm-fs-headline-sm);
+    line-height: var(--tm-lh-headline-sm);
+  }
+
+  .home-page .page-body > * > .title:before{
+    inline-size: 4px;
+  }
+
+  .home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .item-grid{
+    gap: var(--tm-stack-md);
+  }
+
+  .home-page :is(.home-page-product-grid, .home-page-deals, .bestsellers) .item-box{
+    flex-basis: calc((100% - 4 * var(--tm-stack-md)) / 5);
+  }
+
+  .home-page .page-body > *{
+    margin-block-end: 28px;
+  }
+
+  /* The soft-card bands belong to the phone layout; here the row is the band. */
+  .home-page .page-body > :is(.home-page-deals, .home-page-product-grid, .bestsellers){
+    background: none;
+  }
+}
+
+/* --- Phone bands: no tint, the rails sit on the page canvas like the desktop row -- */
+@media (max-width: 1000px){
+
+  .home-page .page-body > :is(.home-page-deals, .home-page-product-grid, .bestsellers){
+    padding-block-start: 16px;
+    background: none;
   }
 }
