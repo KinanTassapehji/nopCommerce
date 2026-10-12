@@ -11155,6 +11155,13 @@ html.tm-tour-open body{
   animation: tm-float 4s ease-in-out infinite;
 }
 
+/* The store's own logo on a slide (Brand icon, no picture): a lockup, so smaller than
+   an illustration would be - it should read as a logo, not fill the tile. */
+.tm-tour-art img.tm-tour-logo{
+  max-inline-size: min(56vw, 240px);
+  max-block-size: min(40vh, 250px);
+}
+
 /* The "Brand" icon (HomepageFeatureIcon.Brand) inlines the theme's brand-mark.svg,
    which carries its own fills; here it takes the colour of whatever it sits
    in - white on the tour tile, the brand colour on a trust-strip card. The

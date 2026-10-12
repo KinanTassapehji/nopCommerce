@@ -4,6 +4,7 @@
 @inject Nop.Services.Common.IWelcomeSlideService welcomeSlideService
 @inject ILocalizationService localizationService
 @inject IPictureService pictureService
+@inject Nop.Web.Framework.Themes.IThemeContext themeContext
 
 @*
     The welcome tour: a full-screen set of slides a visitor sees once, on the first visit to the
@@ -24,13 +25,17 @@
             @for (var i = 0; i < slides.Count; i++)
             {
                 var slide = slides[i];
-                var picture = slide.PictureId > 0 ? await pictureService.GetPictureUrlAsync(slide.PictureId, 800, showDefaultPicture: false) : null;
+                //a slide with no picture and the Brand icon shows the store's logo itself - the white
+                //lockup on the tile, where the glyph alone read as a generic store mark
+                var picture = slide.PictureId > 0 ? await pictureService.GetPictureUrlAsync(slide.PictureId, 800, showDefaultPicture: false)
+                    : slide.Icon == Nop.Core.Domain.Common.HomepageFeatureIcon.Brand ? Url.Content($"~/Themes/{await themeContext.GetWorkingThemeNameAsync()}/Content/images/logo-lockup-white.png")
+                    : null;
                 var text = await localizationService.GetLocalizedAsync(slide, s => s.Text);
                 <section class="tm-tour-slide" aria-roledescription="slide" aria-label="@(i + 1) / @slides.Count">
                     <div class="tm-tour-art@(string.IsNullOrEmpty(picture) ? " tm-tour-art-icon" : "")">
                         @if (!string.IsNullOrEmpty(picture))
                         {
-                            <img src="@picture" alt="" loading="@(i == 0 ? "eager" : "lazy")" />
+                            <img src="@picture" class="@(slide.PictureId > 0 ? null : "tm-tour-logo")" alt="" loading="@(i == 0 ? "eager" : "lazy")" />
                         }
                         else
                         {
